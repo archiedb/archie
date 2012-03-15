@@ -2,22 +2,22 @@
 /* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
 
 
-class Material { 
+class Material extends database_object { 
 
 
 	public $uid; 
 	public $name; 
 
-
+	/**
+	 * Constructor
+	 * Takes a UID and returns a material from the database
+	 */
 	public function __construct($uid='') { 
 
 		if (!is_numeric($uid)) { return false; } 
 
-		$uid = Dba::escape($uid); 
-		$sql = "SELECT * FROM `material` WHERE `uid`='$uid'"; 
-		$db_results = Dba::query($sql); 
-		$row = Dba::fetch_assoc($db_results); 
-		
+		$row = $this->get_info($uid); 
+
 		foreach ($row as $key=>$value) { $this->$key = $value; } 
 
 		return true;  

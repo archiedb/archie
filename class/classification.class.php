@@ -2,21 +2,21 @@
 /* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
 
 
-class Classification { 
+class Classification extends database_object { 
 
 
 	public $uid; 
 	public $name; 
 
-
+	/**
+	 * Constructor
+	 * Takes a UID and pulls info from the database
+	 */
 	public function __construct($uid='') { 
 
                 if (!is_numeric($uid)) { return false; }
 
-                $uid = Dba::escape($uid);
-                $sql = "SELECT * FROM `classification` WHERE `uid`='$uid'";
-                $db_results = Dba::query($sql);
-                $row = Dba::fetch_assoc($db_results);
+		$row = $this->get_info($uid); 
 
                 foreach ($row as $key=>$value) { $this->$key = $value; }
 

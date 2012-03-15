@@ -11,6 +11,11 @@ data_root="/var/www/content"
 ## This is the number of records per page
 page_limit = 250
 
+## Use RAM to avoid MySQL queries
+## It is recommended to turn this on, only turn it off if
+## you are getting out of memeory errors
+memory_cache = "true"
+
 # Database Related Settings
 database_username=username
 database_password=password

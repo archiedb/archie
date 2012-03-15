@@ -43,9 +43,6 @@ class User {
 
 		$user = new User($row['uid']); 
 
-		//FIXME: HACK FOR NOW
-		if (!$user->username) { $user->username = $username; } 
-
 		return $user; 
 
 	} // get_from_username
