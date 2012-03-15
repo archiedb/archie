@@ -1,0 +1,234 @@
+/************************************************/
+/*    Unify default browsers style rules        */
+/************************************************/
+h1, h2, h3, h4, h5, h6, pre, code {
+        font-family:Verdana, Geneva, sans-serif;
+        font-size: 14px;
+} /* avoid browser default inconsistent font-sizes */
+ol, ul {
+        list-style: none;
+}
+table {
+        border-collapse: separate;
+        border-spacing: 0;
+}
+caption, th, td {
+        text-align: left;
+        font-weight: normal;
+}
+* {
+        margin: 0;
+        padding: 0;
+} /* White space reset */
+a img, :link img, :visited img {
+        border: 0;
+} /* no blue linked image borders */
+/************************************************/
+/**               Generic Rules                **/
+/************************************************/
+body {
+	font-size: 1.4em;
+	font-family: "Arial", sans-serif;
+	background-color: #e8e8e8;
+}
+input { 
+	font-size: 1.1em;
+} 
+input.textbox {
+	font-size: 1.1em;
+	background-color: #d1eeee;
+}
+textarea.textbox {
+	font-size: .7em;
+	background-color: #d1eeee;
+}
+select { 
+	font-size: 1.1em; 
+	background-color: #d1eeee;
+}
+table, th, td {
+	font-family: "Arial", "Verdana", sans-serif;
+	font-weight: bold;
+	margin: 5px; 
+} 
+table.record_view td { 
+	padding:2px; 
+	background-color: #00CCCC; 
+	border-left: 1px solid #000; 
+	border-bottom: 1px solid #000; 
+} 
+ 
+table.record_view th { 
+	padding:2px; 
+	border-bottom: 1px solid #000; 
+	background-color: #c0c0c0; 
+} 
+table.record_view { 
+	border-left:1px solid #000; 
+	border-right:1px solid #000; 
+	border-top:1px solid #000; 
+} 
+
+tr.divider td { 
+	background-color: #000000; 
+} 
+fieldset { 
+	margin: 5px 5px 5px 5px; 
+} 
+.error { 
+	color:#EE0000;
+	font-weight:bold; 
+} 
+span.error { 
+	clear:both; 
+	display:block;
+} 
+
+
+/************************************************/
+/**                Record Rules                **/
+/************************************************/
+fieldset.record { 
+	width: 850px; 
+	margin: 5px auto; 
+} 
+
+fieldset.record,fieldset.attachment { 
+	border: 1px black solid;
+	padding: 5px;  
+}
+fieldset.record legend { 
+	border: 1px black solid; 
+	margin-left: 1em; 
+	padding: 0.2em 0.8em;
+	font-weight:bold; 
+} 
+fieldset.attachment legend { 
+	font-weight:normal; 
+} 
+fieldset.record table th { 
+	padding: 5px; 
+} 
+fieldset.record table.previous_record { 
+	border: 1px solid #999; 
+	border-collapse: collapse;
+} 
+fieldset.record table.previous_record tr td, fieldset.record table.previous_record tr th { 
+	border: 1px solid #999; 
+	text-align:center; 
+}
+
+/************************************************/
+/**               Login Page                   **/
+/************************************************/
+#loginPage #content {
+        margin: 5% auto 0px auto;
+        text-align:center;
+} 
+#loginPage h2 {
+        color:#111;
+        font-size:0.8em;
+        font-style:italic;
+        font-weight:normal;
+        margin: 0 0 2em 0;
+} 
+#loginPage #loginbox { 
+} 
+#loginPage h2 {
+        color:#111;
+        font-size:0.8em;
+        font-style:italic;
+        font-weight:normal;
+        margin: 0 0 2em 0;
+} 
+#loginPage h1 { 
+	font-size:1.2em; 
+	color:#111; 
+	font-style:italic; 
+} 
+.loginfield{
+        text-align:right;
+        margin: 1px 0;
+        width:15em;
+        margin:auto;
+}
+.loginfield input.text_input{
+  width:8em;
+  border:1px solid #74718a;
+  margin:4px; 
+}
+
+
+
+
+/************************************************/
+/**               Pretty Rules                 **/
+/************************************************/
+#menu { 
+	background-color: #f58a13;
+	border-bottom: 1px solid #a6a6a6; 
+	margin-bottom: 10px; 
+	color: #000;
+} 
+#menu h1 { 
+	font-size: 1.4em;
+	padding:4px; 
+} 
+#menu span.button { 
+	padding:2px 15px 2px 15px; 
+	margin:0px 5px 0px 15px; 
+	font-weight:bold; 
+	border: 1px solid #a6a6a6; 
+	cursor: pointer; 
+} 
+#menu span.button:hover { 
+	background-color: #fff; 
+}  
+#menu form { 
+	position: absolute;
+	top: 4px; 
+	right: 10px; 
+	display:inline; 
+} 
+
+#content { 
+	margin: 0px 5px 0px 5px; 
+} 
+
+/* Images */
+.image-block { 
+	margin: 10px;
+	float:left; 
+} 
+
+/* Rows */
+div.row { 
+	display: block; 
+} 
+div.row form { 
+	display: inline; 
+} 
+
+/* Generic Stuff */
+span.action { 
+	cursor: pointer; 
+} 
+
+/* Content Data Table */
+#content table.data { 
+	border: 1px solid #999999; 
+	border-collapse:collapse;
+} 
+#content table.data tr td, #content table.data tr th { 
+	padding: 4px; 
+	text-align:center; 
+} 
+#content table.data tr th { 
+	background-color: #dddddd;
+}  
+#content table.data tr:hover { 
+	background-color: #fff; 
+}
+#content table.data tr td { 
+	border: 1px solid #999; 
+}  

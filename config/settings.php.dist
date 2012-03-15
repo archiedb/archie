@@ -1,0 +1,27 @@
+#<?php exit; ?>
+web_path=""
+log_path="/var/log/archie"
+
+# Site you are currently at
+site=SITE
+# This is the root of the attached/fs data
+data_root="/var/www/content"
+
+# Operational stuff
+## This is the number of records per page
+page_limit = 250
+
+# Database Related Settings
+database_username=username
+database_password=password
+database_hostname=localhost
+database_name=archie
+
+# Session related settings, don't change this unless you know
+# what you're doing
+session_name=archie
+remember_length=144000
+session_length=86400
+session_cookielife=0
+session_cookiesecure=0
+

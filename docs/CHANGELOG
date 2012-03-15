@@ -1,0 +1,33 @@
+- :: 0.0.1-RC2
+	- Ability to disable/enable users
+
+- 06/03/2012 :: 0.0.1-RC1
+	- Add password, disable, name & email to user table for user management
+
+- 05/11/2011 :: SVN Updates
+	- Allow level to be NULL 
+	- Fixed lack of checking on classification if material
+		isn't selected
+	- Added import script bin/import.record.php.inc
+- 06/10/2011 :: SVN Updates
+	- Added a few more fields to the search
+	- Allow blank RN
+	- Change station_index to all NULL values (no record)
+		ALTER TABLE `record` MODIFY `station_index` INT(10) UNSIGNED NULL;
+	- Change feature to varchar 
+		ALTER TABLE `record` MODIFY `feature` VARCHAR(255) NOT NULL; 
+	- Allow A-Za-z0-9 in feature field
+	- Remove line breaks from notes in csv
+- 14/07/2011 :: Patch
+	- Add limit to default browse of 250
+	- Clean up Single Record view page
+
+- 13/07/2011 :: Patch
+	- Add Searching of RN & Notes
+	- Add Last Record to new Record page
+	- Add Material & Classification to New record page
+	- Remove XRF # from New record page
+	- Add Notes to CSV
+	- Rename "length" to "height" in CSV Export
+- 07/07/2011 :: Patch
+	- Make RN Unique
