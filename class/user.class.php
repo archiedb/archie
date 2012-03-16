@@ -1,7 +1,7 @@
 <?php
 /* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
 
-class User { 
+class User extends database_object { 
 
 	public $uid; 
 	public $username; 
@@ -16,11 +16,7 @@ class User {
 
 		if (!is_numeric($uid)) { return false; } 
 
-		$uid = Dba::escape($uid); 
-		$sql = "SELECT * FROM `users` WHERE `uid`='$uid'"; 
-		$db_results = Dba::read($sql); 
-
-		$row = Dba::fetch_assoc($db_results); 
+		$row = $this->get_info($uid,'users'); 
 
 		foreach ($row as $key=>$value) { 
 			$this->$key = $value; 

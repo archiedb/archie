@@ -2,7 +2,7 @@
 /* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
 
 
-class Record { 
+class Record extends database_object { 
 
 
 	public $uid; // INTERNAL 
@@ -34,12 +34,9 @@ class Record {
 	public function __construct($uid='') { 
 
 		if (!is_numeric($uid)) { return false; } 
+		
+		$row = $this->get_info($uid); 
 	
-		$uid = Dba::escape($uid); 
-		$sql = "SELECT * FROM `record` WHERE `uid`='$uid'"; 	
-		$db_results = Dba::read($sql); 
-		$row = Dba::fetch_assoc($db_results); 
-
 		foreach ($row as $key=>$value) { $this->$key = $value; } 
 
 		// Setup the Material and classification
