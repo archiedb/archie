@@ -130,7 +130,7 @@ class Record extends database_object {
 		$created = time(); 
 
 		// This can be null needs to be handled slightly differently
-		$station_index = $station_index ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
+		$station_index = $input['station_index'] ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
 		$level = $level ? "'" . Dba::escape($input['level']) . "'" : "NULL"; 
 		
 		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`station_index`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`user`,`created`) " . 
