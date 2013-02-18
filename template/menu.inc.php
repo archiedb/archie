@@ -20,11 +20,11 @@
 
 </div>
 <div class="row">
-<span class="button" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/new.php';"> New </span> 
-<span class="button" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/view.php';"> View </span>
+<span id="menu_button_new" class="button" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/new.php';"> New </span> 
+<span id="menu_button_view" class="button" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/view.php';"> View </span>
 <?php if ($GLOBALS['user']->access == '100') { ?>
-<span class="button" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/admin.php?action=export&type=csv';"> CSV </span>
-<span class="button" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/admin.php?action=manage';"> Manage </span>
+<span id="menu_button_csv" class="button" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/admin.php?action=export&type=csv';"> CSV </span>
+<span id="menu_button_manage" class="button" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/admin.php?action=manage';"> Manage </span>
 <?php } ?>
 </div>
 </div>

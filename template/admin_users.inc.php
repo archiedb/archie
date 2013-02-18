@@ -6,7 +6,6 @@ require_once 'template/menu.inc.php';
 ?>
 <table class="data">
 <tr>
-	<th class="enabled">Status</th>
 	<th class="username">Username</th>
 	<th class="name">Name</th>
 	<th class="access">Access Level</th>

@@ -7,7 +7,6 @@ $user_status_class = 'enabled';
 if ($client->disabled) { $user_status_class = 'disabled'; }
 ?>
 <tr>
-	<td class="<?php echo $user_status_class; ?>">&nbsp;</td>
 	<td class="username"><?php echo scrub_out($client->username); ?></td>
 	<td class="name"><?php echo scrub_out($client->name); ?></td>
 	<td class="access"><?php echo scrub_out(User::get_access_name($client->access)); ?></td>

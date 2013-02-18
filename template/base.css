@@ -29,7 +29,7 @@ a img, :link img, :visited img {
 body {
 	font-size: 1.4em;
 	font-family: "Arial", sans-serif;
-	background-color: #e8e8e8;
+	background-color: #fff;
 }
 input { 
 	font-size: 1.1em;
@@ -88,10 +88,6 @@ span.error {
 /************************************************/
 /**                Record Rules                **/
 /************************************************/
-fieldset.record { 
-	width: 850px; 
-	margin: 5px auto; 
-} 
 
 fieldset.record,fieldset.attachment { 
 	border: 1px black solid;
@@ -165,24 +161,46 @@ fieldset.record table.previous_record tr td, fieldset.record table.previous_reco
 /**               Pretty Rules                 **/
 /************************************************/
 #menu { 
-	background-color: #f58a13;
-	border-bottom: 1px solid #a6a6a6; 
+	background-color: #000;
+	border-bottom: 2px solid #a6a6a6; 
+	border-top: 2px solid #a6a6a6;
 	margin-bottom: 10px; 
-	color: #000;
+	color: #ccc;
+	height: 40px; 
 } 
 #menu h1 { 
-	font-size: 1.4em;
+	font-size: 1.2em;
 	padding:4px; 
+	float:left;
 } 
 #menu span.button { 
-	padding:2px 15px 2px 15px; 
-	margin:0px 5px 0px 15px; 
+	position: absolute;
+	width:100px; 
+	height:30px; 
+	text-align:center; 
+}
+#menu_button_new { 
+	left: 200px; 
+}
+#menu_button_view {
+	left: 300px; 
+}
+#menu_button_csv { 
+	left: 400px; 
+}
+#menu_button_manage {
+	left: 500px; 
+}
+#menu span.button { 
+	padding-top:10px;
 	font-weight:bold; 
-	border: 1px solid #a6a6a6; 
 	cursor: pointer; 
+	border-radius: 3px;
 } 
 #menu span.button:hover { 
-	background-color: #fff; 
+	background-color: #1a1a1a; 
+	color: #fff; 
+	border-top: 3px solid #ff0000; 
 }  
 #menu form { 
 	position: absolute;
@@ -192,7 +210,9 @@ fieldset.record table.previous_record tr td, fieldset.record table.previous_reco
 } 
 
 #content { 
-	margin: 0px 5px 0px 5px; 
+	margin:0px auto;
+	padding:0px; 
+	width:950px;
 } 
 
 /* Images */
@@ -224,10 +244,10 @@ span.action {
 	text-align:center; 
 } 
 #content table.data tr th { 
-	background-color: #dddddd;
+	background-color: #aa7755;
 }  
 #content table.data tr:hover { 
-	background-color: #fff; 
+	background-color: #ccbb77; 
 }
 #content table.data tr td { 
 	border: 1px solid #999; 

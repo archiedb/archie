@@ -7,6 +7,7 @@ if (INIT_LOADED != '1') { exit; }
 <head>
 <link rel="stylesheet" href="<?php echo Config::get('web_path'); ?>/template/base.css" type="text/css" media="screen" />
 <script src="<?php echo Config::get('web_path'); ?>/template/ajax.js" language="javascript" type="text/javascript"></script>
-<script src="<?php echo Config::get('web_path'); ?>/template/prototype.js" language="javascript" type="text/javascript"></script>
+<script src="<?php echo Config::get('web_path'); ?>/lib/javascript/prototype.js" language="javascript" type="text/javascript"></script>
+<script src="<?php echo Config::get('web_path'); ?>/lib/javascript/scriptaculous.js" language="javascript" type="text/javascript"></script>
 </head>
 <body>
