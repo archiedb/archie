@@ -4,6 +4,7 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <?php $record = Record::last_created(); ?>
+<div class="content-block"> 
 <fieldset class="record"><legend>LAST RECORD</legend>
 <table class="previous_record" cellspacing="5" border="0">
 <tr>
@@ -17,6 +18,8 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 </table>
 </fieldset> 
+</div>
+<div class="content-block">
 <fieldset class="record"><legend>CREATE RECORD - <?php echo Config::get('site'); ?></legend>
 <form id="new_record" method="post" action="<?php echo Config::get('web_path'); ?>/new.php?action=create">
 <table class="record" cellspacing="5" border=0>
@@ -120,27 +123,8 @@ if (INIT_LOADED != '1') { exit; }
 	<textarea name="notes" class="textbox" cols="25" rows="5"><?php echo scrub_out($_POST['notes']); ?></textarea>
 </td>
 </tr>
-<!--
-<h3>WEIGHT IN GRAMS</h3>
-<?php Error::display('weight'); ?>
-<input name="weight" type="textbox" value="<?php echo scrub_out($_POST['weight']); ?>" />
-<h3>LENGTH IN CM</h3>
-<?php Error::display('height'); ?>
-<input name="height" type="textbox" value="<?php echo scrub_out($_POST['height']); ?>" />
-<h3>WIDTH IN CM</h3>
-<?php Error::display('width'); ?>
-<input name="width" type="textbox" value="<?php echo scrub_out($_POST['width']); ?>" />
-<h3>THICKNESS IN CM</h3>
-<?php Error::display('thickness'); ?>
-<input name="thickness" type="textbox" value="<?php echo scrub_out($_POST['thickness']); ?>" />
-<h3>QUANITY</h3>
-<?php Error::display('quanity'); ?>
-<input name="quanity" type="textbox" value="<?Php echo scrub_out($_POST['quanity']); ?>" />
-<h3>XRF ARTIFACT INDEX</h3>
-<?php Error::display('xrf_artifact_index'); ?>
-<input type="textbox" name="xrf_artifact_index" value="<?php echo scrub_out($_POST['xrf_artifact_index']); ?>" />
---> 
 </table> 
 <input type="submit" value="Save" />
 </form>
 </fieldset> 
+</div> 

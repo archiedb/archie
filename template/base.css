@@ -27,7 +27,7 @@ a img, :link img, :visited img {
 /**               Generic Rules                **/
 /************************************************/
 body {
-	font-size: 1.4em;
+	font-size: 1.2em;
 	font-family: "Arial", sans-serif;
 	background-color: #fff;
 }
@@ -36,15 +36,15 @@ input {
 } 
 input.textbox {
 	font-size: 1.1em;
-	background-color: #d1eeee;
+/*	background-color: #d1eeee;*/
 }
 textarea.textbox {
 	font-size: .7em;
-	background-color: #d1eeee;
+/*	background-color: #d1eeee;*/
 }
 select { 
 	font-size: 1.1em; 
-	background-color: #d1eeee;
+/*	background-color: #d1eeee;*/
 }
 table, th, td {
 	font-family: "Arial", "Verdana", sans-serif;
@@ -113,7 +113,38 @@ fieldset.record table.previous_record tr td, fieldset.record table.previous_reco
 	border: 1px solid #999; 
 	text-align:center; 
 }
+/************************************************/
+/**               View Table                   **/
+/************************************************/
 
+div.table-container { 
+	display: table; 
+	border-radius: 4px; 
+	border:1px solid #AABFE9;
+	background-color:#fff;
+	margin:10px auto;
+}
+div.table-header {
+	display: table-row;
+	text-align:center;
+	font-weight:bold;
+}
+div.table-row {
+	display: table-row;
+	text-align:center;
+}
+div.table-row:hover {
+	background-color: #ebf0fa;
+}
+div.table-row-hidden {
+	display: table-row; 
+}
+
+div.table-cell { 
+	display: table-cell;
+	padding:5px; 
+	border-bottom: 1px solid #AABFE9; 
+}
 /************************************************/
 /**               Login Page                   **/
 /************************************************/
@@ -212,9 +243,14 @@ fieldset.record table.previous_record tr td, fieldset.record table.previous_reco
 #content { 
 	margin:0px auto;
 	padding:0px; 
-	width:950px;
+	width:1000px;
 } 
-
+#content div.content-block {
+	background-color:#C2D1F0;
+	border:1px solid #AABFE9;
+	border-radius: 4px; 
+	margin-top: 10px; 
+} 
 /* Images */
 .image-block { 
 	margin: 10px;
@@ -237,14 +273,13 @@ span.action {
 /* Content Data Table */
 #content table.data { 
 	border: 1px solid #999999; 
-	border-collapse:collapse;
 } 
 #content table.data tr td, #content table.data tr th { 
 	padding: 4px; 
 	text-align:center; 
 } 
 #content table.data tr th { 
-	background-color: #aa7755;
+	background-color: #fff;
 }  
 #content table.data tr:hover { 
 	background-color: #ccbb77; 
@@ -252,3 +287,6 @@ span.action {
 #content table.data tr td { 
 	border: 1px solid #999; 
 }  
+#content table tr.row-hidden {
+	display:none;
+}
