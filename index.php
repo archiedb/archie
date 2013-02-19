@@ -6,7 +6,6 @@ $www_prefix = explode("/",Config::get('web_prefix'));
 foreach ($www_prefix as $prefix) { 
         array_shift($GLOBALS['urlvar']);
 }
-//If the user requested '/page/6/about-elephans/' then $urlVariables[1] would be 'page', $urlVariables[2] would be '6' and so on.
 
 // The first is "what" we are doing
 switch ($GLOBALS['urlvar']['0']) { 

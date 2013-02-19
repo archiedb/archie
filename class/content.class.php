@@ -99,7 +99,7 @@ class content {
 	 * Generates a filename based on the name and extension using the data_root defined
 	 * in the config file
 	 */
-	private static function generate_filename($name,$extension) { 
+	public static function generate_filename($name,$extension) { 
 
 		$filename = self::generate_directory() . '/' . escapeshellcmd($name) . '-' . date("dmHis",time()) . '.' . $extension; 
 

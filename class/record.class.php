@@ -1,7 +1,5 @@
 <?php
 /* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
-
-
 class Record extends database_object { 
 
 
@@ -148,6 +146,11 @@ class Record extends database_object {
 
 		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . $GLOBALS['user']->username . ",\"" . date("r",$created) . "\"";
 		Event::record('ADD',$log_line); 
+
+		// We're sure we've got a record so lets generate our QR code. 
+		$qrcode_data = Config::get('web_path') . '/records/edit/' . $insert_id;
+		$qrcode_filename = Content::generate_filename($site . '-' . $catalog_id . '-qrcode','png'); 
+		QRcode::png($qrcode_data,$qrcode_filename,'L','4',2); 
 
 		return $insert_id; 
 
