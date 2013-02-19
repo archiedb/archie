@@ -106,7 +106,7 @@ if (INIT_LOADED != '1') { exit; }
 	<?php echo Ajax::select('material',Ajax::action('?action=show_class'),'classification'); ?>
 </td>
 <td>
-	DESCRIPTION
+	CLASSIFICATION
 </td><td>
 	<select id="classification" name="classification">
 		<?php 
