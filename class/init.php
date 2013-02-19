@@ -62,7 +62,7 @@ else {
 // Use the built in PHP function, suppress errors here so we can handle it
 // properly below
 $results = parse_ini_file($configfile);
-
+$results['web_prefix']		= $results['web_path']; 
 $results['web_path']		= $http_type . $_SERVER['HTTP_HOST'] . $results['web_path'];
 $results['ajax_url']		= $results['web_path'] . '/server/ajax.server.php'; 
 $results['http_port']		= $_SERVER['SERVER_PORT'];

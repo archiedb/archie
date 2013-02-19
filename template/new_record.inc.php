@@ -20,7 +20,7 @@ if (INIT_LOADED != '1') { exit; }
 </fieldset> 
 <div class="content-block">
 <fieldset class="record"><legend>CREATE RECORD - <?php echo Config::get('site'); ?></legend>
-<form id="new_record" method="post" action="<?php echo Config::get('web_path'); ?>/new.php?action=create">
+<form id="new_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/create">
 <table>
 <td>
 	UNIT
@@ -120,7 +120,7 @@ else { $classes = Classification::get_all(); }
 </td>
 </tr>
 <tr>
-<td valign="top">
+<td>
 	NOTES
 </td><td colspan="3" valign="top">
 	<?php Error::display('notes'); ?>

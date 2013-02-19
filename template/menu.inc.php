@@ -13,8 +13,8 @@ if (INIT_LOADED != '1') { exit; }
       <a class="brand" href="<?php echo Config::get('web_path'); ?>/">Archie</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
-          <li><a href="<?php echo Config::get('web_path'); ?>/new.php">New</a></li>
-          <li><a href="<?php echo Config::get('web_path'); ?>/view.php">View</a></li>
+          <li><a href="<?php echo Config::get('web_path'); ?>/records/new">New</a></li>
+          <li><a href="<?php echo Config::get('web_path'); ?>/records">View</a></li>
           <li><a href="<?php echo Config::get('web_path'); ?>/admin.php?action=export&type=csv">CVS</a></li>
 <?php if ($GLOBALS['user']->access == '100') { ?>
           <li class="dropdown">
@@ -29,7 +29,7 @@ if (INIT_LOADED != '1') { exit; }
           </li>
 <?php } ?>
         </ul>
-            <form method="post" action="<?php echo Config::get('web_path'); ?>/view.php?action=search" class="navbar-form pull-right">
+            <form method="post" action="<?php echo Config::get('web_path'); ?>/records/search" class="navbar-form pull-right">
               <select name="field" class="span2">
                 <option value="item">Item</option>
                 <option value="station_index">RN</option>

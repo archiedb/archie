@@ -1,7 +1,7 @@
 <?php require_once 'class/init.php'; ?>
 <?php require_once 'template/header.inc.php'; ?>
 <?php 
-
+if (!($_REQUEST['action']) { $_REQUEST['action'] = $GLOBALS['urlvar'][2]; }
 switch ($_REQUEST['action']) { 
 	case 'upload_image': 
 
