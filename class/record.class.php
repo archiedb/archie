@@ -150,7 +150,7 @@ class Record extends database_object {
 		// We're sure we've got a record so lets generate our QR code. 
 		$qrcode_data = Config::get('web_path') . '/records/edit/' . $insert_id;
 		$qrcode_filename = Content::generate_filename($site . '-' . $catalog_id . '-qrcode','png'); 
-		QRcode::png($qrcode_data,$qrcode_filename,'L','4',2); 
+		//QRcode::png($qrcode_data,$qrcode_filename,'L','4',2); 
 
 		return $insert_id; 
 
