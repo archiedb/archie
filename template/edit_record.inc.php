@@ -1,18 +1,17 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <div class="content-block">
 <fieldset class="record"><legend>Edit Record - <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></legend>
+<?php Error::display('general'); ?>
 <form id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/new.php?action=update">
-<table class="record">
-
+<table>
 <tr>
 <td>
 	UNIT
 </td><td>
-	<?php Error::display('unit'); ?>
 	<select name="unit">
 	<?php foreach (unit::$values as $value) { 
 		$is_selected = ''; 
@@ -21,11 +20,11 @@ if (INIT_LOADED != '1') { exit; }
 		<option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option> 
 	<?php } ?>
 	</select>
+	<?php Error::display('unit'); ?>
 </td>
 <td>
 	QUAD
 </td><td>
-        <?php Error::display('quad'); ?>
         <select name="quad">
         <option value="">&nbsp;</option>
         <?php foreach (quad::$values as $key=>$value) {
@@ -35,20 +34,20 @@ if (INIT_LOADED != '1') { exit; }
                 <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
         <?php } ?>
         </select>
-
+        <?php Error::display('quad'); ?>
 </td>
 </tr><tr>
 <td>
 	LEVEL
 </td><td>
-	<?php Error::display('level'); ?>
 	<input name="level" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->level); ?>" />
+	<?php Error::display('level'); ?>
 </td>
 <td>
 	MATRIX XRF #
 </td><td>
-	<?php Error::display('xrf_matrix_index'); ?>
 	<input name="xrf_matrix_index" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->xrf_matrix_index); ?>" />
+	<?php Error::display('xrf_matrix_index'); ?>
 </td>
 </tr>
 
@@ -56,14 +55,14 @@ if (INIT_LOADED != '1') { exit; }
 <td>
 	FEATURE
 </td><td>
-	<?php Error::display('feature'); ?>
 	<input name="feature" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->feature); ?>" />
+	<?php Error::display('feature'); ?>
 </td>
 <td valign="top">
 	ARTIFACT XRF #
 </td><td>
-	<?php Error::display('xrf_artifact_index'); ?>
 	<input type="text" class="textbox" size="10" name="xrf_artifact_index" value="<?php echo scrub_out($record->xrf_artifact_index); ?>" />
+	<?php Error::display('xrf_artifact_index'); ?>
 </td>
 </tr>
 
@@ -71,7 +70,6 @@ if (INIT_LOADED != '1') { exit; }
 <td title="Lithostratigraphic Unit">
 	L. U.
 </td><td>
-	<?php Error::display('lsg_unit'); ?>
 	<select name="lsg_unit">
 	<?php foreach (lsgunit::$values as $key=>$name) { 
 		$is_selected = ''; 
@@ -80,12 +78,13 @@ if (INIT_LOADED != '1') { exit; }
 	        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
 	<?php } ?>
 	</select>
+	<?php Error::display('lsg_unit'); ?>
 </td>
 <td>
 	RN
 </td><td>
-	<?php Error::display('station_index'); ?>
 	<input name="station_index" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->station_index); ?>" />
+	<?php Error::display('station_index'); ?>
 </td>
 </tr>
 
@@ -93,7 +92,6 @@ if (INIT_LOADED != '1') { exit; }
 <td>
 	MATERIAL
 </td><td>
-	<?php Error::display('material'); ?>
 	<select id="material" name="material">
 		<option value="">&nbsp;</option> 
 		<?php $materials = Material::get_all(); ?>
@@ -104,71 +102,82 @@ if (INIT_LOADED != '1') { exit; }
 		<option value="<?php echo scrub_out($material->uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($material->name); ?></option>
 		<?php } ?>
 	</select>
-	<?php echo Ajax::observe('material','change',Ajax::action('?action=show_class','material','update_record'),1); ?>
+	<?php Error::display('material'); ?>
+	<?php echo Ajax::select('material',Ajax::action('?action=show_class'),'classification'); ?>
 </td>
 <td>
 	DESCRIPTION
 </td><td>
-	<?php Error::display('classification'); ?>
-	<div id="classification_select">
+	<select id="classification" name="classification">
 		<?php 
 		$classes = Classification::get_from_material($record->material->uid);
 	 	$class_id = $record->classification->uid; 
 		require_once Config::get('prefix') . '/template/show_class.inc.php'; 
 		?>
+	</select>
+	<?php Error::display('classification'); ?>
+</td>
+</tr>
+
+<tr>
+<td>
+	WEIGHT
+</td><td>
+	<div class="input-append">
+	<input class="span2" name="weight" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->weight); ?>" />
+	<span class="add-on">grams</span>
 	</div>
-</td>
-</tr>
-
-<tr>
-<td>
-	WEIGHT (GRAMS)
-</td><td>
 	<?php Error::display('weight'); ?>
-	<input name="weight" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->weight); ?>" />
 </td>
 <td>
-	LENGTH (mm)
+	LENGTH
 </td><td>
+	<div class="input-append">
+	<input class="span2" name="height" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->height); ?>" />
+	<span class="add-on">mm</span>
+	</div>
 	<?php Error::display('height'); ?>
-	<input name="height" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->height); ?>" />
 </td>
 </tr>
 
 <tr>
 <td>
-	WIDTH (mm)
+	WIDTH
 </td><td>
+	<div class="input-append">
+	<input class="span2" name="width" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->width); ?>" />
+	<span class="add-on">mm</span>
+	</div>
 	<?php Error::display('width'); ?>
-	<input name="width" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->width); ?>" />
 </td>
 <td>
-	THICKNESS (mm)
+	THICKNESS
 </td><td>
+	<div class="input-append">
+	<input class="span2" name="thickness" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->thickness); ?>" />
+	<span class="add-on">mm</span>
+	</div>
 	<?php Error::display('thickness'); ?>
-	<input name="thickness" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->thickness); ?>" />
 </td>
 </tr>
-
 <tr>
 <td>
 	QUANTITY
 </td><td>
-	<?php Error::display('quanity'); ?>
 	<input name="quanity" type="text" class="textbox" size="10" value="<?Php echo scrub_out($record->quanity); ?>" />
+	<?php Error::display('quanity'); ?>
 </td>
 <td>
 	NOTES
 </td><td>
-	<?php Error::display('notes'); ?>
 	<textarea name="notes" class="textbox" cols="25" rows="5"><?php echo scrub_out($record->notes); ?></textarea>
+	<?php Error::display('notes'); ?>
 </td>
 </tr>
 
 </table> 
 <input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
-<?php Error::display('general'); ?>
-<input type="submit" value="Save Changes" />
+<button class="btn btn-primary" type="submit">Update</button>
 </form>
 <fieldset class="attachment">
 <legend>Images</legend>
@@ -176,7 +185,7 @@ if (INIT_LOADED != '1') { exit; }
 	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
 	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
 	<input type="file" class="textbox" name="image" />
-	<input type="submit" value="Attach Image" />
+	<button class="btn btn-primary" type="submit">Attach Image</button>
 </form>
 
 <?php 

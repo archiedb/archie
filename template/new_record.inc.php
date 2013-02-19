@@ -1,5 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
@@ -22,7 +22,6 @@ if (INIT_LOADED != '1') { exit; }
 <fieldset class="record"><legend>CREATE RECORD - <?php echo Config::get('site'); ?></legend>
 <form id="new_record" method="post" action="<?php echo Config::get('web_path'); ?>/new.php?action=create">
 <table>
-<tr style="vertical-align: top;">
 <td>
 	UNIT
 </td><td>
