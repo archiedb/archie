@@ -3,6 +3,10 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
+<p class="text-right">
+  <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn btn-primary">Edit Record</a>
+  <a href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success disabled">Print Ticket</a>
+</p>
 <div class="content-block">
 <h3><?php echo $record->site . '-' . $record->catalog_id; ?></h3>
   Entered by <?php echo $GLOBALS['user']->username; ?> on <?php echo date("r",$record->created); ?></p>
@@ -59,7 +63,5 @@ if (INIT_LOADED != '1') { exit; }
 <?php } ?>
 <?php Error::display('upload'); ?>
 </fieldset>
-
-<input type="button" value="Edit This Record" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/new.php?action=edit&amp;record_id=<?php echo intval($record->uid); ?>';" />
 </fieldset> 
 </div><!-- End content block --> 

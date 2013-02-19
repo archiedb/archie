@@ -158,11 +158,10 @@ class Record extends database_object {
 
 	// Update
 	public function update($input) { 
-
                 // First verify the input to make sure
                 // all of the fields are within acceptable tolerences 
                 if (!Record::validate($input)) {
-                        Error::add('general','Invalid Field Data');
+                        Error::add('general','Invalid Field Values - Please check your input again');
                         return false;
                 }
 
