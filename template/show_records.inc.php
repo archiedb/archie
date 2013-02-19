@@ -1,9 +1,8 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<div class="content-block">
 <h3>RECORDS <?php echo scrub_out(intval($_POST['offset'])); ?> - <?php echo scrub_out(intval($_POST['offset']+Config::get('page_limit'))); ?> out of <?php echo scrub_out($GLOBALS['total']); ?></h3>
 <?php 
 	if ($_POST['offset'] < Config::get('page_limit')) { $low = '0'; } 
@@ -11,48 +10,59 @@ if (INIT_LOADED != '1') { exit; }
 	if ($GLOBALS['total'] > $_POST['offset'] + intval(Config::get('page_limit'))) { $high = $_POST['offset']+intval(Config::get('page_limit')); } 
 	else { $high = intval($_POST['offset']); } 
 ?>
-<div id="view">
+<ul class="pager"><li>
 <form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/view.php?action=search">
 <input type="hidden" name="field" value="<?php echo scrub_out($_POST['field']); ?>" />
 <input type="hidden" name="value" value="<?php echo scrub_out($_POST['value']); ?>" />
 <input type="hidden" name="offset" value="<?php echo scrub_out($low); ?>" />
 <input type="submit" value="Prev" />
 </form>
+</li><li>
 <form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/view.php?action=search">
 <input type="hidden" name="field" value="<?php echo scrub_out($_POST['field']); ?>" />
 <input type="hidden" name="value" value="<?php echo scrub_out($_POST['value']); ?>" />
 <input type="hidden" name="offset" value="<?php echo scrub_out($high); ?>" />
 <input type="submit" value="Next" />
 </form>
-<div class="table-container">
-<div class="table-header">
-	<div class="table-cell">Catalog</div>
-	<div class="table-cell">R.N.</div>
-	<div class="table-cell">Unit</div>
-	<div class="table-cell">Quad</div>
-	<div class="table-cell">Level</div>
-	<div class="table-cell">Feature</div>
-	<div class="table-cell">L.U.</div>
-	<div class="table-cell">Material</div>
-	<div class="table-cell">Class.</div>
-	<div class="table-cell">Date</div>
-	<div class="table-cell">User</div>
-</div><!-- END table-row -->
+</li></ul>
+<table class="table table-hover table-bordered table-condensed">
+  <thead>
+  <tr>
+    <th>Catalog</th>
+  	<th>R.N.</th>
+	  <th>Unit</th>
+  	<th>Quad</th>
+  	<th>Level</th>
+  	<th>Feature</th>
+  	<th>L.U.</th>
+  	<th>Material</th>
+  	<th>Class.</th>
+    <th>&nbsp;</th>
+	<!--<div class="table-cell">Date</th>
+	<div class="table-cell">User</th>--> 
+  </tr>
+  </thead>
+  <tbody>
 <?php foreach ($records as $record) { ?>
 <?php require 'template/show_record_row.inc.php'; ?>
 <?php } ?>
-</div> <!-- end of table-container -->
+  </tbody>
+</table>
+<ul class="pager">
+<li>
 <form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/view.php?action=search">
 <input type="hidden" name="field" value="<?php echo scrub_out($_POST['field']); ?>" />
 <input type="hidden" name="value" value="<?php echo scrub_out($_POST['value']); ?>" />
 <input type="hidden" name="offset" value="<?php echo scrub_out($low); ?>" />
 <input type="submit" value="Prev" />
 </form>
+</li>
+<li>
 <form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/view.php?action=search">
 <input type="hidden" name="field" value="<?php echo scrub_out($_POST['field']); ?>" />
 <input type="hidden" name="value" value="<?php echo scrub_out($_POST['value']); ?>" />
 <input type="hidden" name="offset" value="<?php echo scrub_out($high); ?>" />
 <input type="submit" value="Next" />
 </form>
-</div> <!-- End View --> 
-</div> <!-- End of content block --> 
+</li>
+</ul>

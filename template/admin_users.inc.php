@@ -4,14 +4,12 @@ if (INIT_LOADED != '1') { exit; }
 if ($GLOBALS['user']->access < 100) { exit; }
 require_once 'template/menu.inc.php'; 
 ?>
-<table class="data">
-<tr>
-	<th class="username">Username</th>
-	<th class="name">Name</th>
-	<th class="access">Access Level</th>
-	<th class="action">&nbsp;</th>
-	<th class="action">&nbsp;</th>
-	<th class="action">&nbsp;</th>
-</tr>
+<div class="table-container">
+<div class="table-header">
+	<div class="table-cell">Username</div>
+	<div class="table-cell">Name</div>
+	<div class="table-cell">Access Level</div>
+	<div class="table-cell">&nbsp;</div>
+</div><!-- END table-header --> 
 <?php foreach ($users as $client) { require 'template/admin_user_row.inc.php'; } ?>
-</table> 
+</div><!-- End table container --> 

@@ -52,6 +52,21 @@ class Ajax {
 	} // constructor
 
 	/**
+	 * select
+	 * Populates a select statement based on jQuery ajax mojo
+	 */
+	public static function select($source,$action,$target) { 
+
+		$source = "#" . scrub_out($source);
+		$target	= "#" . scrub_out($target); 
+		$action = scrub_out($action); 
+
+		echo "<script language=\"javascript\" type=\"text/javascript\">$('$source').change(function(){ value = $('$source').val();$.get('$action', { 'value': value }, function(data){" . 
+			"$('$target').empty();$('$target').append(data);});});</script>"; 
+
+	} // select 
+
+	/**
 	 * observe
 	 * This returns a string with the correct and full ajax 'observe' stuff
 	 * from prototype
@@ -85,27 +100,11 @@ class Ajax {
 	 * This takes the action, the source and the post (if passed) and
 	 * generates the full ajax link
 	 */
-	public static function action($action,$source,$post='') {
+	public static function action($action) {
 
 		$url = Config::get('ajax_url') . $action;
 
-		$non_quoted = array('document','window');
-
-		if (in_array($source,$non_quoted)) {
-			$source_txt = $source;
-		}
-		else {
-			$source_txt = "'$source'";
-		}
-
-		if ($post) {
-			$ajax_string = "ajaxPost('$url','$post',$source_txt)";
-		}
-		else {
-			$ajax_string = "ajaxPut('$url',$source_txt)";
-		}
-		
-		return $ajax_string;
+		return $url; 
 
 	} // action
 

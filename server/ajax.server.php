@@ -36,8 +36,6 @@ define('AJAX_INCLUDE','1');
 require_once '../class/init.php';
 
 /* Set the correct headers */
-header("Content-type: text/xml; charset=UTF-8");
-header("Content-Disposition: attachment; filename=ajax.xml");
 header("Expires: Tuesday, 27 Mar 1984 05:00:00 GMT");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -47,8 +45,8 @@ $results = array();
 
 switch ($_REQUEST['action']) {
 	case 'show_class': 
-		if ($_POST['material']) { 
-			$classes = Classification::get_from_material($_POST['material']); 
+		if ($_GET['value']) { 
+			$classes = Classification::get_from_material($_GET['value']); 
 		} 
 		else { 
 			$classes = Classification::get_all(); 
@@ -56,7 +54,7 @@ switch ($_REQUEST['action']) {
 		ob_start(); 
 		//FIXME: This should be done in a more sane matter
 		require_once Config::get('prefix') . '/template/show_class.inc.php'; 
-		$results['classification_select'] = ob_get_contents(); 
+		$results = ob_get_contents(); 
 		ob_end_clean(); 
 	break;
 	default:
@@ -65,6 +63,7 @@ switch ($_REQUEST['action']) {
 } // end switch action
 
 // Go ahead and do the echo
-echo xml_from_array($results);
+#echo xml_from_array($results);
+echo $results; 
 
 ?>

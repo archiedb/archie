@@ -3,6 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
+<div class="content-block">
 <fieldset class="record"><legend>Edit Record - <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></legend>
 <form id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/new.php?action=update">
 <table class="record">
@@ -194,3 +195,4 @@ if (INIT_LOADED != '1') { exit; }
 </fieldset> 
 
 </fieldset>
+</div><!-- End content block -->

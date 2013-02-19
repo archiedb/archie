@@ -3,6 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
+<div class="content-block">
 <fieldset class="record"><legend><?php echo $record->site . '-' . $record->catalog_id; ?> - <?php echo $GLOBALS['user']->username; ?> - <?php echo date("r",$record->created); ?></legend>
 
 <table class="record_view" cellspacing="0" cellpadding="4">
@@ -60,4 +61,4 @@ if (INIT_LOADED != '1') { exit; }
 
 <input type="button" value="Edit This Record" onclick="parent.location.href='<?php echo Config::get('web_path'); ?>/new.php?action=edit&amp;record_id=<?php echo intval($record->uid); ?>';" />
 </fieldset> 
-
+</div><!-- End content block --> 
