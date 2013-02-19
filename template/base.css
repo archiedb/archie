@@ -4,6 +4,9 @@
 table tr { 
         vertical-align:top;
 }
+table.table-white {
+        background-color:#fff;
+}
 
 /************************************************/
 /**               View Table                   **/

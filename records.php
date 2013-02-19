@@ -5,6 +5,7 @@ require_once 'template/header.inc.php';
 if (isset($GLOBALS['urlvar']['2'])) { 
   $_GET['record_id'] = $GLOBALS['urlvar']['2'];
 }
+// Switch on the action
 switch ($GLOBALS['urlvar']['1']) { 
 	case 'upload_image': 
 		$path_info = pathinfo($_FILES['image']['name']); 
@@ -66,6 +67,10 @@ switch ($GLOBALS['urlvar']['1']) {
     if (!$_POST['value']) { $_POST['value'] = Config::get('site'); }
     $records = Search::record($_POST['field'],$_POST['value']);
     require_once 'template/show_records.inc.php';
+  break;
+  case 'view':
+    $record = new Record($_GET['record_id']); 
+    require_once 'template/show_record.inc.php';
   break;
   case 'new':
     require_once 'template/new_record.inc.php';

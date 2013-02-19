@@ -4,7 +4,7 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <tr>
   <td>
-      <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>">
+      <a href="<?php echo Config::get('web_path'); ?>/records/view/<?php echo scrub_out($record->uid); ?>">
       <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></a>
   </td>
   <td><?php echo scrub_out($record->station_index); ?></td>

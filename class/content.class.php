@@ -11,11 +11,32 @@ class content {
 	public $source; // Raw data of the object
 
 
-	public function __construct($uid,$type) { 
+	public function __construct($uid='',$type) { 
 
 		//FIXME: Hack to get things rolling
 		$this->uid = $uid; 
 		$this->type = $type; 
+
+		switch ($type) { 
+			case 'record':
+				self::load_record_image($uid);
+			break;
+			case 'thumb':
+				$this->load_record_image($uid); 
+				$this->filename = $this->filename . '.thumb'; 
+			break; 
+			case 'qrcode':
+				self::load_record_qrcode($uid); 
+			break;
+		} // end witch on type 
+
+	} // construct
+
+	/** 
+	 * load_record_image
+	 * This loads a record image from its UID
+	 */
+	private function load_record_image($uid) { 
 
 		$uid = Dba::escape($uid); 
 		$sql = "SELECT * FROM `image` WHERE `uid`='$uid'"; 
@@ -26,11 +47,20 @@ class content {
 		$this->filename = $row['data']; 
 		$this->mime = $row['type']; 
 
-		if ($type == 'thumb') { 
-			$this->filename = $this->filename . '.thumb'; 
-		} 
+		return $db_results; 
 
-	} // construct
+	} // load_record_image
+
+	/** 
+	 * load_record_qrcode
+	 * This loads the qrcode image from the record info
+	 * UID is the record uid
+	 */
+	private function load_record_qrcode($uid) { 
+
+		$filename = Config::get('data_root') . '/qrcode';
+
+	} // load_record_qrcode
 
 	// Reads in and returns the source of this file
 	public function source() { 
@@ -99,9 +129,12 @@ class content {
 	 * Generates a filename based on the name and extension using the data_root defined
 	 * in the config file
 	 */
-	public static function generate_filename($name,$extension) { 
+	public static function generate_filename($name,$extension,$time='') { 
 
-		$filename = self::generate_directory() . '/' . escapeshellcmd($name) . '-' . date("dmHis",time()) . '.' . $extension; 
+		// Allows us to pass in a date if we are adding old
+		if (!$time) { $time=time(); }
+
+		$filename = self::generate_directory() . '/' . escapeshellcmd($name) . '-' . date("dmHis",$time) . '.' . $extension; 
 
 		return $filename; 
 
