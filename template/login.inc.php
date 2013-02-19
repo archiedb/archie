@@ -1,35 +1,58 @@
 <?php if (INIT_LOADED != '1') { exit; } ?> 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us" dir="ltr">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <link rel="stylesheet" href="<?php echo Config::get('web_path'); ?>/template/base.css" type="text/css" media="screen" />
-<script type="text/javascript" language="javascript">
-function focus(){ document.login.username.focus(); }
-</script>
+<link rel="stylesheet" href="<?php echo Config::get('web_path'); ?>/lib/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" />
 <script src="<?php echo Config::get('web_path'); ?>/template/ajax.js" language="javascript" type="text/javascript"></script>
-<script src="<?php echo Config::get('web_path'); ?>/template/prototype.js" language="javascript" type="text/javascript"></script>
+<script src="<?php echo Config::get('web_path'); ?>/lib/javascript/jquery-1.9.1.min.js" language="javascript" type="text/javascript"></script>
+<script src="<?php echo Config::get('web_path'); ?>/lib/bootstrap/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
 <title> Archie :: Login </title>
-</head>
-<body id="loginPage" onload="focus();">
-<div id="content"> 
-	<div id="header"> 
-		<h1>Archie Login</h1>
-	</div>
-	<div id="loginbox">
-		<form name="login" method="post" enctype="multipart/form-data" action="<?php echo Config::get('web_path'); ?>/login.php">
-		<div class="loginfield" id="usernamefield">
-		<label for="username">Username:</label>
-		<input class="text_input" type="text" id="username" name="username" value="<?php echo scrub_out($_POST['username']); ?>" />
-		</div>
-		<div class="loginfield" id="passworfield">
-		<label for="password">Password:</label>
-		<input class="text_input" type="password" id="password" name="password" value="" />
-		</div>
-		<div class="formValidation">
-		<input type="hidden" name="referrer" value="<?php echo scrub_out($_SERVER['HTTP_REFERRER']); ?>" />
-		<input class="button" id="loginbutton" type="submit" value="Login" />
-		</div>
-	</div>
+   <style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
 
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+      <form class="form-signin" method="post" enctype="multipart/form-data" action="<?php echo Config::get('web_path'); ?>/login.php">
+        <h2 class="form-signin-heading">Archie :: Login</h2>
+        <input name="username" type="text" class="input-block-level" placeholder="Username">
+        <input name="password" type="password" class="input-block-level" placeholder="Password">
+        <button class="btn btn-large btn-primary" type="submit">Login</button>
+      </form>
+    </div> <!-- /container -->
 </body>
 </html>
