@@ -54,7 +54,7 @@ class Record extends database_object {
 		// First verify the input to make sure
 		// all of the fields are within acceptable tolerences 
 		if (!Record::validate($input)) { 
-			Error::add('general','Invalid Field Data'); 
+			Error::add('general','Invalid Field Values - please check input'); 
 			return false; 
 		} 
 
@@ -329,7 +329,7 @@ class Record extends database_object {
 			Event::error('Record::Create',$input['user'] . ' passed, but does not match a known user'); 
 			Error::add('user','UNKNOWN User'); 
 		}
-
+		
 		if (Error::occurred()) { return false; } 
 
 		return true; 

@@ -21,6 +21,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="content-block">
 <fieldset class="record"><legend>CREATE RECORD - <?php echo Config::get('site'); ?></legend>
 <form id="new_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/create">
+<?php Error::display('general'); ?>
 <table>
 <td>
 	UNIT
