@@ -325,7 +325,6 @@ class Record extends database_object {
 
 		// User
 		$user = new User($input['user']); 
-		$user->username = "bar"; 
 		if (!$user->username) { 
 			Event::error('Record::Create',$input['user'] . ' passed, but does not match a known user'); 
 			Error::add('user','UNKNOWN User'); 

@@ -41,6 +41,7 @@ class Error {
 
 	private static $state = false; // set to one when an error occurs
 	private static $errors = array(); // Errors array key'd array with errors that have occured
+	private static $error_count = 0; // How many errors have we had!?@
 
 	/**
 	 * __constructor
@@ -71,6 +72,8 @@ class Error {
 	 * It can optionally clobber rather then adding to the error message
 	 */
 	public static function add($name,$message,$clobber=0) {
+	
+		Error::$error_count++; 
 
 		// Make sure its set first
 		if (!isset(Error::$errors[$name])) {
@@ -104,6 +107,16 @@ class Error {
 		return false;
 
 	} // occurred
+
+	/**
+	 * count
+	 * Return how many errors we've had
+	 */
+	public static function count() { 
+
+		return Error::$error_count; 
+
+	} // count
 
 	/**
 	 * get

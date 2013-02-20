@@ -96,8 +96,9 @@ define('INIT_LOADED','1');
 Config::set_by_array($results,1);
 
 /* Set a new Error Handler */
-$old_error_handler = set_error_handler('ampache_error_handler');
-
+if (!defined('NO_LOG')) {
+	$old_error_handler = set_error_handler('ampache_error_handler');
+}
 // In case the local setting is 0
 ini_set('session.gc_probability','5');
 

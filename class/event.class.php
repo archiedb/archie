@@ -1,6 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
-
+// vim: set softtabstop=2 ts=2 sw=2 expandtab:
 class Event { 
 
 	/**
@@ -14,14 +13,15 @@ class Event {
 		if (is_object($GLOBALS['user'])) { 
 			$username = $GLOBALS['user']->username;
 		} 
-
-		log_event($username,$topic,$content,'error'); 
-
+    if (!defined('NO_LOG')) {
+  		log_event($username,$topic,$content,'error'); 
+    }
 	} 
 
 	public static function record($topic,$content) { 
-
-		log_event($GLOBALS['user']->username,$topic,$content,'record'); 
+    if (!defined('NO_LOG')) {
+  		log_event($GLOBALS['user']->username,$topic,$content,'record'); 
+    }
 	} 
 
 } // end class event
