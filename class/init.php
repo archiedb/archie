@@ -38,8 +38,8 @@ if (floatval(phpversion()) < 5) {
 
 error_reporting(E_ERROR); // Only show fatal errors in production
 
-$ampache_path = dirname(__FILE__);
-$prefix = realpath($ampache_path . "/../");
+$file_path = dirname(__FILE__);
+$prefix = realpath($file_path . "/../");
 $configfile = "$prefix/config/settings.php";
 require_once $prefix . '/class/general.php';
 require_once $prefix . '/class/config.class.php';
