@@ -2,7 +2,7 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 require_once 'class/init.php';
 $GLOBALS['urlvar'] = explode("/",$_SERVER['REQUEST_URI']);
-$www_prefix = explode("/",Config::get('web_prefix')); 
+$www_prefix = explode("/",rtrim(Config::get('web_prefix'),'/')); 
 foreach ($www_prefix as $prefix) { 
         array_shift($GLOBALS['urlvar']);
 }
