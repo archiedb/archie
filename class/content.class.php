@@ -9,34 +9,27 @@ class content {
 	public $mime; // Mime type of this image
 	public $type; // Type of object, most likely an image for now
 	public $source; // Raw data of the object
-
+	private $valid_types = array('record','thumb','qrcode','ticket'); 
 
 	public function __construct($uid='',$type) { 
 
-		//FIXME: Hack to get things rolling
-		$this->uid = $uid; 
+		if (!in_array($type,$valid_types)) { 
+			Error::add('general','Invalid Content Type Specified');
+			return false; 
+		} 
+
+		$this->uid = intval($uid); 
 		$this->type = $type; 
 
-		switch ($type) { 
-			case 'record':
-				self::load_record_image($uid);
-			break;
-			case 'thumb':
-				$this->load_record_image($uid); 
-				$this->filename = $this->filename . '.thumb'; 
-			break; 
-			case 'qrcode':
-				self::load_record_qrcode($uid); 
-			break;
-		} // end witch on type 
+		$this->{"load_".$type."_data"}($uid); 		
 
 	} // construct
 
 	/** 
-	 * load_record_image
+	 * load_record_data
 	 * This loads a record image from its UID
 	 */
-	private function load_record_image($uid) { 
+	private function load_record_data($uid) { 
 
 		$uid = Dba::escape($uid); 
 		$sql = "SELECT * FROM `image` WHERE `uid`='$uid'"; 
@@ -49,18 +42,32 @@ class content {
 
 		return $db_results; 
 
-	} // load_record_image
+
+	} // load_record_data
 
 	/** 
-	 * load_record_qrcode
+	 * load_thumb_data
+	 * Loads the thumbnail data for the specified image
+	 */
+	public function load_thumb_data($uid) { 
+
+		$this->load_record_data($uid); 
+		$this->filename = $this->filename . '.thumb'; 
+
+		return true; 
+
+	} // load_thumb_data 
+
+	/** 
+	 * load_qrcode_data
 	 * This loads the qrcode image from the record info
 	 * UID is the record uid
 	 */
-	private function load_record_qrcode($uid) { 
+	private function load_qrcode_data($uid) { 
 
 		$filename = Config::get('data_root') . '/qrcode';
 
-	} // load_record_qrcode
+	} // load_qrcode_data
 
 	// Reads in and returns the source of this file
 	public function source() { 
@@ -102,13 +109,16 @@ class content {
 			return true; 
 		} 
 		
-		// Now record this in the database
-		//FIXME: This should be in the record class, or somewhere else good enough for now
 		$filename = Dba::escape($filename); 
 		$uid = Dba::escape($uid); 
 		$mime_type = Dba::escape($mime_type); 
 		$sql = "INSERT INTO `image` (`data`,`record`,`type`) VALUES ('$filename','$uid','$mime_type')"; 
 		$db_results = Dba::write($sql); 
+
+		if (!$db_results) { 
+			Error::add('general','Error inserting record of Image into Database'); 
+			return false; 
+		} 
 
 		return $db_results; 
 
@@ -118,11 +128,27 @@ class content {
 	 * delete
 	 * Deletes some content from the FS
 	 */
-	public static function delete($uid,$filename,$type) { 
+	public function delete() { 
 
-
+		$results = $this->{'delete_'.$type}(); 	
+		return $results; 
 
 	} // delete
+
+	/**
+	 * delete_record
+	 * Delete a record
+	 */
+	private function delete_record() {
+
+		$results = unlink($this->filename); 
+		if (!$results) { 
+			Error::add('general','Error unable to remove Media file'); 
+			return false; 
+		} 
+		$sql = "DELETE FROM `images`"; 
+
+	} //delete_record
 
 	/**
 	 * generate_filename

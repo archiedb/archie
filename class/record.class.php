@@ -393,6 +393,18 @@ class Record extends database_object {
 	 */
 	public static function delete($uid) { 
 
+		$record = new Record($uid); 
+
+		// Unlink any media related to the record
+		$images = $record->get_images(); 
+		foreach ($images as $image) { 
+			// Delete image and thumbnail if it exists
+			$content = new Content($image['uid'],'record'); 
+			if ($content->uid) { 
+				$content->delete(); 
+			}
+		} 
+
 		$uid = Dba::escape($uid); 
 		$sql = "DELETE FROM `record` WHERE `uid`='$uid' LIMIT 1"; 
 		$db_results = Dba::write($sql); 
