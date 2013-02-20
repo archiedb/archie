@@ -7,15 +7,15 @@ class Event {
 	 * Events that are errors
 	 */
 	public static function error($topic,$content) { 
+    
+    if (defined('NO_LOG')) { return true; }
 
 		$username = 'SYSTEM'; 
-
+  
 		if (is_object($GLOBALS['user'])) { 
 			$username = $GLOBALS['user']->username;
 		} 
-    if (!defined('NO_LOG')) {
-  		log_event($username,$topic,$content,'error'); 
-    }
+		log_event($username,$topic,$content,'error'); 
 	} 
 
 	public static function record($topic,$content) { 
