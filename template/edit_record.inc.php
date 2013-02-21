@@ -29,7 +29,7 @@ if (INIT_LOADED != '1') { exit; }
         <option value="">&nbsp;</option>
         <?php foreach (quad::$values as $key=>$value) {
                         $is_selected = '';
-                if ($record->quad == $key) { $is_selected=" selected=\"selected\""; }
+                if ($record->quad->uid == $key) { $is_selected=" selected=\"selected\""; }
         ?>
                 <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
         <?php } ?>
@@ -73,7 +73,7 @@ if (INIT_LOADED != '1') { exit; }
 	<select name="lsg_unit">
 	<?php foreach (lsgunit::$values as $key=>$name) { 
 		$is_selected = ''; 
-		if ($record->lsg_unit == $key) { $is_selected=" selected=\"selected=\""; }
+		if ($record->lsg_unit->uid == $key) { $is_selected=" selected=\"selected=\""; }
 	?>
 	        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
 	<?php } ?>

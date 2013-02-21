@@ -9,10 +9,9 @@ class lsgunit {
 
 	// Constructor
 	public function __construct($uid) { 
-
 		$this->uid = intval($uid); 
-		$this->name = $this->values[$uid]; 
-
+		$this->name = lsgunit::$values[$uid]; 
+		
 		return true; 
 
 	} // uid

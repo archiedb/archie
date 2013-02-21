@@ -56,7 +56,7 @@ switch ($GLOBALS['location']['action']) {
 			require_once 'template/edit_record.inc.php'; 
 		} 
 		else { 
-			$record = new Record($_POST['record_id']); 
+			$record = new Record($record->uid); 
 			require_once 'template/show_record.inc.php';
 	} 
 	break; 
@@ -95,6 +95,15 @@ switch ($GLOBALS['location']['action']) {
     header("Location:" . Config::get('web_path') . "/records"); 
     exit; 
   break;
+  case 'print': 
+    // For now its just tickets
+    $ticket = new Content($_GET['record_id'],'ticket'); 
+    $record = new Record($_GET['record_id']); 
+    if (!$ticket->filename OR filemtime($ticket->filename) < $record->updated) { 
+      Content::write($_GET['record_id'],'ticket',$ticket->filename); 
+    } 
+    header("Location:" . Config::get('web_path') . '/media/ticket/' . $_GET['record_id']);
+  break; 
   default:
     $records = Search::record('site',Config::get('site'));
     require_once 'template/show_records.inc.php';

@@ -79,6 +79,27 @@ class content {
 
 	} // load_qrcode_data
 
+	/**
+	 * load_ticket_data
+	 * This loads the ticket pdf info from media 
+	 */
+	private function load_ticket_data($uid) { 
+
+		$uid = Dba::escape($uid); 
+		$sql = "SELECT * FROM `media` WHERE `record`='$uid' AND `type`='ticket'";
+		$db_results = Dba::read($sql); 
+
+		$row = Dba::fetch_assoc($db_results); 
+
+		$this->filename = $row['filename']; 
+		$this->uid	= $row['uid']; 
+		$this->parentuid = $row['record']; 
+		$this->mime	= 'application/pdf'; 
+
+		return true;  
+
+	} // load_ticket_data
+
 	// Reads in and returns the source of this file
 	public function source() { 
 
@@ -102,14 +123,14 @@ class content {
 				$results = self::write_thumb($data,$filename); 
 			break; 
 			case 'qrcode':
-				// If we passed a filename in
-				if (strlen($data)) { 
-					$filename = $data; 
-				}
-				else {
-					$filename = self::generate_filename($record->site . '-qrcode-' . $record->catalog_id,'png'); 
-				}
-				$results = self::write_qrcode($uid,$filename); 
+				// If data is passed, use that as filename
+				$filename = strlen($data) ? $data : self::generate_filename($record->site . '-qrcode-' . $record->catalog_id,'png'); 
+				$results = self::write_qrcode($uid,$filename,$data); 
+			break; 
+			case 'ticket': 
+				// If data is passed, use that as filename
+				$filename = strlen($data) ? $data : self::generate_filename($record->site . '-ticket-' . $record->catalog_id,'pdf');
+				$results = self::write_ticket($record,$filename,$data); 
 			break; 
 			default: 
 			case 'record': 
@@ -181,29 +202,80 @@ class content {
 	 * write_qrcode
 	 * Generate and save a qrcode
 	 */
-	private static function write_qrcode($uid,$filename) { 
+	private static function write_qrcode($uid,$filename,$update_record) { 
 
 		$qrcode_data = Config::get('web_path') . '/records/view/' . $uid;
 		$results = QRcode::png($qrcode_data,$filename,'H','2',2); 
+
+		if (!$results) { 
+			Event::error('QRCode','Error unable to generate qrcode');
+			return false; 
+		} 
 
 		// Insert a record of this into the media table (why do we have an images table??!@)
 		$filename = Dba::escape($filename); 
 		$uid = Dba::escape($uid); 
 		$type = 'qrcode';
 
-		$sql = "INSERT INTO `media` (`filename`,`type`,`record`) VALUES ('$filename','$type','$uid')"; 
-		$db_results = Dba::write($sql); 
+		if (!$update_record) {
+			$sql = "INSERT INTO `media` (`filename`,`type`,`record`) VALUES ('$filename','$type','$uid')"; 
+			$db_results = Dba::write($sql); 
 
-		if (!$db_results) { 
-			Event::error('Database','Unknown Datbase Error inserting QRCode'); 
-			return false; 
-		} 
+			if (!$db_results) { 
+				Event::error('Database','Unknown Database Error inserting QRCode'); 
+				return false; 
+			} 
+		} // new record
 
-		return $db_results;
-
-		return $results; 
+		return true;  
 	
 	} // write_qrcode
+
+	/** 
+	 * write_ticket
+	 * This genreates a 3.5" x 1" pdf with QRcode
+	 * plus whatever else we can fit
+	 */
+	private static function write_ticket(&$record,$filename,$update_record) {
+
+		$pdf = new FPDF();
+		$pdf->AddPage('L',array('88.9','25.4'));
+		
+		// We need the QRcode filename here
+		$qrcode = new Content($record->uid,'qrcode'); 
+		$pdf->Image($qrcode->filename,'0','0','25.4','25.4'); 
+		$pdf->SetFont('Courier'); 
+		$pdf->SetFontSize('8'); 
+		$pdf->Text('25','4','SITE:' . $record->site);
+		$pdf->Text('52','4','UNIT:' . $record->unit); 
+		$pdf->Text('25','8','LVL:' . $record->level);
+		$pdf->Text('52','8','QUAD:' . $record->quad->name); 
+		$pdf->Text('25','12','MAT:' . $record->material->name);
+		$pdf->Text('52','12','CLASS:' . $record->classification->name); 	
+		$pdf->Text('25','16','L.U.:' . $record->lsg_unit->name);
+		$pdf->Text('52','16','FEAT:' . $record->feature); 
+		$pdf->Text('25','20','CAT#:' . $record->catalog_id);
+		$pdf->Text('52','20','RN:' . $record->station_index); 
+		$pdf->Text('25','24',date('d-M-Y',$record->created));
+		$pdf->Text('52','24','USER:' . $record->user->username); 
+		$pdf->Output($filename);
+
+		if (!$update_record) { 
+			$filename = Dba::escape($filename); 
+			$uid = Dba::escape($record->uid); 
+			$type = 'ticket'; 
+
+			$sql = "INSERT INTO `media` (`filename`,`type`,`record`) VALUES ('$filename','$type','$uid')";
+			$db_results = Dba::write($sql); 
+
+			if (!$db_results) { 
+				Event::error('Database','Unknown Database error inserting ticket'); 
+			} 
+		} // if new
+
+		return true;  
+
+	} // write_ticket 
 
 	/**
 	 * delete

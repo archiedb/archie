@@ -5,12 +5,12 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="text-right">
   <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn btn-primary">Edit Record</a>
-  <a href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success disabled">Print Ticket</a>
+  <a href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success">Print Ticket</a>
 </p>
 <div class="content-block">
 <div class="record-header-left">
 <h3><?php echo $record->site . '-' . $record->catalog_id; ?></h3>
-  Entered by <?php echo $GLOBALS['user']->username; ?> on <?php echo date("r",$record->created); ?></p>
+  Entered by <?php echo $record->user->username; ?> on <?php echo date("r",$record->created); ?></p>
 </div>
 <p class="text-right record-header-right">
 <img class="img-polaroid" src="<?php echo Config::get('web_path'); ?>/media/qrcode/<?php echo scrub_out($record->uid); ?>" />
@@ -23,14 +23,14 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 <tr>
   <th>LEVEL</th><td><?php echo scrub_out($record->level); ?></td>
-  <th>L. U.</th><td><?php echo scrub_out(lsgunit::$values[$record->lsg_unit]); ?></td>
+  <th>L. U.</th><td><?php echo scrub_out($record->lsg_unit->name); ?></td>
 </tr>
 <tr>
   <th>MATRIX XRF #</th><td><?php echo scrub_out($record->xrf_matrix_index); ?></td>
   <th>RN</th><td><?php echo scrub_out($record->station_index); ?></td>
 </tr>
 <tr>
-  <th>QUAD</th><td><?php echo scrub_out(quad::$values[$record->quad]); ?></td>
+  <th>QUAD</th><td><?php echo scrub_out($record->quad->name); ?></td>
   <th>FEATURE</th><td><?php echo scrub_out($record->feature); ?></td>
 </tr>
 <tr>

@@ -11,7 +11,7 @@ class quad {
 	public function __construct($uid) { 
 
 		$this->uid = intval($uid); 
-		$this->name = $this->values[$uid]; 
+		$this->name = quad::$values[$uid]; 
 
 		return true; 
 

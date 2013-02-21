@@ -46,6 +46,7 @@ require_once $prefix . '/class/general.php';
 require_once $prefix . '/class/config.class.php';
 require_once $prefix . '/class/database_object.abstract.php';
 require_once $prefix . '/lib/phpqrcode/qrlib.php';
+require_once $prefix . '/lib/fpdf/fpdf.php';
 #require_once $prefix . '/class/vauth.class.php'; // Fixes synology bug with __autoload in certain cases
 
 // Define some base level config options

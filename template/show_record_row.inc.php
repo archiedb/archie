@@ -9,10 +9,10 @@ if (INIT_LOADED != '1') { exit; }
   </td>
   <td><?php echo scrub_out($record->station_index); ?></td>
 	<td><?php echo scrub_out($record->unit); ?></td>
-	<td><?php echo scrub_out(quad::$values[$record->quad]); ?></td>
+	<td><?php echo scrub_out($record->quad->name); ?></td>
 	<td><?php echo scrub_out($record->level); ?></td>
 	<td><?php echo scrub_out($record->feature); ?></td>
-	<td><?php echo scrub_out(lsgunit::$values[$record->lsg_unit]); ?></td>
+	<td><?php echo scrub_out($record->lsg_unit->name); ?></td>
 	<td><?php echo scrub_out($record->material->name); ?></td>
 	<td><?php echo scrub_out($record->classification->name); ?></td>
   <td>

@@ -40,6 +40,8 @@ class Record extends database_object {
 		// Setup the Material and classification
 		$this->material = new Material($this->material); 
 		$this->classification = new Classification($this->classification); 
+		$this->lsg_unit	= new lsgunit($this->lsg_unit); 
+		$this->quad = new quad($this->quad); 
 		$this->inventory_id = $this->site . '.' . date('Y',$this->created) . '-' . $this->catalog_id;
 		$this->user_id = $this->user; 
 		$this->user = new User($this->user); 
@@ -199,6 +201,9 @@ class Record extends database_object {
 
 		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . $GLOBALS['user']->username . ",\"" . date("r",$created) . "\"";
 		Event::record('UPDATE',$log_line); 
+
+		// Remove this object from the cache so the update shows properly
+		Record::remove_from_cache('record',$record_uid); 
 
 		return true; 
 
@@ -430,5 +435,17 @@ class Record extends database_object {
 		return $results; 
 
 	} // get_images
+
+	/**
+	 * get_ticket
+	 * returns the current ticket pdf
+	 */
+	public function get_ticket() { 
+
+		$ticket = new Content($this->id,'ticket'); 
+
+		return $ticket; 
+
+	} // get_ticket
 
 } // end record class 
