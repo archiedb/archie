@@ -61,9 +61,8 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 
 <div class="image-block">
-        <a target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">
-        <img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
-        </a>
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>"><img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" /></a><br />
+  <a href="#" class="btn btn-small btn-danger">Delete</a>
 </div>
 <?php } if (!count($images)) { ?>
 <h4>No Images Found</h4>

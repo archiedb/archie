@@ -55,3 +55,7 @@ div.table-cell {
 .record-header-right {
         height:85px;
 }
+.image-block {
+        float:left;
+        padding:5px; 
+}

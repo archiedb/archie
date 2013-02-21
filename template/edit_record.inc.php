@@ -180,7 +180,7 @@ if (INIT_LOADED != '1') { exit; }
 <button class="btn btn-primary" type="submit">Update</button>
 </form>
 <fieldset class="attachment">
-<legend>Images</legend>
+<legend>Item Pictures</legend>
 <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/record/upload_image">
 	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
 	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
@@ -196,7 +196,7 @@ if (INIT_LOADED != '1') { exit; }
 
 <div class="image-block">
 	<a target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">
-	<img class="img-rounded" src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
+	<img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
 	</a>
 </div>
 <?php } ?>
