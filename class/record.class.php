@@ -405,7 +405,15 @@ class Record extends database_object {
 			$content = new Content($image['uid'],'record'); 
 			if ($content->uid) { 
 				$content->delete(); 
+				$thumb = new Content($image['uid'],'thumb'); 
+				$thumb->delete(); 
 			}
+		} 
+
+		// If we've generated a ticket for this delete it
+		$ticket = $record->get_ticket();
+		if ($ticket->filename) { 
+			$ticket->delete(); 
 		} 
 
 		$uid = Dba::escape($uid); 
@@ -442,7 +450,7 @@ class Record extends database_object {
 	 */
 	public function get_ticket() { 
 
-		$ticket = new Content($this->id,'ticket'); 
+		$ticket = new Content($this->uid,'ticket'); 
 
 		return $ticket; 
 

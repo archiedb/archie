@@ -181,7 +181,7 @@ if (INIT_LOADED != '1') { exit; }
 </form>
 <fieldset class="attachment">
 <legend>Images</legend>
-<form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/new.php?action=upload_image">
+<form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/record/upload_image">
 	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
 	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
 	<input type="file" class="textbox" name="image" />
@@ -195,8 +195,8 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 
 <div class="image-block">
-	<a target="_blank" href="<?php echo Config::get('web_path'); ?>/image.php?content_id=<?php echo scrub_out($image['uid']); ?>">
-	<img class="img-rounded" src="<?php echo Config::get('web_path'); ?>/image.php?content_id=<?php echo scrub_out($image['uid']);?>&thumb=true" alt="Image <?php echo $i; ?>" />
+	<a target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">
+	<img class="img-rounded" src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
 	</a>
 </div>
 <?php } ?>

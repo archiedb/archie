@@ -283,7 +283,7 @@ class content {
 	 */
 	public function delete() { 
 
-		$results = $this->{'delete_'.$type}(); 	
+		$results = $this->{'delete_'.$this->type}(); 	
 		return $results; 
 
 	} // delete
@@ -312,9 +312,9 @@ class content {
 	 * delete_thumb
 	 * Delete the thumbnail of this record
 	 */
-	public function delete_thumb() { 
+	private function delete_thumb() { 
 
-		$results = unlink($this->filename . '.thumb'); 
+		$results = unlink($this->filename); 
 		if (!$results) { 
 			Event::error('general','Error unable to remove Media Thumbnail'); 
 			return false; 
@@ -328,17 +328,41 @@ class content {
 	 * delete_qrcode
 	 * Delete the qrcode for this record
 	 */
-	public function delete_qrcode() { 
+	private function delete_qrcode() { 
 
 		$results = unlink($this->filename); 
 		if (!$results) { 
 			Event::error('general','Error unable to remove QRCode'); 
 			return false; 
 		} 
+
+		$uid = Dba::escape($this->uid); 
+		$sql = "DELETE FROM `media` WHERE `uid`='$uid' AND `type`='qrcode'"; 
+		$db_results = Dba::write($sql); 
 	
 		return true; 
 
 	} // delete_qrcode
+
+	/**
+	 * delete_ticket
+	 * This deletes the pdf ticket we generated
+	 */
+	private function delete_ticket() { 
+
+		$results = unlink($this->filename); 
+		if (!$results) { 
+			Event::error('general','Error unable to remove PDF ticket'); 
+			return false; 
+		}
+		
+		$uid = Dba::escape($this->uid); 
+		$sql = "DELETE FROM `media` WHERE `uid`='$uid' AND `type`='ticket'";
+		$db_results = Dba::write($sql); 
+
+		return true; 
+
+	} // delete_ticket
 
 	/**
 	 * generate_filename
