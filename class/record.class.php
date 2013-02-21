@@ -148,9 +148,7 @@ class Record extends database_object {
 		Event::record('ADD',$log_line); 
 
 		// We're sure we've got a record so lets generate our QR code. 
-		$qrcode_data = Config::get('web_path') . '/records/edit/' . $insert_id;
-		$qrcode_filename = Content::generate_filename($site . '-' . $catalog_id . '-qrcode','png'); 
-		//QRcode::png($qrcode_data,$qrcode_filename,'L','4',2); 
+		Content::write($insert_id,'qrcode'); 
 
 		return $insert_id; 
 
@@ -414,6 +412,7 @@ class Record extends database_object {
 
 	/**
 	 * get_images
+	 * FIXME: Do this using content!
 	 * Gets a list of the images this record has
 	 */
 	public function get_images() { 
