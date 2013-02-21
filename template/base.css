@@ -48,8 +48,10 @@ div.table-cell {
 	margin-top: 10px; 
         padding:5px; 
 } 
-/* Images */
-.image-block { 
-	margin: 10px;
-	float:left; 
-} 
+.record-header-left {
+        float:left;
+        height:152px;
+}
+.record-header-right {
+        height:152px;
+}

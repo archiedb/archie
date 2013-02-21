@@ -1,21 +1,13 @@
 <?php
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
-
-
 require_once 'class/init.php'; 
 
-$type = 'record';
+// Pull the content from the URL 
+$content = new Content($GLOBALS['location']['objectid'],$GLOBALS['location']['action']); 
 
-if ($_GET['thumb']) { $type = 'thumb'; } 
-
-$content = new Content($_GET['content_id'],$type); 
-
-
-// Send the headers and output the image
-header("Expires: Tue, 27 Mar 1984 05:00:00 GMT");
+// Send the headers and output the image, expires one day later (filenames should be unique)
+header("Expires: " . gmdate("D, d M Y H:i:s",time()+86400));
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-store, no-cache, must-revalidate");
-header("Pragma: no-cache");
 header("Content-type: $content->mime");
 header("Content-Disposition: filename=" . scrub_out(basename($content->filename)));
 echo $content->source(); 

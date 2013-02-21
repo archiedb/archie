@@ -2,11 +2,11 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 require_once 'class/init.php'; 
 require_once 'template/header.inc.php'; 
-if (isset($GLOBALS['urlvar']['2'])) { 
-  $_GET['record_id'] = $GLOBALS['urlvar']['2'];
+if ($GLOBALS['location']['objectid']) { 
+  $_GET['record_id'] = $GLOBALS['location']['objectid'];
 }
 // Switch on the action
-switch ($GLOBALS['urlvar']['1']) { 
+switch ($GLOBALS['location']['action']) { 
 	case 'upload_image': 
 		$path_info = pathinfo($_FILES['image']['name']); 
 		$upload['file'] = $_FILES['image']['tmp_name']; 

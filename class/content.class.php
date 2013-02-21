@@ -13,15 +13,13 @@ class content {
 	private $valid_types = array('record','thumb','qrcode','ticket'); 
 
 	public function __construct($uid='',$type) { 
-
-		if (!in_array($type,$valid_types)) { 
+		if (!in_array($type,$this->valid_types)) { 
 			Event::error('general','Invalid Content Type Specified');
 			return false; 
 		} 
 
 		$this->uid = intval($uid); 
 		$this->type = $type; 
-
 		$this->{"load_".$type."_data"}($uid); 		
 
 	} // construct
@@ -43,7 +41,6 @@ class content {
 		$this->parentuid = $row['record']; 
 
 		return $db_results; 
-
 
 	} // load_record_data
 
@@ -76,6 +73,7 @@ class content {
 		$this->filename = $row['filename'];
 		$this->uid	= $row['uid'];
 		$this->parentuid = $row['record']; 
+		$this->mime	= 'image/png'; 
 		
 		return true; 
 

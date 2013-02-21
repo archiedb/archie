@@ -8,8 +8,13 @@ if (INIT_LOADED != '1') { exit; }
   <a href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success disabled">Print Ticket</a>
 </p>
 <div class="content-block">
+<div class="record-header-left">
 <h3><?php echo $record->site . '-' . $record->catalog_id; ?></h3>
   Entered by <?php echo $GLOBALS['user']->username; ?> on <?php echo date("r",$record->created); ?></p>
+</div>
+<p class="text-right record-header-right">
+<img class="img-polaroid" src="<?php echo Config::get('web_path'); ?>/media/qrcode/<?php echo scrub_out($record->uid); ?>" />
+</p>
 <fieldset class="record">
   <table class="table table-hover table-bordered table-white">
 <tr>
@@ -48,7 +53,7 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 </table>
 <fieldset class="attachment">
-<legend>Images</legend>
+<legend>Item Pictures</legend>
 <?php
         $images = $record->get_images();
         foreach ($images as $image) {
@@ -56,12 +61,13 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 
 <div class="image-block">
-        <a target="_blank" href="<?php echo Config::get('web_path'); ?>/image.php?content_id=<?php echo scrub_out($image['uid']); ?>">
-        <img src="<?php echo Config::get('web_path'); ?>/image.php?content_id=<?php echo scrub_out($image['uid']);?>&thumb=true" alt="Image <?php echo $i; ?>" />
+        <a target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">
+        <img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
         </a>
 </div>
+<?php } if (!count($images)) { ?>
+<h4>No Images Found</h4>
 <?php } ?>
-<?php Error::display('upload'); ?>
 </fieldset>
 </fieldset> 
 </div><!-- End content block --> 
