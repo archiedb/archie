@@ -49,6 +49,8 @@ switch ($GLOBALS['location']['action']) {
 	break; 
 	case 'update': 
 		$record = new Record($_POST['record_id']); 
+    // Set to current user  
+    $_POST['user'] = $GLOBALS['user']->uid;
 		// Attempt to update this!
 		if (!$record->update($_POST)) { 
 			require_once 'template/edit_record.inc.php'; 

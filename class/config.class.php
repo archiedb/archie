@@ -63,11 +63,16 @@ class Config {
 	 * constructor
 	 * This is what is called when the class is loaded
 	 */
-	public function __construct() {
+	private function __construct() {
 
 		// Rien a faire
 
 	} // constructor
+
+	/** Don't allow clone */
+	private function __clone() { 
+
+	} // clone
 
 	/**
 	 * get

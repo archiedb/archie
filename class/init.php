@@ -1,5 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 /**
  * Init Library
  *
@@ -22,6 +22,7 @@
  *
  * @package	Ampache
  * @copyright	2001 - 2011 Ampache.org
+ * @author	Modified - Karl Vollmer 2012-2013
  * @license	http://opensource.org/licenses/gpl-2.0 GPLv2
  * @link	http://www.ampache.org/
  */
@@ -127,8 +128,4 @@ if (!defined('CLI') AND !defined('NO_SESSION')) {
 unset($array);
 unset($results);
 
-// Merge GET then POST into REQUEST effectively stripping COOKIE without
-// depending on a PHP setting change for the effect
-$_REQUEST = array_merge($_GET,$_POST);
-// $GLOBALS['user']->access = '100'; 
 ?>
