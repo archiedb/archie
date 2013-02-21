@@ -20,6 +20,7 @@ if (INIT_LOADED != '1') { exit; }
       <button class="btn" data-toggle="collapse" data-target="#more_<?php echo scrub_out($record->uid); ?>_info">More</button>
       <a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
     <ul class="dropdown-menu">
+      <li><a href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket">Print Ticket</a></li>
       <li><a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>">Edit</a></li>
       <?php if ($GLOBALS['user']->access == '100') { ?>
       <li><a href="#confirmdel_<?php echo scrub_out($record->uid); ?>" role="button" data-toggle="modal">Delete</a></li>
