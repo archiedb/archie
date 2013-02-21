@@ -184,7 +184,7 @@ class content {
 	private static function write_qrcode($uid,$filename) { 
 
 		$qrcode_data = Config::get('web_path') . '/records/view/' . $uid;
-		$results = QRcode::png($qrcode_data,$filename,'L','4',2); 
+		$results = QRcode::png($qrcode_data,$filename,'H','2',2); 
 
 		// Insert a record of this into the media table (why do we have an images table??!@)
 		$filename = Dba::escape($filename); 
