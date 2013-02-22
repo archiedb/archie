@@ -22,8 +22,9 @@ if (INIT_LOADED != '1') { exit; }
   <td>
   <?php 
       $info = Stats::worker_records('today'); 
+      
       if ($info['count'] > 0) {  
-        echo $info['user'] . ' ('. $info['total'] . ')'; 
+        echo $info['user'] . ' with '. $info['count'] . ' record(s) entered'; 
       }
       else { 
         echo "<strong class=\"text-error\">Nobody!</strong>";
@@ -34,7 +35,7 @@ if (INIT_LOADED != '1') { exit; }
   <?php 
       $info = Stats::classification_records('today'); 
       if ($info['count'] > 0) { 
-        echo $info['classification'] . ' (' . $info['total'] . ')'; 
+        echo $info['classification'] . ' with ' . $info['count'] . ' record(s) entered'; 
       }
       else { 
         echo "<strong class=\"text-error\">No Data</strong>";

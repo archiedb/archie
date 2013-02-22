@@ -17,6 +17,8 @@ class Classification extends database_object {
                 if (!is_numeric($uid)) { return false; }
 
 		$row = $this->get_info($uid); 
+		
+		if (!count($row)) { return false; }
 
                 foreach ($row as $key=>$value) { $this->$key = $value; }
 

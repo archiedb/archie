@@ -14,9 +14,11 @@ class Stats {
 
     switch ($constraint) { 
       case 'today':
-        $constraint_sql = ' AND `entered`<=\'' . time()-86400 . '\'';
+        $today = time()-86400; 
+        $constraint_sql = ' AND `created`>=\'' . $today . '\'';
       break;
       default:
+        $constraint_sql = ''; 
         // Nothin
       break;
     }
@@ -40,18 +42,23 @@ class Stats {
       case 'today':
         // This isn't today
         $today = time()-86400;
-        $constraint_sql = ' AND `entered`<=\'' . $today . '\'';
+        $constraint_sql = " AND `created`>='$today'";
       break;
       default:
         // Nothin
+        $constraint_sql = ''; 
       break;
     } 
 
     $site = Dba::escape(Config::get('site')); 
-    $sql = "SELECT COUNT(`uid`) AS `total`,`user` FROM `record` GROUP BY `user` WHERE `site`='$site'" . $constraint_sql;
+    $sql = "SELECT COUNT(`uid`) AS `count`,`user` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `user`";
     $db_results = Dba::read($sql); 
 
     $row = Dba::fetch_assoc($db_results); 
+
+    // Nothing!@?
+    if (!count($row)) { $row = array('count'=>'0'); }
+
     $user = new User($row['user']); 
 
     $row['user'] = $user->username;
@@ -67,18 +74,22 @@ class Stats {
     switch ($constraint) { 
         case 'today': 
           $today = time() - 86400; 
-          $constraint_sql = ' AND `entered`<=\'' . $today . '\''; 
+          $constraint_sql = " AND `created`>='$today'"; 
         break;
         default:
           // Nothin
+          $constraint_sql = ''; 
         break;
     }
 
     $site = Dba::escape(Config::get('site'));  
-    $sql = "SELECT COUNT(`uid`) AS `total`,`classification` FROM `record` GROUP BY `classification` WHETE `site`='$site'" . $constraint_sql; 
+    $sql = "SELECT COUNT(`uid`) AS `count`,`classification` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `classification`"; 
     $db_results = Dba::read($sql); 
   
     $row = Dba::fetch_assoc($db_results); 
+    
+    // Nothing!?!@
+    if (!count($row)) { return false; }
 
     $classification = new classification($row['classification']); 
     $row['classification'] = $classification->name; 
