@@ -15,7 +15,7 @@ if (INIT_LOADED != '1') { exit; }
         <ul class="nav">
           <li><a href="<?php echo Config::get('web_path'); ?>/records/new">New</a></li>
           <li><a href="<?php echo Config::get('web_path'); ?>/records">View</a></li>
-          <li><a href="<?php echo Config::get('web_path'); ?>/admin.php?action=export&type=csv">CVS</a></li>
+          <li><a href="<?php echo Config::get('web_path'); ?>/admin.php?action=export&type=csv">CSV</a></li>
 <?php if ($GLOBALS['user']->access == '100') { ?>
           <li class="dropdown">
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
