@@ -9,8 +9,7 @@ class Event {
 	public static function error($topic,$content) { 
 
 		$username = 'SYSTEM'; 
-  
-		if (is_object($GLOBALS['user'])) { 
+    if (isset($GLOBALS['user'])) {
 			$username = $GLOBALS['user']->username;
 		} 
 

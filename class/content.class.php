@@ -111,14 +111,13 @@ class content {
 
 	// This writes out the specified data 
 	public static function write($uid,$type,$data='',$mime_type='') { 
-
-		$extension = self::get_extension($mime_type); 
 		
 		$record = new Record($uid); 
 
 		// First we need to generate a filename /SITE/YYYY/RECORD-MMDDHHMMSS
 		switch ($type) { 
 			case 'thumb': 
+				$extension = self::get_extension($mime_type); 
 				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension . '.thumb'); 
 				$results = self::write_thumb($data,$filename); 
 			break; 
@@ -134,6 +133,7 @@ class content {
 			break; 
 			default: 
 			case 'record': 
+				$extension = self::get_extension($mime_type); 
 				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
 				$results = self::write_record($uid,$data,$filename,$mime_type); 
 			break; 
@@ -383,12 +383,13 @@ class content {
 	// Make sure we've got the directories we need
 	private static function generate_directory() { 
 
-		$directory =  Config::get('data_root') . '/' . escapeshellcmd(Config::get('site')) . '/' . date("Y",time()); 
+		$dir = false; 
+		$directory = Config::get('data_root') . '/' . escapeshellcmd(Config::get('site')) . '/' . date("Y",time()); 
 	
 		if (!is_dir($directory)) { 
 			$dir = mkdir($directory,0775,true); 
 		} 
-			
+	
 		if (!$dir AND !is_dir($directory)) { 
 			// Throw an error? 
 			Event::error('Content','Unable to build directory structure out of ' . Config::get('data_root')); 
@@ -403,13 +404,34 @@ class content {
 	private static function get_extension($mime_type) { 
 
 		$data = explode("/", $mime_type);
-		$extension = $data['1'];
+		$extension = isset($data['1']) ? $data['1'] : null;
 
 		if ($extension == 'jpeg') { $extension = 'jpg'; }
 
 		return $extension;
 
 	} // get_extension 
+
+	/**
+	 * regenerate_qrcodes
+	 * Rebuilds all qrcodes, useful if the URL changes
+	 */
+	public static function regenerate_qrcodes() {
+
+		// No timelimit!
+		set_time_limit(0); 
+
+		$sql = "SELECT `record`.`uid`,`media`.`filename` FROM `record` LEFT JOIN `media` ON `media`.`record`=`record`.`uid` AND `media`.`type`='qrcode'";
+		$db_results = Dba::read($sql); 
+
+		while ($row = Dba::fetch_assoc($db_results)) {
+			// Overwrite the existing file, if it exists!
+			Content::write($row['uid'],'qrcode',$row['filename']);
+		}
+
+		return true; 
+
+	} // regenerate_qrcodes
 
 } // end content class
 ?>

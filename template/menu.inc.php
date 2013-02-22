@@ -23,8 +23,7 @@ if (INIT_LOADED != '1') { exit; }
               <li><a href="<?php echo Config::get('web_path'); ?>/admin.php?action=show_users">Users</a></li>
               <li class="divider"></li>
               <li class="nav-header">Settings</li>
-              <li><a href="#">Classification</a></li>
-              <li><a href="#">Materials</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/tools">System Tools</a>
             </ul>
           </li>
 <?php } ?>

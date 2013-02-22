@@ -10,7 +10,7 @@ class lsgunit {
 	// Constructor
 	public function __construct($uid) { 
 		$this->uid = intval($uid); 
-		$this->name = lsgunit::$values[$uid]; 
+		$this->name = isset(lsgunit::$values[$uid]) ? lsgunit::$values[$uid] : null;
 		
 		return true; 
 
