@@ -70,6 +70,9 @@ class content {
 
 		$row = Dba::fetch_assoc($db_results); 
 
+		// We didn't find anything :(
+		if (!count($row)) { return false; }
+
 		$this->filename = $row['filename'];
 		$this->uid	= $row['uid'];
 		$this->parentuid = $row['record']; 
@@ -205,10 +208,10 @@ class content {
 	private static function write_qrcode($uid,$filename,$update_record) { 
 
 		$qrcode_data = Config::get('web_path') . '/records/view/' . $uid;
-		$results = QRcode::png($qrcode_data,$filename,'H','2',2); 
-
-		if (!$results) { 
-			Event::error('QRCode','Error unable to generate qrcode');
+		QRcode::png($qrcode_data,$filename,'H','2',2); 
+		
+		if (!is_file($filename)) { 
+			Event::error('QRCode','Error unable to generate qrcode [' . $filename . ' - ' . $qrcode_data .'] ');
 			return false; 
 		} 
 
