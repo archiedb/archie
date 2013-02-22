@@ -13,12 +13,15 @@ $GLOBALS['location']['action'] = $urlvar['1'];
 
 // The first is "what" we are doing
 switch ($GLOBALS['location']['page']) { 
-  default:
   case 'records':
     require_once 'records.php';
   break;
   case 'media':
     require_once 'image.php';
+  break; 
+  default:
+  case 'stats':
+    require_once 'stats.php';
   break; 
   case 'user':
     require_once 'user.php';

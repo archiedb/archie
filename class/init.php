@@ -37,7 +37,7 @@ if (floatval(phpversion()) < 5) {
 	exit;
 }
 
-error_reporting(E_ERROR); // Only show fatal errors in production
+//error_reporting(E_ERROR); // Only show fatal errors in production
 
 $file_path = dirname(__FILE__);
 $prefix = realpath($file_path . "/../");
