@@ -1,20 +1,23 @@
 <?php 
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
+
 
 class Search { 
 
+  private function __construct() {}
+  private function __clone() {}
 
 	// record
-	public static function record($field,$value) { 
+	public static function record($field,$value,$order='station_index') { 
 
-		switch ($field) { 
-			case 'item': 
-				$where_sql = Search::item_where_sql($value); 
-			break; 
-			default: 
-				$where_sql = Search::default_where_sql($field,$value); 
-			break; 
-		} 
+    switch ($field) { 
+      case 'item': 
+	      $where_sql = self::item_where_sql($value); 
+      break; 
+      default: 
+        $where_sql = self::default_where_sql($field,$value); 
+      break; 
+    }
 
 		// If something went wrong getting the where
 		if (Error::occurred()) { 
@@ -34,10 +37,18 @@ class Search {
 		$db_results = Dba::read($sql); 
 		$GLOBALS['total'] = Dba::num_rows($db_results); 
 
+    $order_by_allowed = array('unit','level','quad','feature','station_index','xrf_matrix_index','weight','height','width','thickness','quanity','xrf_artifact_index','created','updated');
+    // We can't always have nice things
+    if (!in_array($order,$order_by_allowed)) { 
+      $order = 'station_index';
+    }
+
+    $order = Dba::escape($order); 
+
 		//FIXME: We need something for classification and material 
 		//FIXME: Need to have pagination!
 		//FIXME: Assume for now there is always a site...
-		$sql = "SELECT `uid` FROM `record` WHERE $where_sql ORDER BY `station_index` LIMIT $offset,$limit"; 
+		$sql = "SELECT `uid` FROM `record` WHERE $where_sql ORDER BY `$order` LIMIT $offset,$limit"; 
 		$db_results = Dba::read($sql); 
 
 		

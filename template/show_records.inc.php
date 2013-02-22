@@ -11,14 +11,14 @@ if (INIT_LOADED != '1') { exit; }
 	else { $high = intval($_POST['offset']); } 
 ?>
 <ul class="pager"><li>
-<form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/view.php?action=search">
+<form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/records/search">
 <input type="hidden" name="field" value="<?php echo scrub_out($_POST['field']); ?>" />
 <input type="hidden" name="value" value="<?php echo scrub_out($_POST['value']); ?>" />
 <input type="hidden" name="offset" value="<?php echo scrub_out($low); ?>" />
 <input type="submit" value="Prev" />
 </form>
 </li><li>
-<form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/view.php?action=search">
+<form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/records/search">
 <input type="hidden" name="field" value="<?php echo scrub_out($_POST['field']); ?>" />
 <input type="hidden" name="value" value="<?php echo scrub_out($_POST['value']); ?>" />
 <input type="hidden" name="offset" value="<?php echo scrub_out($high); ?>" />
@@ -50,7 +50,7 @@ if (INIT_LOADED != '1') { exit; }
 </table>
 <ul class="pager">
 <li>
-<form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/view.php?action=search">
+<form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/records/search">
 <input type="hidden" name="field" value="<?php echo scrub_out($_POST['field']); ?>" />
 <input type="hidden" name="value" value="<?php echo scrub_out($_POST['value']); ?>" />
 <input type="hidden" name="offset" value="<?php echo scrub_out($low); ?>" />
@@ -58,7 +58,7 @@ if (INIT_LOADED != '1') { exit; }
 </form>
 </li>
 <li>
-<form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/view.php?action=search">
+<form style="display:inline;" method="post" action="<?php echo Config::get('web_path'); ?>/records/search">
 <input type="hidden" name="field" value="<?php echo scrub_out($_POST['field']); ?>" />
 <input type="hidden" name="value" value="<?php echo scrub_out($_POST['value']); ?>" />
 <input type="hidden" name="offset" value="<?php echo scrub_out($high); ?>" />

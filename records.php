@@ -104,6 +104,11 @@ switch ($GLOBALS['location']['action']) {
     } 
     header("Location:" . Config::get('web_path') . '/media/ticket/' . $_GET['record_id']);
   break; 
+  case 'sort':
+    $order = isset($GLOBALS['location']['objectid']) ? $GLOBALS['location']['objectid'] : 'station_index';
+    $records = Search::record('site',Config::get('site'),$order); 
+    require_once 'template/show_records.inc.php';
+  break;
   default:
     $records = Search::record('site',Config::get('site'));
     require_once 'template/show_records.inc.php';
