@@ -48,6 +48,13 @@ require_once $prefix . '/class/database_object.abstract.php';
 require_once $prefix . '/lib/phpqrcode/qrlib.php';
 require_once $prefix . '/lib/fpdf/fpdf.php';
 require_once $prefix . '/class/ui.namespace.php'; 
+require_once $prefix . '/class/update.namespace.php'; 
+
+// Check to see if there are updates that need to be done
+if (\Update\check()) { 
+  \Update\run();
+  exit; 
+}
 //require_once $prefix . '/class/vauth.class.php'; // Fixes synology bug with __autoload in certain cases
 
 // Define some base level config options

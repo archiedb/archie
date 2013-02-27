@@ -9,6 +9,36 @@ if (INIT_LOADED != '1') { exit; }
 </p>
 <div class="content-block">
 <fieldset>
+<legend>Archie Config Information</legend>
+<table class="table table-bordered table-white">
+<thead>
+  <th>Setting</th>
+  <th>Value</th>
+</thead>
+<tbody>
+<tr>
+  <td>Archie Version</td>
+  <td><?php echo \UI\boolean_word(\update\check_version(),'Build:' . \update\get_working_version()); ?></td>
+</tr>
+<tr>
+  <td>Archie DB Version</td>
+  <td><?php echo \UI\boolean_word(\update\check_db_version(),'Current Version:' . \update\get_working_db_version()); ?></td>
+</tr>
+<tr>
+  <td>Log Path:</td>
+  <td><?php echo \UI\boolean_word(is_writeable(Config::get('log_path')),Config::get('log_path')); ?></td>
+</tr>
+<tr>
+  <td>Data Path:</td>
+  <td><?php echo \UI\boolean_word(is_writeable(Config::get('data_root')),Config::get('data_root')); ?></td>
+</tr>
+<tr>
+  <td>Memory Cache</td>
+  <td><?php echo \UI\boolean_word(Config::get('memory_cache')); ?></td>
+</tr>
+</tbody>
+</table>
+<fieldset>
 <legend>System Information</legend>
 <table class="table table-bordered table-white">
 <thead>
