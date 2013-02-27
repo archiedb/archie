@@ -1,44 +1,49 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
-# This handles the content file org crap
+
+/**
+ * Content 
+ * This class deals with "media" assoicated with a record
+ * it does both the write and read
+ */
 class content {
 
-	public $uid; // UID of object
-	public $filename; // "UID" for this class, the real filename
-	public $mime; // Mime type of this image
-	public $parentuid; // Parent UID this is assoicated with
-	public $type; // Type of object, most likely an image for now
-	public $source; // Raw data of the object
-	private $valid_types = array('record','thumb','qrcode','ticket'); 
+  public $uid; // UID of object
+  public $filename; // "UID" for this class, the real filename
+  public $mime; // Mime type of this image
+  public $parentuid; // Parent UID this is assoicated with
+  public $type; // Type of object, most likely an image for now
+  public $source; // Raw data of the object
+  private $valid_types = array('record','thumb','qrcode','ticket'); 
 
-	public function __construct($uid='',$type) { 
-		if (!in_array($type,$this->valid_types)) { 
-			Event::error('general','Invalid Content Type Specified');
-			return false; 
-		} 
+  public function __construct($uid='',$type) {
+    if (!in_array($type,$this->valid_types)) {
+      Event::error('general','Invalid Content Type Specified');
+      return false;
+    }
 
-		$this->uid = intval($uid); 
-		$this->type = $type; 
-		$this->{"load_".$type."_data"}($uid); 		
+    $this->uid = intval($uid);
+    $this->type = $type;
+    $this->{"load_".$type."_data"}($uid);
 
-	} // construct
+  } // construct
 
-	/** 
+	/**
 	 * load_record_data
 	 * This loads a record image from its UID
 	 */
-	private function load_record_data($uid) { 
+	private function load_record_data($uid) {
 
-		$uid = Dba::escape($uid); 
-		$sql = "SELECT * FROM `image` WHERE `uid`='$uid'"; 
-		$db_results = Dba::read($sql); 
+    $uid = Dba::escape($uid);
+    $sql = "SELECT * FROM `image` WHERE `uid`='$uid'";
+    $db_results = Dba::read($sql);
 
-		$row = Dba::fetch_assoc($db_results); 
+    $row = Dba::fetch_assoc($db_results);
 
-		$this->filename = $row['data']; 
-		$this->mime = $row['type']; 
-		$this->parentuid = $row['record']; 
+    $this->filename = $row['data'];
+    $this->mime = $row['type'];
+    $this->parentuid = $row['record'];
 
 		return $db_results; 
 
@@ -247,7 +252,7 @@ class content {
 		// We need the QRcode filename here
 		$qrcode = new Content($record->uid,'qrcode'); 
 		$pdf->Image($qrcode->filename,'0','0','25.4','25.4'); 
-		$pdf->SetFont('Courier'); 
+		$pdf->SetFont('Courier','B'); 
 		$pdf->SetFontSize('8'); 
 		$pdf->Text('25','4','SITE:' . $record->site);
 		$pdf->Text('52','4','UNIT:' . $record->unit); 
