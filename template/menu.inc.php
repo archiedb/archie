@@ -27,6 +27,12 @@ if (INIT_LOADED != '1') { exit; }
             </ul>
           </li>
 <?php } ?>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="<?php echo Config::get('web_path'); ?>/users/view/<?php echo scrub_out($GLOBALS['user']->uid); ?>">Profile <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="<?php echo Config::get('web_path'); ?>/logout">Logout</a></li>
+            </ul>
+          </li>
         </ul>
             <form method="post" action="<?php echo Config::get('web_path'); ?>/records/search" class="navbar-form pull-right">
               <select name="field" class="span2">

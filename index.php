@@ -29,5 +29,8 @@ switch ($GLOBALS['location']['page']) {
   case 'user':
     require_once 'user.php';
   break;
+  case 'logout':
+    vauth::logout(); 
+  break; 
 }
 ?>
