@@ -32,8 +32,8 @@
 ob_start();
 
 // Do a check for PHP5 because nothing will work without it
-if (floatval(phpversion()) < 5) {
-	echo "ERROR: Ampache requires PHP5";
+if (floatval(phpversion()) < 5.3) {
+	echo "ERROR: Ampache requires PHP5.3";
 	exit;
 }
 
@@ -50,11 +50,6 @@ require_once $prefix . '/lib/fpdf/fpdf.php';
 require_once $prefix . '/class/ui.namespace.php'; 
 require_once $prefix . '/class/update.namespace.php'; 
 
-// Check to see if there are updates that need to be done
-if (\Update\check()) { 
-  \Update\run();
-  exit; 
-}
 //require_once $prefix . '/class/vauth.class.php'; // Fixes synology bug with __autoload in certain cases
 
 // Define some base level config options
@@ -80,10 +75,10 @@ $results['http_port']		= $_SERVER['SERVER_PORT'];
 if (!$results['http_port']) {
 	$results['http_port']	= '80';
 }
-if (!$results['site_charset']) {
+if (!isset($results['site_charset'])) {
 	$results['site_charset'] = "UTF-8";
 }
-if (!$results['raw_web_path']) {
+if (!isset($results['raw_web_path'])) {
 	$results['raw_web_path'] = '/';
 }
 if (!$_SERVER['SERVER_NAME']) {
@@ -104,6 +99,12 @@ $results['mysql_db']		= $results['database_name'];
 define('INIT_LOADED','1');
 
 Config::set_by_array($results,1);
+
+// check and see if database upgrade(s) need to be done
+if (!\Update\Database::check()) { 
+  require_once Config::get('prefix') . '/template/database_upgrade.inc.php'; 
+  exit; 
+}
 
 /* Set a new Error Handler */
 if (!defined('NO_LOG')) {

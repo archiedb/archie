@@ -18,11 +18,11 @@ if (INIT_LOADED != '1') { exit; }
 <tbody>
 <tr>
   <td>Archie Version</td>
-  <td><?php echo \UI\boolean_word(\update\check_version(),'Build:' . \update\get_working_version()); ?></td>
+  <td><?php echo \UI\boolean_word(\update\Code::check(),'Build:' . \update\Code::version()); ?> <small class="muted">latest upstream is Build:<?php echo \update\Code::git_version(); ?></small></td>
 </tr>
 <tr>
   <td>Archie DB Version</td>
-  <td><?php echo \UI\boolean_word(\update\check_db_version(),'Current Version:' . \update\get_working_db_version()); ?></td>
+  <td><?php echo \UI\boolean_word(\update\Database::check(),'Current Version:' . \update\Database::version()); ?></td>
 </tr>
 <tr>
   <td>Log Path:</td>
