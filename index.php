@@ -26,7 +26,7 @@ switch ($GLOBALS['location']['page']) {
   case 'stats':
     require_once 'stats.php';
   break; 
-  case 'user':
+  case 'users':
     require_once 'user.php';
   break;
   case 'logout':

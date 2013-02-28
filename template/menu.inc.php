@@ -14,8 +14,11 @@ if (INIT_LOADED != '1') { exit; }
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li><a href="<?php echo Config::get('web_path'); ?>/records/new">New</a></li>
+          <li class="divider-vertical"></li>
           <li><a href="<?php echo Config::get('web_path'); ?>/records">View</a></li>
+          <li class="divider-vertical"></li>
           <li><a href="<?php echo Config::get('web_path'); ?>/admin.php?action=export&type=csv">CSV</a></li>
+          <li class="divider-vertical"></li>
 <?php if ($GLOBALS['user']->access == '100') { ?>
           <li class="dropdown">
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
@@ -26,10 +29,12 @@ if (INIT_LOADED != '1') { exit; }
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/tools">System Tools</a>
             </ul>
           </li>
+          <li class="divider-vertical"></li>
 <?php } ?>
           <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="<?php echo Config::get('web_path'); ?>/users/view/<?php echo scrub_out($GLOBALS['user']->uid); ?>">Profile <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Profile <b class="caret"></b></a>
             <ul class="dropdown-menu">
+              <li><a href="<?php echo Config::get('web_path'); ?>/users/view/<?php echo scrub_out($GLOBALS['user']->uid); ?>">My Account</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/logout">Logout</a></li>
             </ul>
           </li>
