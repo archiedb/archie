@@ -27,9 +27,10 @@
 	Please see below for details on the upgrade which need to be performed on this system. You must enter
 	the username and password of an administrator in order to start the database upgrade. 
 	</p>
-	<form class="form-inline text-center" action="<?php echo Config::get('web_path'); ?>/upgrade.php">
-		<input type="text" class="input-small" placeholder="Username">
-		<input type="password" class="input-small" placeholder="Password">
+	<form class="form-inline text-center" action="<?php echo Config::get('web_path'); ?>/upgrade.php" method="post">
+		<input name="username" type="text" class="input-small" placeholder="Username">
+		<input name="password" type="password" class="input-small" placeholder="Password">
+		<input type="hidden" name="action" value="database" />
       		<button type="submit" class="btn btn-danger">Upgrade Database</button>
 	</form>
 	<hr />

@@ -101,9 +101,11 @@ define('INIT_LOADED','1');
 Config::set_by_array($results,1);
 
 // check and see if database upgrade(s) need to be done
-if (!\Update\Database::check()) { 
-  require_once Config::get('prefix') . '/template/database_upgrade.inc.php'; 
-  exit; 
+if (!defined('OUTDATED_DATABASE_OK')) { 
+  if (!\Update\Database::check()) { 
+    require_once Config::get('prefix') . '/template/database_upgrade.inc.php'; 
+    exit(); 
+  }
 }
 
 /* Set a new Error Handler */

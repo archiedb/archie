@@ -1,82 +1,6 @@
 <?php namespace Update;
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
-/** 
- * Check for updates
- */
-function check () { 
-
-
-
-} 
-
-/**
- * Run the update(s)
- */
-function run () { 
-
-
-} 
-
-/**
- * Returns true if code is "up to date"
- * 
- */
-function check_version() {
-
-  $git_version = intval(get_gitorious_version()); 
-  $this_version = intval(Code::version()); 
-
-  if ($this_version < $git_version) { return false; }
-
-  return true; 
-
-}
-
-/**
- * check_db_version
- * Checks to see if the db is up to date
- */
-function check_db_version() { 
-
-  $working_version = intval(Database::version()); 
-  $build_version = 1;
-
-  if ($working_version < $build_version) { return false; }
-
-  return true; 
-
-} // check_db_version
-
-/**
- * get_working_version
- * Returns the version of software we are running
- */
-function get_working_version() { 
-
-  return file_get_contents(\Config::get('prefix') . '/docs/BUILD');
-
-} // get_working_version
-
-/**
- * get_working_db_version
- */
-function get_working_db_version() { 
-
-  return '0000'; 
-
-} // get_working_db_version
-
-/***********/
-/*   PRIV  */
-/***********/
-
-// Checks https://gitorious.org/archie/archie/blobs/raw/master/docs/BUILD
-function get_gitorious_version() { 
-
-
-} // get_gitorious_version
-
 /**
  * Code
  * Class to check for updates needed to the codebase
@@ -223,7 +147,7 @@ class Database {
    */
   private static function pre() { 
 
-    $sql = "TRUNCATE `session`"; 
+    $sql = 'TRUNCATE `session`'; 
     $db_results = \Dba::write($sql); 
 
     return true; 
@@ -269,7 +193,6 @@ class Database {
 
     return $versions; 
 
-
   } // define_versions
 
   /**
@@ -277,7 +200,6 @@ class Database {
    * Runs the database upgrade, hope they backed up!
    */ 
   public static function run() { 
-
     // Run the pre-upgrade operations
     self::pre(); 
 
@@ -285,24 +207,20 @@ class Database {
     set_time_limit(0); 
 
     $current_version = self::version(); 
+    $methods = get_class_methods('\update\Database'); 
 
-    $methods = get_class_methods('Database'); 
-
-    if (!is_array((self::$versions))) { 
-      self::$versions = self::define_versions();
-    } 
-
-    foreach (self::$versions as $version) { 
-
+    self::$versions = self::define_versions();
+    
+    foreach (self::$versions as $update) { 
       // If it's newer then current then update
-      if ($versions['version'] > $current_version) { 
-        $update_function = 'update_' . $version['version']; 
+      if ($update['version'] > $current_version) { 
+        $update_function = 'update_' . $update['version']; 
         if (in_array($update_function,$methods)) { 
-          $success = call_user_func(array('Database',$update_function));
+          $success = call_user_func(array('\update\Database',$update_function));
 
-          if ($success) { self::set_version('db_version',$version['version']); }
+          if ($success) { self::set_version($update['version']); }
           else { 
-            \Event::error('DBUPGRADE','Database upgrade failed on version: ' . $version['version']);
+            \Event::error('DBUPGRADE','Database upgrade failed on version: ' . $update['version']);
             return false; 
           }
         }
@@ -312,6 +230,8 @@ class Database {
 
     // Run the post db upgrade operations
     self::post(); 
+
+    return true; 
 
   } // run
 
