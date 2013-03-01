@@ -114,9 +114,8 @@ class User extends database_object {
 		$uid = Dba::escape($this->uid); 
 		$name = Dba::escape($input['name']); 
 		$email = Dba::escape($input['email']); 
-		$password = $input['password'] ? Dba::escape(hash('sha256',$input['password'])) : Dba::escape($this->password); 
 
-		$sql = "UPDATE `user` SET `name`='$name', `email`='$email', `password`='$password' WHERE `uid`='$uid' LIMIT 1"; 
+		$sql = "UPDATE `users` SET `name`='$name', `email`='$email' WHERE `uid`='$uid' LIMIT 1"; 
 		$db_results = Dba::write($sql); 
 
 		// If this is the current logged in user, refresh them

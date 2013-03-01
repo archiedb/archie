@@ -60,7 +60,7 @@ class sess {
   public static function set_user($user) { 
 
     // Only users here!
-    if (get_class($user) != 'user') { return false; }
+    if (get_class($user) != 'User') { return false; }
 
     self::$user = $user; 
 

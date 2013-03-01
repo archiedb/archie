@@ -24,14 +24,18 @@ switch (\UI\sess::location('action')) {
     // Make sure they set the password and confirmpassword to the same
     if ($_POST['password'] != $_POST['confirmpassword']) { 
       Error::display('general','Error passwords do not match'); 
-      require_once \UI\template('users/edit.inc.php'); 
+      require_once \UI\template('template/users/edit.inc.php'); 
       break; 
     }
     else {
-      $user = new User($_POST['user_id']); 
+      $user = new User($_POST['uid']); 
       $user->update($_POST); 
+      // Only reset the password if they typed something in!
+      if (strlen($_POST['password'])) { $user->set_password($_POST['password']); }
+      // Refresh!
+      $user = new User($_POST['uid']); 
     }
-    require_once \UI\template('users/view.inc.php'); 
+    require_once \UI\template('template/users/view.inc.php'); 
   break;
   case 'disable':
 

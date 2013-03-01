@@ -46,20 +46,6 @@ if ($auth['success']) {
 
 	$_SESSION['sess_data'] = $auth; 
 
-        /* Make sure they are actually trying to get to this site and don't try 
-         * to redirect them back into an admin section
-         */
-        $web_path = Config::get('web_path');
-        if ((substr($_POST['referrer'], 0, strlen($web_path)) == $web_path) &&
-                strpos($_POST['referrer'], 'install.php')       === false &&
-                strpos($_POST['referrer'], 'login.php')         === false &&
-                strpos($_POST['referrer'], 'logout.php')        === false &&
-                strpos($_POST['referrer'], 'update.php')        === false &&
-                strpos($_POST['referrer'], 'admin')             === false ) {
-			// Redirect to their original attempted location
-                        header('Location: ' . $_POST['referrer']);
-                        exit();
-        } // if we've got a referrer
         header('Location: ' . Config::get('web_path') . '/index.php');
         exit();
 
