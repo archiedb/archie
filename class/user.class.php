@@ -106,6 +106,27 @@ class User extends database_object {
 	} // set_password
 
 	/**
+	 * update
+	 * takes input in the form of an array and updates the user
+	 */
+	public function update($input) { 
+
+		$uid = Dba::escape($this->uid); 
+		$name = Dba::escape($input['name']); 
+		$email = Dba::escape($input['email']); 
+		$password = $input['password'] ? Dba::escape(hash('sha256',$input['password'])) : Dba::escape($this->password); 
+
+		$sql = "UPDATE `user` SET `name`='$name', `email`='$email', `password`='$password' WHERE `uid`='$uid' LIMIT 1"; 
+		$db_results = Dba::write($sql); 
+
+		// If this is the current logged in user, refresh them
+		if (\UI\sess::$user->uid == $this->uid) { 
+			\UI\sess::set_user(new User($this->uid)); 
+		} 
+
+	} // update
+
+	/**
  	 * disable
 	 * There should be some checking on this one...
 	 */

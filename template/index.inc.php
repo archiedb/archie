@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <img class="img-rounded" src="<?php echo Config::get('web_path'); ?>/images/title.jpg" />
 <div class="content-block">
-<p class="text-center lead">Hello <?php echo $GLOBALS['user']->username; ?>, you are currently working on <?php echo Config::get('site'); ?></p>
+<p class="text-center lead">Hello <?php echo \UI\sess::$user->name; ?>, you are currently working on <?php echo Config::get('site'); ?></p>
 <table class="table table-bordered table-white">
 <thead>
   <tr>

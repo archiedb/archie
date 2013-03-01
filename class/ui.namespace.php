@@ -59,14 +59,10 @@ class sess {
 
   public static function set_user($user) { 
 
-    // Technically they can overwrite this from outside
-    if (!self::$user) { 
-      self::$user = $user; 
-    }
-    else {
-      Event:error('OVERWRITE','Attempted to overwrite the session user'); 
-      return false; 
-    } 
+    // Only users here!
+    if (get_class($user) != 'user') { return false; }
+
+    self::$user = $user; 
 
     return true; 
 

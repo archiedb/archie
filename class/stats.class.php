@@ -10,12 +10,16 @@ class Stats {
   /**
    * total_records
    */
-  public static function total_records($constraint='') {
+  public static function total_records($constraint='',$constraint_value='') {
 
     switch ($constraint) { 
       case 'today':
         $today = time()-86400; 
         $constraint_sql = ' AND `created`>=\'' . $today . '\'';
+      break;
+      case 'user':
+        $uid = Dba::escape($constraint_value); 
+        $constraint_sql = " AND `user`='$uid'"; 
       break;
       default:
         $constraint_sql = ''; 
@@ -69,13 +73,17 @@ class Stats {
   /**
    * classification_records
    */
-  public static function classification_records($constraint='') { 
+  public static function classification_records($constraint='',$constraint_value='') { 
 
     switch ($constraint) { 
         case 'today': 
           $today = time() - 86400; 
           $constraint_sql = " AND `created`>='$today'"; 
         break;
+        case 'user':
+          $uid = Dba::escape($constraint_value); 
+          $constraint_sql = " AND `user`='$uid'"; 
+        break; 
         default:
           // Nothin
           $constraint_sql = ''; 
@@ -83,16 +91,15 @@ class Stats {
     }
 
     $site = Dba::escape(Config::get('site'));  
-    $sql = "SELECT COUNT(`uid`) AS `count`,`classification` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `classification`"; 
+    $sql = "SELECT COUNT(`uid`) AS `count`,`classification` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `classification` ORDER BY `count` DESC"; 
     $db_results = Dba::read($sql); 
   
     $row = Dba::fetch_assoc($db_results); 
     
     // Nothing!?!@
     if (!count($row)) { return false; }
-
     $classification = new classification($row['classification']); 
-    $row['classification'] = $classification->name; 
+    $row['classification'] = $classification->name ? $classification->name : 'UNDEF'; 
 
     return $row; 
 
