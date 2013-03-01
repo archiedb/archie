@@ -126,7 +126,7 @@ class Record extends database_object {
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
 		$quad = Dba::escape($input['quad']); 
 		$feature = Dba::escape($input['feature']);  
-		$user = Dba::escape($GLOBALS['user']->uid); 
+		$user = Dba::escape(\UI\sess::$user->uid); 
 		$created = time(); 
 
 		// This can be null needs to be handled slightly differently
@@ -146,7 +146,7 @@ class Record extends database_object {
 
 		$db_results = Dba::query($unlock_sql); 
 
-		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . $GLOBALS['user']->username . ",\"" . date("r",$created) . "\"";
+		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('ADD',$log_line); 
 
 		// We're sure we've got a record so lets generate our QR code. 
@@ -179,7 +179,7 @@ class Record extends database_object {
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
 		$quad = Dba::escape($input['quad']); 
 		$feature = Dba::escape($input['feature']); 
-		$user = Dba::escape($GLOBALS['user']->uid); 
+		$user = Dba::escape(\UI\sess::$user->uid); 
 		$updated = time(); 
 		$record_uid = Dba::escape($this->uid); 
 
@@ -199,7 +199,7 @@ class Record extends database_object {
 			return false; 
 		} 
 
-		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . $GLOBALS['user']->username . ",\"" . date("r",$created) . "\"";
+		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('UPDATE',$log_line); 
 
 		// Remove this object from the cache so the update shows properly

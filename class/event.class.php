@@ -9,8 +9,8 @@ class Event {
 	public static function error($topic,$content) { 
 
 		$username = 'SYSTEM'; 
-    if (isset($GLOBALS['user'])) {
-			$username = $GLOBALS['user']->username;
+    if (is_object(\UI\sess::$user)) {
+			$username = \UI\sess::$user->username;
 		} 
 
     if (defined('NO_LOG')) { return true; }
@@ -19,7 +19,7 @@ class Event {
 
 	public static function record($topic,$content) { 
     if (!defined('NO_LOG')) {
-  		log_event($GLOBALS['user']->username,$topic,$content,'record'); 
+  		log_event(\UI\sess::$user->username,$topic,$content,'record'); 
     }
 	} 
 

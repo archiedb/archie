@@ -138,7 +138,6 @@ function ampache_error_handler($errno, $errstr, $errfile, $errline) {
                 'var: Deprecated. Please use the public/private/protected modifiers',
                 // getid3 spews errors, yay!
                 'getimagesize() [',
-                'Non-static method getid3',
                 'Assigning the return value of new by reference is deprecated',
                 // The XML-RPC lib is broken (kinda)
                 'used as offset, casting to integer'
@@ -157,7 +156,7 @@ function ampache_error_handler($errno, $errstr, $errfile, $errline) {
         }
 
         $log_line = "[$error_name] $errstr in file $errfile($errline)";
-        log_event($GLOBALS['user']->username,'PHP', $log_line,'error');
+        log_event(\UI\sess::$user->username,'PHP', $log_line,'error');
 
 } // ampache_error_handler
 
