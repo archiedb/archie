@@ -2,11 +2,9 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 require_once 'class/init.php'; 
 require_once 'template/header.inc.php'; 
-if ($GLOBALS['location']['objectid']) { 
-  $_GET['record_id'] = $GLOBALS['location']['objectid'];
-}
+
 // Switch on the action
-switch ($GLOBALS['location']['action']) { 
+switch (\UI\sess::location('action')) { 
 	case 'upload_image': 
 		$path_info = pathinfo($_FILES['image']['name']); 
 		$upload['file'] = $_FILES['image']['tmp_name']; 
@@ -50,7 +48,7 @@ switch ($GLOBALS['location']['action']) {
 	case 'update': 
 		$record = new Record($_POST['record_id']); 
     // Set to current user  
-    $_POST['user'] = $GLOBALS['user']->uid;
+    $_POST['user'] = \UI\sess::$user->uid;
 		// Attempt to update this!
 		if (!$record->update($_POST)) { 
 			require_once 'template/edit_record.inc.php'; 
@@ -58,10 +56,10 @@ switch ($GLOBALS['location']['action']) {
 		else { 
 			$record = new Record($record->uid); 
 			require_once 'template/show_record.inc.php';
-	} 
+	  } 
 	break; 
   case 'edit':
-		$record = new Record($_GET['record_id']); 
+		$record = new Record(\UI\sess::location('objectid')); 
 		require_once 'template/edit_record.inc.php'; 
 	break; 
   case 'search':
@@ -71,14 +69,14 @@ switch ($GLOBALS['location']['action']) {
     require_once 'template/show_records.inc.php';
   break;
   case 'view':
-    $record = new Record($_GET['record_id']); 
+    $record = new Record(\UI\sess::location('objectid')); 
     require_once 'template/show_record.inc.php';
   break;
   case 'new':
     require_once 'template/new_record.inc.php';
   break;
   case 'create':
-    $_POST['user'] = $GLOBALS['user']->uid;
+    $_POST['user'] = \UI\sess::$user->uid;
     if ($record_id = Record::create($_POST)) {
       $record = new Record($record_id);
       require_once 'template/show_record.inc.php';
@@ -89,7 +87,7 @@ switch ($GLOBALS['location']['action']) {
   break;
   case 'delete': 
     // Admin only
-    if ($GLOBALS['user']->access < '100') { break; }
+    if (\UI\sess::$user->access < '100') { break; }
     // We should do some form ID checking here
     Record::delete($_POST['record_id']);
     header("Location:" . Config::get('web_path') . "/records"); 
@@ -97,15 +95,15 @@ switch ($GLOBALS['location']['action']) {
   break;
   case 'print': 
     // For now its just tickets
-    $ticket = new Content($_GET['record_id'],'ticket'); 
-    $record = new Record($_GET['record_id']); 
+    $ticket = new Content(\UI\sess::location('objectid'),'ticket'); 
+    $record = new Record(\UI\sess::location('objectid')); 
     if (!$ticket->filename OR filemtime($ticket->filename) < $record->updated) { 
-      Content::write($_GET['record_id'],'ticket',$ticket->filename); 
+      Content::write(\UI\sess::location('objectid'),'ticket',$ticket->filename); 
     } 
-    header("Location:" . Config::get('web_path') . '/media/ticket/' . $_GET['record_id']);
+    header("Location:" . Config::get('web_path') . '/media/ticket/' . \UI\sess::location('objectid'));
   break; 
   case 'sort':
-    $order = isset($GLOBALS['location']['objectid']) ? $GLOBALS['location']['objectid'] : 'station_index';
+    $order = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'station_index';
     $records = Search::record('site',Config::get('site'),$order); 
     require_once 'template/show_records.inc.php';
   break;

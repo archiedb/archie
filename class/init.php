@@ -108,15 +108,15 @@ if (!defined('OUTDATED_DATABASE_OK')) {
   }
 }
 
+// Setup location
+\UI\sess::set_location($_SERVER['REQUEST_URI']); 
+
 /* Set a new Error Handler */
 if (!defined('NO_LOG')) {
 	$old_error_handler = set_error_handler('ampache_error_handler');
 }
 // In case the local setting is 0
 ini_set('session.gc_probability','5');
-
-// Setup the User from the HTTP AUTH 
-
 
 if (!defined('CLI') AND !defined('NO_SESSION')) { 
 	// Verify their session
@@ -128,9 +128,10 @@ if (!defined('CLI') AND !defined('NO_SESSION')) {
 	// Star the session and pull in the user we've got in it
 	vauth::check_session();
 	$GLOBALS['user'] = User::get_from_username($_SESSION['sess_data']['username']);
+  \UI\sess::set_user($GLOBALS['user']); 
 
 	// If nothing comes back kick-em-out
-	if (!$GLOBALS['user']->uid) { vauth::logout(session_id()); exit; }
+	if (!\UI\sess::$user->uid) { vauth::logout(session_id()); exit; }
 	vauth::session_extend(session_id());
 
 } 

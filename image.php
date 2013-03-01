@@ -3,7 +3,7 @@
 require_once 'class/init.php'; 
 
 // Pull the content from the URL 
-$content = new Content($GLOBALS['location']['objectid'],$GLOBALS['location']['action']); 
+$content = new Content(\UI\sess::location('objectid'),\UI\sess::location('action')); 
 if (!$content->filename) { 
   // We have no file, nothing to display
   exit; 
