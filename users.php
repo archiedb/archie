@@ -23,19 +23,17 @@ switch (\UI\sess::location('action')) {
   case 'update': 
     if (!Access::has('user','write',\UI\sess::location('objectid'))) { header('Location:' . Config::get('web_path')); exit; }
     // Make sure they set the password and confirmpassword to the same
-    if ($_POST['password'] != $_POST['confirmpassword']) { 
-      Error::add('general','Error passwords do not match'); 
+    $user = new User($_POST['uid']); 
+
+    if (!$user->update($_POST)) { 
       require_once \UI\template('/users/edit'); 
-      break; 
+      break;
     }
-    else {
-      $user = new User($_POST['uid']); 
-      $user->update($_POST); 
-      // Only reset the password if they typed something in!
-      if (strlen($_POST['password'])) { $user->set_password($_POST['password']); }
-      // Refresh!
-      $user->refresh();  
-    }
+
+    // Only reset the password if they typed something in!
+    if (strlen($_POST['password'])) { $user->set_password($_POST['password']); }
+    // Refresh!
+    $user->refresh();  
     require_once \UI\template('/users/view'); 
   break;
   case 'disable':

@@ -1,5 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 class User extends database_object { 
 
@@ -137,6 +137,15 @@ class User extends database_object {
 	 */
 	public function update($input) { 
 
+    // Feed some info in
+    $input['username'] = $this->username; 
+
+    // Validate input
+    if (!User::validate($input)) {
+      Error::add('general','Invalid Field Values - please check input'); 
+      return false; 
+    } 
+
 		$uid = Dba::escape($this->uid); 
 		$name = Dba::escape($input['name']); 
 		$email = Dba::escape($input['email']); 
@@ -146,8 +155,10 @@ class User extends database_object {
 
 		// If this is the current logged in user, refresh them
 		if (\UI\sess::$user->uid == $this->uid) { 
-			\UI\sess::set_user(new User($this->uid)); 
+      \UI\sess::$user->refresh(); 
 		} 
+
+    return true; 
 
 	} // update
 
@@ -157,9 +168,65 @@ class User extends database_object {
 	 */
 	public static function create($input) { 
 
+    // Validate input
+    if (!User::validate($input)) {
+      Error::add('general','Invalid Field Values - please check input'); 
+      return false; 
+    } 
+   
+    // This is here because we only check on the creation of a user 
+    if (strlen($input['password']) < 2) { 
+      Error::add('password','Password not long enough'); 
+      return false; 
+    }
 
+    $username = Dba::escape($input['username']); 
+    $name = Dba::escape($input['name']); 
+    $email = Dba::escape($input['email']); 
+    $password = Dba::escape(hash('sha256',$input['password'])); 
+    $access = Dba::escape($input['access']); 
+
+    $sql = "INSERT INTO `users` (`name`,`username`,`email`,`password`,`access`) VALUES ('$name','$username','$email','$password','$access')"; 
+    $db_results = Dba::write($sql); 
+
+    if (!$db_results) { 
+      Event::error('DATABASE','Error unable to insert user into database'); 
+      Error::add('general','Unknown Error please contact Administrator'); 
+      return false; 
+    } 
+    $insert_id = Dba::insert_id(); 
+
+    return $insert_id; 
 
 	} // create
+
+  /**
+   * validate
+   * Validates the 'input' we get for update/create operations
+   */
+  public static function validate($input) { 
+
+    if ($input['password'] != $input['confirmpassword']) {
+      Error::add('password','Passwords do not match'); 
+    } 
+
+    if (intval($input['access']) != $input['access']) { 
+      Error::add('access','Invalid Access Level'); 
+    }
+
+    if (!strlen($input['name'])) { 
+      Error::add('name','Display Name is a required field'); 
+    }
+
+    if (!strlen($input['username'])) { 
+      Error::add('username','Username is a required field'); 
+    }
+
+    if (Error::occurred()) { return false; }
+
+    return true; 
+
+  } // validate
 
 	/**
  	 * disable

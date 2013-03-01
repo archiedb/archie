@@ -6,7 +6,7 @@ if (INIT_LOADED != '1') { exit; }
 <p class="text-right">
   <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/users/edit/<?php echo scrub_out($user->uid); ?>">Edit</a>
   <?php if (Access::has('user','delete',$user->uid) AND !$user->disabled) { ?>
-  <a class="btn btn-warning" href="#confirmdisable_user_<?php echo scrub_out($user->uid); ?>" role="button" data-toggle="modal">Disable</a>
+  <a class="btn btn-danger" href="#confirmdisable_user_<?php echo scrub_out($user->uid); ?>" role="button" data-toggle="modal">Disable</a>
   <div id="confirmdisable_user_<?php echo scrub_out($user->uid); ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

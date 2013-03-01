@@ -131,6 +131,30 @@ class Error {
 	} // get
 
 	/**
+	 * display_class
+	 * returns CSS class if specified error occured
+	 */
+	public static function display_class($name,$severity) { 
+
+		if (!isset(Error::$errors[$name])) { return false; }
+
+		switch ($severity) {
+			case 'optional':
+				echo ' warning';
+			break;
+			case 'required':
+				echo ' error';
+			break;
+			case 'info':
+				echo ' info';
+			break;
+		} 
+
+		return false; 
+
+	} // display_class
+
+	/**
 	 * display
 	 * This prints the error out with a standard Error class span
 	 * Ben Goska: Renamed from print to display, print is reserved
