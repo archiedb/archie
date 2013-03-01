@@ -4,7 +4,13 @@ if (INIT_LOADED != '1') { exit; }
 $active_name = $filter . '_active';
 ${$active_name} = ' class="active"';
 ?>
-<h4>Archie Users</h4>
+<div class="pull-left">
+<h4>Users</h4>
+</div>
+<p class="pull-right text-right">
+  <a class="btn btn-success" href="<?php echo Config::get('web_path'); ?>/users/add">Add User</a>
+</p>
+<div class="clear-float"></div>
 <ul class="nav nav-tabs">
   <li<?php echo $enabled_active; ?>>
     <a href="<?php echo Config::get('web_path'); ?>/users/manage">Enabled</a>
@@ -26,7 +32,7 @@ ${$active_name} = ' class="active"';
 </tr>
 </thead>
 <tbody>
-<?php foreach ($users as $user) { require \UI\template('template/users/manage_row.inc.php'); } ?>
+<?php foreach ($users as $user) { require \UI\template('/users/manage_row'); } ?>
 </tbody>
 </table>
 </div><!-- End table container --> 

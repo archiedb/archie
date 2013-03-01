@@ -152,6 +152,16 @@ class User extends database_object {
 	} // update
 
 	/**
+	 * create
+	 * This creates a new user! hooray
+	 */
+	public static function create($input) { 
+
+
+
+	} // create
+
+	/**
  	 * disable
 	 * There should be some checking on this one...
 	 */

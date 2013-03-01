@@ -6,6 +6,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="content-block">
 <fieldset>
 <legend><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)</legend>
+<?php Error::display('general'); ?>
 <form class="form-horizontal" method="post" action="<?php echo Config::get('web_path'); ?>/users/update">
   <div class="control-group">
     <label class="control-label" for="inputName">Name</label>

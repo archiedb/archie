@@ -24,8 +24,8 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('user','write',\UI\sess::location('objectid'))) { header('Location:' . Config::get('web_path')); exit; }
     // Make sure they set the password and confirmpassword to the same
     if ($_POST['password'] != $_POST['confirmpassword']) { 
-      Error::display('general','Error passwords do not match'); 
-      require_once \UI\template('template/users/edit.inc.php'); 
+      Error::add('general','Error passwords do not match'); 
+      require_once \UI\template('/users/edit'); 
       break; 
     }
     else {
@@ -36,7 +36,7 @@ switch (\UI\sess::location('action')) {
       // Refresh!
       $user->refresh();  
     }
-    require_once \UI\template('template/users/view.inc.php'); 
+    require_once \UI\template('/users/view'); 
   break;
   case 'disable':
     if (!Access::has('user','delete',$_POST['uid'])) { header('Location:' . Config::get('web_path')); exit; }
@@ -45,21 +45,35 @@ switch (\UI\sess::location('action')) {
     $user = new User($_POST['uid']); 
     $user->disable(); 
     $user->refresh(); 
-    require_once \UI\template('template/users/view.inc.php'); 
+    require_once \UI\template('/users/view'); 
   break;
   case 'enable': 
     if (!Access::has('user','delete',$_POST['uid'])) { header('Location:' . Config::get('web_path')); exit; }
     $user = new User($_POST['uid']); 
     $user->enable(); 
     $user->refresh(); 
-    require_once \UI\template('template/users/view.inc.php');  
+    require_once \UI\template('/users/view');  
   break; 
   case 'manage':
-    if (!Access::has('user','admin')) { header('Location:' . Config::get('web_path')); exit; }
+    if (!Access::has('user','delete')) { header('Location:' . Config::get('web_path')); exit; }
     $filter = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'enabled';
     $users = User::get($filter); 
     require_once \UI\template(); 
   break;   
+  case 'add': 
+    if (!Access::has('user','admin')) { header('Location:' . Config::get('web_path')); exit; }
+    require_once \UI\template(); 
+  break; 
+  case 'create': 
+    if (!Access::has('user','admin')) { header('Location:' . Config::get('web_path')); exit; }
+    $uid = User::create($_POST);  
+    if (!$uid) { 
+      require_once \UI\template('/users/add'); 
+      break; 
+    }
+    $user = new User($uid); 
+    require_once \UI\template('/users/view'); 
+  break; 
 } // end action switch 
 
 require_once 'template/footer.inc.php'; 

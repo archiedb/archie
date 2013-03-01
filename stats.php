@@ -6,7 +6,7 @@ require_once 'template/header.inc.php';
 // Switch on the action
 switch (\UI\sess::location('action')) { 
   default:
-    require_once \UI\template('template/index.inc.php'); 
+    require_once \UI\template('/index'); 
   break;
 }
 ?>

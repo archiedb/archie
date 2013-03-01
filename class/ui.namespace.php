@@ -30,7 +30,7 @@ function boolean_word($boolean,$string='') {
 function template($name='') { 
 
     if (strlen($name)) {
-      return \Config::get('prefix') . '/' . $name; 
+      return \Config::get('prefix') . '/template' . $name . '.inc.php'; 
     }
 
     $filename = \Config::get('prefix') . '/template'; 
