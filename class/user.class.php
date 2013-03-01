@@ -28,6 +28,18 @@ class User extends database_object {
 
 	} // constructor
 
+	/**
+	 * refresh
+	 */
+	public function refresh() { 
+
+		// Remove cache
+		User::remove_from_cache('users',$this->uid); 
+		// Rebuild	
+		$this->__construct($this->uid); 
+
+	} // refresh
+
 	// Return the user based on the username
 	public static function get_from_username($username) { 
 
@@ -44,23 +56,37 @@ class User extends database_object {
 	} // get_from_username
 
 	/**
- 	 * get_all
-	 * This returns an array of user objects for every user
+ 	 * get
+	 * This returns an array of user objects for every user as
+	 * defined by the constraint
 	 */
-	public static function get_all() { 
+	public static function get($constraint='') { 
+	
+		$constraint_sql = ''; 
+
+		switch ($constraint) { 
+			case 'enabled':
+				$constraint_sql = " AND `disabled` IS NULL";
+			break;
+			case 'disabled':
+				$constraint_sql = " AND `disabled`='1'";	
+			break; 
+			default: 
+				// None!
+			break;
+		} 
 
 		$users = array(); 
 
-		$sql = "SELECT `uid` FROM `users` ORDER BY `username`"; 
+		$sql = 'SELECT `uid` FROM `users` WHERE 1=1' . $constraint_sql . " ORDER BY `name`";
 		$db_results = Dba::read($sql); 
 
 		while ($row = Dba::fetch_assoc($db_results)) { 
 			$users[] = new User($row['uid']); 
 		} 
-
 		return $users; 
 
-	} // get_all
+	} // get
 
 	/**
 	 * get_access_name

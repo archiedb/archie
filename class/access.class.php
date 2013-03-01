@@ -8,7 +8,7 @@
 class Access { 
 
   private static $types = array('user'); 
-  private static $actions = array('write','read','delete'); 
+  private static $actions = array('write','read','delete','admin'); 
 
   private function __construct() {}
   private function __clone() {}

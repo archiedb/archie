@@ -47,6 +47,9 @@ abstract class database_object {
 	public static $cache_hit = 0;
 	private static $_enabled = false;
 
+	// There must be a refresh function
+	abstract protected function refresh(); 
+
 	/**
 	 * get_info
 	 * retrieves the info from the database and puts it in the cache
@@ -74,7 +77,7 @@ abstract class database_object {
 		return $row;
 
 	} // get_info
-
+	
 	/**
 	 * clear_cache
 	 */

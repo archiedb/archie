@@ -26,6 +26,17 @@ class Classification extends database_object {
 
 	} // constructor
 
+	/**
+	 * refresh
+	 * Refresh the object
+	 */
+	public function refresh() { 
+
+		Classification::remove_from_cache('classification',$this->uid); 
+		$this->__construct($this->uid); 
+
+	} // refresh
+
 	public static function get_from_material($material) { 
 
 		$material = Dba::escape($material); 

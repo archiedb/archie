@@ -6,7 +6,7 @@ require_once 'template/header.inc.php';
 require_once 'template/menu.inc.php'; 
 switch (\UI\sess::location('action')) {
   case 'view':
-    if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND Access::has('user','write',\UI\sess::location('objectid'))) { 
+    if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','write',\UI\sess::location('objectid'))) { 
       Event::error('DENIED','User ' . \UI\sess::$user->username . ' attempted to view someone elses profile!'); 
       header('Location:' . Config::get('web_path')); 
       exit;
@@ -17,6 +17,7 @@ switch (\UI\sess::location('action')) {
   case 'edit':
     // Make sure they are allowed
     if (!Access::has('user','write',\UI\sess::location('objectid'))) { header('Location:' . Config::get('web_path')); exit; }
+    $user = new User(\UI\sess::location('objectid'));
     require_once \UI\template(); 
   break; 
   case 'update': 
@@ -33,16 +34,32 @@ switch (\UI\sess::location('action')) {
       // Only reset the password if they typed something in!
       if (strlen($_POST['password'])) { $user->set_password($_POST['password']); }
       // Refresh!
-      $user = new User($_POST['uid']); 
+      $user->refresh();  
     }
     require_once \UI\template('template/users/view.inc.php'); 
   break;
   case 'disable':
-
+    if (!Access::has('user','delete',$_POST['uid'])) { header('Location:' . Config::get('web_path')); exit; }
+    // You aren't allowed to disable yourself - sorry!
+    if ($_POST['uid'] == \UI\sess::$user->uid) { header('Location:' . Config::get('web_path')); exit; }
+    $user = new User($_POST['uid']); 
+    $user->disable(); 
+    $user->refresh(); 
+    require_once \UI\template('template/users/view.inc.php'); 
   break;
   case 'enable': 
-  
+    if (!Access::has('user','delete',$_POST['uid'])) { header('Location:' . Config::get('web_path')); exit; }
+    $user = new User($_POST['uid']); 
+    $user->enable(); 
+    $user->refresh(); 
+    require_once \UI\template('template/users/view.inc.php');  
   break; 
+  case 'manage':
+    if (!Access::has('user','admin')) { header('Location:' . Config::get('web_path')); exit; }
+    $filter = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'enabled';
+    $users = User::get($filter); 
+    require_once \UI\template(); 
+  break;   
 } // end action switch 
 
 require_once 'template/footer.inc.php'; 

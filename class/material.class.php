@@ -24,6 +24,16 @@ class Material extends database_object {
 
 	} // constructor
 
+	/**
+	 * refresh
+	 * Refreshes the object from the db
+	 */
+	public function refresh() { 
+
+		Material::remove_from_cache('material',$this->uid); 
+		$this->__construct($this->uid); 
+	} 
+
 	// Check to see if this material has the specified classification
 	public function has_classification($classification) { 
 

@@ -50,6 +50,17 @@ class Record extends database_object {
 
 	} // constructor
 
+	/**
+	 * refresh
+	 * Refreshes this object from the database, clears cache
+	 */
+	public function refresh() { 
+
+		Record::remove_from_cache('records',$this->uid); 
+		$this->__construct($this->uid); 
+
+	} // refresh
+
 	// Create
 	public static function create($input) { 
 

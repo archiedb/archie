@@ -23,7 +23,7 @@ if (INIT_LOADED != '1') { exit; }
           <li class="dropdown">
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a href="<?php echo Config::get('web_path'); ?>/admin.php?action=show_users">Users</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/users/manage">Users</a></li>
               <li class="divider"></li>
               <li class="nav-header">Settings</li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/tools">System Tools</a>
