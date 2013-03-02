@@ -7,37 +7,39 @@
  */
 class View {
 
-  public $id; 
+  public $uid; 
   protected $_state = array(); 
   protected $_cache; 
 
   private static $allowed_sorts;
+  private static $allowed_filters; 
 
   /**
    * constructor
    * reads for a previous state of this session_id() in temp_data table
    */
-  public function __construct($id = null) { 
+  public function __construct($uid = null) { 
 
     // Our session
     $sid = Dba::escape(session_id()); 
 
-    if (is_null($id)) { 
+    if (is_null($uid) AND !isset($_SESSION['view_uid'])) { 
       $this->reset(); 
       $data = Dba::escape(serialize($this->_state)); 
       
-      $sql = "INSERT INTO `temp_data` (`sid`,`data`) VALUES (`$sid`,`$data)"; 
+      $sql = "INSERT INTO `temp_data` (`sid`,`data`) VALUES ('$sid','$data')"; 
       $db_results = Dba::write($sql); 
-      $this->id = Dba::insert_id(); 
+      $this->uid = Dba::insert_id(); 
   
       // We're done here!
       return true; 
     } 
 
-    // We've passed it in, so we need to look it up
-    $this->id = $id; 
-    $id = Dba::escape($id); 
-    $sql = "SELECT `data` FROM `temp_data` WHERE `id`='$id' AND `sid`='$sid'"; 
+    // We've passed it in, or its in the session, so we need to look it up
+    $uid = $uid ? $uid : $_SESSION['view_uid']; 
+    $this->uid = $uid; 
+    $uid = Dba::escape($uid); 
+    $sql = "SELECT `data` FROM `temp_data` WHERE `uid`='$uid' AND `sid`='$sid'"; 
     $db_results = Dba::read($sql); 
 
     if ($results = Dba::fetch_assoc($db_results)) { 
@@ -52,6 +54,34 @@ class View {
   } // constructor
 
   /**
+   * _auto_init
+   */
+  public static function _auto_init() {
+
+    self::$allowed_filters = array(
+      'unit',
+      'quad',
+      'level',
+      'feature',
+      'station_index',
+      'xrf_matrix_index',
+      'weigth',
+      'height',
+      'width',
+      'thickness',
+      'quanity',
+      'xrf_artifact_index',
+      'created',
+      'lsg_unit',
+      'material',
+      'classification',
+      'updated'); 
+
+    self::$allowed_sorts = self::$allowed_filters; 
+
+  } // auto_int
+
+  /**
    * gc
    * Garbage collection for this table
    */
@@ -62,6 +92,27 @@ class View {
     $db_results = Dba::write($sql); 
 
   } // gc
+
+  /**
+   * run
+   * This loads in the save data, array splices and
+   * does any other magic that needs to be done, and 
+   * returns an array of objectids, assumption that
+   * we've already applied filters/sorts/whathaveyous
+   */
+  public function run() { 
+
+    $object_ids = $this->get_saved(); 
+
+    $type = ucfirst($this->get_type());
+    $type::build_cache($object_ids); 
+
+    $this->save_uid(); 
+    $this->store(); 
+
+    return $object_ids; 
+
+  } // run
 
   /**
    * set_filter
@@ -98,10 +149,110 @@ class View {
   } // set_start
 
   /**
-   * get_saved_objects
+   * set_total
+   */
+  public function set_total($total) { 
+
+    $this->_state['total'] = intval($total); 
+
+  } // set_total
+
+  /**
+   * set_sort
+   * Returns the sort, ASC/DESC
+   */
+  public function set_sort($sort,$order='') { 
+
+    if (!in_array($sort,self::$allowed_sorts)) { 
+      return false; 
+    } 
+
+    if ($order) { 
+      $order = ($order == 'DESC') ? 'DESC' : 'ASC'; 
+      $this->_state['sort'] = array(); 
+      $this->_state['sort'][$sort] = $order; 
+    }
+    elseif ($this->_state['sort'][$sort] == 'DESC') { 
+      $this->_state['sort'] = array(); 
+      $this->_state['sort'][$sort] = 'ASC'; 
+    }
+    else { 
+      $this->_state['sort'] = array(); 
+      $this->_state['sort'][$sort] = 'DESC'; 
+    }
+
+    // Resort object
+    $this->resort_objects(); 
+
+  } // set_sort
+
+  /**
+   * set_offset
+   * Set the offset
+   */
+  public function set_offset($offset) { 
+
+    // Whole numbers only!
+    $this->_state['offset'] = abs($offset); 
+
+  } // set_offset 
+
+  /**
+   * set_select
+   */
+  public function set_select($field) { 
+
+    $this->_state['select'][] = $field; 
+
+  } // set_select
+
+  /**
+   * set_type
+   * The type of objects we're checking today
+   */
+  public function set_type($type) { 
+
+    switch ($type) { 
+      case 'record':
+        $this->_state['type'] = $type;  
+        $this->set_base_sql(true); 
+      break; 
+    } // end switch 
+
+  } // set_type
+
+  /**
+   * set_base_sql
+   * ok overkill - but maybe not in the future? 
+   */
+  public function set_base_sql($force = false) { 
+
+    if (strlen($this->_state['base']) && !$force) { return true; } 
+
+    // Maybe in the future we'll switch?!
+    $this->set_select('`record`.`uid`'); 
+    $sql = 'SELECT %%SELECT%% FROM `record` '; 
+
+    $this->_state['base'] = $sql; 
+
+  } // set_base_sql
+
+  /** 
+   * get_type
+   * Returns the type
+   */
+  public function get_type() { 
+    
+    $type = isset($this->_state['type']) ? $this->_state['type'] : false; 
+    return $type; 
+
+  } // get_type
+
+  /*
+   * get_saved
    * Check and see if we've got a cache for this query
    */
-  public function get_saved_objects() { 
+  public function get_saved() { 
 
     if (is_array($this->_cache)) { 
       return $this->_cache; 
@@ -110,7 +261,7 @@ class View {
     // Not cached, lets go get them!
     return $this->get_objects(); 
 
-  } // get_saved_objects
+  } // get_saved
 
   /**
    * get_objects
@@ -125,7 +276,7 @@ class View {
 
     $results = array(); 
     while ($data = Dba::fetch_assoc($db_results)) { 
-      $results[] = $data; 
+      $results[] = $data['uid']; 
     } 
 
     // We could do post-processing here if we wanted
@@ -135,6 +286,29 @@ class View {
     return $results;
 
   } // get_objects
+
+  /**
+   * get_total
+   */
+  public function get_total($objects = null) { 
+
+    if (is_array($objects)) { 
+      return count($objects); 
+    } 
+
+    if (isset($this->_state['total'])) { 
+      return $this->_state['total']; 
+    } 
+
+    // Otherwise we need to go to the database
+    $db_results = Dba::read($this->get_sql(false)); 
+    $num_rows = Dba::num_rows($db_results); 
+
+    $this->_state['total'] = $num_rows; 
+
+    return $num_rows; 
+
+  } // get_total
 
   /**
    * get_select
@@ -159,23 +333,257 @@ class View {
   } // get_base_sql
 
   /**
-   * 
+   * get_filter_sql
+   * construct the sql for the filter based on our filters
+   */
+  public function get_filter_sql() { 
+
+    if (!is_array($this->_state['filter'])) { 
+      return ''; 
+    } 
+
+    $sql = "WHERE 1=1 AND "; 
+
+    foreach ($this->_state['filter'] as $key=>$value) { 
+      $sql .= $this->sql_filter($key,$value); 
+    }
+
+    $sql = rtrim($sql,'AND ') . ' '; 
+
+    return $sql; 
+
+  } // get_filter_sql 
 
   /**
-   * set_base_sql
-   * ok overkill - but maybe not in the future? 
+   * get_sort_sql
+   * Construct the sorting sql statement 
    */
-  public function set_base_sql($force = false) { 
+  private function get_sort_sql() { 
 
-    if (strlen($this->_state['base']) && !$force) { return true; } 
+    if (isset($this->_state['sort']) && !is_array($this->_state['sort'])) { 
+      return ''; 
+    } 
 
-    // Maybe in the future we'll switch?!
-    $this->set_select('`record`.`uid`'); 
-    $sql = 'SELECT %%SELECT%% FROM `record` '; 
+    $sql = 'ORDER BY '; 
 
-    $this->_state['base'] = $sql; 
+    foreach ($this->_state['sort'] as $key=>$value) { 
+      $sql .= $this->sql_sort($key,$value); 
+    } 
 
-  } // set_base_sql
+    $sql = rtrim($sql,'ORDER BY '); 
+    $sql = rtrim($sql,','); 
+
+    return $sql; 
+
+  } // get_sort_sql 
+
+  /**
+   * get_limit_sql
+   * build the limit statement for our sql
+   */
+  private function get_limit_sql() { 
+
+    $sql = ' LIMIT ' . intval($this->get_start()) . ',' . intval($this->get_offset()); 
+
+    return $sql; 
+
+  } // get_limit_sql
+
+  /**
+   * get_join_sql
+   * Build and return the sql statement for any joins
+   */
+  private function get_join_sql() { 
+
+    if (!isset($this->_state['join']) || !is_array($this->_state['join'])) { 
+      return ''; 
+    } 
+
+    $sql = ''; 
+
+    foreach ($this->_state['join'] as $joins) { 
+      foreach ($joins as $join) { 
+        $sql .= $join . ' ';
+      } // foreach joins at this level
+    } // foreach joins at this level? ok wtf? 
+
+    return $sql; 
+
+  } // get_join_sql 
+
+  /**
+   * get_sql 
+   * Return a completely build sql statement, has optional T/F
+   * pass, which tells us if we should include the limit statement
+   */
+  public function get_sql($limit = true) { 
+
+    $sql = $this->get_base_sql(); 
+
+    $filter_sql = $this->get_filter_sql(); 
+    $join_sql = $this->get_join_sql(); 
+    $order_sql = $limit ? $this->get_sort_sql() : ''; // Don't sort if we don't have a limit 
+    $limit_sql = $limit ? $this->get_limit_sql() : ''; // Don't limit if we don't want it? 
+    $final_sql = $sql . $join_sql . $filter_sql . $order_sql . $limit_sql; 
+
+    return $final_sql; 
+
+  } // get_sql
+
+  /**
+   * get_filter
+   */
+  public function get_filter($key) { 
+
+    return isset($this->_state['filter'][$key]) ? $this->_state['filter'][$key] : false; 
+
+  } // get_filter
+
+  /**
+   * get_start
+   */
+  public function get_start() { 
+
+    return $this->_state['start']; 
+
+  } // get_start
+
+  /**
+   * get_offset
+   * return our offset
+   */
+  public function get_offset() { 
+
+      return $this->_state['offset']; 
+
+  } 
+
+  /**
+   * sql_filter
+   * Take a filter name and value (we're filtering) and return the
+   * sql construct
+   */
+  private function sql_filter($filter,$value) { 
+
+    $filter_sql = ''; 
+
+    switch($filter) { 
+      case 'height':
+      case 'width':
+      case 'thickness':
+      case 'quanity':
+      case 'weight':
+        $filter_sql = " `record`.`$filter` = '" . Dba::escape(intval($value)) . "' AND "; 
+      break; 
+    } // filter
+
+    return $filter_sql; 
+
+  } // sql_filter
+
+  /**
+   * sql_sort
+   * Build the sql ORDER BY stuff we need
+   */
+  private function sql_sort($field,$order) { 
+
+    $order = ($order == 'DESC') ? 'DESC' : 'ASC';
+
+    switch ($field) { 
+      case 'height': 
+      case 'width': 
+      case 'thickness': 
+      case 'quanity': 
+      case 'weight': 
+      case 'feature':
+      case 'level': 
+      case 'quad': 
+      case 'unit': 
+      case 'station_index':
+        $sql = "`record`.`$field`";
+      break;
+      case 'material':
+        $sql = "`material`.`name`"; 
+        $this->set_join('left','`material`','`material`.`uid`','`record`.`material`',100); 
+      break;
+      case 'classification': 
+        $sql = "`classification`.`name`";
+        $this->set_join('left','`classification`','`classification`.`uid`','`record`.`classification`',100); 
+      break; 
+    } 
+
+    if ($sql) { $sql_sort = "$sql $order,"; }
+
+    return $sql_sort; 
+
+  } // sql_sort
+
+  /**
+   * resort_objects
+   * Takes existing objects and re-sorts them called internally
+   * by set_sort(); 
+   */
+  private function resort_objects() { 
+
+    // We want an sql statement, with LIMIT intact
+    $sql = $this->get_sql(true); 
+
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row['uid']; 
+    }
+
+    $this->save_objects($results);
+
+    return true;     
+
+  } // resort_objects
+
+  /**
+   * store
+   * Store our current state in the database
+   */
+  public function store() { 
+
+    $sid = Dba::escape(session_id());
+    $uid = Dba::escape($this->uid); 
+    $data = Dba::escape(serialize($this->_state)); 
+
+    $sql = "UPDATE `temp_data` SET `data`='$data' " . 
+      "WHERE `sid`='$sid' AND `uid`='$uid'"; 
+    $db_results = Dba::write($sql); 
+
+  } // store
+
+  /**
+   * save_objects
+   * array of object ids we need to save
+   */
+  public function save_objects($object_ids) { 
+
+    $this->_cache = $object_ids; 
+//    $this->set_total(count($object_ids)); 
+    $sid = Dba::escape(session_id()); 
+    $uid = Dba::escape($this->uid); 
+    $objects = Dba::escape(serialize($this->_cache)); 
+
+    $sql = "UPDATE `temp_data` SET `objects`='$objects' " .
+        "WHERE `sid`='$sid' AND `uid`='$uid'"; 
+    $db_results = Dba::write($sql); 
+
+    return true; 
+
+  } // save_objects
+
+  /**
+   * save_uid
+   */
+  public function save_uid() { 
+
+    $_SESSION['view_uid'] = $this->uid; 
+
+  } // save_uid
 
   /**
    * reset
@@ -234,26 +642,6 @@ class View {
     unset($this->_state['join']); 
 
   } // reset_join
-
-  /**
-   * set_start
-   * Resets our start record
-   */
-  public function set_start($start) { 
-
-    $this->_state['start'] = intval($start); 
-
-  } // set_start
-
-  /**
-   * set_offset
-   * Sets the offset to whatever we want!
-   */
-  public function set_offset($offset) { 
-
-    $this->_state['offset'] = intval($offset); 
-
-  } // set_offset
 
   /**
    * reset_filters

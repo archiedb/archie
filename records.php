@@ -118,13 +118,27 @@ switch (\UI\sess::location('action')) {
     header("Location:" . Config::get('web_path') . '/media/ticket/' . \UI\sess::location('objectid'));
   break; 
   case 'sort':
-    $order = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'station_index';
-    $records = Search::record('site',Config::get('site'),$order); 
-    require_once 'template/show_records.inc.php';
+    $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'station_index';
+    $order = \UI\sess::location('3') ? strtoupper(\UI\sess::location('3')) : '';
+    $view = new View(); 
+    $view->set_sort($field,$order); 
+    $view->set_start(0); 
+    $records = $view->run(); 
+    require_once \UI\template('/show_records'); 
+  break; 
+  case 'offset': 
+    $view = new View(); 
+    $view->set_start(\UI\sess::location('objectid')); 
+    $records= $view->run(); 
+    require_once \UI\template('/show_records'); 
   break;
   default:
-    $records = Search::record('site',Config::get('site'));
-    require_once 'template/show_records.inc.php';
+    $view = new View(); 
+    $view->reset(); 
+    $view->set_type('record'); 
+    $view->set_sort('station_index','ASC');
+    $records = $view->run(); 
+    require_once \UI\template('/show_records');
   break; 
 } // end switch
 ?>

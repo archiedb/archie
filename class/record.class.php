@@ -1,5 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 class Record extends database_object { 
 
 
@@ -33,7 +33,7 @@ class Record extends database_object {
 
 		if (!is_numeric($uid)) { return false; } 
 		
-		$row = $this->get_info($uid); 
+		$row = $this->get_info($uid,'record'); 
 	
 		foreach ($row as $key=>$value) { $this->$key = $value; } 
 
@@ -49,6 +49,30 @@ class Record extends database_object {
 		return true; 
 
 	} // constructor
+
+	/**
+	 * build_cache
+	 * Take an array of IDs and cache them (avoiding 1000 queries and do one
+	 */
+	public static function build_cache($objects) { 
+
+    if (!is_array($objects) || !count($objects)) { return false; } 
+
+    $idlist = '(' . implode(',',$objects) . ')';
+
+    // passing array(false) causes this
+    if ($idlist == '()') { return false; }
+
+    $sql = 'SELECT * FROM `record` WHERE `record`.`uid` IN ' . $idlist;
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::Fetch_assoc($db_results)) { 
+      parent::add_to_cache('record',$row['uid'],$row); 
+    } 
+
+    return true; 
+
+	} // build_cache
 
 	/**
 	 * refresh

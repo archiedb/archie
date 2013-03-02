@@ -26,6 +26,15 @@ class Classification extends database_object {
 
 	} // constructor
 
+        /**
+         * build_cache
+         * Build a cache of our objects, save some queries
+         */
+        public static function build_cache($objects) {
+
+
+        } // build_cache
+
 	/**
 	 * refresh
 	 * Refresh the object

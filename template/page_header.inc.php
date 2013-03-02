@@ -5,12 +5,12 @@ if (INIT_LOADED != '1') { exit; }
 $limit = $view->get_offset(); 
 $start = $view->get_start(); 
 $total = $view->get_total(); 
-$side = 5; 
+$sides = 5; 
 
 
 // Next and Prev
-$next_offset = ($next_offset > $total) ? $start : $start+$limit; 
-$prev_offset = ($start - $limit) < 0) ? '0' : $start - $limit;
+$next_offset = (($start+$limit) > $total) ? $start : $start+$limit; 
+$prev_offset = (($start - $limit) < 0) ? '0' : $start - $limit;
 
 // How many pages
 if ($limit > 0 && $total > $limit) { 
@@ -38,46 +38,57 @@ if ($pages > 1) {
   while ($page > 0) { 
     if ($i == $sides) { $page_data['down'][1] = '...'; $page_data['down'][0] = '0'; break; }
     $i++;
-    $pages = $page - 1;
-    $page_down['down'][$page] = $page * $limit; 
+    $page = $page - 1;
+    $page_data['down'][$page] = $page * $limit; 
   } // while page > 0
 
+  // Up
   $page = $current_page + 1; 
-  $i = 0
+  $i = 0;
   while ($page < $pages) {
     if ($page * $limit > $total) { break; }
     if ($i == $sides) { 
       $key = $pages - 1; 
-      if (!$page_data['ui'][$key]) { $page_data['up'][$key] = '...'; }
+      if (!isset($page_data['up'][$key])) { $page_data['up'][$key] = '...'; }
       $page_data['up'][$pages] = ($pages - 1) * $limit; 
       break;
     }
     $i++; 
+    $page_data['up'][$page] = ($page) * $limit; 
     $page = $page + 1; 
-    $page_data['up'][$page] = ($page - 1) * $limit; 
   } // while going down
 
   ksort($page_data['up']); 
   ksort($page_data['down']); 
 ?>
-<div class="pagination">
+<div class="pagination pagination-centered">
   <ul>
+  <li><a href="<?php echo Config::get('web_path'); ?>/records/offset/<?php echo $prev_offset; ?>">&laquo;</a></li>
 <?php 
   $current_page++; // Also starts at 1 not zero
   foreach ($page_data['down'] as $page => $offset) { 
-    if ($offset === '...') { } // do something!
+    if ($offset === '...') { 
+  ?>
+  <li class="disabled"><a href="#">...</a></li>
+  <?php 
+    } else {
     $page++; // This starts on 1 not zero
 ?> 
-    <li><a href="#"><?php echo $page; ?></a></li>
-<?php } ?>
+    <li><a href="<?php echo Config::get('web_path'); ?>/records/offset/<?php echo $offset; ?>"><?php echo $page; ?></a></li>
+<?php } } ?>
     <li class="active"><a href="#"><?php echo $current_page; ?></a></li>
 <?php 
   foreach ($page_data['up'] as $page => $offset) { 
-  if ($offset === '...') { }
+  if ($offset === '...') { 
+  ?>
+  <li class="disabled"><a href="#">...</a></li>
+  <?php
+    } else {
   $page++; // We don't do zero
 ?>  
-    <li><a href="#"><?php echo $page; ?></a></li>
-<?php } ?>
+    <li><a href="<?php echo Config::get('web_path'); ?>/records/offset/<?php echo $offset; ?>"><?php echo $page; ?></a></li>
+<?php } }?>
+  <li><a href="<?php echo Config::get('web_path'); ?>/records/offset/<?php echo $next_offset; ?>">&raquo;</a></li>
   </ul>
 </div>
 <?php } // if we have pages at all ?>

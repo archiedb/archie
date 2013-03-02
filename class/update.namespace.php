@@ -150,6 +150,9 @@ class Database {
     $sql = 'TRUNCATE `session`'; 
     $db_results = \Dba::write($sql); 
 
+    $sql = 'TRUNCATE `temp_data`';
+    $db_results = \Dba::write($sql); 
+
     return true; 
 
    } // pre
@@ -267,12 +270,16 @@ class Database {
   /**
    * update_0002
    * - Add notes to image table
+   * - Add user to image table
    */
   private static function update_0002() { 
 
     $retval = true; 
 
     $sql = "ALTER TABLE `image` ADD `notes` VARCHAR(512) NULL AFTER `type`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `image` ADD `user` INT(10) UNSIGNED NOT NULL AFTER `type`";
     $retval = \Dba::write($sql) ? $retval : false; 
 
     return $retval; 

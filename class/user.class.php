@@ -28,6 +28,14 @@ class User extends database_object {
 
 	} // constructor
 
+  /**
+   * build_cache
+   */
+  public static function build_cache($objects) { 
+
+
+  } //build_cache
+
 	/**
 	 * refresh
 	 */
