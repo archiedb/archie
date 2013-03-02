@@ -2,6 +2,24 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 /**
+ * referrer
+ * We have a specific list of urls we're allowed to redirect to!
+ */
+function return_url($input) {
+
+  // We need to keep the original intact here, but #'s of an ID at the end are ok
+  $check = rtrim($input,'0..9'); 
+  $allowed_urls = array('/records/view/',
+                    '/records/edit/'); 
+
+  if (in_array($check,$allowed_urls)) { 
+    return $input;
+  }
+  return '/'; 
+
+} // return url
+
+/**
  * boolean_word
  * Take a T/F value and return a pretty response
  */
@@ -106,6 +124,12 @@ class sess {
       case '3':
         return isset(self::$location['3']) ? self::$location['3'] : false;
       break;
+      case 'absolute':
+        $page = isset(self::$location['0']) ? self::$location['0'] : '';
+        $action = isset(self::$location['1']) ? self::$location['1'] : '';
+        $objectid = isset(self::$location['2']) ? self::$location['2'] : '';
+        return rtrim('/' . $page . '/' . $action . '/' . $objectid,'/'); 
+      break; 
     }
 
     return false; 

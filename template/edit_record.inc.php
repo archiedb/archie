@@ -179,29 +179,36 @@ if (INIT_LOADED != '1') { exit; }
 <input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
 <button class="btn btn-primary" type="submit">Update</button>
 </form>
+</div><!-- End content block -->
+
 <fieldset class="attachment">
 <legend>Item Pictures</legend>
-<form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/record/upload_image">
+<form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_image">
 	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
 	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
 	<input type="file" class="textbox" name="image" />
 	<button class="btn btn-primary" type="submit">Attach Image</button>
 </form>
-
-<?php 
-	$images = $record->get_images(); 
-	foreach ($images as $image) { 
-	$i++; 
-?>
-
-<div class="image-block">
-	<a target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">
-	<img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
-	</a>
-</div>
-<?php } ?>
 <?php Error::display('upload'); ?>
-</fieldset> 
-
+<ul class="thumbnails">
+<?php
+        $images = $record->get_images();
+        foreach ($images as $image) {
+        $i++;
+?>
+  <li class="span4">
+    <div class="thumbnail">
+      <img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
+      <hr />
+      <p class="text-center">
+        <a class="btn " target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">Open</a>
+      <?php if (Access::has('image','delete',$image['uid'])) { ?>
+        <a class="btn btn-danger" href="#confirm_delete_image_<?php echo scrub_out($image['uid']); ?>" role="button" data-toggle="modal">Delete</a>
+        <?php require \UI\template('/records/confirm_delete_image'); ?>
+      <?php } ?>
+      </p>
+    </div>
+  </li>
+<?php } ?>
+</ul>
 </fieldset>
-</div><!-- End content block -->

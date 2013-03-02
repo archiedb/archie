@@ -7,7 +7,7 @@
  */
 class Access { 
 
-  private static $types = array('user'); 
+  private static $types = array('user','image','record'); 
   private static $actions = array('write','read','delete','admin'); 
 
   private function __construct() {}
@@ -27,7 +27,7 @@ class Access {
 
     // If they are a site admin then return true
     if (\UI\sess::$user->access == '100') { return true; }
-print_r(\UI\sess::$user); 
+
     $retval = self::{'check_' . $type}($action,$uid);
 
     return $retval; 
@@ -52,6 +52,28 @@ print_r(\UI\sess::$user);
     return false; 
 
   } // check_user
+
+  /**
+   * image
+   * This checks image perms
+   */
+  private static function check_image($action,$uid) { 
+
+    // Right now, only admins
+    return false; 
+
+  } // check_image
+
+  /**
+   * record
+   * Checks permissions on records
+   */
+  private static function check_record($action,$uid) { 
+
+    // Only admins now?
+    return false; 
+
+  } // check_record
 
 
 } // Access

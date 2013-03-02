@@ -45,6 +45,21 @@ switch (\UI\sess::location('action')) {
 		require_once 'template/edit_record.inc.php';
 	
 	break; 
+  case 'image_delete':
+    if (!Access::has('image','delete',$_POST['uid'])) {  break; }
+    $thumb = new Content($_POST['uid'],'thumb'); 
+    if (!$thumb->delete()) { 
+      Event::error('DELETE','Unable to delete thumbnail for record image:'. $_POST['uid']); 
+    }
+    $image = new Content($_POST['uid'],'record'); 
+    if (!$image->delete()) { 
+      Event::error('DELETE','Unable to delete record image:' . $_POST['uid']); 
+    }
+
+    // Return to whence we came,
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
+
+  break; 
 	case 'update': 
 		$record = new Record($_POST['record_id']); 
     // Set to current user  
@@ -55,7 +70,7 @@ switch (\UI\sess::location('action')) {
 		} 
 		else { 
 			$record = new Record($record->uid); 
-			require_once 'template/show_record.inc.php';
+			require_once \UI\template('/records/view'); 
 	  } 
 	break; 
   case 'edit':
@@ -70,7 +85,7 @@ switch (\UI\sess::location('action')) {
   break;
   case 'view':
     $record = new Record(\UI\sess::location('objectid')); 
-    require_once 'template/show_record.inc.php';
+    require_once \UI\template();
   break;
   case 'new':
     require_once 'template/new_record.inc.php';
@@ -79,7 +94,7 @@ switch (\UI\sess::location('action')) {
     $_POST['user'] = \UI\sess::$user->uid;
     if ($record_id = Record::create($_POST)) {
       $record = new Record($record_id);
-      require_once 'template/show_record.inc.php';
+      require_once  \UI\template('/records/view');
     }
     else {
       require_once 'template/new_record.inc.php';
@@ -87,7 +102,7 @@ switch (\UI\sess::location('action')) {
   break;
   case 'delete': 
     // Admin only
-    if (\UI\sess::$user->access < '100') { break; }
+    if (!Access::has('record','delete',$_POST['record_id'])) {  break; }
     // We should do some form ID checking here
     Record::delete($_POST['record_id']);
     header("Location:" . Config::get('web_path') . "/records"); 

@@ -303,13 +303,15 @@ class content {
 	private function delete_record() {
 
 		$results = unlink($this->filename); 
-		if (!$results) { 
+		if (!$results AND file_exists($this->filename)) { 
 			Event::error('general','Error unable to remove Media file'); 
 			return false; 
 		} 
 
-		$record_id = Dba::escape($this->uid); 
-		$sql = "DELETE FROM `image` WHERE `record`='$record_id'"; 
+    Event::record('Record Image','Record image ' . $this->filename . ' was deleted by ' . \UI\sess::$user->username); 
+
+		$uid = Dba::escape($this->uid); 
+		$sql = "DELETE FROM `image` WHERE `uid`='$uid' LIMIT 1"; 
 		$db_results = Dba::write($sql); 	
 
 		return true; 
