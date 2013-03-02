@@ -15,6 +15,9 @@ ${$active_name} = ' class="active"';
   <li<?php echo $enabled_active; ?>>
     <a href="<?php echo Config::get('web_path'); ?>/users/manage">Enabled</a>
   </li>
+  <li<?php echo $online_active; ?>>
+    <a href="<?php echo Config::get('web_path'); ?>/users/manage/online">Online</a>
+  </li>
   <li<?php echo $disabled_active; ?>>
     <a href="<?php echo Config::get('web_path'); ?>/users/manage/disabled">Disabled</a>
   </li>
