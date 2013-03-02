@@ -1,5 +1,5 @@
 <?php 
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 class unit { 
 
@@ -16,6 +16,16 @@ class unit {
 		return true; 
 
 	} // uid
+
+  /**
+   * name_to_id
+   */
+  public static function name_to_id($name) { 
+
+    $uid = array_search($name,self::$values); 
+    return $uid; 
+
+  } // name_to_id
 
 }
 ?>

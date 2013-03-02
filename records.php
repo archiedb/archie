@@ -77,12 +77,6 @@ switch (\UI\sess::location('action')) {
 		$record = new Record(\UI\sess::location('objectid')); 
 		require_once 'template/edit_record.inc.php'; 
 	break; 
-  case 'search':
-    if (!$_POST['field']) { $_POST['field'] = 'site'; }
-    if (!$_POST['value']) { $_POST['value'] = Config::get('site'); }
-    $records = Search::record($_POST['field'],$_POST['value']);
-    require_once 'template/show_records.inc.php';
-  break;
   case 'view':
     $record = new Record(\UI\sess::location('objectid')); 
     require_once \UI\template();
@@ -117,6 +111,14 @@ switch (\UI\sess::location('action')) {
     } 
     header("Location:" . Config::get('web_path') . '/media/ticket/' . \UI\sess::location('objectid'));
   break; 
+  case 'search':
+    $view = new View(); 
+    $view->reset(); 
+    $view->set_type('record'); 
+    $view->set_filter($_POST['field'],$_POST['value']); 
+    $records = $view->run(); 
+    require_once \UI\template('/show_records'); 
+  break;
   case 'sort':
     $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'station_index';
     $order = \UI\sess::location('3') ? strtoupper(\UI\sess::location('3')) : '';

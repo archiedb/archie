@@ -468,6 +468,23 @@ class View {
     $filter_sql = ''; 
 
     switch($filter) { 
+      case 'notes':
+        $filter_sql = " `record`.`notes` LIKE '%" . Dba::escape($value) . "%' AND "; 
+      break; 
+      case 'quad':
+        $filter_sql = " `record`.`quad` = '" . Dba::escape(Quad::name_to_id($value)) . "' AND "; 
+      break; 
+      case 'lsg_unit':
+        $filter_sql = " `record`.`lsg_unit` = '" . Dba::escape(Lsgunit::name_to_id($value)) . "' AND "; 
+      break; 
+      case 'feature':
+        $filter_sql = " `record`.`feature` = '" . Dba::escape($value) . "' AND "; 
+      break;
+      case 'unit': 
+        $filter_sql = " `record`.`unit` = '" . Dba::escape(Unit::name_to_id($value)) . "' AND ";
+      break;
+      case 'item':
+      case 'station_index':
       case 'height':
       case 'width':
       case 'thickness':
@@ -598,7 +615,7 @@ class View {
     $this->reset_filters(); 
     $this->set_start('0'); 
     $this->set_offset(Config::get('page_limit') ? Config::get('page_limit') : '50'); 
-    $this->reset_order(); 
+    $this->reset_sort(); 
     $this->reset_total(); 
 
   } // reset
@@ -654,13 +671,13 @@ class View {
   } // reset_filters
 
   /**
-   * reset_order
+   * reset_sort
    * Resets the order!
    */
-  public function reset_order() { 
+  public function reset_sort() { 
 
-    unset($this->_state['order']); 
+    unset($this->_state['sort']); 
 
-  } // reset_order
+  } // reset_sort
 
 } // View
