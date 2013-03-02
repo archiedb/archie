@@ -264,6 +264,22 @@ class Database {
 
   } // update_0001
 
+  /**
+   * update_0002
+   * - Add notes to image table
+   */
+  private static function update_0002() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `image` ADD `notes` VARCHAR(512) NULL AFTER `type`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    return $retval; 
+
+  } // update_0002
+
+
 } // \Update\Database class
 
 ?>
