@@ -22,12 +22,12 @@ if (INIT_LOADED != '1') { exit; }
     <ul class="dropdown-menu">
       <li><a href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket">Print Ticket</a></li>
       <li><a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>">Edit</a></li>
-      <?php if ($GLOBALS['user']->access == '100') { ?>
+      <?php if (Access::has('record','delete',$record->uid)) { ?>
       <li><a href="#confirmdel_<?php echo scrub_out($record->uid); ?>" role="button" data-toggle="modal">Delete</a></li>
       <?php } ?>
     </ul>
     </div>
-    <?php if ($GLOBALS['user']->access == '100') { ?>
+    <?php if (Access::has('record','delete',$record->uid)) { ?>
       <div id="confirmdel_<?php echo scrub_out($record->uid); ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

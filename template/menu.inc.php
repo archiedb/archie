@@ -19,7 +19,7 @@ if (INIT_LOADED != '1') { exit; }
           <li class="divider-vertical"></li>
           <li><a href="<?php echo Config::get('web_path'); ?>/admin.php?action=export&type=csv">CSV</a></li>
           <li class="divider-vertical"></li>
-<?php if ($GLOBALS['user']->access == '100') { ?>
+<?php if (Access::has('admin','read')) { ?>
           <li class="dropdown">
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
             <ul class="dropdown-menu">
@@ -34,7 +34,7 @@ if (INIT_LOADED != '1') { exit; }
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Profile <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a href="<?php echo Config::get('web_path'); ?>/users/view/<?php echo scrub_out($GLOBALS['user']->uid); ?>">My Account</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/users/view/<?php echo scrub_out(\UI\sess::$user->uid); ?>">My Account</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/logout">Logout</a></li>
             </ul>
           </li>
