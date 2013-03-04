@@ -156,7 +156,9 @@ function ampache_error_handler($errno, $errstr, $errfile, $errline) {
         }
 
         $log_line = "[$error_name] $errstr in file $errfile($errline)";
-        log_event(\UI\sess::$user->username,'PHP', $log_line,'error');
+	$username = is_object(\UI\sess::$user) ? \UI\sess::$user->username : 'Unknown';
+		
+        log_event($username,'PHP', $log_line,'error');
 
 } // ampache_error_handler
 
