@@ -1,7 +1,6 @@
 <?php
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
-if (!isset($_POST['unit']) { $_POST['unit'] = NULL; } 
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <?php $record = Record::last_created(); ?>
@@ -14,7 +13,7 @@ if (!isset($_POST['unit']) { $_POST['unit'] = NULL; }
 <tr>
 	<td><?php echo scrub_out($record->station_index); ?></td>
 	<td><?php echo scrub_out($record->unit); ?></td>
-	<td><?php echo scrub_out($record->quad->name)); ?></td>
+	<td><?php echo scrub_out($record->quad->name); ?></td>
 	<td><?php echo scrub_out($record->level); ?></td>
 </tr>
 </table>
