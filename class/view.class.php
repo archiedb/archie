@@ -59,6 +59,7 @@ class View {
   public static function _auto_init() {
 
     self::$allowed_filters = array(
+      'catalog_id',
       'unit',
       'quad',
       'level',
@@ -488,6 +489,7 @@ class View {
       case 'height':
       case 'width':
       case 'thickness':
+      case 'catalog_id':
       case 'quanity':
       case 'weight':
         $filter_sql = " `record`.`$filter` = '" . Dba::escape(intval($value)) . "' AND "; 
@@ -516,6 +518,7 @@ class View {
       case 'level': 
       case 'quad': 
       case 'unit': 
+      case 'catalog_id':
       case 'station_index':
         $sql = "`record`.`$field`";
       break;

@@ -42,6 +42,7 @@ if (INIT_LOADED != '1') { exit; }
             <form method="post" action="<?php echo Config::get('web_path'); ?>/records/search" class="navbar-form pull-right">
               <select name="field" class="span2">
               <?php $name = scrub_in($_POST['field']) . '_active'; ${$name}=' selected="selected"'; ?>
+                <option value="catalog_id"<?php echo $catalog_id_active; ?>>Catalog #</option>
                 <option value="item"<?php echo $item_active; ?>>Item</option>
                 <option value="station_index"<?php echo $station_index_active; ?>>RN</option>
                 <option value="notes"<?php echo $notes_active; ?>>Notes</option> 
