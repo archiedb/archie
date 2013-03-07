@@ -13,7 +13,7 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
 	<td><?php echo scrub_out($record->station_index); ?></td>
 	<td><?php echo scrub_out($record->unit); ?></td>
-	<td><?php echo scrub_out(quad::$values[$record->quad]); ?></td>
+	<td><?php echo scrub_out($record->quad->name); ?></td>
 	<td><?php echo scrub_out($record->level); ?></td>
 </tr>
 </table>

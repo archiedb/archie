@@ -28,7 +28,11 @@ class Access {
     // If they are a site admin then return true
     if (\UI\sess::$user->access == '100') { return true; }
 
-    $retval = self::{'check_' . $type}($action,$uid);
+    $check_name = 'check_' . $type; 
+    $class_name = 'Access';
+    if (method_exists($class_name,$check_name)) { 
+      $retval = call_user_func($class_name . '::' . $check_name,$action,$uid); 
+    }
 
     return $retval; 
 

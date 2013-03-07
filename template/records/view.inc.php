@@ -77,8 +77,5 @@ if (INIT_LOADED != '1') { exit; }
   </li>
 <?php } ?>
 </ul>
-<? if (!count($images)) { ?>
-<h4>No Images Found</h4>
-<?php } ?>
 </fieldset>
 
