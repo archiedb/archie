@@ -86,8 +86,6 @@ class Database {
       // They are pre app_info table or something is broken 
       \Event::error('Database','Error code version too new, and db isnt updated!');
       return '0000';
-// COMMENTED OUT 
-//      exit;
     }
 
     $sql = "SELECT * FROM `app_info` WHERE `key`='db_version'"; 
@@ -128,7 +126,7 @@ class Database {
       case 'new': 
         $current_version = self::version();
         foreach (self::$versions as $key=>$update) { 
-          if ($update['version'] < $current_version) {
+          if ($update['version'] <= $current_version) {
             unset(self::$versions[$key]); 
           } 
         }
@@ -192,6 +190,10 @@ class Database {
     $update_string = '- Add app_info table for tracking DB version internally.<br />' . 
                     '- Add temp_data table for browse/filter/sorting.<br />'; 
     $versions[] = array('version'=>'0001','description'=>$update_string); 
+    $update_string = '- Add notes to image.<br />' . 
+                    '- Add user to image.<br />' . 
+                    '- Remove data directory prefix from filename on media and image.<br />';
+    $versions[] = array('version'=>'0002','description'=>$update_string); 
 
 
     return $versions; 
@@ -227,7 +229,7 @@ class Database {
             return false; 
           }
         }
-      }
+      } // if it's newer
 
     } // end foreach
 
@@ -281,6 +283,37 @@ class Database {
 
     $sql = "ALTER TABLE `image` ADD `user` INT(10) UNSIGNED NOT NULL AFTER `type`";
     $retval = \Dba::write($sql) ? $retval : false; 
+
+    // Remove data_path from image and media tables
+    $sql = "SELECT `uid`,`data` FROM `image`"; 
+    $db_results = \Dba::read($sql); 
+
+    while ($row = \Dba::fetch_assoc($db_results)) { 
+      $row['data'] = ltrim($row['data'],\Config::get('data_root')); 
+      $images[] = $row;       
+    } 
+
+    foreach ($images as $image) { 
+      $data = \Dba::escape($image['data']); 
+      $uid = \Dba::escape($image['uid']); 
+      $sql = "UPDATE `image` SET `data`='$data' WHERE `uid`='$uid' LIMIT 1"; 
+      $retval = \Dba::write($sql) ? $retval : false; 
+    } // end foreach images
+
+    $sql = "SELECT `uid`,`filename` FROM `media`"; 
+    $db_results = \Dba::read($sql);
+
+    while ($row = \Dba::fetch_assoc($db_results)) {
+      $row['filename'] = ltrim($row['filename'],\Config::get('data_root')); 
+      $media[] = $row; 
+    }
+
+    foreach ($media as $item) { 
+      $filename = \Dba::escape($item['filename']); 
+      $uid = \Dba::escape($item['uid']); 
+      $sql = "UPDATE `media` SET `filename`='$filename' WHERE `uid`='$uid' LIMIT 1"; 
+      $retval = \Dba::write($sql) ? $retval : false; 
+    } // end foreach media
 
     return $retval; 
 

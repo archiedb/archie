@@ -41,7 +41,7 @@ class content {
 
     $row = Dba::fetch_assoc($db_results);
 
-    $this->filename = $row['data'];
+    $this->filename = Config::get('data_root') . '/' . $row['data'];
     $this->mime = $row['type'];
     $this->parentuid = $row['record'];
 
@@ -78,7 +78,7 @@ class content {
 		// We didn't find anything :(
 		if (!count($row)) { return false; }
 
-		$this->filename = $row['filename'];
+		$this->filename = Config::get('data_root') . '/' . $row['filename'];
 		$this->uid	= $row['uid'];
 		$this->parentuid = $row['record']; 
 		$this->mime	= 'image/png'; 
@@ -99,7 +99,7 @@ class content {
 
 		$row = Dba::fetch_assoc($db_results); 
 
-		$this->filename = $row['filename']; 
+		$this->filename = Config::get('data_root') . '/' . $row['filename']; 
 		$this->uid	= $row['uid']; 
 		$this->parentuid = $row['record']; 
 		$this->mime	= 'application/pdf'; 
@@ -169,7 +169,7 @@ class content {
 			return false; 
 		} 
 
-		$filename = Dba::escape($filename); 
+		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
 		$uid = Dba::escape($uid); 
 		$mime_type = Dba::escape($mime_type); 
 		$sql = "INSERT INTO `image` (`data`,`record`,`type`) VALUES ('$filename','$uid','$mime_type')"; 
@@ -221,7 +221,7 @@ class content {
 		} 
 
 		// Insert a record of this into the media table (why do we have an images table??!@)
-		$filename = Dba::escape($filename); 
+		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
 		$uid = Dba::escape($uid); 
 		$type = 'qrcode';
 
@@ -269,7 +269,7 @@ class content {
 		$pdf->Output($filename);
 
 		if (!$update_record) { 
-			$filename = Dba::escape($filename); 
+			$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
 			$uid = Dba::escape($record->uid); 
 			$type = 'ticket'; 
 
