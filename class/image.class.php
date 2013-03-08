@@ -66,12 +66,29 @@ class image {
 			return false; 
 		} 		
 
+		// We want to maintain the aspect ration, so figure out our new dimensions within passed constraints
 		$image_size = array('height'=>imagesy($image), 'width'=>imagesx($image)); 
+
+		$ratio = $image_size['height'] / $image_size['width']; 
+
+		$resized = array(); 
+
+		if ($image_size['height'] > $image_size['width']) { 
+			$resized['height'] = $size['height']; 
+			$resized['width'] = $size['height']/$ratio; 
+		}
+		elseif ($image_size['width'] > $image_size['height']) { 
+			$resized['width'] = $size['width']; 
+			$resized['height'] = $size['width'] * $ratio; 
+		}
+		else { 
+			$resized = $size; 
+		}
 		
 		// Create blank image of requested size
-		$thumbnail = ImageCreateTrueColor($size['width'],$size['height']); 
+		$thumbnail = ImageCreateTrueColor($resized['width'],$resized['height']); 
 
-		if (!ImageCopyResampled($thumbnail,$image,0,0,0,0,$size['width'],$size['height'],$image_size['width'],$image_size['height'])) { 
+		if (!ImageCopyResampled($thumbnail,$image,0,0,0,0,$resized['width'],$resized['height'],$image_size['width'],$image_size['height'])) { 
 			Event::error('Image','Unable to resize thumbnail, PHP-GD failure'); 
 			return false; 
 		}

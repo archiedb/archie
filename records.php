@@ -31,7 +31,7 @@ switch (\UI\sess::location('action')) {
 		fclose($handle); 
 		
 		// If thumbnail generation worked, lets write it!
-		if (!$thumb = Image::generate_thumb($image_data,array('height'=>150,'width'=>150),$path_info['extension'])) { 
+		if (!$thumb = Image::generate_thumb($image_data,array('height'=>75,'width'=>75),$path_info['extension'])) { 
 			Event::error('Image','Thumb from Upload not generated'); 
 		} 
 		else { 
