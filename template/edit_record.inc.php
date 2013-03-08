@@ -196,14 +196,14 @@ if (INIT_LOADED != '1') { exit; }
         foreach ($images as $image) {
         $i++;
 ?>
-  <li class="span4">
+  <li class="span2">
     <div class="thumbnail">
       <img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
       <hr />
       <p class="text-center">
-        <a class="btn " target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">Open</a>
+        <a class="btn btn-small" target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">Open</a>
       <?php if (Access::has('image','delete',$image['uid'])) { ?>
-        <a class="btn btn-danger" href="#confirm_delete_image_<?php echo scrub_out($image['uid']); ?>" role="button" data-toggle="modal">Delete</a>
+        <a class="btn btn-danger btn-small" href="#confirm_delete_image_<?php echo scrub_out($image['uid']); ?>" role="button" data-toggle="modal">Delete</a>
         <?php require \UI\template('/records/confirm_delete_image'); ?>
       <?php } ?>
       </p>
