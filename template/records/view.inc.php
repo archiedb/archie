@@ -62,7 +62,7 @@ if (INIT_LOADED != '1') { exit; }
         foreach ($images as $image) {
         $i++;
 ?>
-  <li class="span2">
+  <li class="span3">
     <div class="thumbnail">
       <img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
       <hr />
