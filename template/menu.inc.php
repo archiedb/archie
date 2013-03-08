@@ -17,9 +17,9 @@ if (INIT_LOADED != '1') { exit; }
           <li class="divider-vertical"></li>
           <li><a href="<?php echo Config::get('web_path'); ?>/records">View</a></li>
           <li class="divider-vertical"></li>
+<?php if (Access::has('admin','read')) { ?>
           <li><a href="<?php echo Config::get('web_path'); ?>/reports">Reports</a></li>
           <li class="divider-vertical"></li>
-<?php if (Access::has('admin','read')) { ?>
           <li class="dropdown">
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
             <ul class="dropdown-menu">
