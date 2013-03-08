@@ -17,7 +17,7 @@ if (INIT_LOADED != '1') { exit; }
           <li class="divider-vertical"></li>
           <li><a href="<?php echo Config::get('web_path'); ?>/records">View</a></li>
           <li class="divider-vertical"></li>
-          <li><a href="<?php echo Config::get('web_path'); ?>/admin.php?action=export&type=csv">CSV</a></li>
+          <li><a href="<?php echo Config::get('web_path'); ?>/reports">Reports</a></li>
           <li class="divider-vertical"></li>
 <?php if (Access::has('admin','read')) { ?>
           <li class="dropdown">

@@ -124,6 +124,9 @@ class sess {
       case '3':
         return isset(self::$location['3']) ? self::$location['3'] : false;
       break;
+      case '4': 
+        return isset(self::$location['4']) ? self::$location['4'] : false;
+      break; 
       case 'absolute':
         $page = isset(self::$location['0']) ? self::$location['0'] : '';
         $action = isset(self::$location['1']) ? self::$location['1'] : '';

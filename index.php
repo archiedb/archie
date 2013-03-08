@@ -14,8 +14,11 @@ switch (\UI\sess::location('page')) {
     require_once 'manage.php';
   break; 
   default:
-  case 'stats':
-    require_once 'stats.php';
+    require_once \UI\template('/header'); 
+    require_once \UI\template('/index');
+  break; 
+  case 'reports':
+    require_once 'reports.php';
   break; 
   case 'users':
     require_once 'users.php';
