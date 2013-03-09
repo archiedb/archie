@@ -43,7 +43,7 @@ if (INIT_LOADED != '1') { exit; }
               <select name="field" class="span2">
               <?php $name = scrub_in($_POST['field']) . '_active'; ${$name}=' selected="selected"'; ?>
                 <option value="catalog_id"<?php echo $catalog_id_active; ?>>Catalog #</option>
-                <option value="item"<?php echo $item_active; ?>>Item</option>
+                <option value="user"<?php echo $user_active; ?>>User</option>
                 <option value="station_index"<?php echo $station_index_active; ?>>RN</option>
                 <option value="notes"<?php echo $notes_active; ?>>Notes</option> 
                 <option value="feature"<?php echo $feature_active; ?>>Feature</option> 

@@ -70,6 +70,7 @@ class View {
       'height',
       'width',
       'thickness',
+      'user',
       'quanity',
       'xrf_artifact_index',
       'created',
@@ -484,6 +485,14 @@ class View {
       case 'unit': 
         $filter_sql = " `record`.`unit` = '" . Dba::escape(Unit::name_to_id($value)) . "' AND ";
       break;
+      case 'user':
+        $user = User::get_from_username($value);
+        if (!$user->uid) { 
+          $filter_sql = " 1=0 AND ";
+        } else {
+          $filter_sql = " `record`.`user` = '" . Dba::escape($user->uid) . "' AND "; 
+        }
+      break; 
       case 'item':
       case 'station_index':
       case 'height':

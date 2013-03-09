@@ -123,6 +123,7 @@ switch (\UI\sess::location('action')) {
     $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'station_index';
     $order = \UI\sess::location('3') ? strtoupper(\UI\sess::location('3')) : '';
     $view = new View(); 
+    $view->set_type('record'); 
     $view->set_sort($field,$order); 
     $view->set_start(0); 
     $records = $view->run(); 
@@ -130,6 +131,7 @@ switch (\UI\sess::location('action')) {
   break; 
   case 'offset': 
     $view = new View(); 
+    $view->set_type('record'); 
     $view->set_start(\UI\sess::location('objectid')); 
     $records= $view->run(); 
     require_once \UI\template('/show_records'); 
