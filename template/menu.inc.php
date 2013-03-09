@@ -54,6 +54,8 @@ if (INIT_LOADED != '1') { exit; }
                 <option value="thickness"<?php echo $thickness_active; ?>>Thickness</option>
                 <option value="quanity"<?php echo $quanity_active; ?>>Quanity</option>
                 <option value="quad"<?php echo $quad_active; ?>>Quad</option>
+                <option value="material"<?php echo $material_active; ?>>Material</option>
+                <option value="classification"<?php echo $classification_active; ?>>Classification</option>
               </select>
               <input name="value" class="span2" type="text" placeholder="Value..." value="<?php echo scrub_out($_POST['value']); ?>">
               <button type="submit" class="btn">Search</button>

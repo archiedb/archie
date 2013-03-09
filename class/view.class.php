@@ -493,6 +493,22 @@ class View {
           $filter_sql = " `record`.`user` = '" . Dba::escape($user->uid) . "' AND "; 
         }
       break; 
+      case 'material': 
+        $uid = Material::name_to_id($value); 
+        if (!$uid) { 
+          $filter_sql = " 1=0 AND "; 
+        } else { 
+          $filter_sql = " `record`.`material` = '" . Dba::escape($uid) . "' AND ";
+        }
+      break;
+      case 'classification':
+        $uid = Classification::name_to_id($value); 
+        if (!$uid) { 
+          $filter_sql = " 1=0 AND "; 
+        } else { 
+          $filter_sql = " `record`.`classification` = '" . Dba::escape($uid) . "' AND "; 
+        }  
+      break; 
       case 'item':
       case 'station_index':
       case 'height':
