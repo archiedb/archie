@@ -482,9 +482,6 @@ class View {
       case 'feature':
         $filter_sql = " `record`.`feature` = '" . Dba::escape($value) . "' AND "; 
       break;
-      case 'unit': 
-        $filter_sql = " `record`.`unit` = '" . Dba::escape(Unit::name_to_id($value)) . "' AND ";
-      break;
       case 'user':
         $user = User::get_from_username($value);
         if (!$user->uid) { 
@@ -508,6 +505,9 @@ class View {
         } else { 
           $filter_sql = " `record`.`classification` = '" . Dba::escape($uid) . "' AND "; 
         }  
+      break; 
+      case 'unit':
+        $filter_sql = " `record`.`unit` = '" . Dba::escape($value) . "' AND "; 
       break; 
       case 'item':
       case 'station_index':
