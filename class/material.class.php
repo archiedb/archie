@@ -1,6 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
-
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 class Material extends database_object { 
 
@@ -30,6 +29,21 @@ class Material extends database_object {
 	 */
 	public static function build_cache($objects) { 
 
+    if (!is_array($objects) || !count($objects)) { return false; }
+
+    $idlist = '(' . implode(',',$objects) . ')';
+
+    // passing array(false) causes this
+    if ($idlist == '()') { return false; }
+
+    $sql = 'SELECT * FROM `material` WHERE `material`.`uid` IN ' . $idlist;
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('material',$row['uid'],$row); 
+    }
+
+    return true; 
 
 	} // build_cache
 
@@ -62,8 +76,8 @@ class Material extends database_object {
 
 		$sql = "SELECT * FROM `material`"; 
 		$db_results = Dba::read($sql); 
-		//FIXME: Inefficient 
 		while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('material',$row['uid'],$row); 
 			$results[] = new Material($row['uid']); 
 		} 
 

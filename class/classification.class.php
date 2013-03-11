@@ -1,6 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
-
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 class Classification extends database_object { 
 
@@ -26,14 +25,28 @@ class Classification extends database_object {
 
 	} // constructor
 
-        /**
-         * build_cache
-         * Build a cache of our objects, save some queries
-         */
-        public static function build_cache($objects) {
+  /**
+    * build_cache
+    * Build a cache of our objects, save some queries
+    */
+  public static function build_cache($objects) {
+  
+    if (!is_array($objects) || !count($objects)) { return false; }
 
+    $idlist = '(' . implode(',',$objects) . ')';
 
-        } // build_cache
+    if ($idlist == '()') { return false; }
+
+    $sql = 'SELECT * FROM `classification` WHERE `classification`.`uid` IN ' . $idlist; 
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('classification',$row['uid'],$row); 
+    }
+
+    return true; 
+  
+  } // build_cache
 
 	/**
 	 * refresh
@@ -70,6 +83,7 @@ class Classification extends database_object {
 
 		$results = array(); 
 		while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('classification',$row['uid'],$row); 
 			$results[] = new Classification($row['uid']); 
 		} 
 
