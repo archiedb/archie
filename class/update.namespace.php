@@ -297,7 +297,7 @@ class Database {
       $data = \Dba::escape($image['data']); 
       $uid = \Dba::escape($image['uid']); 
       $sql = "UPDATE `image` SET `data`='$data' WHERE `uid`='$uid' LIMIT 1"; 
-      $retval = \Dba::write($sql) ? $retval : false; 
+      \Dba::write($sql); 
     } // end foreach images
 
     $sql = "SELECT `uid`,`filename` FROM `media`"; 
@@ -312,7 +312,7 @@ class Database {
       $filename = \Dba::escape($item['filename']); 
       $uid = \Dba::escape($item['uid']); 
       $sql = "UPDATE `media` SET `filename`='$filename' WHERE `uid`='$uid' LIMIT 1"; 
-      $retval = \Dba::write($sql) ? $retval : false; 
+      \Dba::write($sql);  
     } // end foreach media
 
     return $retval; 
