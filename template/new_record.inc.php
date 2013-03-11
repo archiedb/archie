@@ -30,7 +30,9 @@ if (INIT_LOADED != '1') { exit; }
 	<option value="-1">&nbsp;</option> 
 	<?php foreach (unit::$values as $value) {
 	        $is_selected = '';
-	        if ($_POST['unit'] == $value) { $is_selected=" selected=\"selected\""; }
+          if (isset($_POST['unit'])) { 
+  	        if ($_POST['unit'] == $value) { $is_selected=" selected=\"selected\""; }
+          } 
 	?>
 	        <option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
 	<?php } ?>
@@ -42,9 +44,11 @@ if (INIT_LOADED != '1') { exit; }
 </td><td>
 	<select name="quad"> 
 		<option value="">&nbsp;</option> 
-	<?php foreach (quad::$values as $key=>$value) { 
-	                $is_selected = '';
-                if ($_POST['quad'] == $key) { $is_selected=" selected=\"selected\""; }
+      <?php foreach (quad::$values as $key=>$value) { 
+        $is_selected = '';
+        if (isset($_POST['quad'])) { 
+          if ($_POST['quad'] == $key) { $is_selected=" selected=\"selected\""; }
+        }
         ?>
                 <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
         <?php } ?>
@@ -79,7 +83,9 @@ if (INIT_LOADED != '1') { exit; }
 	<select name="lsg_unit">
 	<?php foreach (lsgunit::$values as $key=>$name) {
 	        $is_selected = '';
-	        if ($_POST['lsg_unit'] == $key) { $is_selected=" selected=\"selected=\""; }
+          if (isset($_POST['lsg_unit'])) { 
+  	        if ($_POST['lsg_unit'] == $key) { $is_selected=" selected=\"selected=\""; }
+          } 
 	?>
 	        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
 	<?php } ?>
@@ -98,7 +104,9 @@ if (INIT_LOADED != '1') { exit; }
 	<?php $materials = Material::get_all(); ?>
 	<?php foreach ($materials as $material) { 
 		$isactive='';
-		if ($_POST['material'] == $material->uid) { $isactive=' selected="selected"'; }
+    if (isset($_POST['material'])) { 
+  		if ($_POST['material'] == $material->uid) { $isactive=' selected="selected"'; }
+    }
 	?>
 	<option value="<?php echo scrub_out($material->uid); ?>"<?php echo $isactive; ?>><?php echo scrub_out($material->name); ?></option>
 	<?php } ?>
