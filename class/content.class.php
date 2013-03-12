@@ -18,6 +18,7 @@ class content {
   private $valid_types = array('record','thumb','qrcode','ticket'); 
 
   public function __construct($uid='',$type) {
+
     if (!in_array($type,$this->valid_types)) {
       Event::error('general','Invalid Content Type Specified');
       return false;
@@ -76,7 +77,7 @@ class content {
 		$row = Dba::fetch_assoc($db_results); 
 
 		// We didn't find anything :(
-		if (!count($row)) { return false; }
+		if (!isset($row['uid'])) { return false; }
 
 		$this->filename = Config::get('data_root') . '/' . $row['filename'];
 		$this->uid	= $row['uid'];
@@ -98,6 +99,8 @@ class content {
 		$db_results = Dba::read($sql); 
 
 		$row = Dba::fetch_assoc($db_results); 
+
+    if (!isset($row['uid'])) { return false; }
 
 		$this->filename = Config::get('data_root') . '/' . $row['filename']; 
 		$this->uid	= $row['uid']; 
@@ -250,7 +253,7 @@ class content {
 
 		$pdf = new FPDF();
 		$pdf->AddPage('L',array('88.9','25.4'));
-		
+
 		// We need the QRcode filename here
 		$qrcode = new Content($record->uid,'qrcode'); 
 		$pdf->Image($qrcode->filename,'0','0','25.4','25.4'); 
