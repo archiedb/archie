@@ -118,7 +118,7 @@ class content {
 	} // source
 
 	// This writes out the specified data 
-	public static function write($uid,$type,$data='',$mime_type='') { 
+	public static function write($uid,$type,$data='',$mime_type='',$options='') { 
 		
 		$record = new Record($uid); 
 
@@ -143,7 +143,7 @@ class content {
 			case 'record': 
 				$extension = self::get_extension($mime_type); 
 				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
-				$results = self::write_record($uid,$data,$filename,$mime_type); 
+				$results = self::write_record($uid,$data,$filename,$mime_type,$options); 
 			break; 
 		} 
 
@@ -154,7 +154,7 @@ class content {
 	/**
 	 * write a record image
 	 */
-	private static function write_record($uid,$data,$filename,$mime_type) {
+	private static function write_record($uid,$data,$filename,$mime_type,$notes) {
 
 		// Put it on the filesystem
 		$handle = fopen($filename,'w'); 
@@ -172,7 +172,9 @@ class content {
 		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
 		$uid = Dba::escape($uid); 
 		$mime_type = Dba::escape($mime_type); 
-		$sql = "INSERT INTO `image` (`data`,`record`,`type`) VALUES ('$filename','$uid','$mime_type')"; 
+    $notes = Dba::escape($notes); 
+    $user = Dba::escape(\UI\sess::$user->uid); 
+		$sql = "INSERT INTO `image` (`data`,`record`,`type`,`user`,`notes`) VALUES ('$filename','$uid','$mime_type','$user','$notes')"; 
 		$db_results = Dba::write($sql); 
 
 		if (!$db_results) { 
@@ -421,6 +423,80 @@ class content {
 		return $extension;
 
 	} // get_extension 
+
+  /**
+   * upload
+   * Handles uploading of media (http upload)
+   */
+  public static function upload($type,$uid,$input,$source) { 
+
+    $retval = true; 
+
+    switch ($type) { 
+      case 'record': 
+        $retval = self::upload_record($uid,$input,$source); 
+      break; 
+      default: 
+        $retval = false; 
+      break; 
+    } // end switch
+
+    return $retval; 
+
+  } // upload
+
+  /**
+   * upload_record
+   * This handles uploading of an image for a record
+   */
+  private static function upload_record($uid,$post,$files) { 
+
+    if (!isset($files['image']['name'])) { 
+      Error::add('upload','No file found, please select a file to upload');
+      return false; 
+    } 
+
+    if (empty($files['image']['tmp_name'])) { 
+      Error::add('upload','Upload failed, please try again'); 
+      return false; 
+    } 
+
+    $path_info = pathinfo($files['image']['name']); 
+
+    $allowed_types = array('png','jpg','tiff','gif'); 
+    if (!in_array(strtolower($path_info['extension']),$allowed_types)) { 
+      Error::add('upload','Invalid file type, only png,jpg,tiff and gif are allowed'); 
+      return false; 
+    }
+
+    // Read in source file
+    $image_data = file_get_contents($files['image']['tmp_name']); 
+
+    if (!$image_data) { 
+      Error::add('upload','unable to read uploaded file, please try again'); 
+      return false; 
+    } 
+
+    // We need the mime type now
+    $mime = 'image/' . $path_info['extension'];
+
+    // Make a thumbnail
+    $thumb = Image::generate_thumb($image_data,array('height'=>120,'width'=>120),$path_info['extension']);
+
+    if (!$thumb) { 
+      Error::add('upload','Unable to create thumbnail of uploaded image, make sure it is a valid image'); 
+      return false; 
+    }
+
+    // Write the thumbnail and record image to the filesystem, and insert into database
+    Content::write($uid,'thumb',$thumb,$mime); 
+    Content::write($uid,'record',$image_data,$mime,$post['description']); 
+
+    Event::add('success','Image uploaded, thanks!','small'); 
+
+    return true; 
+
+  } // upload_record
 
 	/**
 	 * regenerate_qrcodes

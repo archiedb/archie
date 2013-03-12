@@ -211,14 +211,16 @@ if (INIT_LOADED != '1') { exit; }
 <br />
 <ul class="thumbnails">
 <?php
-        $images = $record->get_images();
-        foreach ($images as $image) {
-        $i++;
+$images = $record->get_images();
+foreach ($images as $image) {
 ?>
   <li class="span3">
     <div class="thumbnail">
       <img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
       <hr />
+      <p class="text-center">
+        <?php echo $image['notes']; ?>
+      </p>
       <p class="text-center">
         <a class="btn btn-small" target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">Open</a>
       <?php if (Access::has('image','delete',$image['uid'])) { ?>

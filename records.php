@@ -6,46 +6,9 @@ require_once 'template/header.inc.php';
 // Switch on the action
 switch (\UI\sess::location('action')) { 
 	case 'upload_image': 
-		$path_info = pathinfo($_FILES['image']['name']); 
-		$upload['file'] = $_FILES['image']['tmp_name']; 
-		$upload['mime'] = 'image/' . $path_info['extension']; 
-
-		// Allowed image types 
-		$allowed_types = array('png','jpg','tiff','gif'); 
-		if (!in_array(strtolower($path_info['extension']),$allowed_types)) { 
-			Error::add('upload','Invalid File Type, PNG,JPG,TIFF & GIF Allowed'); 
-		} 
-		
-		// Make sure we got something
-		if (empty($_FILES['image']['tmp_name'])) { 
-			Error::add('upload','No Image uploaded'); 
-		} 
-
-		if (Error::occurred()) { 
-			$record = new Record($_POST['record_id']); 
-      Event::add('error','Unable to upload image','small'); 
-			require_once 'template/edit_record.inc.php'; 
-			break; 
-		} 
-		$handle = fopen($upload['file'],'rb');
-		$image_data = fread($handle,filesize($upload['file']));
-		fclose($handle); 
-		
-		// If thumbnail generation worked, lets write it!
-		if (!$thumb = Image::generate_thumb($image_data,array('height'=>120,'width'=>120),$path_info['extension'])) { 
-			Event::error('Image','Thumb from Upload not generated'); 
-		} 
-		else { 
-			Content::write($_POST['record_id'],'thumb',$thumb,$upload['mime']); 
-		} 
-
-		if (!Content::write($_POST['record_id'],'record',$image_data,$upload['mime'])) { 
-			Error::add('upload','Upload failed'); 
-		}
+    Content::upload('record',$_POST['record_id'],$_POST,$_FILES); 
 		$record = new Record($_POST['record_id']);
-    Event::add('success','Image Uploaded, thanks!','small'); 
-		require_once 'template/edit_record.inc.php';
-	
+		require_once \UI\template('/edit_record'); 
 	break; 
   case 'image_delete':
     if (!Access::has('image','delete',$_POST['uid'])) {  break; }
