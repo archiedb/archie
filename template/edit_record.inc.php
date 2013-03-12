@@ -209,27 +209,5 @@ if (INIT_LOADED != '1') { exit; }
 </form>
 </div><!-- End content block -->
 <br />
-<ul class="thumbnails">
-<?php
-$images = $record->get_images();
-foreach ($images as $image) {
-?>
-  <li class="span3">
-    <div class="thumbnail">
-      <img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image['uid']);?>" alt="Image <?php echo $i; ?>" />
-      <hr />
-      <p class="text-center">
-        <?php echo $image['notes']; ?>
-      </p>
-      <p class="text-center">
-        <a class="btn btn-small" target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image['uid']); ?>">Open</a>
-      <?php if (Access::has('image','delete',$image['uid'])) { ?>
-        <a class="btn btn-danger btn-small" href="#confirm_delete_image_<?php echo scrub_out($image['uid']); ?>" role="button" data-toggle="modal">Delete</a>
-        <?php require \UI\template('/records/confirm_delete_image'); ?>
-      <?php } ?>
-      </p>
-    </div>
-  </li>
-<?php } ?>
-</ul>
+<?php require_once \UI\template('/records/images'); ?>
 </fieldset>

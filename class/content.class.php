@@ -498,6 +498,34 @@ class content {
 
   } // upload_record
 
+  /**
+   * update
+   * Updates the content
+   */
+  public static function update($type,$uid,$input) { 
+
+    switch ($type) { 
+      case 'record': 
+        self::update_record($uid,$input); 
+      break;
+    } // type
+
+  } // update
+
+  /**
+   * update_record
+   * This updates the information on a record
+   */
+  private static function update_record($uid,$input) { 
+
+    $uid = Dba::escape($uid); 
+    $notes = Dba::escape($input['description']); 
+
+    $sql = "UPDATE `image` SET `notes`='$notes' WHERE `uid`='$uid' LIMIT 1"; 
+    Dba::write($sql); 
+
+  } // update_record
+
 	/**
 	 * regenerate_qrcodes
 	 * Rebuilds all qrcodes, useful if the URL changes

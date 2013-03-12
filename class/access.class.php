@@ -63,6 +63,16 @@ class Access {
    */
   private static function check_image($action,$uid) { 
 
+    // For now everyone has read
+    switch ($action) { 
+      case 'write':
+        if (\UI\sess::$user->uid) { return true; }
+      break;
+      default:
+
+      break;
+    }
+
     // Right now, only admins
     return false; 
 
