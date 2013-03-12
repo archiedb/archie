@@ -5,6 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <h3>Reports</h3>
 <i>Report requests are acted on every five minutes. Once your report is complete you will receive an e-mail notification.</i>
+<?php Event::display(); ?>
 <fieldset>
 <legend>CSV Reports</legend>
 </fieldset>

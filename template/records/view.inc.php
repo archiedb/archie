@@ -7,6 +7,7 @@ if (INIT_LOADED != '1') { exit; }
   <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn btn-primary">Edit Record</a>
   <a target="_blank" href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success">Print Ticket</a>
 </p>
+<?php Event::display(); ?>
 <div class="content-block">
 <div class="record-header-left">
 <h3><?php echo $record->site . '-' . $record->catalog_id; ?></h3>

@@ -15,11 +15,14 @@ switch (\UI\sess::location('action')) {
     }
     require_once 'template/manage_tools.inc.php'; 
   break;
-  default: 
   case 'tools':
+    require_once \UI\template('/manage/tools'); 
+  break; 
+  default: 
+  case 'status':
     // Include debug tools 
     require_once 'class/debug.namespace.php';
-    require_once 'template/manage_tools.inc.php';
+    require_once \UI\template('/manage/status'); 
   break; 
 } // end action switch 
 

@@ -3,6 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
+<?php Event::display(); ?>
 <div class="content-block">
 <fieldset class="record"><legend>Edit Record - <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></legend>
 <?php Error::display('general'); ?>

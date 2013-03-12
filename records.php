@@ -23,6 +23,7 @@ switch (\UI\sess::location('action')) {
 
 		if (Error::occurred()) { 
 			$record = new Record($_POST['record_id']); 
+      Event::add('error','Unable to upload image','small'); 
 			require_once 'template/edit_record.inc.php'; 
 			break; 
 		} 
@@ -42,6 +43,7 @@ switch (\UI\sess::location('action')) {
 			Error::add('upload','Upload failed'); 
 		}
 		$record = new Record($_POST['record_id']);
+    Event::add('success','Image Uploaded, thanks!','small'); 
 		require_once 'template/edit_record.inc.php';
 	
 	break; 
@@ -69,6 +71,7 @@ switch (\UI\sess::location('action')) {
 			require_once 'template/edit_record.inc.php'; 
 		} 
 		else { 
+      Event::add('success','Record has been updated, thanks!','small'); 
 			$record = new Record($record->uid); 
 			require_once \UI\template('/records/view'); 
 	  } 
