@@ -182,15 +182,33 @@ if (INIT_LOADED != '1') { exit; }
 </form>
 </div><!-- End content block -->
 
+<div class="content-block">
 <fieldset class="attachment">
 <legend>Item Pictures</legend>
+<?php Error::display('upload'); ?>
 <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_image">
 	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
 	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
-	<input type="file" class="textbox" name="image" />
-	<button class="btn btn-primary" type="submit">Attach Image</button>
+<div class="row">
+  <div class="span4">
+    <h5>Image</h5>
+    <div class="fileupload fileupload-new" data-provides="fileupload">
+      <div class="input-append">
+        <div class="uneditable-input span3">
+          <i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span>
+        </div>
+        <span class="btn btn-file"><span class="fileupload-new">Select</span>
+        <span class="fileupload-exists">Change</span><input name="image" type="file" /></span>
+        <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+      </div>
+    </div>
+  </div>
+  <div class="span6 offset1"><h5>Description</h5><input type="text" class="span4" name="description" /></div>
+</div>
+<button class="btn btn-primary" type="submit">Upload</button>
 </form>
-<?php Error::display('upload'); ?>
+</div><!-- End content block -->
+<br />
 <ul class="thumbnails">
 <?php
         $images = $record->get_images();
