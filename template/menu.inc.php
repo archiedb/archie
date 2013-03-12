@@ -25,8 +25,9 @@ if (INIT_LOADED != '1') { exit; }
             <ul class="dropdown-menu">
               <li><a href="<?php echo Config::get('web_path'); ?>/users/manage">Users</a></li>
               <li class="divider"></li>
-              <li class="nav-header">Settings</li>
-              <li><a href="<?php echo Config::get('web_path'); ?>/manage/tools">System Tools</a>
+              <li class="nav-header">System</li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/status">Status</a>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/tools">Tools</a>
             </ul>
           </li>
           <li class="divider-vertical"></li>
