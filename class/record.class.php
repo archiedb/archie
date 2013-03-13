@@ -68,14 +68,17 @@ class Record extends database_object {
 
     $materials = array(); 
     $classifications = array(); 
+    $users = array(); 
 
     while ($row = Dba::Fetch_assoc($db_results)) { 
       parent::add_to_cache('record',$row['uid'],$row); 
       $materials[$row['material']] = $row['material']; 
       $classifications[$row['classification']] = $row['classification']; 
+      $users[$row['user']] = $row['user']; 
     } 
     
     Material::build_cache($materials); 
+    User::build_cache($users); 
     Classification::build_cache($classifications); 
 
     return true; 

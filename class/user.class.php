@@ -33,6 +33,22 @@ class User extends database_object {
    */
   public static function build_cache($objects) { 
 
+    if (!is_array($objects) || !count($objects)) { return false; }
+
+    $idlist = '(' . implode(',',$objects) . ')';
+
+    // passing array(false causes this
+    if ($idlist == '()') { return false; }
+
+    $sql = 'SELECT * FROM `users` WHERE `users`.`uid` IN ' . $idlist; 
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('users',$row['uid'],$row); 
+    }
+
+    return true; 
+
 
   } //build_cache
 
