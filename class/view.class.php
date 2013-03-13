@@ -204,7 +204,7 @@ class View {
    */
   public function set_select($field) { 
 
-    $this->_state['select'][] = $field; 
+    $this->_state['select'][$field] = $field; 
 
   } // set_select
 
@@ -357,6 +357,16 @@ class View {
   } // get_filter_sql 
 
   /**
+   * get_sort
+   * singular but returns an array of sorted objects
+   */
+  public function get_sort() { 
+
+    return $this->_state['sort']; 
+
+  } // get_sort
+
+  /**
    * get_sort_sql
    * Construct the sorting sql statement 
    */
@@ -471,6 +481,15 @@ class View {
   } // get_allowed_filters
 
   /**
+   * get_allowed_sorts
+   * Return the allowed sorts
+   */
+  public static function get_allowed_sorts($type) { 
+
+    return self::$allowed_sorts; 
+
+  } // get_allowed_sorts
+  /**
    * sql_filter
    * Take a filter name and value (we're filtering) and return the
    * sql construct
@@ -554,6 +573,9 @@ class View {
     $order = ($order == 'DESC') ? 'DESC' : 'ASC';
 
     switch ($field) { 
+      case 'lsg_unit':
+      case 'updated':
+      case 'created':
       case 'height': 
       case 'width': 
       case 'thickness': 
@@ -564,6 +586,8 @@ class View {
       case 'quad': 
       case 'unit': 
       case 'catalog_id':
+      case 'xrf_matrix_index':
+      case 'xrf_artifact_index':
       case 'station_index':
         $sql = "`record`.`$field`";
       break;
@@ -574,6 +598,10 @@ class View {
       case 'classification': 
         $sql = "`classification`.`name`";
         $this->set_join('left','`classification`','`classification`.`uid`','`record`.`classification`',100); 
+      break; 
+      case 'user': 
+        $sql = '`users`.`username`';
+        $this->set_join('left','`users`','`users`.`uid`','`record`.`user`',100); 
       break; 
     } 
 

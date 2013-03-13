@@ -3,7 +3,23 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<h3>Records for site <?php echo Config::get('site'); ?></h3>
+<div class="page-header">
+  <small class="pull-right">
+  <div class="btn-group">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Sort Records By <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+      <?php 
+        foreach (View::get_allowed_sorts('record') as $field) { 
+      ?>
+        <li><a href="<?php echo Config::get('web_path'); ?>/records/sort/<?php echo scrub_out($field); ?>"><?php echo scrub_out(\UI\field_name($field)); ?></a></li>
+      <?php } ?>
+      </ul>
+  </div>
+  </small>
+  <h3>
+    Records for site <?php echo Config::get('site'); ?>
+  </h3>
+</div>
 <?php require \UI\template('/page_header'); ?>
 <table class="table table-hover table-bordered table-condensed">
   <thead>
