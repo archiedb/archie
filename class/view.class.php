@@ -461,6 +461,16 @@ class View {
   } 
 
   /**
+   * get_allowed_filters
+   * Return the allowed filters based on type
+   */
+  public static function get_allowed_filters($type) { 
+
+    return self::$allowed_filters; 
+
+  } // get_allowed_filters
+
+  /**
    * sql_filter
    * Take a filter name and value (we're filtering) and return the
    * sql construct
@@ -509,14 +519,24 @@ class View {
       case 'unit':
         $filter_sql = " `record`.`unit` = '" . Dba::escape($value) . "' AND "; 
       break; 
+      case 'created':
+      case 'updated':
+        $unix_time = strtotime($value); 
+        $start = $unix_time - 86400; 
+        $end = $unix_time + 85400; 
+        $filter_sql = " (`record`.`$filter` >= '" . Dba::escape($start) . "' AND `record`.`$filter` <= '" . Dba::escape($end) . "') AND";
+      break;
       case 'item':
       case 'station_index':
+      case 'level':
       case 'height':
       case 'width':
       case 'thickness':
       case 'catalog_id':
       case 'quanity':
       case 'weight':
+      case 'xrf_matrix_index':
+      case 'xrf_artifact_index':
         $filter_sql = " `record`.`$filter` = '" . Dba::escape(intval($value)) . "' AND "; 
       break; 
     } // filter

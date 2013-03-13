@@ -51,7 +51,8 @@ if (INIT_LOADED != '1') { exit; }
   <td colspan="10">
   <div class="accordion-body collapse" style="height: 0px;" id="more_<?php echo scrub_out($record->uid); ?>_info">
     <div class="accordion-inner">
-      <strong>Created by -</strong> <?php echo scrub_out($record->user->username); ?> on <?php echo scrub_out(date("m/d/y",$record->created)); ?>
+      <strong>Created by -</strong> <?php echo scrub_out($record->user->username); ?> on <?php echo scrub_out(date('d-M-Y',$record->created)); ?>
+      <?php if ($record->updated) { ?>last updated on <?php echo scrub_out(date('d-M-Y',$record->updated)); ?><?php } ?>
       <blockquote><?php echo scrub_out($record->notes); ?></blockquote>
     </div>
   </div>

@@ -20,6 +20,25 @@ function return_url($input) {
 } // return url
 
 /**
+ * field_name
+ * Takes a field, and returns the "name" for it (these don't match :S)
+ */
+function field_name($field) { 
+
+  $names = array('catalog_id'=>'Catalog #',
+      'station_index'=>'RN',
+      'xrf_matrix_index'=>'XRF Matrix',
+      'xrf_artifact_index'=>'XRF Artifact',
+      'lsg_unit'=>'L.U',
+      );
+
+  if (in_array($field,array_keys($names))) { return $names[$field]; }
+
+  return ucfirst($field); 
+
+} // field_name
+
+/**
  * boolean_word
  * Take a T/F value and return a pretty response
  */

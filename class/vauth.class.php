@@ -151,6 +151,9 @@ class vauth {
 		$sql = "DELETE FROM `session` WHERE `expire` < '" . time() . "'";
 		$db_results = Dba::write($sql);
 
+		// Also gc the view!
+		View::gc(); 
+
 		return true;
 
 	} // gc

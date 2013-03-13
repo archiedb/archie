@@ -42,23 +42,18 @@ if (INIT_LOADED != '1') { exit; }
         </ul>
             <form method="post" action="<?php echo Config::get('web_path'); ?>/records/search" class="navbar-form pull-right">
               <select name="field" class="span2">
-              <?php $name = scrub_in($_POST['field']) . '_active'; ${$name}=' selected="selected"'; ?>
-                <option value="catalog_id"<?php echo $catalog_id_active; ?>>Catalog #</option>
-                <option value="user"<?php echo $user_active; ?>>User</option>
-                <option value="station_index"<?php echo $station_index_active; ?>>RN</option>
-                <option value="notes"<?php echo $notes_active; ?>>Notes</option> 
-                <option value="feature"<?php echo $feature_active; ?>>Feature</option> 
-                <option value="unit"<?php echo $unit_active; ?>>Unit</option>
-                <option value="weight"<?php echo $weight_active; ?>>Weight</option>
-                <option value="height"<?php echo $height_active; ?>>Height</option>
-                <option value="width"<?php echo $width_active; ?>>Width</option>
-                <option value="thickness"<?php echo $thickness_active; ?>>Thickness</option>
-                <option value="quanity"<?php echo $quanity_active; ?>>Quanity</option>
-                <option value="quad"<?php echo $quad_active; ?>>Quad</option>
-                <option value="material"<?php echo $material_active; ?>>Material</option>
-                <option value="classification"<?php echo $classification_active; ?>>Classification</option>
+              <?php 
+                foreach (View::get_allowed_filters('record') as $filter) { 
+                  $selected = ''; 
+                  if (isset($_POST['field'])) { 
+                    $selected = ($_POST['field'] == $filter) ? ' selected="selected"' : '';
+                  }
+              ?>
+                <option value="<?php echo scrub_out($filter); ?>"<?php echo $selected; ?>><?php echo \UI\field_name($filter); ?></option>
+              <?php } ?>
               </select>
-              <input name="value" class="span2" type="text" placeholder="Value..." value="<?php echo scrub_out($_POST['value']); ?>">
+              <?php $search_value = isset($_POST['value']) ? scrub_out($_POST['value']) : ''; ?>
+              <input name="value" class="span2" type="text" placeholder="Value..." value="<?php echo $search_value; ?>">
               <button type="submit" class="btn">Search</button>
             </form>
           </div><!--/.nav-collapse -->
