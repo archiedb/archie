@@ -11,24 +11,28 @@ if (INIT_LOADED != '1') { exit; }
 </fieldset>
 <?php Error::display('general'); ?>
 <div class="row">
+  <div class="span2"><strong>Report Type</strong></div>
+  <div class="span3"><strong>Report Date</strong></div>
+</div>
+<div class="row">
   <?php $report = new Report('csv','site'); ?>
-  <div class="span2"><strong>Full Site</strong></div>
-  <div class="span3"><em class="muted">Generated:<?php echo $report->state(); ?></em></div>
+  <div class="span2">Full Site</div>
+  <div class="span3"><?php echo $report->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
-      <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/site/<?php echo scrub_out(Config::get('site')); ?>">Rebuild</a>
-      <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/site/<?php echo scrub_out(Config::get('site')); ?>">Download</a>
+      <a class="btn btn-info btn-small" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/site/<?php echo scrub_out(Config::get('site')); ?>">Rebuild</a>
+      <a class="btn btn-primary btn-small" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/site/<?php echo scrub_out(Config::get('site')); ?>">Download</a>
     </p>
   </div>
 </div>
 <div class="row">
   <?php $report = new Report('csv','all'); ?>
-  <div class="span2"><strong>All Site(s)</strong></div>
-  <div class="span3"><em class="muted">Generated:<?php echo $report->state(); ?></em></div>
+  <div class="span2">All Site(s)</div>
+  <div class="span3"><?php echo $report->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
-      <a class="btn btn-info disabled">Rebuild</a>
-      <a class="btn btn-primary disabled">Download</a>
+      <a class="btn btn-small btn-info disabled">Rebuild</a>
+      <a class="btn btn-small btn-primary disabled">Download</a>
     </p>
   </div>
 </div>

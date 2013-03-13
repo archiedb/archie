@@ -176,29 +176,47 @@ class Report {
   } // last_filename; 
 
   /**
+   * last_report
+   * return the date of the last report
+   */
+  public function last_report() { 
+
+    $filename = $this->last_filename(); 
+
+    return filemtime($filename); 
+
+  } // last_report
+
+  /**
    * state
    * This returns a string of the current state of this request
    * a DATE is returned if it's been generated
    */
   public function state() { 
 
+
     // See if there's a current request
     $filename = $this->request_filename(); 
     
     if (file_exists($filename)) { 
-      return 'Updating...';
+      return '<span class="label label-info">Updating...</span>';
     }
 
     $filename = $this->last_filename(); 
 
     if (!file_exists($filename)) { 
-        return 'Never'; 
+        return '<span class="label label-important">Never</span>'; 
     }
     else {
-        return date('d-M-Y H:i:s',filemtime($filename));
+        $class = "label-success"; 
+        // Make sure it's not stale
+        if ($this->is_stale()) { 
+          $class = "label-warning";
+        }
+        return '<span class="label ' . $class . '">' .date('d-M-Y H:i:s',filemtime($filename)) . '</span>';
     }
 
-    return 'Unknown';
+    return '<span class="label label-inverse">Unknown</span>';
 
   } // state
 
@@ -209,10 +227,30 @@ class Report {
   public function is_stale() { 
 
     $function_name = $this->format . '_' . $this->type . '_stale'; 
-    $retval; 
 
+    $retval = $this->{$function_name}(); 
+
+    return $retval; 
 
   } // is_stale
+
+  /**
+   * csv_site_stale
+   */
+  public function csv_site_stale() { 
+
+    $date = $this->last_report(); 
+
+    $date = Dba::escape($date); 
+
+    $sql = "SELECT `record`.`uid` FROM `record` WHERE `created`>='$date' OR `updated`>='$date'";
+    $db_results = Dba::read($sql); 
+
+    $rows = Dba::num_rows($db_results); 
+
+    return $rows; 
+
+  } // csv_site_stale
 
   /**
    * generate
