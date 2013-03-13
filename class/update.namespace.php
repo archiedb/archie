@@ -151,6 +151,12 @@ class Database {
     $sql = 'TRUNCATE `temp_data`';
     $db_results = \Dba::write($sql); 
 
+    $sql = 'OPTIMIZE `session`';
+    $db_results = \Dba::write($sql); 
+
+    $sql = 'OPTIMIZE `temp_data`';
+    $db_results = \Dba::write($sql); 
+
     return true; 
 
    } // pre
