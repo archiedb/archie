@@ -133,11 +133,13 @@ if (!defined('CLI') AND !defined('NO_SESSION')) {
 	if (!\UI\sess::$user->uid) { vauth::logout(session_id()); exit; }
 	vauth::session_extend(session_id());
 
+  // Load events
+  Event::init(); 
+
 } 
 
 
 /* Clean up a bit */
 unset($array);
 unset($results);
-
 ?>

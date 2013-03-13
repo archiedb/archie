@@ -19,14 +19,25 @@ class Event {
     if (!strlen($message)) { return false; } 
     
     self::$_events[] = array('severity'=>$severity,'message'=>$message,'size'=>$size); 
+    $_SESSION['events'] = self::$_events; 
 
     return true; 
 
   } // add
 
   /**
+   * auto_init
+   */
+  public static function init() { 
+
+    // Check for session events
+    self::$_events = isset($_SESSION['events']) ? $_SESSION['events'] : array(); 
+
+  } // init
+
+  /**
    * display
-   * Display the requested event
+   * Display the requested event,reset it after we're done
    */
   public static function display() { 
 
@@ -42,6 +53,9 @@ class Event {
       require \UI\template('/event'); 
 
     } // end foreach events
+
+    self::$_events=array(); 
+    $_SESSION['events'] = self::$_events; 
 
   } // display
 

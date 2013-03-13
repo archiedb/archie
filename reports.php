@@ -18,7 +18,7 @@ switch (\UI\sess::location('action')) {
         Event::add('success','Report scheduled. This may take a long time, you will be e-mailed once the report is complete'); 
       }
     }
-    require_once \UI\template('/reports/view'); 
+    header("Location:" . Config::get('web_path') . "/reports/view"); 
   break; 
   default:
     require_once \UI\template('/reports/view'); 

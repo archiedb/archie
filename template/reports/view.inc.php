@@ -13,7 +13,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="row">
   <?php $report = new Report('csv','site'); ?>
   <div class="span2"><strong>Full Site</strong></div>
-  <div class="span3"><em class="muted">Generated:<?php echo $report->last_request(); ?></em></div>
+  <div class="span3"><em class="muted">Generated:<?php echo $report->state(); ?></em></div>
   <div class="span4 offset3">
     <p class="text-right">
       <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/site/<?php echo scrub_out(Config::get('site')); ?>">Rebuild</a>
@@ -24,7 +24,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="row">
   <?php $report = new Report('csv','all'); ?>
   <div class="span2"><strong>All Site(s)</strong></div>
-  <div class="span3"><em class="muted">Generated:<?php echo $report->last_request(); ?></em></div>
+  <div class="span3"><em class="muted">Generated:<?php echo $report->state(); ?></em></div>
   <div class="span4 offset3">
     <p class="text-right">
       <a class="btn btn-info disabled">Rebuild</a>

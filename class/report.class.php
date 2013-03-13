@@ -176,10 +176,11 @@ class Report {
   } // last_filename; 
 
   /**
-   * last_request
-   * Return the date of the last request for this report type
+   * state
+   * This returns a string of the current state of this request
+   * a DATE is returned if it's been generated
    */
-  public function last_request() { 
+  public function state() { 
 
     // See if there's a current request
     $filename = $this->request_filename(); 
@@ -199,7 +200,19 @@ class Report {
 
     return 'Unknown';
 
-  } // last_request
+  } // state
+
+  /**
+   * is_stale
+   * Based on the type of report determine if it is stale
+   */
+  public function is_stale() { 
+
+    $function_name = $this->format . '_' . $this->type . '_stale'; 
+    $retval; 
+
+
+  } // is_stale
 
   /**
    * generate
