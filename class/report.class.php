@@ -276,5 +276,11 @@ class Report {
 
   } // csv_site
 
+  /**
+   * csv_all
+   * does nothing
+   */
+  private function csv_all() { }
+
 }
 ?>

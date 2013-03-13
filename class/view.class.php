@@ -89,7 +89,7 @@ class View {
    */
   public static function gc() { 
 
-    $sql = "DELETE FROM `temp_data` USING `temp_data` LEFT JOIN `session` ON `sessions`.`id`=`temp_data`.`sid` " . 
+    $sql = "DELETE FROM `temp_data` USING `temp_data` LEFT JOIN `session` ON `session`.`id`=`temp_data`.`sid` " . 
           "WHERE `session`.`id` IS NULL"; 
     $db_results = Dba::write($sql); 
 
