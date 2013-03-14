@@ -1,6 +1,8 @@
 <?php 
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
+$items = $record->get_media(); 
+if (count($items)) { 
 ?>
 <table class="table table-bordered table-hover">
 <thead>
@@ -12,7 +14,6 @@ if (INIT_LOADED != '1') { exit; }
 </thead>
 <tbody>
 <?php
-$items = $record->get_media(); 
 foreach ($items as $item) {
 ?>
 <tr>
@@ -28,3 +29,4 @@ foreach ($items as $item) {
 <?php } ?>
 </tbody>
 </table>
+<?php } ?>
