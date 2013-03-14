@@ -456,6 +456,14 @@ class Record extends database_object {
 			}
 		} 
 
+    $media = $record->get_media(); 
+    foreach ($media as $item) { 
+      $content = new Content($item['uid'],'media'); 
+      if ($content->uid) { 
+        $content->delete(); 
+      }
+    } // end foreach media
+
 		// If we've generated a ticket for this delete it
 		$ticket = $record->get_ticket();
 		if ($ticket->filename) { 
@@ -471,7 +479,7 @@ class Record extends database_object {
 
 	/**
 	 * get_images
-	 * FIXME: Do this using content!
+	 * FIXME: Do this using content?
 	 * Gets a list of the images this record has
 	 */
 	public function get_images() { 
@@ -489,6 +497,26 @@ class Record extends database_object {
 		return $results; 
 
 	} // get_images
+
+  /**
+   * get_media
+   * Return any misc media we have for this record
+   */
+  public function get_media() { 
+
+    $record_id = Dba::escape($this->uid); 
+    $sql = "SELECT * FROM `media` WHERE `record`='$record_id' AND `type`='media'";
+    $db_results = Dba::read($sql); 
+
+    $results = array(); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row; 
+    } 
+
+    return $results; 
+
+  } // get_media
 
 	/**
 	 * get_ticket

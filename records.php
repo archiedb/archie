@@ -10,6 +10,11 @@ switch (\UI\sess::location('action')) {
 		$record = new Record($_POST['record_id']);
 		require_once \UI\template('/edit_record'); 
 	break; 
+  case 'upload_media':
+    Content::upload('media',$_POST['record_id'],$_POST,$_FILES); 
+    $record = new Record($_POST['record_id']); 
+    require_once \UI\template('/edit_record'); 
+  break; 
   case 'image_edit': 
     if (!Access::has('image','write',$_POST['uid'])) { break; }
     Content::update('record',$_POST['uid'],$_POST); 

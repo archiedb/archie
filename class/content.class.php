@@ -15,7 +15,7 @@ class content {
   public $parentuid; // Parent UID this is assoicated with
   public $type; // Type of object, most likely an image for now
   public $source; // Raw data of the object
-  private $valid_types = array('record','thumb','qrcode','ticket'); 
+  private $valid_types = array('record','thumb','qrcode','ticket','media'); 
 
   public function __construct($uid='',$type) {
 
@@ -111,6 +111,31 @@ class content {
 
 	} // load_ticket_data
 
+  /**
+   * load_media_data
+   * This is kind of a catch all class for general non-image files
+   */
+  private function load_media_data($uid) { 
+
+    $uid = Dba::escape($uid); 
+    $sql = "SELECT * FROM `media` WHERE `uid`='$uid' AND `type`='media'"; 
+    $db_results = Dba::read($sql); 
+
+    $row = Dba::fetch_assoc($db_results); 
+
+    if (!isset($row['uid'])) { return false; }
+
+    $this->filename = Config::get('data_root') . '/' . $row['filename']; 
+    $this->uid = $row['uid']; 
+    $this->parentuid = $row['record']; 
+
+    // We need the extension
+    $info = pathinfo($row['filename']); 
+
+    $this->mime = Content::get_mime($info['extension']); //FIXME: I should have something for this?  
+
+  } // load_media_data
+
 	// Reads in and returns the source of this file
 	public function source() { 
 
@@ -141,6 +166,11 @@ class content {
 				$filename = strlen($data) ? $data : self::generate_filename($record->site . '-ticket-' . $record->catalog_id,'pdf');
 				$results = self::write_ticket($record,$filename,$data); 
 			break; 
+      case 'media': 
+        $extension = $mime_type; 
+        $filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
+        $results = self::write_media($uid,$data,$filename); 
+      break; 
 			default: 
 			case 'record': 
 				$extension = self::get_extension($mime_type); 
@@ -167,6 +197,8 @@ class content {
 			return false; 
 		} 
 		$results = fwrite($handle,$data); 
+
+    fclose($handle); 
 
 		if (!$results) { 
 			Event::error('Content','Unable to write Image to disk'); 
@@ -291,6 +323,40 @@ class content {
 
 	} // write_ticket 
 
+  /**
+   * write_media
+   * Write a media file, whatever that is
+   */
+  private function write_media($uid,$data,$filename) { 
+
+		// Put it on the filesystem
+		$handle = fopen($filename,'w'); 
+		if (!$handle) { 
+			Event::error('Content','Unable to write file - Permission denied'); 
+			return false; 
+		} 
+
+		$results = fwrite($handle,$data); 
+    fclose($handle); 
+
+		if (!$results) { 
+			Event::error('Content','Unable to write Image to disk'); 
+			return false; 
+		} 
+
+		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
+		$uid = Dba::escape($uid); 
+    $sql = "INSERT INTO `media` (`filename`,`type`,`record`) VALUES ('$filename','media','$uid')";
+    $db_results = Dba::write($sql); 
+
+    if (!$db_results) { 
+      Event::error('Database','Unknown Database erro inserting media'); 
+    }
+
+    return true; 
+
+  } // write_media
+
 	/**
 	 * delete
 	 * Deletes some content from the FS
@@ -380,6 +446,25 @@ class content {
 
 	} // delete_ticket
 
+  /**
+   * delete_media
+   */
+  private function delete_media() { 
+
+    $results = unlink($this->filename); 
+    if (!$results) { 
+      Event::error('general','Error unable to remove ' . $this->filename); 
+      return false; 
+    }
+
+    $uid = Dba::escape($this->uid); 
+    $sql = "DELETE FROM `media` WHERE `uid`='$uid' AND `type`='media'"; 
+    $db_results = Dba::write($sql); 
+
+    return true; 
+
+  } // delete_media
+
 	/**
 	 * generate_filename
 	 * Generates a filename based on the name and extension using the data_root defined
@@ -429,6 +514,20 @@ class content {
 	} // get_extension 
 
   /**
+   * figure out the mime type
+   */
+  private static function get_mime($extension) { 
+
+    switch ($extension) { 
+      case 'stl':
+        return 'application/sla';
+    }
+
+    return '';
+
+  } // get_mime
+
+  /**
    * upload
    * Handles uploading of media (http upload)
    */
@@ -439,6 +538,9 @@ class content {
     switch ($type) { 
       case 'record': 
         $retval = self::upload_record($uid,$input,$source); 
+      break; 
+      case 'media':
+        $retval = self::upload_media($uid,$input,$source); 
       break; 
       default: 
         $retval = false; 
@@ -504,6 +606,47 @@ class content {
     return true; 
 
   } // upload_record
+
+  /**
+   * upload_media
+   * For uploading of 3d model files
+   */
+  private static function upload_media($uid,$post,$files) { 
+
+    if (!isset($files['media']['name'])) { 
+      Error::add('media','No file found, please select a file to upload');
+      return false; 
+    } 
+
+    if (empty($files['media']['tmp_name'])) { 
+      Error::add('media','Upload failed, please try again'); 
+      return false; 
+    } 
+
+    $path_info = pathinfo($files['media']['name']); 
+
+    $allowed_types = array('ply','stl'); 
+    if (!in_array(strtolower($path_info['extension']),$allowed_types)) { 
+      Error::add('media','Invalid file type, only ply and stl are allowed'); 
+      return false; 
+    }
+
+    // Read in source file
+    $data = file_get_contents($files['media']['tmp_name']); 
+
+    if (!$data) { 
+      Error::add('media','unable to read uploaded file, please try again'); 
+      return false; 
+    } 
+
+    $filename = Content::write($uid,'media',$data,$path_info['extension']); 
+
+    Event::add('success','Media uploaded, thanks!','small'); 
+
+    return true; 
+
+
+  } // upload_media
 
   /**
    * update

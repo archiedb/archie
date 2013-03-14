@@ -7,7 +7,7 @@
  */
 class Access { 
 
-  private static $types = array('user','image','record','admin'); 
+  private static $types = array('user','image','record','admin','media'); 
   private static $actions = array('write','read','delete','admin'); 
 
   private function __construct() {}

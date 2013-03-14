@@ -181,33 +181,72 @@ if (INIT_LOADED != '1') { exit; }
 <button class="btn btn-primary" type="submit">Update</button>
 </form>
 </div><!-- End content block -->
-
-<div class="content-block">
-<fieldset class="attachment">
-<legend>Item Pictures</legend>
+<br />
 <?php Error::display('upload'); ?>
-<form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_image">
-	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
-	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
-<div class="row">
-  <div class="span4">
-    <h5>Image</h5>
-    <div class="fileupload fileupload-new" data-provides="fileupload">
-      <div class="input-append">
-        <div class="uneditable-input span3">
-          <i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span>
+<?php Error::display('media'); ?>
+<ul class="nav nav-tabs" id="media_nav">
+  <li class="active"><a href="#picture" data-toggle="tab">Pictures</a></li>
+  <li><a href="#media" data-toggle="tab">Other Media</a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane active" id="picture">
+    <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_image">
+    	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
+    	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
+    <div class="row">
+      <div class="span4">
+        <strong>Image</strong><br />
+        <div class="fileupload fileupload-new" data-provides="fileupload">
+          <div class="input-append">
+            <div class="uneditable-input span3">
+              <i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span>
+            </div>
+            <span class="btn btn-file"><span class="fileupload-new">Select</span>
+            <span class="fileupload-exists">Change</span><input name="image" type="file" /></span>
+            <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+          </div>
         </div>
-        <span class="btn btn-file"><span class="fileupload-new">Select</span>
-        <span class="fileupload-exists">Change</span><input name="image" type="file" /></span>
-        <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+      </div>
+      <div class="span3 offset1"><strong>Description</strong><br /><input type="text" class="span4" name="description" /></div>
+      <div class="span1 offset1">
+        <br />
+        <button class="btn btn-primary" type="submit">Upload</button>
       </div>
     </div>
-  </div>
-  <div class="span6 offset1"><h5>Description</h5><input type="text" class="span4" name="description" /></div>
-</div>
-<button class="btn btn-primary" type="submit">Upload</button>
-</form>
-</div><!-- End content block -->
-<br />
-<?php require_once \UI\template('/records/images'); ?>
-</fieldset>
+    </form>
+    <hr />
+    <?php require_once \UI\template('/records/images'); ?>
+  </div> <!-- End Picture tab -->
+  <div class="tab-pane" id="media">
+    <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_media">
+    	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
+    	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
+    <div class="row">
+      <div class="span4">
+        <strong>Media</strong><br />
+        <div class="fileupload fileupload-new" data-provides="fileupload">
+          <div class="input-append">
+            <div class="uneditable-input span3">
+              <i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span>
+            </div>
+            <span class="btn btn-file"><span class="fileupload-new">Select</span>
+            <span class="fileupload-exists">Change</span><input name="media" type="file" /></span>
+            <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+          </div>
+        </div>
+      </div>
+      <div class="span2 offset1">
+        <br />
+        <button class="btn btn-primary" type="submit">Upload</button>
+      </div>
+    </div>
+    </form>
+    <hr />
+    <?php require_once \UI\template('/records/media'); ?>
+  </div> <!-- End Media tab pane -->
+</div> <!-- End Container --> 
+<script>
+  $(function () {
+    $('#media_nav a:first').tab('show');
+  })
+</script>

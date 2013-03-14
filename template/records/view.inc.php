@@ -59,3 +59,7 @@ if (INIT_LOADED != '1') { exit; }
 <legend>Item Pictures</legend>
 <?php require_once \UI\template('/records/images'); ?>
 </fieldset>
+<fieldset>
+<legend>Other Media</legend>
+<?php require_once \UI\template('/records/media'); ?>
+</fieldset>
