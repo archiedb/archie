@@ -1,4 +1,5 @@
 <?php 
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 // Don't require a session here because this is the login page
 define('NO_SESSION','1'); 
@@ -46,8 +47,15 @@ if ($auth['success']) {
 
 	$_SESSION['sess_data'] = $auth; 
 
-        header('Location: ' . Config::get('web_path') . '/index.php');
-        exit();
+  // Check for a referrer
+  if (substr($_POST['referrer'],0,strlen(Config::get('web_path'))) == Config::get('web_path')) {
+    $url = \UI\return_url(substr($_POST['referrer'],strlen(Config::get('web_path'))));
+    header('Location: ' . Config::get('web_path') . $url);    
+    exit(); 
+  }
+
+  header('Location: ' . Config::get('web_path') . '/index.php');
+  exit();
 
 } // if successful authentication 
 

@@ -51,6 +51,7 @@
         <h2 class="form-signin-heading">Archie :: Login</h2>
         <input name="username" type="text" class="input-block-level" placeholder="Username">
         <input name="password" type="password" class="input-block-level" placeholder="Password">
+        <input type="hidden" name="referrer" value="<?php echo scrub_out($_SERVER['HTTP_REFERRER']); ?>" />
         <button class="btn btn-large btn-primary" type="submit">Login</button>
       </form>
     </div> <!-- /container -->
