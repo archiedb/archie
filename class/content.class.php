@@ -521,6 +521,10 @@ class content {
     switch ($extension) { 
       case 'stl':
         return 'application/sla';
+      break;
+      case 'ply':
+        return 'application/octet-stream';
+      break;
     }
 
     return '';
