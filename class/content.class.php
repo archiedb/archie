@@ -128,8 +128,7 @@ class content {
 		// First we need to generate a filename /SITE/YYYY/RECORD-MMDDHHMMSS
 		switch ($type) { 
 			case 'thumb': 
-				$extension = self::get_extension($mime_type); 
-				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension . '.thumb'); 
+				$filename = $options . '.thumb';  
 				$results = self::write_thumb($data,$filename); 
 			break; 
 			case 'qrcode':
@@ -147,6 +146,8 @@ class content {
 				$extension = self::get_extension($mime_type); 
 				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
 				$results = self::write_record($uid,$data,$filename,$mime_type,$options); 
+        //FIXME: WRONG
+        if ($results) { $results = $filename; }
 			break; 
 		} 
 
@@ -492,8 +493,11 @@ class content {
     }
 
     // Write the thumbnail and record image to the filesystem, and insert into database
-    Content::write($uid,'thumb',$thumb,$mime); 
-    Content::write($uid,'record',$image_data,$mime,$post['description']); 
+    $filename = Content::write($uid,'record',$image_data,$mime,$post['description']); 
+    if ($filename) { 
+      // We need the filename from the record write
+      Content::write($uid,'thumb',$thumb,$mime,$filename); 
+    } 
 
     Event::add('success','Image uploaded, thanks!','small'); 
 
@@ -549,6 +553,37 @@ class content {
 		return true; 
 
 	} // regenerate_qrcodes
+
+  /**
+   * regenerate_thumb
+   * Rebuild thumbnails, can pass an option to rebuild all or just requested
+   */
+  public static function regenerate_thumb($option) { 
+
+    // No timelimit 
+    set_time_limit(0); 
+
+    $sql = "SELECT `image`.`record`,`image`.`data`,`image`.`type` FROM `image`"; 
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      // Regenerate thumbnail
+      $image_filename = Config::get('data_root') . '/' . $row['data'];
+      $image_data = file_get_contents($image_filename); 
+      if (!$image_data) { 
+          // Something failed here
+          Event::error('Thumb','Unable to read record image for ' . $row['data']); 
+          continue; 
+      }
+      $path_info = explode('/',$row['type']); 
+      $extension = $path_info['1']; 
+      $thumb = Image::generate_thumb($image_data,array('height'=>120,'width'=>120),$extension);
+      Content::write($row['record'],'thumb',$thumb,$row['type'],$image_filename); 
+    } 
+
+    return true; 
+
+  } // regenerate_thumb
 
 } // end content class
 ?>

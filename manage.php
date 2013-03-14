@@ -10,10 +10,16 @@ switch (\UI\sess::location('action')) {
     // Regenerate what!?
     switch (\UI\sess::location('objectid')) {
       case 'qrcode':
-        Content::regenerate_qrcodes(); 
+        $cron = new Cron('qrcode'); 
+        $cron->request('all'); 
       break;
+      case 'thumbnail': 
+        // Add a request for the cron job. 
+        $cron = new Cron('thumb');
+        $cron->request('all'); 
+      break; 
     }
-    require_once 'template/manage_tools.inc.php'; 
+    header("Location:" . Config::get('web_path')  . '/manage/tools'); 
   break;
   case 'tools':
     require_once \UI\template('/manage/tools'); 
