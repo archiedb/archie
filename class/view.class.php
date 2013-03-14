@@ -67,6 +67,7 @@ class View {
       'station_index',
       'xrf_matrix_index',
       'weigth',
+      'notes',
       'height',
       'width',
       'thickness',
@@ -538,6 +539,9 @@ class View {
       case 'unit':
         $filter_sql = " `record`.`unit` = '" . Dba::escape($value) . "' AND "; 
       break; 
+      case 'notes':
+        $filter_sql = " `record`.`notes` LIKE '%" . Dba::escape($value) . "%' AND "; 
+      break; 
       case 'created':
       case 'updated':
         $unix_time = strtotime($value); 
@@ -574,6 +578,7 @@ class View {
 
     switch ($field) { 
       case 'lsg_unit':
+      case 'notes':
       case 'updated':
       case 'created':
       case 'height': 
