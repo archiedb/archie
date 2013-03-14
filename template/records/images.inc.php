@@ -6,6 +6,10 @@ if (INIT_LOADED != '1') { exit; }
 <?php
 $images = $record->get_images();
 foreach ($images as $image) {
+  if ($i/4 == floor($i/4)) {
+      echo '</ul><ul class="thumbnails">';
+  }
+  $i++; 
 ?>
   <li class="span3">
     <div class="thumbnail">
