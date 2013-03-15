@@ -13,8 +13,19 @@ if (INIT_LOADED != '1') { exit; }
       <a class="btn" href="<?php echo Config::get('web_path'); ?>/users/edit/<?php echo scrub_out($user->uid); ?>">Edit</a>
 			<a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
 			<ul class="dropdown-menu">
-				<li><a href="#">Disable</a></li>
+        <?php if ($user->disabled) { ?>
+				<li><a href="#confirm_enable_user_<?php echo scrub_out($user->uid); ?>" role="button" data-toggle="modal">Enable</a></li>
+        <?php } else { ?>
+				<li><a href="#confirm_disable_user_<?php echo scrub_out($user->uid); ?>" role="button" data-toggle="modal">Disable</a></li>
+        <?php } ?>
 			</ul>
 		</div>
+      <?php 
+        if ($user->disabled) { 
+          require \UI\template('/users/modal_enable'); 
+        } else { 
+          require \UI\template('/users/modal_disable'); 
+        }
+      ?>
   </td>
 </tr>

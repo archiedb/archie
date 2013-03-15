@@ -10,11 +10,22 @@ function return_url($input) {
   // We need to keep the original intact here, but #'s of an ID at the end are ok
   $check = rtrim($input,'0..9'); 
   $allowed_urls = array('/records/view/',
-                    '/records/edit/'); 
+                    '/records/edit/',
+                    '/users/view'); 
 
   if (in_array($check,$allowed_urls)) { 
     return $input;
   }
+
+  if (!\Access::has('admin','admin')) { return '/'; }
+
+  // If they are an administrator there are a few more urls they can redirect to
+  $allowed_urls = array('/users/manage'); 
+
+  if (in_array($check,$allowed_urls)) { 
+    return $input;
+  }
+
   return '/'; 
 
 } // return url
