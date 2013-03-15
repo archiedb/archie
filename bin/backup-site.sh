@@ -1,7 +1,7 @@
 #!/bin/bash
 # Settings
-BIN="/data/www/nyersa.org/htdocs/archie/bin"
-CONTENT="/data/www/nyersa.org/htdocs/archie/content"
+BIN="/archie/bin"
+CONTENT="/archie/content"
 DATE=`date +%F`
 
 mysqldump --defaults-extra-file=${BIN}/database.auth --add-drop-table --allow-keywords archie > ${BIN}/backup/${DATE}.archie.mysql

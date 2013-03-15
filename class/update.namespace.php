@@ -36,7 +36,7 @@ class Code {
     
     // Avoid asking more then once per page load
     if (!self::$git_version) { 
-      self::$git_version = file_get_contents('https://gitorious.org/archie/archie/blobs/raw/master/docs/BUILD');
+      self::$git_version = file_get_contents('https://raw.github.com/vollmerk/archie/master/docs/BUILD');
     } 
     return self::$git_version;
 
