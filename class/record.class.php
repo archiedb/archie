@@ -24,6 +24,9 @@ class Record extends database_object {
 	public $xrf_artifact_index; 
 	public $notes; 
 	public $user_id; // The ID
+  public $northing; // Northing from station info
+  public $easting; // Easting from station info
+  public $elevation; // Elevation from station info
 	public $user; // The Object 
 	public $created; 
 	public $updated; 
@@ -204,14 +207,15 @@ class Record extends database_object {
 
 	// Update
 	public function update($input) { 
-                // First verify the input to make sure
-                // all of the fields are within acceptable tolerences 
-                if (!Record::validate($input)) {
-                        Error::add('general','Invalid Field Values - Please check your input again');
-                        return false;
-                }
+  
+    // First verify the input to make sure
+    // all of the fields are within acceptable tolerences 
+    if (!Record::validate($input)) {
+      Error::add('general','Invalid Field Values - Please check your input again');
+      return false;
+    }
 
-		$unit = Dba::escape($input['unit']); 
+    $unit = Dba::escape($input['unit']); 
 		$lsg_unit = Dba::escape($input['lsg_unit']); 
 		$xrf_matrix_index = Dba::escape($input['xrf_matrix_index']); 
 		$weight = Dba::escape($input['weight']); 
@@ -294,7 +298,7 @@ class Record extends database_object {
 		// XRF Matrix Index numeric
 		if (!is_numeric($input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
 			Error::add('xrf_matrix_index','XRF Matrix Index must be numeric'); 
-		} 
+		}
 
 		// Weight, numeric floating point
 		if (!is_numeric($input['weight']) AND strlen($input['weight'])) { 
