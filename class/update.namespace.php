@@ -200,6 +200,10 @@ class Database {
                     '- Add user to image.<br />' . 
                     '- Remove data directory prefix from filename on media and image.<br />';
     $versions[] = array('version'=>'0002','description'=>$update_string); 
+    $update_string = '- Add Northing,Easting,Elevation fields for station import.<br />' . 
+                    '- Add indexes to commonly used fields.<br />' . 
+                    '- Add notes and user to media table.<br />';
+    $versions[] = array('version'=>'0003','description'=>$update_string); 
 
 
     return $versions; 
@@ -325,6 +329,43 @@ class Database {
 
   } // update_0002
 
+  /**
+   * update_0003
+   * - Add notes and user to media
+   * - Add northing,easting,elevation fields to record
+   * - Add index for user on media and image
+   */
+  private static function update_0003() { 
+  
+    $retval = true; 
+
+    $sql = "ALTER TABLE `media` ADD `notes` VARCHAR(512) NULL AFTER `filename`"; 
+    $retval = \Dba::write($sql) ? $retval : 'false';
+    
+    $sql = "ALTER TABLE `media` ADD `user` INT(10) UNSIGNED NOT NULL AFTER `filename`"; 
+    $retval = \Dba::write($sql) ? $retval : 'false';
+
+    $sql = "ALTER TABLE  `image` ADD INDEX (  `user` )"; 
+    $retval = \Dba::write($sql) ? $retval : 'false';
+
+    $sql = "ALTER TABLE `media` ADD INDEX ( `user` )"; 
+    $retval = \Dba::write($sql) ? $retval : 'false';
+
+    $sql = "ALTER TABLE `record` ADD UNIQUE ( `catalog_id` )";
+    $retval = \Dba::write($sql) ? $retval : 'false';
+
+    $sql = "ALTER TABLE `record` ADD `northing` DECIMAL( 8,6 ) NOT NULL AFTER `xrf_artifact_index`";
+    $retval = \Dba::write($sql) ? $retval : 'false';
+
+    $sql = "ALTER TABLE `record` ADD `easting` DECIMAL( 8,6 ) NOT NULL AFTER  `northing`";
+    $retval = \Dba::write($sql) ? $retval : 'false';
+
+    $sql = "ALTER TABLE `record` ADD `elevation` DECIMAL( 8,6 ) NOT NULL AFTER `easting`";
+    $retval = \Dba::write($sql) ? $retval : 'false';
+
+    return $retval; 
+
+  } // update_0003
 
 } // \Update\Database class
 
