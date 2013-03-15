@@ -9,6 +9,7 @@ class Access {
 
   private static $types = array('user','image','record','admin','media'); 
   private static $actions = array('write','read','delete','admin'); 
+  private static $levels = array('0'=>'User','50'=>'Manager','100'=>'Admin'); 
 
   private function __construct() {}
   private function __clone() {}
@@ -89,5 +90,25 @@ class Access {
 
   } // check_record
 
+  /**
+   * get_levels
+   * Returns an array of possible levels
+   */
+  public static function get_levels() { 
+
+    return self::$levels; 
+
+  } // get_levels
+
+  /**
+   * get_level_name
+   */
+  public static function get_level_name($int) { 
+
+    if (!isset(self::$levels[$int])) { return false; }
+
+    return self::$levels[$int];
+
+  } // get_level_name
 
 } // Access

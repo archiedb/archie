@@ -116,23 +116,6 @@ class User extends database_object {
 	} // get
 
 	/**
-	 * get_access_name
-	 * This returns a friendly name for the int access level
-	 */
-	public static function get_access_name($access) { 
-
-		switch ($access) { 
-			case '100': 
-				return "Admin";
-			break;
-			default:
-				return "User";
-			break; 
-		} 
-
-	} // get_access_name
-
-	/**
 	 * set_password
 	 * This sets the password for the current user
 	 */
@@ -173,11 +156,14 @@ class User extends database_object {
       return false; 
     } 
 
+    
+
 		$uid = Dba::escape($this->uid); 
 		$name = Dba::escape($input['name']); 
 		$email = Dba::escape($input['email']); 
+    $access = (Access::has('user','admin') === true) ? Dba::escape($input['access']) : Dba::escape($this->access); 
 
-		$sql = "UPDATE `users` SET `name`='$name', `email`='$email' WHERE `uid`='$uid' LIMIT 1"; 
+		$sql = "UPDATE `users` SET `access`='$access', `name`='$name', `email`='$email' WHERE `uid`='$uid' LIMIT 1"; 
 		$db_results = Dba::write($sql); 
 
 		// If this is the current logged in user, refresh them
