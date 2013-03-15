@@ -8,12 +8,12 @@ switch (\UI\sess::location('action')) {
 	case 'upload_image': 
     Content::upload('record',$_POST['record_id'],$_POST,$_FILES); 
 		$record = new Record($_POST['record_id']);
-		require_once \UI\template('/edit_record'); 
+		require_once \UI\template('/records/edit'); 
 	break; 
   case 'upload_media':
     Content::upload('media',$_POST['record_id'],$_POST,$_FILES); 
     $record = new Record($_POST['record_id']); 
-    require_once \UI\template('/edit_record'); 
+    require_once \UI\template('/records/edit'); 
   break; 
   case 'image_edit': 
     if (!Access::has('image','write',$_POST['uid'])) { break; }
@@ -41,7 +41,7 @@ switch (\UI\sess::location('action')) {
     $_POST['user'] = \UI\sess::$user->uid;
 		// Attempt to update this!
 		if (!$record->update($_POST)) { 
-			require_once 'template/edit_record.inc.php'; 
+      require_once \UI\template('/records/edit'); 
 		} 
 		else { 
       Event::add('success','Record has been updated, thanks!','small'); 
@@ -51,7 +51,7 @@ switch (\UI\sess::location('action')) {
 	break; 
   case 'edit':
 		$record = new Record(\UI\sess::location('objectid')); 
-		require_once 'template/edit_record.inc.php'; 
+    require_once \UI\template('/records/edit'); 
 	break; 
   case 'view':
     $record = new Record(\UI\sess::location('objectid')); 
