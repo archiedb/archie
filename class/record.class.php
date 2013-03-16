@@ -311,13 +311,16 @@ class Record extends database_object {
     
       // If we are comparing it to an existing record
       if ($record->uid) {   
-		    if ($input['northing'] != $record->northing) {
+        if (!isset($input['northing'])) { $input['northing'] = $record->northing; }
+		    elseif ($input['northing'] != $record->northing) {
           Error::add('northing','Northing can not be changed if the record has an RN'); 
         }
-        if ($input['easting'] != $record->easting) { 
+        if (!isset($input['easting'])) { $input['easting'] = $record->easting; }
+        elseif ($input['easting'] != $record->easting) { 
           Error::add('easting','Easting can not be changed if the record has an RN'); 
         }
-        if ($input['elevation'] != $record->elevation) { 
+        if (!isset($input['elevation'])) { $input['elevation'] = $record->elevation; }
+        elseif ($input['elevation'] != $record->elevation) { 
           Error::add('elevation','Elevation can not be changed if the record has an RN'); 
         }
       }
