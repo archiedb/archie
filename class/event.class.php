@@ -57,6 +57,21 @@ class Event {
         $size = ' alert-block';
         require \UI\template('/event'); 
       break; 
+      case 'warnings':
+        $warnings = Error::get_all('warnings'); 
+        if (!count($warnings)) { return false; }
+        if (isset($warnings['general'])) { 
+          $header_small = ' ' . scrub_out($warnings['general']);
+          unset($warnings['general']); 
+        }
+        foreach ($warnings as $key=>$value) { 
+          $message .= "<li><strong>" . \UI\field_name($key) . ":</strong> $value<br /></li>";
+        }
+        $css_class = ''; 
+        $header = '<h4>Warning:' . $header_small . '</h4>';
+        $size = ' alert-block';
+        require \UI\template('/event'); 
+      break; 
       default:
       case 'events':
         if (!count(self::$_events)) { return false; }

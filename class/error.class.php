@@ -37,6 +37,7 @@ class Error {
 
 	private static $state = false; // set to one when an error occurs
 	private static $errors = array(); // Errors array key'd array with errors that have occured
+	private static $warnings = array(); // Warnings array key'd array with warnings that have occured
 	private static $error_count = 0; // How many errors have we had!?@
 
 	/**
@@ -61,6 +62,30 @@ class Error {
 		}
 
 	} // __destruct
+
+	/**
+	 * warning
+	 * Adds a warning
+	 */
+	public static function warning($name,$message,$clobber=0) { 
+
+		// Make sure its set first
+		if (!isset(Error::$warnings[$name])) {
+			Error::$warnings[$name] = $message;
+			$_SESSION['warnings'][$name] = $message;
+		}
+		// They want us to clobber it
+		elseif ($clobber) {
+			Error::$warnings[$name] = $message;
+			$_SESSION['warnings'][$name] = $message;
+		}
+		// They want us to append the error, add a BR\n and then the message
+		else {
+			Error::$warnings[$name] .= "<br />\n" . $message;
+			$_SESSION['warnings'][$name] .=  "<br />\n" . $message;
+		}
+
+	} // warnings
 
 	/**
 	 * add
@@ -130,9 +155,17 @@ class Error {
 	 * get_all
 	 * Return all of the errors to me!
 	 */
-	public static function get_all() { 
-
-		return self::$errors; 
+	public static function get_all($type='errors') { 
+		
+		switch ($type) { 
+			default:
+			case 'errors':
+				return self::$errors; 
+			break;
+			case 'warnings':
+				return self::$warnings;
+			break;
+		}
 
 	} // get_all
 
@@ -194,6 +227,10 @@ class Error {
 	 * This loads the errors from the session back into Ampache
 	 */
 	public static function auto_init() {
+
+		if (is_array($_SESSION['warnings'])) { 
+			self::$warnings = $_SESSION['warnings'];
+		}
 
 		if (!is_array($_SESSION['errors'])) { return false; }
 

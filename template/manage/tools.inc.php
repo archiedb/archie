@@ -4,6 +4,8 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <?php Event::display(); ?>
+<?php Event::display('errors'); ?>
+<?php Event::display('warnings'); ?>
 <div class="page-header">
   <h3>Image Maintenance</h3>
   <em>These tasks are scheduled and run every 5 min. Some of these tasks may take a long time to complete. You will be e-mailed when it has finished</em>
@@ -32,7 +34,6 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
-<?php Event::display('errors'); ?>
 <div class="page-header">
   <h3>Data Imports</h3>
     <em>You must indicate the type of data you are updating. If the data type selected does not match the uploaded file it will be rejected.</em>

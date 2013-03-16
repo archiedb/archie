@@ -137,6 +137,7 @@ if (!defined('CLI') AND !defined('NO_SESSION')) {
   Event::init(); 
   Error::auto_init(); 
   $_SESSION['errors'] = array(); 
+  $_SESSION['warnings'] = array(); 
 
 } 
 

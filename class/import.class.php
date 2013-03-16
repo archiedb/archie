@@ -99,6 +99,7 @@ class Import {
     $line = 1; 
     $error_lines=0;
     $existing_lines=0;
+    $warning_lines=0; 
     $missing = '';
     $invalid = ''; 
     while (($data = fgetcsv($handle)) !== false) { 
@@ -113,8 +114,9 @@ class Import {
       $db_results = Dba::read($sql); 
 
       if (!$row = Dba::fetch_assoc($db_results)) { 
-        $error_lines++; 
+        $warning_lines++; 
         $missing .= ', ' . $line; 
+        Event::record('import','FAIL: unable to find RN:' . $station_index . ' northing,easting and elevation not imported'); 
       }
       else { 
         // Check to make sure we've got floatvals
@@ -141,9 +143,13 @@ class Import {
 
     fclose($handle); 
 
+    if ($warning_lines > 0) { 
+      Error::warning('general',$warning_lines . ' invalid lines found'); 
+      Error::warning('station_index','Lines:' . ltrim($missing,',')); 
+    } 
+
     if ($error_lines > 0) { 
       Error::add('general',$error_lines . ' invalid lines found. Aborting, nothing imported'); 
-      if (strlen($missing)) { Error::add('RN','Lines:' . ltrim($missing,','));  }
       if (strlen($invalid)) { Error::add('Coordinate Value','Lines:' . ltrim($invalid,',')); }
       return false; 
     }
@@ -159,6 +165,8 @@ class Import {
 
       $sql = "UPDATE `record` SET `northing`='$northing', `easting`='$easting', `elevation`='$elevation', `notes`=IFNULL(CONCAT(`notes`,'$notes'),'$notes') WHERE `station_index`='$station_index' LIMIT 1";
       $db_results = Dba::write($sql); 
+
+      Event::record('Import',"Northing:$northing Easting:$easting Elevation:$elevation Notes:$notes set on RN:$station_index"); 
 
     }
 
