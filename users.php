@@ -43,14 +43,14 @@ switch (\UI\sess::location('action')) {
     $user = new User($_POST['uid']); 
     $user->disable(); 
     $user->refresh(); 
-    header('Location:' . Config::get('web_path') . \UI\return_url($_SERVER['HTTP_REFERRER']));
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
   break;
   case 'enable': 
     if (!Access::has('user','delete',$_POST['uid'])) { header('Location:' . Config::get('web_path')); exit; }
     $user = new User($_POST['uid']); 
     $user->enable(); 
     $user->refresh(); 
-    header('Location:' . Config::get('web_path') . \UI\return_url($_SERVER['HTTP_REFERRER']));
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
   break; 
   case 'manage':
     if (!Access::has('user','delete')) { header('Location:' . Config::get('web_path')); exit; }

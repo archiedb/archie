@@ -14,6 +14,7 @@ if (INIT_LOADED != '1') { exit; }
     <form method="post" action="<?php echo Config::get('web_path'); ?>/users/enable">
       <button type="submit" class="btn btn-success">Enable</a>
       <input type="hidden" name="uid" value="<?php echo scrub_out($user->uid); ?>" />
+      <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
       <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
     </form>
     </div>

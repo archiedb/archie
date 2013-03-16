@@ -20,7 +20,10 @@ function return_url($input) {
   if (!\Access::has('admin','admin')) { return '/'; }
 
   // If they are an administrator there are a few more urls they can redirect to
-  $allowed_urls = array('/users/manage'); 
+  $allowed_urls = array('/users/manage',
+                  '/users/manage/disabled',
+                  '/users/manage/online',
+                  '/users/manage/all'); 
 
   if (in_array($check,$allowed_urls)) { 
     return $input;
