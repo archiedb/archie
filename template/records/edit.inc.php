@@ -145,14 +145,14 @@ if (INIT_LOADED != '1') { exit; }
   <label class="control-label" for="inputEasting">Easting</label>
   <div class="controls">
     <?php $disabled = ($record->station_index == false) ? '' : ' disabled'; ?>
-    <input id="inputEasting" type="text" name="easting" value="<?php echo scrub_out($record->northing); ?>"<?php echo $disabled; ?>>
+    <input id="inputEasting" type="text" name="easting" value="<?php echo scrub_out($record->easting); ?>"<?php echo $disabled; ?>>
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('elevation'); ?>">
   <label class="control-label" for="inputElevation">Elevation</label>
   <div class="controls">
     <?php $disabled = ($record->station_index == false) ? '' : ' disabled'; ?>
-    <input id="inputElevation" type="text" name="elevation" value="<?php echo scrub_out($record->northing); ?>"<?php echo $disabled; ?>>
+    <input id="inputElevation" type="text" name="elevation" value="<?php echo scrub_out($record->elevation); ?>"<?php echo $disabled; ?>>
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('xrf_artifact_index'); ?>">
