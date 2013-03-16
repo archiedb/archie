@@ -4,8 +4,9 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <img class="img-rounded" src="<?php echo Config::get('web_path'); ?>/images/title.jpg" />
-<div class="content-block">
-<p class="text-center lead">Hello <?php echo \UI\sess::$user->name; ?>, you are currently working on <?php echo Config::get('site'); ?></p>
+<div class="page-header">
+  <h3>Hello <?php echo \UI\sess::$user->name; ?>, you are currently working on <?php echo Config::get('site'); ?></h3>
+</div>
 <table class="table table-bordered table-white">
 <thead>
   <tr>
@@ -45,4 +46,3 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 </tbody>
 </table>
-</div><!-- End content block -->

@@ -3,10 +3,9 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<div class="content-block">
 <fieldset>
 <legend>Archie Config Information</legend>
-<table class="table table-bordered table-white">
+<table class="table table-bordered table-hover">
 <thead>
   <th>Setting</th>
   <th>Value</th>
@@ -14,7 +13,7 @@ if (INIT_LOADED != '1') { exit; }
 <tbody>
 <tr>
   <td>Archie Version</td>
-  <td><?php echo \UI\boolean_word(\update\Code::check(),'Build:' . \update\Code::version()); ?> <small class="muted">latest upstream is Build:<?php echo \update\Code::git_version(); ?></small></td>
+  <td><?php echo \UI\boolean_word(\update\Code::check(),'Build:' . \update\Code::version()); ?></td>
 </tr>
 <tr>
   <td>Archie DB Version</td>
@@ -37,7 +36,7 @@ if (INIT_LOADED != '1') { exit; }
 </fieldset>
 <fieldset>
 <legend>System Information</legend>
-<table class="table table-bordered table-white">
+<table class="table table-bordered table-hover">
 <thead>
   <th>Setting</th>
   <th>Value</th>
@@ -58,4 +57,3 @@ if (INIT_LOADED != '1') { exit; }
 </tbody>
 </table>
 </fieldset>
-</div><!-- End content block -->

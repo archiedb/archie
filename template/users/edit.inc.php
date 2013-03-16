@@ -3,7 +3,6 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<div class="content-block">
 <fieldset>
 <legend><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)</legend>
 <?php Error::display('general'); ?>
@@ -21,14 +20,14 @@ if (INIT_LOADED != '1') { exit; }
       <input name="email" type="text" id="inputEmail" placeholder="Email" value="<?php echo scrub_out($user->email); ?>">
     </div>
   </div>
-  <div class="control-group<?php Error::display_class('password','required'); ?>">
+  <div class="control-group<?php Error::display_class('password'); ?>">
     <label class="control-label" for="inputPassword">Password</label>
     <div class="controls">
       <input name="password" type="password" id="inputPassword" placeholder="Reset Password...">
       <span class="help-inline"><?php echo Error::get('password'); ?></span>
     </div>
   </div>
-  <div class="control-group<?php Error::display_class('password','required'); ?>">
+  <div class="control-group<?php Error::display_class('password'); ?>">
     <label class="control-label" for="inputConfirmPassword">Confirm Password</label>
     <div class="controls">
       <input name="confirmpassword" type="password" id="inputConfirmPassword" placeholder="Confirm Password...">
@@ -36,7 +35,7 @@ if (INIT_LOADED != '1') { exit; }
     </div>
   </div>
   <?php if (Access::has('user','admin')) { ?>
-  <div class="control-group<?php Error::display_class('access','required'); ?>">
+  <div class="control-group<?php Error::display_class('access'); ?>">
     <label class="control-label" for="inputAccessSelect">Access Level</label>
     <div class="controls">
       <select name="access">
@@ -54,9 +53,8 @@ if (INIT_LOADED != '1') { exit; }
   <div class="control-group">
     <div class="controls">
       <input type="hidden" name="uid" value="<?php echo scrub_out($user->uid); ?>">
-      <button type="submit" class="btn btn-success">Update</button>
+      <button type="submit" class="btn btn-primary">Update</button>
     </div>
   </div>
 </form>
 </fieldset>
-</div><!-- End content block -->

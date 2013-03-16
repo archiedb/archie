@@ -4,7 +4,6 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <?php Event::display(); ?>
-<div class="content-block">
 <fieldset class="record"><legend>Edit Record - <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></legend>
 <?php Error::display('general'); ?>
 <form id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/update">
@@ -180,8 +179,6 @@ if (INIT_LOADED != '1') { exit; }
 <input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
 <button class="btn btn-primary" type="submit">Update</button>
 </form>
-</div><!-- End content block -->
-<br />
 <?php Error::display('upload'); ?>
 <?php Error::display('media'); ?>
 <ul class="nav nav-tabs" id="media_nav">

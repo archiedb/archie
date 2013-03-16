@@ -3,7 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<p class="text-right">
+<p class="pull-right">
   <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/users/edit/<?php echo scrub_out($user->uid); ?>">Edit</a>
   <?php if (Access::has('user','delete',$user->uid) AND !$user->disabled) { ?>
   <a class="btn btn-danger" href="#confirm_disable_user_<?php echo scrub_out($user->uid); ?>" role="button" data-toggle="modal">Disable</a>
@@ -14,10 +14,13 @@ if (INIT_LOADED != '1') { exit; }
   <?php require \UI\template('/users/modal_enable'); ?>
   <?php } ?>
 </p>
-<div class="content-block">
-<fieldset>
-<legend><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>) - <?php echo scrub_out($user->email); ?></legend>
-<table class="table table-white">
+<div class="page-header">
+<h4>
+  <?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)
+  <small><?php echo scrub_out($user->email); ?></small>
+</h4>
+</div>
+<table class="table table-bordered table-hover">
 <tbody>
 <tr>
   <td><strong>Total Records Entered</strong></td>
@@ -33,4 +36,4 @@ if (INIT_LOADED != '1') { exit; }
   </td>
 </tbody>
 </table>
-</div><!-- End content block -->
+</fieldset>
