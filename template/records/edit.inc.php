@@ -3,182 +3,184 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<?php Event::display(); ?>
+<?php Event::display('errors'); ?>
 <fieldset class="record"><legend>Edit Record - <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></legend>
-<?php Error::display('general'); ?>
 <form class="form-horizontal" id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/update">
-<table>
-<tr>
-<td>
-	UNIT
-</td><td>
-	<select name="unit">
-	<?php foreach (unit::$values as $value) { 
-		$is_selected = ''; 
-		if ($record->unit == $value) { $is_selected=" selected=\"selected\""; } 
-	?>
-		<option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option> 
-	<?php } ?>
-	</select>
-	<?php Error::display('unit'); ?>
-</td>
-<td>
-	QUAD
-</td><td>
-        <select name="quad">
-        <option value="">&nbsp;</option>
-        <?php foreach (quad::$values as $key=>$value) {
-                        $is_selected = '';
-                if ($record->quad->uid == $key) { $is_selected=" selected=\"selected\""; }
-        ?>
-                <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
-        <?php } ?>
-        </select>
-        <?php Error::display('quad'); ?>
-</td>
-</tr><tr>
-<td>
-	LEVEL
-</td><td>
-	<input name="level" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->level); ?>" />
-	<?php Error::display('level'); ?>
-</td>
-<td>
-	MATRIX XRF #
-</td><td>
-	<input name="xrf_matrix_index" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->xrf_matrix_index); ?>" />
-	<?php Error::display('xrf_matrix_index'); ?>
-</td>
-</tr>
-
-<tr>
-<td>
-	FEATURE
-</td><td>
-	<input name="feature" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->feature); ?>" />
-	<?php Error::display('feature'); ?>
-</td>
-<td valign="top">
-	ARTIFACT XRF #
-</td><td>
-	<input type="text" class="textbox" size="10" name="xrf_artifact_index" value="<?php echo scrub_out($record->xrf_artifact_index); ?>" />
-	<?php Error::display('xrf_artifact_index'); ?>
-</td>
-</tr>
-
-<tr>
-<td title="Lithostratigraphic Unit">
-	L. U.
-</td><td>
-	<select name="lsg_unit">
-	<?php foreach (lsgunit::$values as $key=>$name) { 
-		$is_selected = ''; 
-		if ($record->lsg_unit->uid == $key) { $is_selected=" selected=\"selected=\""; }
-	?>
-	        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
-	<?php } ?>
-	</select>
-	<?php Error::display('lsg_unit'); ?>
-</td>
-<td>
-	RN
-</td><td>
-	<input name="station_index" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->station_index); ?>" />
-	<?php Error::display('station_index'); ?>
-</td>
-</tr>
-
-<tr>
-<td>
-	MATERIAL
-</td><td>
-	<select id="material" name="material">
-		<option value="">&nbsp;</option> 
-		<?php $materials = Material::get_all(); ?>
-		<?php foreach ($materials as $material) { 
-			$is_selected = ''; 
-			if ($material->uid == $record->material->uid) { $is_selected = " selected=\"selected\""; } 
-		?>
-		<option value="<?php echo scrub_out($material->uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($material->name); ?></option>
-		<?php } ?>
-	</select>
-	<?php Error::display('material'); ?>
-	<?php echo Ajax::select('material',Ajax::action('?action=show_class'),'classification'); ?>
-</td>
-<td>
-	CLASSIFICATION
-</td><td>
-	<select id="classification" name="classification">
-		<?php 
-		$classes = Classification::get_from_material($record->material->uid);
-	 	$class_id = $record->classification->uid; 
-		require_once Config::get('prefix') . '/template/show_class.inc.php'; 
-		?>
-	</select>
-	<?php Error::display('classification'); ?>
-</td>
-</tr>
-
-<tr>
-<td>
-	WEIGHT
-</td><td>
-	<div class="input-append">
-	<input class="span2" name="weight" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->weight); ?>" />
-	<span class="add-on">grams</span>
-	</div>
-	<?php Error::display('weight'); ?>
-</td>
-<td>
-	LENGTH
-</td><td>
-	<div class="input-append">
-	<input class="span2" name="height" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->height); ?>" />
-	<span class="add-on">mm</span>
-	</div>
-	<?php Error::display('height'); ?>
-</td>
-</tr>
-
-<tr>
-<td>
-	WIDTH
-</td><td>
-	<div class="input-append">
-	<input class="span2" name="width" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->width); ?>" />
-	<span class="add-on">mm</span>
-	</div>
-	<?php Error::display('width'); ?>
-</td>
-<td>
-	THICKNESS
-</td><td>
-	<div class="input-append">
-	<input class="span2" name="thickness" type="text" class="textbox" size="10" value="<?php echo scrub_out($record->thickness); ?>" />
-	<span class="add-on">mm</span>
-	</div>
-	<?php Error::display('thickness'); ?>
-</td>
-</tr>
-<tr>
-<td>
-	QUANTITY
-</td><td>
-	<input name="quanity" type="text" class="textbox" size="10" value="<?Php echo scrub_out($record->quanity); ?>" />
-	<?php Error::display('quanity'); ?>
-</td>
-<td>
-	NOTES
-</td><td>
-	<textarea name="notes" class="textbox" cols="25" rows="5"><?php echo scrub_out($record->notes); ?></textarea>
-	<?php Error::display('notes'); ?>
-</td>
-</tr>
-
-</table> 
-<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
-<button class="btn btn-primary" type="submit">Update</button>
+<div class="control-group span4<?php Error::display_class('unit'); ?>">
+  <label class="control-label" for="inputUnit">Unit</label>
+  <div class="controls">
+	  <select name="unit">
+  	<?php foreach (unit::$values as $value) { 
+	  	$is_selected = ''; 
+  		if ($record->unit == $value) { $is_selected=" selected=\"selected\""; } 
+  	?>
+  		<option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option> 
+  	<?php } ?>
+    </select>
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('quad'); ?>">
+  <label class="control-label" for="inputQuad">Quad</label>
+  <div class="controls">
+    <select id="inputQuad" name="quad">
+      <option value="">&nbsp;</option>
+      <?php foreach (quad::$values as $key=>$value) {
+        $is_selected = '';
+        if ($record->quad->uid == $key) { $is_selected=" selected=\"selected\""; }
+      ?>
+      <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
+     <?php } ?>
+   </select>
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('level'); ?>">
+  <label class="control-label" for="inputLevel">Level</label>
+  <div class="controls">
+  	<input id="inputLevel" name="level" type="text" value="<?php echo scrub_out($record->level); ?>" />
+  </div>
+</div> 
+<div class="control-group span4 offset1<?php Error::display_class('feature'); ?>">
+  <label class="control-label" for="inputFeature">Feature</label>
+  <div class="controls">
+  	<input id="inputFeature" name="feature" type="text" value="<?php echo scrub_out($record->feature); ?>" />
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('lsg_unit'); ?>">
+  <label class="control-label" for="inputLsgUnit">L. U.</label>
+  <div class="controls">
+  	<select name="lsg_unit">
+  	<?php foreach (lsgunit::$values as $key=>$name) { 
+  		$is_selected = ''; 
+  		if ($record->lsg_unit->uid == $key) { $is_selected=" selected=\"selected=\""; }
+  	?>
+      <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
+  	<?php } ?>
+	  </select>
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('station_index'); ?>">
+  <label class="control-label" for="inputStationIndex">RN</label>
+  <div class="controls">
+	  <input id="inputStationIndex" name="station_index" type="text" value="<?php echo scrub_out($record->station_index); ?>" />
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('material'); ?>">
+  <label class="control-label" for="material">Material</label>
+  <div class="controls">
+	  <select id="material" name="material">
+  		<option value="">&nbsp;</option> 
+ 		<?php $materials = Material::get_all(); ?>
+ 		<?php foreach ($materials as $material) { 
+  			$is_selected = ''; 
+  			if ($material->uid == $record->material->uid) { $is_selected = " selected=\"selected\""; } 
+ 		?>
+  	  <option value="<?php echo scrub_out($material->uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($material->name); ?></option>
+  	<?php } ?>
+  	</select>
+	  <?php echo Ajax::select('material',Ajax::action('?action=show_class'),'classification'); ?>
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('classification'); ?>">
+  <label class="control-label" for="classification">Classification</label>
+  <div class="controls">
+	  <select id="classification" name="classification">
+	  <?php 
+    	$classes = Classification::get_from_material($record->material->uid);
+  	 	$class_id = $record->classification->uid; 
+      require_once \UI\template('/show_class'); 
+	  ?>
+	  </select>
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('weight'); ?>">
+  <label class="control-label" for="inputWeight">Weight</label>
+  <div class="controls">
+  	<div class="input-append">
+    	<input id="inputWeight" class="span2" name="weight" type="text" value="<?php echo scrub_out($record->weight); ?>" />
+    	<span class="add-on">grams</span>
+    </div>
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('length'); ?>">
+  <label class="control-label" for="inputLength">Length</label>
+  <div class="controls">
+	  <div class="input-append">
+    	<input id="inputLength" class="span2" name="height" type="text" value="<?php echo scrub_out($record->height); ?>" />
+    	<span class="add-on">mm</span>
+  	</div>
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('width'); ?>">
+  <label class="control-label" for="inputWidth">Width</label>
+  <div class="controls">
+  	<div class="input-append">
+    	<input id="inputWidth" class="span2" name="width" type="text" value="<?php echo scrub_out($record->width); ?>" />
+      <span class="add-on">mm</span>
+  	</div>
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('thickness'); ?>">
+  <label class="control-label" for="inputThickness">Thickness</label>
+  <div class="controls">
+	  <div class="input-append">
+    	<input id="inputThickness" class="span2" name="thickness" type="text" value="<?php echo scrub_out($record->thickness); ?>" />
+    	<span class="add-on">mm</span>
+  	</div>
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('quanity'); ?>">
+  <label class="control-label" for="inputQuanity">Quanity</label>
+  <div class="controls">
+  	<input id="inputQuanity" name="quanity" type="text" value="<?php echo scrub_out($record->quanity); ?>" />
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('northing'); ?>">
+  <label class="control-label" for="inputNorthing">Northing</label>
+  <div class="controls">
+    <?php $disabled = ($record->station_index == false) ? '' : ' disabled'; ?>
+    <input id="inputNorthing" type="text" name="northing" value="<?php echo scrub_out($record->northing); ?>"<?php echo $disabled; ?>>
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('easting'); ?>">
+  <label class="control-label" for="inputEasting">Easting</label>
+  <div class="controls">
+    <?php $disabled = ($record->station_index == false) ? '' : ' disabled'; ?>
+    <input id="inputEasting" type="text" name="easting" value="<?php echo scrub_out($record->northing); ?>"<?php echo $disabled; ?>>
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('elevation'); ?>">
+  <label class="control-label" for="inputElevation">Elevation</label>
+  <div class="controls">
+    <?php $disabled = ($record->station_index == false) ? '' : ' disabled'; ?>
+    <input id="inputElevation" type="text" name="elevation" value="<?php echo scrub_out($record->northing); ?>"<?php echo $disabled; ?>>
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('xrf_artifact_index'); ?>">
+  <label class="control-label" for="inputXrfArtifactIndex">Artifact XRF</label>
+  <div class="controls">
+  	<input id="inputXrfArtifactIndex" type="text" name="xrf_artifact_index" value="<?php echo scrub_out($record->xrf_artifact_index); ?>" />
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('xrf_matrix_index'); ?>">
+  <label class="control-label" for="inputXrfMatrixIndex">Matrix XRF</label>
+  <div class="controls">
+	  <input id="inputXrfMatrixIndex" name="xrf_matrix_index" type="text" value="<?php echo scrub_out($record->xrf_matrix_index); ?>" />
+  </div>
+</div> 
+<div class="control-group span8<?php Error::display_class('notes'); ?>">
+  <label class="control-label" for="inputNotes">Notes</label>
+  <div class="controls">
+  	<textarea name="notes" class="textbox" rows="5"><?php echo scrub_out($record->notes); ?></textarea>
+  </div>
+</div>
+<div class="control-group span8">
+  <div class="controls">
+    <input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
+    <button class="btn btn-primary" type="submit">Update</button>
+  </div>
+</div>
 </form>
+</fieldset>
 <?php Error::display('upload'); ?>
 <?php Error::display('media'); ?>
 <ul class="nav nav-tabs" id="media_nav">

@@ -4,7 +4,7 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="pull-right">
-  <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/users/edit/<?php echo scrub_out($user->uid); ?>">Edit</a>
+  <a class="btn" href="<?php echo Config::get('web_path'); ?>/users/edit/<?php echo scrub_out($user->uid); ?>">Edit</a>
   <?php if (Access::has('user','delete',$user->uid) AND !$user->disabled) { ?>
   <a class="btn btn-danger" href="#confirm_disable_user_<?php echo scrub_out($user->uid); ?>" role="button" data-toggle="modal">Disable</a>
   <?php require \UI\template('/users/modal_disable'); ?>

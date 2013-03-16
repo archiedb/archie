@@ -21,7 +21,7 @@ if (INIT_LOADED != '1') { exit; }
   <div class="span4 offset3">
     <p class="text-right">
       <a class="btn btn-info btn-small" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/site/<?php echo scrub_out(Config::get('site')); ?>">Rebuild</a>
-      <a class="btn btn-primary btn-small" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/site/<?php echo scrub_out(Config::get('site')); ?>">Download</a>
+      <a class="btn btn-success btn-small" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/site/<?php echo scrub_out(Config::get('site')); ?>">Download</a>
     </p>
   </div>
 </div>
@@ -32,7 +32,7 @@ if (INIT_LOADED != '1') { exit; }
   <div class="span4 offset3">
     <p class="text-right">
       <a class="btn btn-small btn-info disabled">Rebuild</a>
-      <a class="btn btn-small btn-primary disabled">Download</a>
+      <a class="btn btn-small btn-success disabled">Download</a>
     </p>
   </div>
 </div>
