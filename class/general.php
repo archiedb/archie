@@ -62,7 +62,6 @@ function scrub_out($string) {
 
 } // scrub_out
 
-
 /*
  * log_event
  * Logs an event to a defined log file based on config options

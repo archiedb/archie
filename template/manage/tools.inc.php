@@ -32,6 +32,7 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+<?php Event::display('errors'); ?>
 <div class="page-header">
   <h3>Data Imports</h3>
     <em>You must indicate the type of data you are updating. If the data type selected does not match the uploaded file it will be rejected.</em>
@@ -53,7 +54,7 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <div class="span3 offset1">
   <select name="type">
-      <option value="station_xyz">XYZ Station</option>
+      <option value="xyz_station">XYZ Station</option>
   </select>
 </div>
 <div class="span1">

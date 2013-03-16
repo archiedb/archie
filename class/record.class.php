@@ -232,9 +232,9 @@ class Record extends database_object {
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
 		$quad = Dba::escape($input['quad']); 
 		$feature = Dba::escape($input['feature']); 
-    $northing = Dba::escape($input['northing']); 
-    $easting = Dba::escape($input['easting']); 
-    $elevation = Dba::escape($input['elevation']); 
+    $northing = isset($input['northing']) ? Dba::escape($input['northing']) : Dba::escape($this->northing); 
+    $easting = isset($input['easting']) ? Dba::escape($input['easting']) : Dba::escape($this->easting); 
+    $elevation = isset($input['elevation']) ? Dba::escape($input['elevation']) : Dba::escape($this->elevation); 
 		$user = Dba::escape(\UI\sess::$user->uid); 
 		$updated = time(); 
 		$record_uid = Dba::escape($this->uid); 
@@ -311,16 +311,13 @@ class Record extends database_object {
     
       // If we are comparing it to an existing record
       if ($record->uid) {   
-        if (!isset($input['northing'])) { $input['northing'] = $record->northing; }
-		    elseif ($input['northing'] != $record->northing) {
+		    if (isset($input['northing']) AND $input['northing'] != $record->northing) {
           Error::add('northing','Northing can not be changed if the record has an RN'); 
         }
-        if (!isset($input['easting'])) { $input['easting'] = $record->easting; }
-        elseif ($input['easting'] != $record->easting) { 
+        if (isset($input['easting']) AND $input['easting'] != $record->easting) { 
           Error::add('easting','Easting can not be changed if the record has an RN'); 
         }
-        if (!isset($input['elevation'])) { $input['elevation'] = $record->elevation; }
-        elseif ($input['elevation'] != $record->elevation) { 
+        if (isset($input['elevation']) AND $input['elevation'] != $record->elevation) { 
           Error::add('elevation','Elevation can not be changed if the record has an RN'); 
         }
       }

@@ -21,6 +21,11 @@ switch (\UI\sess::location('action')) {
     }
     header("Location:" . Config::get('web_path')  . '/manage/tools'); 
   break;
+  case 'import': 
+    $import = new Import($_POST['type']);   
+    $import->run($_FILES['import']['tmp_name']);
+    header("Location:" . Config::get('web_path') . '/manage/tools'); 
+  break;
   case 'tools':
     require_once \UI\template('/manage/tools'); 
   break; 
