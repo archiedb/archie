@@ -169,7 +169,7 @@ class content {
       case 'media': 
         $extension = $mime_type; 
         $filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
-        $results = self::write_media($uid,$data,$filename); 
+        $results = self::write_media($uid,$data,$filename,$options); 
       break; 
 			default: 
 			case 'record': 
@@ -327,7 +327,7 @@ class content {
    * write_media
    * Write a media file, whatever that is
    */
-  private function write_media($uid,$data,$filename) { 
+  private function write_media($uid,$data,$filename,$description) { 
 
 		// Put it on the filesystem
 		$handle = fopen($filename,'w'); 
@@ -346,7 +346,9 @@ class content {
 
 		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
 		$uid = Dba::escape($uid); 
-    $sql = "INSERT INTO `media` (`filename`,`type`,`record`) VALUES ('$filename','media','$uid')";
+    $description = Dba::escape($description); 
+    $user_id = Dba::escape(\UI\sess::$user->uid); 
+    $sql = "INSERT INTO `media` (`filename`,`type`,`record`,`notes`,`user`) VALUES ('$filename','media','$uid','$description','$user_id')";
     $db_results = Dba::write($sql); 
 
     if (!$db_results) { 
@@ -643,7 +645,7 @@ class content {
       return false; 
     } 
 
-    $filename = Content::write($uid,'media',$data,$path_info['extension']); 
+    $filename = Content::write($uid,'media',$data,$path_info['extension'],$post['description']); 
 
     Event::add('success','Media uploaded, thanks!','small'); 
 

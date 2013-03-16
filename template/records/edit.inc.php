@@ -235,7 +235,8 @@ if (INIT_LOADED != '1') { exit; }
           </div>
         </div>
       </div>
-      <div class="span2 offset1">
+      <div class="span3 offset1"><strong>Description</strong><br /><input type="text" class="span4" name="description" /></div>
+      <div class="span1 offset1">
         <br />
         <button class="btn btn-primary" type="submit">Upload</button>
       </div>
@@ -245,8 +246,3 @@ if (INIT_LOADED != '1') { exit; }
     <?php require_once \UI\template('/records/media'); ?>
   </div> <!-- End Media tab pane -->
 </div> <!-- End Container --> 
-<script>
-  $(function () {
-    $('#media_nav a:first').tab('show');
-  })
-</script>
