@@ -142,7 +142,7 @@ class Import {
     fclose($handle); 
 
     if ($error_lines > 0) { 
-      Error::add('general',$error_lines . ' invalid lines found.'); 
+      Error::add('general',$error_lines . ' invalid lines found. Aborting, nothing imported'); 
       if (strlen($missing)) { Error::add('RN','Lines:' . ltrim($missing,','));  }
       if (strlen($invalid)) { Error::add('Coordinate Value','Lines:' . ltrim($invalid,',')); }
       return false; 
