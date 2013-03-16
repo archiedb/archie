@@ -175,6 +175,9 @@ class Record extends database_object {
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
 		$quad = Dba::escape($input['quad']); 
 		$feature = Dba::escape($input['feature']);  
+    $northing = Dba::escape($input['northing']); 
+    $easting = Dba::escape($input['easting']); 
+    $elevation = Dba::escape($input['elevation']); 
 		$user = Dba::escape(\UI\sess::$user->uid); 
 		$created = time(); 
 
@@ -182,8 +185,8 @@ class Record extends database_object {
 		$station_index = $input['station_index'] ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
 		$level = $level ? "'" . Dba::escape($input['level']) . "'" : "NULL"; 
 		
-		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`station_index`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`user`,`created`) " . 
-			"VALUES ('$site','$catalog_id','$unit',$level,'$lsg_unit',$station_index,'$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$quad','$feature','$user','$created')"; 
+		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`station_index`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`user`,`created`,`northing`,`easting`,`elevation`) " . 
+			"VALUES ('$site','$catalog_id','$unit',$level,'$lsg_unit',$station_index,'$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$quad','$feature','$user','$created','$northing','$easting','$elevation')"; 
 		$db_results = Dba::query($sql); 
 
 		if (!$db_results) { 
@@ -210,7 +213,7 @@ class Record extends database_object {
   
     // First verify the input to make sure
     // all of the fields are within acceptable tolerences 
-    if (!Record::validate($input)) {
+    if (!Record::validate($input,$this->uid)) {
       Error::add('general','Invalid Field Values - Please check your input again');
       return false;
     }
@@ -229,6 +232,9 @@ class Record extends database_object {
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
 		$quad = Dba::escape($input['quad']); 
 		$feature = Dba::escape($input['feature']); 
+    $northing = Dba::escape($input['northing']); 
+    $easting = Dba::escape($input['easting']); 
+    $elevation = Dba::escape($input['elevation']); 
 		$user = Dba::escape(\UI\sess::$user->uid); 
 		$updated = time(); 
 		$record_uid = Dba::escape($this->uid); 
@@ -240,7 +246,7 @@ class Record extends database_object {
 		$sql = "UPDATE `record` SET `unit`='$unit', `level`=$level, `lsg_unit`='$lsg_unit', `station_index`=$station_index, " . 
 			"`xrf_matrix_index`='$xrf_matrix_index', `weight`='$weight', `height`='$height', `width`='$width', `thickness`='$thickness', " . 
 			"`quanity`='$quanity', `material`='$material', `classification`='$classification', `notes`='$notes', `xrf_artifact_index`='$xrf_artifact_index', " . 
-			"`user`='$user', `updated`='$updated', `quad`='$quad', `feature`='$feature' " . 
+			"`user`='$user', `updated`='$updated', `quad`='$quad', `feature`='$feature', `northing`='$northing', `easting`='$easting', `elevation`='$elevation' " . 
 			"WHERE `uid`='$record_uid'"; 
 		$db_results = Dba::write($sql); 
 
@@ -260,9 +266,14 @@ class Record extends database_object {
 	} // update
 
 
-	// validate
-	// Validate the input for the record and make sure ints are ints
-	public static function validate($input) { 
+  /**
+   * validate
+   * Take the input data and validate pass optional record_id
+   */
+	public static function validate($input,$record_id='') { 
+
+    // If we were given the record for which these values are assoicated
+    if ($record_id) { $record = new Record($record_id); }
 		
 		// Unit A-Z
 		if (preg_match("/[^A-Za-z]/",$input['unit'])) { 
@@ -294,7 +305,46 @@ class Record extends database_object {
 				Error::add('station_index','Duplicate - Station Index must be unique'); 
 			} 
 		} // end if station index is specified
-		
+
+    // If they've set a RN then we need to make sure they didn't set northing,easting,elevation
+    if (strlen($input['station_index'])) { 
+    
+      // If we are comparing it to an existing record
+      if ($record->uid) {   
+		    if ($input['northing'] != $record->northing) {
+          Error::add('northing','Northing can not be changed if the record has an RN'); 
+        }
+        if ($input['easting'] != $record->easting) { 
+          Error::add('easting','Easting can not be changed if the record has an RN'); 
+        }
+        if ($input['elevation'] != $record->elevation) { 
+          Error::add('elevation','Elevation can not be changed if the record has an RN'); 
+        }
+      }
+      else {
+        if (strlen($input['northing'])) { 
+          Error::add('northing','Northing can not be changed if the record has an RN'); 
+        }
+        if (strlen($input['easting'])) { 
+          Error::add('easting','Easting can not be changed if the record has an RN'); 
+        }
+        if (strlen($input['elevation'])) { 
+          Error::add('elevation','Elevation can not be changed if the record has an RN'); 
+        }
+      } // else no record_id
+    } // if station_index
+    // if no station index then just check format of northing/easting/elevation
+    else { 
+        if (floatval($input['northing']) != $input['northing']) { 
+          Error::add('northing','Northing must be numeric'); 
+        }
+        if (floatval($input['easting']) != $input['easting']) { 
+          Error::add('easting','Easting must be numeric'); 
+        }
+        if (floatval($input['elevation']) != $input['elevation']) { 
+          Error::add('elevation','Elevation must be numeric'); 
+        }
+    }
 		// XRF Matrix Index numeric
 		if (!is_numeric($input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
 			Error::add('xrf_matrix_index','XRF Matrix Index must be numeric'); 
