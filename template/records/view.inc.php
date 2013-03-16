@@ -3,21 +3,15 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<p class="text-right">
+<p class="pull-right">
   <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn btn-primary">Edit Record</a>
   <a target="_blank" href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success">Print Ticket</a>
 </p>
 <?php Event::display(); ?>
-<div class="content-block">
-<div class="record-header-left">
-<h3><?php echo $record->site . '-' . $record->catalog_id; ?></h3>
-  Entered by <?php echo $record->user->username; ?> on <?php echo date("r",$record->created); ?></p>
-</div>
-<p class="text-right record-header-right">
-<img class="img-polaroid" src="<?php echo Config::get('web_path'); ?>/media/qrcode/<?php echo scrub_out($record->uid); ?>" />
-</p>
-<fieldset class="record">
-  <table class="table table-hover table-bordered table-white">
+<h3><?php echo $record->site . '-' . $record->catalog_id; ?>
+  <small>Entered by <?php echo $record->user->username; ?> on <?php echo date("d-M-Y H:i:s",$record->created); ?></small>
+</h3>
+<table class="table table-hover table-bordered table-white">
 <tr>
   <th>UNIT</th><td><?php echo scrub_out($record->unit); ?></em></td>
   <th>CATALOG ID</th><td><?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></td>
@@ -53,8 +47,6 @@ if (INIT_LOADED != '1') { exit; }
   <th valign="top">NOTES</th><td colspan="3"><?php echo scrub_out($record->notes); ?></td>
 </tr>
 </table>
-</fieldset> 
-</div><!-- End content block --> 
 <fieldset>
 <legend>Item Pictures</legend>
 <?php require_once \UI\template('/records/images'); ?>

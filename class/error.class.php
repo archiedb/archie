@@ -3,7 +3,6 @@
 /**
  * Error Class
  *
- *
  * LICENSE: GNU General Public License, version 2 (GPLv2)
  * Copyright (c) 2001 - 2011 Ampache.org All Rights Reserved
  *
@@ -20,10 +19,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- * @package	Ampache
- * @copyright	2001 - 2011 Ampache.org
- * @license	http://opensource.org/licenses/gpl-2.0 GPLv2
- * @link	http://www.ampache.org/
  */
 
 /**
@@ -34,6 +29,7 @@
  *
  * @package	Ampache
  * @copyright	2001 - 2011 Ampache.org
+ * @copyright	2012 - 2013 Karl Vollmer 
  * @license	http://opensource.org/licenses/gpl-2.0 GPLv2
  * @link	http://www.ampache.org/
  */
@@ -134,7 +130,7 @@ class Error {
 	 * display_class
 	 * returns CSS class if specified error occured
 	 */
-	public static function display_class($name,$severity) { 
+	public static function display_class($name,$severity='') { 
 
 		if (!isset(Error::$errors[$name])) { return false; }
 
@@ -142,6 +138,7 @@ class Error {
 			case 'optional':
 				echo ' warning';
 			break;
+			default:
 			case 'required':
 				echo ' error';
 			break;

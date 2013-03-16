@@ -8,7 +8,7 @@ if (INIT_LOADED != '1') { exit; }
 <legend><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)</legend>
 <?php Error::display('general'); ?>
 <form class="form-horizontal" method="post" action="<?php echo Config::get('web_path'); ?>/users/update">
-  <div class="control-group<?php Error::display_class('name','required'); ?>">
+  <div class="control-group<?php Error::display_class('name'); ?>">
     <label class="control-label" for="inputName">Name</label>
     <div class="controls">
       <input name="name" type="text" id="inputName" placeholder="Display Name" value="<?php echo scrub_out($user->name); ?>">

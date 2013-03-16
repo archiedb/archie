@@ -58,16 +58,16 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template();
   break;
   case 'new':
-    require_once 'template/new_record.inc.php';
+    require_once \UI\template(); 
   break;
   case 'create':
     $_POST['user'] = \UI\sess::$user->uid;
     if ($record_id = Record::create($_POST)) {
       $record = new Record($record_id);
-      require_once  \UI\template('/records/view');
+      require_once \UI\template('/records/view');
     }
     else {
-      require_once 'template/new_record.inc.php';
+      require_once \UI\template('/records/new'); 
     }
   break;
   case 'delete': 
