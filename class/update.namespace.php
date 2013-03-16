@@ -204,6 +204,8 @@ class Database {
                     '- Add indexes to commonly used fields.<br />' . 
                     '- Add notes and user to media table.<br />';
     $versions[] = array('version'=>'0003','description'=>$update_string); 
+    $update_string = '- Reduce accuracy of xyz data.<br />'; 
+    $versions[] = array('version'=>'0004','description'=>$update_string); 
 
 
     return $versions; 
@@ -340,32 +342,53 @@ class Database {
     $retval = true; 
 
     $sql = "ALTER TABLE `media` ADD `notes` VARCHAR(512) NULL AFTER `filename`"; 
-    $retval = \Dba::write($sql) ? $retval : 'false';
+    $retval = \Dba::write($sql) ? $retval : false;
     
     $sql = "ALTER TABLE `media` ADD `user` INT(10) UNSIGNED NOT NULL AFTER `filename`"; 
-    $retval = \Dba::write($sql) ? $retval : 'false';
+    $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE  `image` ADD INDEX (  `user` )"; 
-    $retval = \Dba::write($sql) ? $retval : 'false';
+    $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `media` ADD INDEX ( `user` )"; 
-    $retval = \Dba::write($sql) ? $retval : 'false';
+    $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `record` ADD UNIQUE ( `catalog_id` )";
-    $retval = \Dba::write($sql) ? $retval : 'false';
+    $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `record` ADD `northing` DECIMAL( 8,6 ) NOT NULL AFTER `xrf_artifact_index`";
-    $retval = \Dba::write($sql) ? $retval : 'false';
+    $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `record` ADD `easting` DECIMAL( 8,6 ) NOT NULL AFTER  `northing`";
-    $retval = \Dba::write($sql) ? $retval : 'false';
+    $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `record` ADD `elevation` DECIMAL( 8,6 ) NOT NULL AFTER `easting`";
-    $retval = \Dba::write($sql) ? $retval : 'false';
+    $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval; 
 
   } // update_0003
+
+  /**
+   * update_0004
+   * Evidently they aren't that accurage, reduce decimal 
+   */
+  private static function update_0004() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `record` CHANGE `northing` `northing` DECIMAL (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `easting` `easting` DECIMAL (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `record` CHANGE `elevation` `elevation` DECIMAL (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    return $retval; 
+
+  } // update_0004
 
 } // \Update\Database class
 
