@@ -39,23 +39,43 @@ class Event {
    * display
    * Display the requested event,reset it after we're done
    */
-  public static function display() { 
+  public static function display($type='events') { 
 
-    if (!count(self::$_events)) { return false; }
+    switch ($type) { 
+      case 'errors':
+        if (!Error::occurred()) { return false; }
+        $errors = Error::get_all(); 
+        if (isset($errors['general'])) { 
+          $header_small = ' ' . scrub_out($errors['general']);
+          unset($errors['general']); 
+        }
+        foreach ($errors as $key=>$value) { 
+          $message .= "<li><strong>" . \UI\field_name($key) . ":</strong> $value<br /></li>";
+        }
+        $css_class = ' alert-error';
+        $header = '<h4>Error:' . $header_small . '</h4>';
+        $size = ' alert-block';
+        require \UI\template('/event'); 
+      break; 
+      default:
+      case 'events':
+        if (!count(self::$_events)) { return false; }
 
-    // Show the event under this name
-    foreach (self::$_events as $event) { 
-      $message = $event['message'];
-      $css_class = ($event['severity'] == 'warning') ? '' : ' alert-' . $event['severity'];
-      $header = ($event['size'] == 'small') ? '<strong>' .ucfirst($event['severity']) . ':</strong>' : '<h4>' . ucfirst($event['severity']) . '</h4>';
-      $size = ($event['size'] == 'small') ? '' : ' alert-block';
+        // Show the event under this name
+        foreach (self::$_events as $event) { 
+          $message = scrub_out($event['message']); 
+          $css_class = ($event['severity'] == 'warning') ? '' : ' alert-' . $event['severity'];
+          $header = ($event['size'] == 'small') ? '<strong>' .ucfirst($event['severity']) . ':</strong>' : '<h4>' . ucfirst($event['severity']) . '</h4>';
+          $size = ($event['size'] == 'small') ? '' : ' alert-block';
 
-      require \UI\template('/event'); 
+          require \UI\template('/event'); 
 
-    } // end foreach events
+        } // end foreach events
 
-    self::$_events=array(); 
-    $_SESSION['events'] = self::$_events; 
+        self::$_events=array(); 
+        $_SESSION['events'] = self::$_events; 
+      break; 
+    } // end switch
 
   } // display
 

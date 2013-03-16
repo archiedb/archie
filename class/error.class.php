@@ -127,6 +127,16 @@ class Error {
 	} // get
 
 	/**
+	 * get_all
+	 * Return all of the errors to me!
+	 */
+	public static function get_all() { 
+
+		return self::$errors; 
+
+	} // get_all
+
+	/**
 	 * display_class
 	 * returns CSS class if specified error occured
 	 */

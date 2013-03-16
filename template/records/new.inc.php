@@ -22,15 +22,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="page-header">
 <h4>New Record - <?php echo Config::get('site'); ?></h3>
 </div>
-<?php Error::display('unit'); ?>
-<?php Error::display('quad'); ?>
-<?php Error::display('level'); ?>
-<?php Error::display('station_index'); ?>
-<?php Error::display('feature'); ?>
-<?php Error::display('lsg_unit'); ?>
-<?php Error::display('material'); ?>
-<?php Error::display('classification'); ?>
-<?php Error::display('notes'); ?>
+<?php Event::display('errors'); ?>
 <form class="form-horizontal" id="new_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/create">
 <div class="control-group span4<?php Error::display_class('unit'); ?>">
   <label class="control-label" for="inputUnit">Unit</label>

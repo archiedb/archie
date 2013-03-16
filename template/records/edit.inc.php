@@ -6,7 +6,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php Event::display(); ?>
 <fieldset class="record"><legend>Edit Record - <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></legend>
 <?php Error::display('general'); ?>
-<form id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/update">
+<form class="form-horizontal" id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/update">
 <table>
 <tr>
 <td>
