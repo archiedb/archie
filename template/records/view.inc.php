@@ -21,7 +21,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>L. U.</th><td><?php echo scrub_out($record->lsg_unit->name); ?></td>
 </tr>
 <tr>
-  <th>MATRIX XRF #</th><td><?php echo scrub_out($record->xrf_matrix_index); ?></td>
+  <th>QUANTITY</th><td><?php echo scrub_out($record->quanity); ?></td>
   <th>RN</th><td><?php echo scrub_out($record->station_index); ?></td>
 </tr>
 <tr>
@@ -36,22 +36,30 @@ if (INIT_LOADED != '1') { exit; }
   <th>LENGTH</th><td><?php echo scrub_out($record->height); ?> mm</td>
   <th>WIDTH</th><td><?php echo scrub_out($record->width); ?> mm</td>
 <tr>
-  <th>QUANTITY</th><td><?php echo scrub_out($record->quanity); ?></td>
   <th>MATERIAL</th><td><?php echo scrub_out($record->material->name); ?></td>
+  <th>CLASSIFICATION</th><td><?php echo scrub_out($record->classification->name); ?></td>
 </tr>
 <tr>
-  <th>CLASSIFICATION</th><td><?php echo scrub_out($record->classification->name); ?></td>
+  <th>MATRIX XRF #</th><td><?php echo scrub_out($record->xrf_matrix_index); ?></td>
   <th>ARTIFACT XRF #</th><td><?php echo scrub_out($record->xrf_artifact_index); ?></td>
 </tr>
 <tr>
-  <th valign="top">NOTES</th><td colspan="3"><?php echo scrub_out($record->notes); ?></td>
+  <th>NORTHING</th><td><?php echo scrub_out($record->northing); ?></td>
+  <th>EASTING</th><td><?php echo scrub_out($record->easting); ?></td>
+<tr>
+  <th>ELEVATION</th><td><?php echo scrub_out($record->elevation); ?></td>
+  <th>NOTES</th><td><?php echo scrub_out($record->notes); ?></td>
 </tr>
 </table>
-<fieldset>
-<legend>Item Pictures</legend>
-<?php require_once \UI\template('/records/images'); ?>
-</fieldset>
-<fieldset>
-<legend>Other Media</legend>
-<?php require_once \UI\template('/records/media'); ?>
-</fieldset>
+<ul class="nav nav-tabs" id="media_nav">
+  <li class="active"><a href="#picture" data-toggle="tab">Pictures</a></li>
+  <li><a href="#media" data-toggle="tab">Other Media</a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane active" id="picture">
+    <?php require_once \UI\template('/records/images'); ?>
+  </div>
+  <div class="tab-pane" id="media">
+    <?php require_once \UI\template('/records/media'); ?>
+  </div>
+</div>
