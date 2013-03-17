@@ -21,7 +21,7 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template(); 
   break; 
   case 'update': 
-    if (!Access::has('user','write',\UI\sess::location('objectid'))) { header('Location:' . Config::get('web_path')); exit; }
+    if (!Access::has('user','write',$_POST['uid'])) { header('Location:' . Config::get('web_path')); exit; }
     // Make sure they set the password and confirmpassword to the same
     $user = new User($_POST['uid']); 
 

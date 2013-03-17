@@ -156,8 +156,6 @@ class User extends database_object {
       return false; 
     } 
 
-    
-
 		$uid = Dba::escape($this->uid); 
 		$name = Dba::escape($input['name']); 
 		$email = Dba::escape($input['email']); 
