@@ -161,7 +161,7 @@ class Import {
       $northing = Dba::escape($row['1']); 
       $easting = Dba::escape($row['2']); 
       $elevation = Dba::escape($row['3']); 
-      $notes = Dba::escape($row['4']); 
+      $notes = Dba::escape("\n--Station Import--\n" . $row['4'] . "\n--End Station Import--\n"); 
 
       $sql = "UPDATE `record` SET `northing`='$northing', `easting`='$easting', `elevation`='$elevation', `notes`=IFNULL(CONCAT(`notes`,'$notes'),'$notes') WHERE `station_index`='$station_index' LIMIT 1";
       $db_results = Dba::write($sql); 
