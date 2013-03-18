@@ -181,8 +181,6 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 </form>
 </fieldset>
-<?php Error::display('upload'); ?>
-<?php Error::display('media'); ?>
 <ul class="nav nav-tabs" id="media_nav">
   <li class="active"><a href="#picture" data-toggle="tab">Pictures</a></li>
   <li><a href="#media" data-toggle="tab">Other Media</a></li>
@@ -190,7 +188,6 @@ if (INIT_LOADED != '1') { exit; }
 <div class="tab-content">
   <div class="tab-pane active" id="picture">
     <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_image">
-    	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
     	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
     <div class="row">
       <div class="span4">
@@ -218,7 +215,6 @@ if (INIT_LOADED != '1') { exit; }
   </div> <!-- End Picture tab -->
   <div class="tab-pane" id="media">
     <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_media">
-    	<input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
     	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
     <div class="row">
       <div class="span4">

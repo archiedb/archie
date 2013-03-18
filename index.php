@@ -10,6 +10,9 @@ switch (\UI\sess::location('page')) {
   case 'media':
     require_once 'image.php';
   break; 
+  case 'viewer':
+    require_once 'viewer.php';
+  break;
   case 'manage': 
     require_once 'manage.php';
   break; 
