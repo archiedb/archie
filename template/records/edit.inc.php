@@ -189,6 +189,7 @@ if (INIT_LOADED != '1') { exit; }
   <div class="tab-pane active" id="picture">
     <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_image">
     	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
+      <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
     <div class="row">
       <div class="span4">
         <strong>Image</strong><br />
@@ -216,6 +217,7 @@ if (INIT_LOADED != '1') { exit; }
   <div class="tab-pane" id="media">
     <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_media">
     	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
+      <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
     <div class="row">
       <div class="span4">
         <strong>Media</strong><br />
