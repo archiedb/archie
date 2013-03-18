@@ -6,11 +6,13 @@ require_once 'template/header.inc.php';
 // Switch on the action
 switch (\UI\sess::location('action')) { 
 	case 'upload_image': 
+    if (!count($_POST)) { exit; }
     Content::upload('record',$_POST['record_id'],$_POST,$_FILES); 
 		$record = new Record($_POST['record_id']);
 		require_once \UI\template('/records/edit'); 
 	break; 
   case 'upload_media':
+    if (!count($_POST)) { exit; }
     Content::upload('media',$_POST['record_id'],$_POST,$_FILES); 
     $record = new Record($_POST['record_id']); 
     require_once \UI\template('/records/edit'); 
