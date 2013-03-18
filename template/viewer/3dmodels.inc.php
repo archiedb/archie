@@ -51,7 +51,7 @@ $extension = $info['extension'];
   <a href="<?php echo Config::get('web_path'); ?>/records/view/<?php echo scrub_out($model->parentuid); ?>" class="btn">Record</a>
 </p>
 <div class="page-header">
-  <h3>3d Model View</h3>
+  <h3>3d Model View - <?php echo scrub_out($model->notes); ?></h3>
 </div>
 <p class="text-center">
   <input class="btn" onclick="thingiview.setCameraView('top');" type="button" value="Top" />
@@ -62,7 +62,7 @@ $extension = $info['extension'];
   <input class="btn" onclick="thingiview.setCameraZoom(5);" type="button" value="Zoom +" />
   <input class="btn" onclick="thingiview.setCameraZoom(-5);" type="button" value="Zoom -" />
 
-  Rotation: <input class="btn" onclick="thingiview.setRotation(true);" type="button" value="on" /> | <input class="btn" onclick="thingiview.setRotation(false);" type="button" value="off" />
+  Rotation: <input class="btn btn-primary" onclick="thingiview.setRotation(true);" type="button" value="on" /> | <input class="btn btn-danger" onclick="thingiview.setRotation(false);" type="button" value="off" />
 </p>
 
 <div id="viewer" style="width:100%;height:400px"></div>

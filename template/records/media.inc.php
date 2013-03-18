@@ -19,11 +19,11 @@ foreach ($items as $item) {
   $extension = $info['extension']; 
 ?>
 <tr>
-  <td><?php echo basename($item['filename']); ?></td>
+  <td><?php echo scrub_out($item['notes']); ?></td>
   <td><?php echo date('d-M-Y H:i:s',filemtime(Config::get('data_root') . '/' . $item['filename'])); ?></td>
   <td>
-      <?php if (in_array($extension,array('stl','ply'))) { ?>
-      <a class="btn btn-small" href="<?php echo Config::get('web_path'); ?>/viewer/<?php echo scrub_out($extension); ?>/<?php echo scrub_out($item['uid']); ?>">3d View</a>
+      <?php if (in_array($extension,array('stl'))) { ?>
+      <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/<?php echo scrub_out($extension); ?>/<?php echo scrub_out($item['uid']); ?>">3d View</a>
       <?php } ?>
       <a href="<?php echo Config::get('web_path'); ?>/media/media/<?php echo scrub_out($item['uid']); ?>" class="btn btn-small">Download</a>
       <?php if (Access::has('media','delete',$item['uid'])) { ?>

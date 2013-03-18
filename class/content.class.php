@@ -13,6 +13,8 @@ class content {
   public $filename; // "UID" for this class, the real filename
   public $mime; // Mime type of this image
   public $parentuid; // Parent UID this is assoicated with
+  public $notes; 
+  public $user; 
   public $type; // Type of object, most likely an image for now
   public $source; // Raw data of the object
   private $valid_types = array('record','thumb','qrcode','ticket','media'); 
@@ -45,6 +47,8 @@ class content {
     $this->filename = Config::get('data_root') . '/' . $row['data'];
     $this->mime = $row['type'];
     $this->parentuid = $row['record'];
+    $this->notes = $row['notes']; 
+    $this->user = $row['user']; 
 
 		return $db_results; 
 
@@ -128,6 +132,8 @@ class content {
     $this->filename = Config::get('data_root') . '/' . $row['filename']; 
     $this->uid = $row['uid']; 
     $this->parentuid = $row['record']; 
+    $this->user = $row['user']; 
+    $this->notes = $row['notes']; 
 
     // We need the extension
     $info = pathinfo($row['filename']); 
