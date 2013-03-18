@@ -7,7 +7,7 @@
  * This class deals with "media" assoicated with a record
  * it does both the write and read
  */
-class content {
+class content extends database_object {
 
   public $uid; // UID of object
   public $filename; // "UID" for this class, the real filename
@@ -32,17 +32,67 @@ class content {
 
   } // construct
 
+  /**
+   * build_cache
+   * Take a type an array of objects and cache em
+   */
+  public static function build_cache($objects,$type) { 
+
+    if (!is_array($objects) || !count($objects)) { return false; }
+
+    $idlist = '(' . implode(',',$objects) . ')'; 
+
+    if ($idlist == '()') { return false; }
+
+    switch ($type) { 
+      case 'media':
+        $table_name = 'media';
+      break;
+      case 'record':
+        $table_name = 'image';
+      break;
+    }
+
+    $sql = 'SELECT * FROM `' . $table_name . '` WHERE `uid` IN ' . $idlist; 
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache($table_name,$row['uid'],$row); 
+    }
+
+    return true; 
+
+  } // build_cache
+
+  /**
+   * refresh
+   */
+  public function refresh() { 
+
+    return true; 
+
+  } // refresh
+
 	/**
 	 * load_record_data
 	 * This loads a record image from its UID
 	 */
 	private function load_record_data($uid) {
 
-    $uid = Dba::escape($uid);
-    $sql = "SELECT * FROM `image` WHERE `uid`='$uid'";
-    $db_results = Dba::read($sql);
+    $retval = true; 
 
-    $row = Dba::fetch_assoc($db_results);
+    // Use cache if it exists
+    if (parent::is_cached('image',$uid)) { 
+      $row = parent::get_from_cache('image',$uid);
+    }
+    else {
+      $uid = Dba::escape($uid);
+      $sql = "SELECT * FROM `image` WHERE `uid`='$uid'";
+      $db_results = Dba::read($sql);
+      $row = Dba::fetch_assoc($db_results);
+      if (!count($row)) { $retval = false; }
+      parent::add_to_cache('image',$uid,$row); 
+    }
 
     $this->filename = Config::get('data_root') . '/' . $row['data'];
     $this->mime = $row['type'];
@@ -50,7 +100,7 @@ class content {
     $this->notes = $row['notes']; 
     $this->user = $row['user']; 
 
-		return $db_results; 
+		return $retval; 
 
 	} // load_record_data
 
@@ -121,11 +171,17 @@ class content {
    */
   private function load_media_data($uid) { 
 
-    $uid = Dba::escape($uid); 
-    $sql = "SELECT * FROM `media` WHERE `uid`='$uid' AND `type`='media'"; 
-    $db_results = Dba::read($sql); 
-
-    $row = Dba::fetch_assoc($db_results); 
+    // Check and see if this is cached
+    if (parent::is_cached('media',$uid)) { 
+      $row = parent::get_from_cache('media',$uid); 
+    } 
+    else {
+      $uid = Dba::escape($uid); 
+      $sql = "SELECT * FROM `media` WHERE `uid`='$uid' AND `type`='media'"; 
+      $db_results = Dba::read($sql); 
+      $row = Dba::fetch_assoc($db_results); 
+      parent::add_to_cache('media',$uid,$row); 
+    }
 
     if (!isset($row['uid'])) { return false; }
 
@@ -538,6 +594,70 @@ class content {
     return '';
 
   } // get_mime
+
+  /**
+   * record
+   * This returns the content of specified type for this record
+   * return object is dependent on what's requested
+   */
+  public static function record($record_uid,$type) { 
+
+    switch ($type) { 
+      case 'media': 
+        $retval = self::record_media($record_uid); 
+      break;
+      case 'image':
+        $retval = self::record_image($record_uid); 
+      break; 
+    }
+
+    return $retval; 
+
+  } // record
+
+  /**
+   * record_media
+   * This returns an array of the media assoicated with the record
+   */
+  private static function record_media($record_uid) { 
+
+    $record_uid = Dba::escape($record_uid); 
+    $sql = "SELECT `uid` FROM `media` WHERE `record`='$record_uid' AND `type`='media' ORDER BY `uid`"; 
+    $db_results = Dba::read($sql); 
+
+    $results = array(); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row['uid']; 
+    }
+
+    self::build_cache($results,'media'); 
+
+    return $results; 
+
+  } // record_media
+
+  /**
+   * record_image
+   * This returns an array of the images assoicated with the record
+   */
+  private static function record_image($record_uid) { 
+
+    $record_uid = Dba::escape($record_uid); 
+    $sql = "SELECT `uid` FROM `image` WHERE `record`='$record_uid' ORDER BY `uid`"; 
+    $db_results = Dba::read($sql); 
+
+    $results = array(); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row['uid']; 
+    }
+
+    self::build_cache($results,'record'); 
+  
+    return $results; 
+
+  } // record_image
 
   /**
    * upload

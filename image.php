@@ -1,7 +1,7 @@
 <?php
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
+define('CHECK_ONLY_SESSION','1'); 
 require_once 'class/init.php'; 
-
 // Pull the content from the URL 
 $content = new Content(\UI\sess::location('objectid'),\UI\sess::location('action')); 
 if (!$content->filename) { 

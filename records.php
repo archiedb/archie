@@ -27,15 +27,29 @@ switch (\UI\sess::location('action')) {
     $thumb = new Content($_POST['uid'],'thumb'); 
     if (!$thumb->delete()) { 
       Event::error('DELETE','Unable to delete thumbnail for record image:'. $_POST['uid']); 
+      Error::add('delete','Unable to perform deletion request, please contact administrator'); 
     }
-    $image = new Content($_POST['uid'],'record'); 
-    if (!$image->delete()) { 
-      Event::error('DELETE','Unable to delete record image:' . $_POST['uid']); 
-    }
-
+    else { 
+      $image = new Content($_POST['uid'],'record'); 
+      if (!$image->delete()) { 
+        Event::error('DELETE','Unable to delete record image:' . $_POST['uid']); 
+        Error::add('delete','Unable to perform deletion request, please contact administrator'); 
+      }
+      else { 
+        Event::add('success','Media Item Deleted','small'); 
+      }
+    } 
     // Return to whence we came,
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
-
+  break; 
+  case 'media_delete':
+    if (!Access::has('media','delete',$_POST['uid'])) { break; }
+    $media = new Content($_POST['uid'],'media'); 
+    if (!$media->delete()) { 
+      Event::error('DELETE','Unable to delete media item:' . $media->filename); 
+    }
+    
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break; 
 	case 'update': 
 		$record = new Record($_POST['record_id']); 

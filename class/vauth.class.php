@@ -40,6 +40,8 @@
  */
 class vauth {
 
+	private static $_cache=array(); // Cache some results
+
 	/**
 	 * Constructor
 	 * This should never be called

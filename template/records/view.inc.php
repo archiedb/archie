@@ -11,6 +11,7 @@ if (INIT_LOADED != '1') { exit; }
   <small>Entered by <?php echo $record->user->username; ?> on <?php echo date("d-M-Y H:i:s",$record->created); ?></small>
 </h3>
 <?php Event::display(); ?>
+<?php Event::display('errors'); ?>
 <table class="table table-hover table-bordered table-white">
 <tr>
   <th>UNIT</th><td><?php echo scrub_out($record->unit); ?></em></td>

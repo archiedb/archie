@@ -117,15 +117,22 @@ if (!defined('NO_LOG')) {
 }
 // In case the local setting is 0
 ini_set('session.gc_probability','5');
-
-if (!defined('CLI') AND !defined('NO_SESSION')) { 
+// If we just need to check the session
+if (defined('CHECK_ONLY_SESSION')) { 
+  // Verify their session
+  if (!vauth::session_exists($_COOKIE[Config::get('session_name')])) { 
+    vauth::logout($_COOKIE[Config::get('session_name')]); 
+    exit;
+  } 
+}
+elseif (!defined('CLI') AND !defined('NO_SESSION')) { 
 	// Verify their session
 	if (!vauth::session_exists($_COOKIE[Config::get('session_name')])) { 
 		vauth::logout($_COOKIE[Config::get('session_name')]); 
 		exit;
 	} 
 
-	// Star the session and pull in the user we've got in it
+	// Start the session and pull in the user we've got in it
 	vauth::check_session();
 	\UI\sess::set_user(User::get_from_username($_SESSION['sess_data']['username'])); 
 
