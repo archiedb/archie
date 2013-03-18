@@ -63,11 +63,6 @@ $extension = $info['extension'];
   <input class="btn" onclick="thingiview.setCameraZoom(-5);" type="button" value="Zoom -" />
 
   Rotation: <input class="btn" onclick="thingiview.setRotation(true);" type="button" value="on" /> | <input class="btn" onclick="thingiview.setRotation(false);" type="button" value="off" />
-  <input class="btn" onclick="thingiview.setObjectMaterial('wireframe');" type="button" value="Wireframe" />
-  <input class="btn" onclick="thingiview.setObjectMaterial('solid');" type="button" value="Solid" />
-  <a class="btn" href="#" onclick="thingiview.loadSTL('/lib/thingiview/examples/objects/cube.stl')">render</a>
-  <a class="btn" href="#" onclick="thingiview.loadSTL('<?php echo Config::get('web_path'); ?>/media/media/<?php echo scrub_out($model->uid); ?>')">Other</a>
-
 </p>
 
 <div id="viewer" style="width:100%;height:400px"></div>
