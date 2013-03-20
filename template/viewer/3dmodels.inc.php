@@ -5,6 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 // We need the extension
 $info = pathinfo($model->filename); 
 $extension = $info['extension'];
+$name = strlen($model->notes) ? $model-notes : basename($model->filename); 
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script> 
@@ -51,7 +52,7 @@ $extension = $info['extension'];
   <a href="<?php echo Config::get('web_path'); ?>/records/view/<?php echo scrub_out($model->parentuid); ?>" class="btn">Record</a>
 </p>
 <div class="page-header">
-  <h3>3d Model View - <?php echo scrub_out($model->notes); ?></h3>
+  <h3>3d Model View - <?php echo scrub_out($name); ?></h3>
 </div>
 <p class="text-center">
   <input class="btn" onclick="thingiview.setCameraView('top');" type="button" value="Top" />
