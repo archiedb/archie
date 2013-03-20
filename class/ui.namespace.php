@@ -41,6 +41,7 @@ function field_name($field) {
 
   $names = array('catalog_id'=>'Catalog #',
       'station_index'=>'RN',
+      '3dmodel'=>'3D Model',
       'xrf_matrix_index'=>'XRF Matrix',
       'xrf_artifact_index'=>'XRF Artifact',
       'lsg_unit'=>'L.U',

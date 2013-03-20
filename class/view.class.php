@@ -78,6 +78,7 @@ class View {
       'lsg_unit',
       'material',
       'classification',
+      '3dmodel',
       'updated'); 
 
     self::$allowed_sorts = self::$allowed_filters; 
@@ -549,6 +550,10 @@ class View {
         $end = $unix_time + 85400; 
         $filter_sql = " (`record`.`$filter` >= '" . Dba::escape($start) . "' AND `record`.`$filter` <= '" . Dba::escape($end) . "') AND";
       break;
+      case '3dmodel':
+        $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
+        $filter_sql = " (`media`.`type`='3dmodel' AND `media`.`uid` IS NOT NULL) AND ";
+      break;
       case 'item':
       case 'station_index':
       case 'level':
@@ -595,6 +600,10 @@ class View {
       case 'xrf_artifact_index':
       case 'station_index':
         $sql = "`record`.`$field`";
+      break;
+      case '3dmodel':
+        $sql = "`media`.`uid`";
+        $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
       break;
       case 'material':
         $sql = "`material`.`name`"; 
