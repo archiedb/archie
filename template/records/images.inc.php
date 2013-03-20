@@ -21,7 +21,7 @@ foreach ($images as $uid) {
         <?php echo scrub_out($image->notes); ?>
       </p>
       <p class="text-center">
-        <a class="btn btn-small" target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image->uid); ?>">Open</a>
+        <a class="btn btn-small btn-info" target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image->uid); ?>">Open</a>
       <?php if (Access::has('image','write',$image->uid)) { ?>
         <a class="btn btn-small" href="#confirm_edit_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Edit</a>
       <?php } ?>

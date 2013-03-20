@@ -4,7 +4,7 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <?php Event::display('errors'); ?>
-<fieldset class="record"><legend>Edit Record - <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></legend>
+<fieldset><legend>Edit Record - <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></legend>
 <form class="form-horizontal" id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/update">
 <div class="control-group span4<?php Error::display_class('unit'); ?>">
   <label class="control-label" for="inputUnit">Unit</label>
@@ -181,65 +181,46 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 </form>
 </fieldset>
+<fieldset><legend>Upload</legend>
+<form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload">
+ 	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
+  <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
+<div class="row">
+  <div class="span4">
+    <strong>Media</strong><br />
+    <div class="fileupload fileupload-new" data-provides="fileupload">
+      <div class="input-append">
+      <div class="uneditable-input span3">
+        <i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span>
+      </div>
+      <span class="btn btn-file"><span class="fileupload-new">Select</span>
+      <span class="fileupload-exists">Change</span><input name="media" type="file" /></span>
+      <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+    </div>
+  </div>
+</div>
+<div class="span3 offset1"><strong>Description</strong><br /><input type="text" class="span4" name="description" /></div>
+  <div class="span1 offset1">
+    <br />
+    <button class="btn btn-primary" type="submit">Upload</button>
+  </div>
+</div>
+</form>
+<!-- Images/3dModels/Media -->
 <ul class="nav nav-tabs" id="media_nav">
   <li class="active"><a href="#picture" data-toggle="tab">Pictures</a></li>
+  <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>
   <li><a href="#media" data-toggle="tab">Other Media</a></li>
 </ul>
 <div class="tab-content">
   <div class="tab-pane active" id="picture">
-    <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_image">
-    	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
-      <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
-    <div class="row">
-      <div class="span4">
-        <strong>Image</strong><br />
-        <div class="fileupload fileupload-new" data-provides="fileupload">
-          <div class="input-append">
-            <div class="uneditable-input span3">
-              <i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span>
-            </div>
-            <span class="btn btn-file"><span class="fileupload-new">Select</span>
-            <span class="fileupload-exists">Change</span><input name="image" type="file" /></span>
-            <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-          </div>
-        </div>
-      </div>
-      <div class="span3 offset1"><strong>Description</strong><br /><input type="text" class="span4" name="description" /></div>
-      <div class="span1 offset1">
-        <br />
-        <button class="btn btn-primary" type="submit">Upload</button>
-      </div>
-    </div>
-    </form>
-    <hr />
     <?php require_once \UI\template('/records/images'); ?>
   </div> <!-- End Picture tab -->
+  <div class="tab-pane" id="3dmodel">
+    <?php require_once \UI\template('/records/3dmodel'); ?>
+  </div> <!-- End 3dModel Tab -->
   <div class="tab-pane" id="media">
-    <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload_media">
-    	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
-      <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
-    <div class="row">
-      <div class="span4">
-        <strong>Media</strong><br />
-        <div class="fileupload fileupload-new" data-provides="fileupload">
-          <div class="input-append">
-            <div class="uneditable-input span3">
-              <i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span>
-            </div>
-            <span class="btn btn-file"><span class="fileupload-new">Select</span>
-            <span class="fileupload-exists">Change</span><input name="media" type="file" /></span>
-            <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-          </div>
-        </div>
-      </div>
-      <div class="span3 offset1"><strong>Description</strong><br /><input type="text" class="span4" name="description" /></div>
-      <div class="span1 offset1">
-        <br />
-        <button class="btn btn-primary" type="submit">Upload</button>
-      </div>
-    </div>
-    </form>
-    <hr />
     <?php require_once \UI\template('/records/media'); ?>
   </div> <!-- End Media tab pane -->
 </div> <!-- End Container --> 
+</fieldset>

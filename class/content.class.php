@@ -11,13 +11,14 @@ class content extends database_object {
 
   public $uid; // UID of object
   public $filename; // "UID" for this class, the real filename
+  public $extension; // filename extension
   public $mime; // Mime type of this image
   public $parentuid; // Parent UID this is assoicated with
   public $notes; 
   public $user; 
   public $type; // Type of object, most likely an image for now
   public $source; // Raw data of the object
-  private $valid_types = array('record','thumb','qrcode','ticket','media'); 
+  private $valid_types = array('record','thumb','qrcode','ticket','media','3dmodel'); 
 
   public function __construct($uid='',$type) {
 
@@ -69,7 +70,8 @@ class content extends database_object {
    */
   public function refresh() { 
 
-    return true; 
+    parent::remove_from_cache($this->type,$this->uid); 
+    $this->__construct($this->uid,$this->type); 
 
   } // refresh
 
@@ -167,7 +169,7 @@ class content extends database_object {
 
   /**
    * load_media_data
-   * This is kind of a catch all class for general non-image files
+   * Placeholder
    */
   private function load_media_data($uid) { 
 
@@ -194,9 +196,44 @@ class content extends database_object {
     // We need the extension
     $info = pathinfo($row['filename']); 
 
+    $this->extension = $info['extension']; 
     $this->mime = Content::get_mime($info['extension']); //FIXME: I should have something for this?  
 
   } // load_media_data
+
+  /**
+   * load_3model_data
+   * This is kind of a catch all class for general non-image files
+   */
+  private function load_3dmodel_data($uid) { 
+
+    // Check and see if this is cached
+    if (parent::is_cached('media',$uid)) { 
+      $row = parent::get_from_cache('media',$uid); 
+    } 
+    else {
+      $uid = Dba::escape($uid); 
+      $sql = "SELECT * FROM `media` WHERE `uid`='$uid' AND `type`='3dmodel'"; 
+      $db_results = Dba::read($sql); 
+      $row = Dba::fetch_assoc($db_results); 
+      parent::add_to_cache('media',$uid,$row); 
+    }
+
+    if (!isset($row['uid'])) { return false; }
+
+    $this->filename = Config::get('data_root') . '/' . $row['filename']; 
+    $this->uid = $row['uid']; 
+    $this->parentuid = $row['record']; 
+    $this->user = $row['user']; 
+    $this->notes = $row['notes']; 
+
+    // We need the extension
+    $info = pathinfo($row['filename']); 
+
+    $this->extension = $info['extension']; 
+    $this->mime = Content::get_mime($info['extension']); //FIXME: I should have something for this?  
+
+  } // load_3dmodel_data
 
 	// Reads in and returns the source of this file
 	public function source() { 
@@ -228,6 +265,11 @@ class content extends database_object {
 				$filename = strlen($data) ? $data : self::generate_filename($record->site . '-ticket-' . $record->catalog_id,'pdf');
 				$results = self::write_ticket($record,$filename,$data); 
 			break; 
+      case '3dmodel':
+        $extension = $mime_type;
+        $filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
+        $results = self::write_3dmodel($uid,$data,$filename,$options); 
+      break;
       case 'media': 
         $extension = $mime_type; 
         $filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
@@ -387,7 +429,6 @@ class content extends database_object {
 
   /**
    * write_media
-   * Write a media file, whatever that is
    */
   private function write_media($uid,$data,$filename,$description) { 
 
@@ -420,6 +461,42 @@ class content extends database_object {
     return true; 
 
   } // write_media
+
+  /**
+   * write_3dmodel
+   * Write a 3dmodel file, whatever that is
+   */
+  private function write_3dmodel($uid,$data,$filename,$description) { 
+
+		// Put it on the filesystem
+		$handle = fopen($filename,'w'); 
+		if (!$handle) { 
+			Event::error('Content','Unable to write file - Permission denied'); 
+			return false; 
+		} 
+
+		$results = fwrite($handle,$data); 
+    fclose($handle); 
+
+		if (!$results) { 
+			Event::error('Content','Unable to write Image to disk'); 
+			return false; 
+		} 
+
+		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
+		$uid = Dba::escape($uid); 
+    $description = Dba::escape($description); 
+    $user_id = Dba::escape(\UI\sess::$user->uid); 
+    $sql = "INSERT INTO `media` (`filename`,`type`,`record`,`notes`,`user`) VALUES ('$filename','3dmodel','$uid','$description','$user_id')";
+    $db_results = Dba::write($sql); 
+
+    if (!$db_results) { 
+      Event::error('Database','Unknown Database error inserting media'); 
+    }
+
+    return true; 
+
+  } // write_3dmodel
 
 	/**
 	 * delete
@@ -509,6 +586,25 @@ class content extends database_object {
 		return true; 
 
 	} // delete_ticket
+
+  /**
+   * delete_media
+   */
+  private function delete_3dmodel() { 
+
+    $results = unlink($this->filename); 
+    if (!$results) { 
+      Event::error('general','Error unable to remove ' . $this->filename); 
+      return false; 
+    }
+
+    $uid = Dba::escape($this->uid); 
+    $sql = "DELETE FROM `media` WHERE `uid`='$uid' AND `type`='3dmodel'"; 
+    $db_results = Dba::write($sql); 
+
+    return true; 
+
+  } // delete_3dmodel
 
   /**
    * delete_media
@@ -603,6 +699,9 @@ class content extends database_object {
   public static function record($record_uid,$type) { 
 
     switch ($type) { 
+      case '3dmodel':
+        $retval = self::record_3dmodel($record_uid); 
+      break;
       case 'media': 
         $retval = self::record_media($record_uid); 
       break;
@@ -614,6 +713,28 @@ class content extends database_object {
     return $retval; 
 
   } // record
+
+  /**
+   * record_3dmodel
+   * This returns an array of the 3dmodels assoicated with the record
+   */
+  private static function record_3dmodel($record_uid) { 
+
+    $record_uid = Dba::escape($record_uid); 
+    $sql = "SELECT `uid` FROM `media` WHERE `record`='$record_uid' AND `type`='3dmodel' ORDER BY `uid`"; 
+    $db_results = Dba::read($sql); 
+
+    $results = array(); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row['uid']; 
+    }
+
+    self::build_cache($results,'media'); 
+
+    return $results; 
+
+  } // record_3dmodel
 
   /**
    * record_media
@@ -663,19 +784,26 @@ class content extends database_object {
    * upload
    * Handles uploading of media (http upload)
    */
-  public static function upload($type,$uid,$input,$source) { 
+  public static function upload($uid,$input,$source) { 
 
     $retval = true; 
 
-    switch ($type) { 
-      case 'record': 
+    // Figure out which one it is based on the file extension
+    $info = pathinfo($source['media']['name']); 
+    
+    switch ($info['extension']) { 
+      case 'jpg':
+      case 'gif':
+      case 'tiff':
+      case 'png':
         $retval = self::upload_record($uid,$input,$source); 
       break; 
-      case 'media':
+      case 'stl':
+      case 'ply':
+        $retval = self::upload_3dmodel($uid,$input,$source); 
+      break;
+      default:
         $retval = self::upload_media($uid,$input,$source); 
-      break; 
-      default: 
-        $retval = false; 
       break; 
     } // end switch
 
@@ -689,17 +817,17 @@ class content extends database_object {
    */
   private static function upload_record($uid,$post,$files) { 
 
-    if (!isset($files['image']['name'])) { 
+    if (!isset($files['media']['name'])) { 
       Error::add('upload','No file found, please select a file to upload');
       return false; 
     } 
 
-    if (empty($files['image']['tmp_name'])) { 
+    if (empty($files['media']['tmp_name'])) { 
       Error::add('upload','Upload failed, please try again'); 
       return false; 
     } 
 
-    $path_info = pathinfo($files['image']['name']); 
+    $path_info = pathinfo($files['media']['name']); 
 
     $allowed_types = array('png','jpg','tiff','gif'); 
     if (!in_array(strtolower($path_info['extension']),$allowed_types)) { 
@@ -708,7 +836,7 @@ class content extends database_object {
     }
 
     // Read in source file
-    $image_data = file_get_contents($files['image']['tmp_name']); 
+    $image_data = file_get_contents($files['media']['tmp_name']); 
 
     if (!$image_data) { 
       Error::add('upload','unable to read uploaded file, please try again'); 
@@ -740,10 +868,10 @@ class content extends database_object {
   } // upload_record
 
   /**
-   * upload_media
-   * For uploading of 3d model files
+   * upload_3dmodel
+   * For uploading of 3dmodels, if it's a stl file we create a preview
    */
-  private static function upload_media($uid,$post,$files) { 
+  private static function upload_3dmodel($uid,$post,$files) { 
 
     if (!isset($files['media']['name'])) { 
       Error::add('media','No file found, please select a file to upload');
@@ -762,6 +890,41 @@ class content extends database_object {
       Error::add('media','Invalid file type, only ply and stl are allowed'); 
       return false; 
     }
+
+    // Read in source file
+    $data = file_get_contents($files['media']['tmp_name']); 
+
+    if (!$data) { 
+      Error::add('media','unable to read uploaded file, please try again'); 
+      return false; 
+    } 
+
+    $filename = Content::write($uid,'3dmodel',$data,$path_info['extension'],$post['description']); 
+
+    Event::add('success','3d Model uploaded, thanks!','small'); 
+
+    return true; 
+
+
+  } // upload_3dmodel
+
+  /**
+   * upload_media
+   * For uploading of misc media files
+   */
+  private static function upload_media($uid,$post,$files) { 
+
+    if (!isset($files['media']['name'])) { 
+      Error::add('media','No file found, please select a file to upload');
+      return false; 
+    } 
+
+    if (empty($files['media']['tmp_name'])) { 
+      Error::add('media','Upload failed, please try again'); 
+      return false; 
+    } 
+
+    $path_info = pathinfo($files['media']['name']); 
 
     // Read in source file
     $data = file_get_contents($files['media']['tmp_name']); 
@@ -790,6 +953,9 @@ class content extends database_object {
       case 'record': 
         self::update_record($uid,$input); 
       break;
+      case '3dmodel':
+        self::update_3dmodel($uid,$input); 
+      break;
     } // type
 
   } // update
@@ -807,6 +973,20 @@ class content extends database_object {
     Dba::write($sql); 
 
   } // update_record
+
+  /**
+   * update_3dmodel
+   * This updates the information on a 3dmodel, just the description
+   */
+  private static function update_3dmodel($uid,$input) { 
+
+    $uid = Dba::escape($uid); 
+    $notes = Dba::escape($input['description']); 
+
+    $sql = "UPDATE `media` SET `notes`='$notes' WHERE `uid`='$uid' LIMIT 1"; 
+    Dba::write($sql); 
+
+  } // update_3dmodel
 
 	/**
 	 * regenerate_qrcodes

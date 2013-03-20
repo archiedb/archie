@@ -5,14 +5,11 @@ require_once 'template/header.inc.php';
 
 // Switch on the action
 switch (\UI\sess::location('action')) { 
-	case 'upload_image': 
-    Content::upload('record',$_POST['record_id'],$_POST,$_FILES); 
+  case 'upload':
+    // Figure out the extension and upload accordingly
+    Content::upload($_POST['record_id'],$_POST,$_FILES); 
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
-	break; 
-  case 'upload_media':
-    Content::upload('media',$_POST['record_id'],$_POST,$_FILES); 
-    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
-  break; 
+  break;
   case 'image_edit': 
     if (!Access::has('image','write',$_POST['uid'])) { break; }
     Content::update('record',$_POST['uid'],$_POST); 
