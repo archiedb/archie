@@ -27,7 +27,9 @@ foreach ($items as $item) {
       <?php if (in_array($extension,array('stl'))) { ?>
       <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/<?php echo scrub_out($extension); ?>/<?php echo scrub_out($media->uid); ?>">3d View</a>
       <?php } ?>
+      <?php if (Access::has('media','download',$media->uid)) { ?>
       <a href="<?php echo Config::get('web_path'); ?>/media/media/<?php echo scrub_out($media->uid); ?>" class="btn btn-small">Download</a>
+      <?php } ?>
       <?php if (Access::has('media','delete',$media->uid)) { ?>
       <a href="#confirm_delete_media_<?php echo scrub_out($media->uid); ?>" role="button" data-toggle="modal" class="btn btn-small btn-danger">Delete</a>
       <?php require \UI\template('/records/modal_delete_media'); ?>

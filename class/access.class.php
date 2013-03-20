@@ -8,7 +8,7 @@
 class Access { 
 
   private static $types = array('user','image','record','admin','media'); 
-  private static $actions = array('write','read','delete','admin'); 
+  private static $actions = array('write','read','delete','admin','download'); 
   private static $levels = array('0'=>'User','50'=>'Manager','100'=>'Admin'); 
 
   private function __construct() {}
@@ -67,7 +67,7 @@ class Access {
     // For now everyone has read
     switch ($action) { 
       case 'write':
-        if (\UI\sess::$user->uid) { return true; }
+        if (\UI\sess::$user->uid == $uid) { return true; }
       break;
       default:
 
@@ -89,6 +89,25 @@ class Access {
     return false; 
 
   } // check_record
+
+  /**
+   * media
+   * Checks permissions on media
+   */
+  private static function check_media($action,$uid) { 
+
+    switch ($action) { 
+      case 'download':
+        if (\UI\sess::$user->access >= '50') { return true; }
+      break;
+      case 'write':
+        if (\UI\sess::$user->access >= '50') { return true; }
+      break;
+    } 
+
+    return false; 
+
+  } // check_media
 
   /**
    * get_levels
