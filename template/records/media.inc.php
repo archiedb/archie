@@ -18,7 +18,7 @@ foreach ($items as $item) {
   $media = new Content($item,'media'); 
   $info = pathinfo($media->filename); 
   $extension = $info['extension']; 
-  $name = strlen($media->notes) ? $media->notes : $media->filename;
+  $name = strlen($media->notes) ? $media->notes : basename($media->filename); 
 ?>
 <tr>
   <td><?php echo scrub_out($name); ?></td>
