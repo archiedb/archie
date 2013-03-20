@@ -23,7 +23,7 @@ foreach ($images as $uid) {
       <p class="text-center"><?php echo scrub_out($name); ?></p>
       <p class="text-center">
       <?php if ($extension == 'stl') { ?>
-        <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/<?php echo scrub_out($model->uid); ?>">3D View</a>
+        <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/stl/<?php echo scrub_out($model->uid); ?>">3D View</a>
       <?php } ?>
       <?php if (Access::has('media','write',$image->uid)) { ?>
         <a class="btn btn-small" href="#confirm_edit_3dmodel_<?php echo scrub_out($model->uid); ?>" role="button" data-toggle="modal">Edit</a>

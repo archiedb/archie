@@ -8,7 +8,7 @@ require_once 'template/menu.inc.php';
 switch (\UI\sess::location('action')) {
   case 'ply': 
   case 'stl':
-    $model = new Content(\UI\sess::location('objectid'),'media');
+    $model = new Content(\UI\sess::location('objectid'),'3dmodel');
     $info = pathinfo($model->filename); 
     $extension = $info['extension']; 
     require_once \UI\template('/viewer/3dmodels'); 

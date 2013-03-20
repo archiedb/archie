@@ -3,9 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 
 // We need the extension
-$info = pathinfo($model->filename); 
-$extension = $info['extension'];
-$name = strlen($model->notes) ? $model-notes : basename($model->filename); 
+$name = strlen($model->notes) ? $model->notes : basename($model->filename); 
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script> 
@@ -31,10 +29,10 @@ $name = strlen($model->notes) ? $model-notes : basename($model->filename);
       thingiview = new Thingiview("viewer");
       thingiview.setObjectColor('#0066FF');
       thingiview.initScene();
-<?php if ($extension == 'stl') { ?>
-      thingiview.loadSTL('<?php echo Config::get('web_prefix'); ?>/media/media/<?php echo scrub_out($model->uid); ?>');
-<?php } elseif ($extension == 'ply') { ?>
-      thingiview.loadPLY('<?php echo Config::get('web_prefix'); ?>/media/media/<?php echo scrub_out($model->uid); ?>');
+<?php if ($model->extension == 'stl') { ?>
+      thingiview.loadSTL('<?php echo Config::get('web_prefix'); ?>/media/3dmodel/<?php echo scrub_out($model->uid); ?>');
+<?php } elseif ($model->extension == 'ply') { ?>
+      thingiview.loadPLY('<?php echo Config::get('web_prefix'); ?>/media/3dmodel/<?php echo scrub_out($model->uid); ?>');
 <?php } ?>
       thingiview.setShowPlane(true);
       thingiview.setRotation(false);
