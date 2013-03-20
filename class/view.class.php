@@ -551,8 +551,9 @@ class View {
         $filter_sql = " (`record`.`$filter` >= '" . Dba::escape($start) . "' AND `record`.`$filter` <= '" . Dba::escape($end) . "') AND";
       break;
       case '3dmodel':
+        $value_check = strlen($value) ? "AND `media`.`notes` LIKE '%" . Dba::escape($value) . "%'" : '';
         $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
-        $filter_sql = " (`media`.`type`='3dmodel' AND `media`.`uid` IS NOT NULL) AND ";
+        $filter_sql = " (`media`.`type`='3dmodel' AND `media`.`uid` IS NOT NULL $value_check) AND ";
       break;
       case 'item':
       case 'station_index':
