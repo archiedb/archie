@@ -11,12 +11,12 @@ switch (\UI\sess::location('action')) {
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break;
   case 'image_edit': 
-    if (!Access::has('image','write',$_POST['uid'])) { break; }
+    if (!Access::has('media','write',$_POST['uid'])) { break; }
     Content::update('record',$_POST['uid'],$_POST); 
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break; 
   case 'image_delete':
-    if (!Access::has('image','delete',$_POST['uid'])) {  break; }
+    if (!Access::has('media','delete',$_POST['uid'])) {  break; }
     $thumb = new Content($_POST['uid'],'thumb'); 
     if (!$thumb->delete()) { 
       Event::error('DELETE','Unable to delete thumbnail for record image:'. $_POST['uid']); 

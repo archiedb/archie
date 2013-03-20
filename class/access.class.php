@@ -7,7 +7,7 @@
  */
 class Access { 
 
-  private static $types = array('user','image','record','admin','media'); 
+  private static $types = array('user','record','admin','media'); 
   private static $actions = array('write','read','delete','admin','download'); 
   private static $levels = array('0'=>'User','50'=>'Manager','100'=>'Admin'); 
 
@@ -57,27 +57,6 @@ class Access {
     return false; 
 
   } // check_user
-
-  /**
-   * image
-   * This checks image perms
-   */
-  private static function check_image($action,$uid) { 
-
-    // For now everyone has read
-    switch ($action) { 
-      case 'write':
-        if (\UI\sess::$user->uid == $uid) { return true; }
-      break;
-      default:
-
-      break;
-    }
-
-    // Right now, only admins
-    return false; 
-
-  } // check_image
 
   /**
    * record
