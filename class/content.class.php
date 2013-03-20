@@ -12,6 +12,7 @@ class content extends database_object {
   public $uid; // UID of object
   public $filename; // "UID" for this class, the real filename
   public $extension; // filename extension
+  public $thumbnail; 
   public $mime; // Mime type of this image
   public $parentuid; // Parent UID this is assoicated with
   public $notes; 
@@ -196,6 +197,7 @@ class content extends database_object {
     // We need the extension
     $info = pathinfo($row['filename']); 
 
+    $this->thumbnail = $info['dirname'] . '/' . $info['filename'] . '.png'; 
     $this->extension = $info['extension']; 
     $this->mime = Content::get_mime($info['extension']); //FIXME: I should have something for this?  
 
@@ -230,6 +232,7 @@ class content extends database_object {
     // We need the extension
     $info = pathinfo($row['filename']); 
 
+    $this->thumbnail = Config::get('data_root') . '/' . $info['dirname'] . '/' . $info['filename'] . '.png'; 
     $this->extension = $info['extension']; 
     $this->mime = Content::get_mime($info['extension']); //FIXME: I should have something for this?  
 
@@ -243,6 +246,25 @@ class content extends database_object {
 		return $data; 	
 
 	} // source
+
+  /**
+   * thumbnail
+   * return the thumbnail for this content (like source)
+   */ 
+  public function thumbnail() {
+
+    switch ($this->type) { 
+      case '3dmodel': 
+        $data = file_get_contents($this->thumbnail); 
+      break;
+      default:
+        $data = $this->source(); 
+      break;
+    }
+
+    return $data; 
+
+  } // thumbnail
 
 	// This writes out the specified data 
 	public static function write($uid,$type,$data='',$mime_type='',$options='') { 
@@ -483,6 +505,17 @@ class content extends database_object {
 			return false; 
 		} 
 
+    $pov_filename = $filename . '.pov';
+    $thumb_filename = substr($filename,0,strlen($filename)-3) . 'png'; 
+
+    // Build a preview thumbnail
+    $cmd = Config::get('stl2pov_cmd') . ' ' . $filename . ' > ' .  $pov_filename; 
+    exec($cmd); 
+    $cmd = Config::get('megapov_cmd') . " +I$pov_filename +O$thumb_filename -D +P +W120 +H120 +A0.5";
+    exec($cmd); 
+
+    unlink($pov_filename); 
+
 		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
 		$uid = Dba::escape($uid); 
     $description = Dba::escape($description); 
@@ -591,6 +624,15 @@ class content extends database_object {
    * delete_media
    */
   private function delete_3dmodel() { 
+
+    // Remove the thumb first
+    if (file_exists($this->thumbnail)) { 
+      $results = unlink($this->thumbnail); 
+      if (!$results) { 
+        Event::error('general','Unable to remove ' . $this->thumbnail); 
+        return false; 
+      }
+    } // if we have a thumbnail
 
     $results = unlink($this->filename); 
     if (!$results) { 

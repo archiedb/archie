@@ -16,6 +16,14 @@ page_limit = 250
 ; you are getting out of memeory errors
 memory_cache = "true"
 
+; STL2POV command
+; This is required for the 3d model to png
+stl2pov_cmd = "/usr/local/bin/stl2pov"
+
+; Megapov command
+; This is required for the 3d model to png
+megapov_cmd = "/usr/local/megapov/megapov"
+
 ; Database Related Settings
 database_username=username
 database_password=password

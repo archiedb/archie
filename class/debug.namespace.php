@@ -56,4 +56,17 @@ function check_qrcode_cache_writeable() {
 
 } // check_qrcode_cache_writeable
 
+/**
+ * 3dmodel_to_png
+ * Checks that we've got the required commands to convert stl -> png
+ */
+function model_to_png() { 
+
+  if (!is_executable(\Config::get('stl2pov_cmd'))) { return false; }
+  if (!is_executable(\Config::get('megapov_cmd'))) { return false; }
+
+  return true; 
+
+} // 3dmodel_to_png
+
 ?>

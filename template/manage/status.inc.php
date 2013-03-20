@@ -31,6 +31,10 @@ if (INIT_LOADED != '1') { exit; }
   <td>Memory Cache</td>
   <td><?php echo \UI\boolean_word(Config::get('memory_cache')); ?></td>
 </tr>
+<tr>
+  <td>3D Model to PNG</td>
+  <td><?php echo \UI\boolean_word(\debug\model_to_png()); ?></td>
+</tr>
 </tbody>
 </table>
 </fieldset>
