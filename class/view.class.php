@@ -80,6 +80,7 @@ class View {
       'classification',
       '3dmodel',
       'image',
+      'media',
       'updated'); 
 
     self::$allowed_sorts = self::$allowed_filters; 
@@ -561,6 +562,11 @@ class View {
         $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
         $filter_sql = " (`media`.`type`='3dmodel' AND `media`.`uid` IS NOT NULL $value_check) AND ";
       break;
+      case 'media':
+        $value_check = strlen($value) ? "AND `media`.`notes` LIKE '%" . Dba::escape($value) . "%'" : '';
+        $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
+        $filter_sql = " (`media`.`type`='media' AND `media`.`uid` IS NOT NULL $value_check) AND ";
+      break;
       case 'item':
       case 'station_index':
       case 'level':
@@ -608,6 +614,7 @@ class View {
       case 'station_index':
         $sql = "`record`.`$field`";
       break;
+      case 'media':
       case '3dmodel':
         $sql = "`media`.`uid`";
         $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
