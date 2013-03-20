@@ -79,6 +79,7 @@ class View {
       'material',
       'classification',
       '3dmodel',
+      'image',
       'updated'); 
 
     self::$allowed_sorts = self::$allowed_filters; 
@@ -280,7 +281,7 @@ class View {
 
     $results = array(); 
     while ($data = Dba::fetch_assoc($db_results)) { 
-      $results[] = $data['uid']; 
+      $results[$data['uid']] = $data['uid']; 
     } 
 
     // We could do post-processing here if we wanted
@@ -550,6 +551,11 @@ class View {
         $end = $unix_time + 85400; 
         $filter_sql = " (`record`.`$filter` >= '" . Dba::escape($start) . "' AND `record`.`$filter` <= '" . Dba::escape($end) . "') AND";
       break;
+      case 'image':
+        $value_check = strlen($value) ? "AND `image`.`notes` LIKE '%" . Dba::escape($value) . "%'" : '';
+        $this->set_join('left','`image`','`image`.`record`','`record`.`uid`',100); 
+        $filter_sql = " (`image`.`uid` IS NOT NULL $value_check) AND "; 
+      break;
       case '3dmodel':
         $value_check = strlen($value) ? "AND `media`.`notes` LIKE '%" . Dba::escape($value) . "%'" : '';
         $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
@@ -606,6 +612,10 @@ class View {
         $sql = "`media`.`uid`";
         $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
       break;
+      case 'image':
+        $sql = "`image`.`uid`";
+        $this->set_join('left','`image`','`image`.`record`','`record`.`uid`',100); 
+      break;
       case 'material':
         $sql = "`material`.`name`"; 
         $this->set_join('left','`material`','`material`.`uid`','`record`.`material`',100); 
@@ -639,7 +649,7 @@ class View {
     $db_results = Dba::read($sql); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
-      $results[] = $row['uid']; 
+      $results[$row['uid']] = $row['uid']; 
     }
 
     $this->save_objects($results);
