@@ -505,23 +505,16 @@ class content extends database_object {
 			return false; 
 		} 
 
-    $pov_filename = $filename . '.pov';
-    $thumb_filename = substr($filename,0,strlen($filename)-3) . 'png'; 
-
-    // Build a preview thumbnail
-    $cmd = Config::get('stl2pov_cmd') . ' ' . $filename . ' > ' .  $pov_filename; 
-    exec($cmd); 
-    $cmd = Config::get('megapov_cmd') . " +I$pov_filename +O$thumb_filename -D +P +W120 +H120 +A0.5";
-    exec($cmd); 
-
-    unlink($pov_filename); 
-
 		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
 		$uid = Dba::escape($uid); 
     $description = Dba::escape($description); 
     $user_id = Dba::escape(\UI\sess::$user->uid); 
     $sql = "INSERT INTO `media` (`filename`,`type`,`record`,`notes`,`user`) VALUES ('$filename','3dmodel','$uid','$description','$user_id')";
     $db_results = Dba::write($sql); 
+
+    $media_uid = Dba::insert_id(); 
+
+    Content::regenerate_3dmodel_thumb($media_uid); 
 
     if (!$db_results) { 
       Event::error('Database','Unknown Database error inserting media'); 
@@ -634,11 +627,13 @@ class content extends database_object {
       }
     } // if we have a thumbnail
 
-    $results = unlink($this->filename); 
-    if (!$results) { 
-      Event::error('general','Error unable to remove ' . $this->filename); 
-      return false; 
-    }
+    if (file_exists($this->filename)) { 
+      $results = unlink($this->filename); 
+      if (!$results) { 
+        Event::error('general','Error unable to remove ' . $this->filename); 
+        return false; 
+      }
+    } 
 
     $uid = Dba::escape($this->uid); 
     $sql = "DELETE FROM `media` WHERE `uid`='$uid' AND `type`='3dmodel'"; 
@@ -1081,6 +1076,40 @@ class content extends database_object {
     return true; 
 
   } // regenerate_thumb
+
+  /**
+   * regenerate_3dmodel
+   * regenerate the thumbnail for a 3dmodel, takes optional filename
+   * to do just one
+   */
+  public static function regenerate_3dmodel_thumb($model_uid='') { 
+
+    if ($model_uid) { 
+      $records = array($model_uid); 
+    }
+    else { 
+      $records = Content::record('3dmodel'); 
+    }
+
+    foreach ($records as $model_uid) { 
+
+      $model = new Content($model_uid,'3dmodel'); 
+
+      $pov_filename = $model->filename . '.pov';
+      $thumb_filename = substr($model->filename,0,strlen($model->filename)-3) . 'png'; 
+
+      // Build a preview thumbnail
+      $cmd = Config::get('stl2pov_cmd') . ' ' . $model->filename . ' > ' .  $pov_filename; 
+      exec($cmd); 
+      $cmd = Config::get('megapov_cmd') . " +I$pov_filename +O$thumb_filename -D +P +W120 +H120 +A0.5";
+      exec($cmd); 
+
+      unlink($pov_filename); 
+    }
+
+    return true; 
+
+  } // regenerate_3dmodel_thumb
 
 } // end content class
 ?>

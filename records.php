@@ -15,6 +15,11 @@ switch (\UI\sess::location('action')) {
     Content::update('record',$_POST['uid'],$_POST); 
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break; 
+  case '3dmodel_edit':
+    if (!Access::has('media','write',$_POST['uid'])) { break; }
+    Content::update('3dmodel',$_POST['uid'],$_POST); 
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
+  break;
   case 'image_delete':
     if (!Access::has('media','delete',$_POST['uid'])) {  break; }
     $thumb = new Content($_POST['uid'],'thumb'); 
@@ -35,11 +40,22 @@ switch (\UI\sess::location('action')) {
     // Return to whence we came,
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break; 
+  case '3dmodel_delete':
+    if (!Access::has('media','delete',$_POST['uid'])) { break; }
+    $media = new Content($_POST['uid'],'3dmodel'); 
+    if (!$media->delete()) { 
+      Event::error('DELETE','Unable to delete media item:' . $media->filename); 
+      Error::add('delete','Unable to 3D Model perform deletion request, please contact administrator'); 
+    }
+    
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
+  break;
   case 'media_delete':
     if (!Access::has('media','delete',$_POST['uid'])) { break; }
     $media = new Content($_POST['uid'],'media'); 
     if (!$media->delete()) { 
       Event::error('DELETE','Unable to delete media item:' . $media->filename); 
+      Error::add('delete','Unable to Media perform deletion request, please contact administrator'); 
     }
     
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 

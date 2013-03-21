@@ -18,24 +18,27 @@ foreach ($images as $uid) {
 ?>
   <li class="span3">
     <div class="thumbnail">
-      <img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>" alt="Preview" />
+      <img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>/thumb" alt="Preview" />
       <hr />
       <p class="text-center"><?php echo scrub_out($name); ?></p>
       <p class="text-center">
       <?php if ($extension == 'stl') { ?>
-        <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/stl/<?php echo scrub_out($model->uid); ?>">3D View</a>
+        <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/stl/<?php echo scrub_out($model->uid); ?>" title="3D View"><i class="icon-eye-open"></i></a>
       <?php } ?>
-      <?php if (Access::has('media','write',$image->uid)) { ?>
+      <?php if (Access::has('media','delete',$model->uid)) { ?>
+        <a class="btn btn-small" href="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid); ?>" title="Download"><i class="icon-download-alt"></i></a>
+      <?php } ?>
+      <?php if (Access::has('media','write',$model->uid)) { ?>
         <a class="btn btn-small" href="#confirm_edit_3dmodel_<?php echo scrub_out($model->uid); ?>" role="button" data-toggle="modal">Edit</a>
       <?php } ?>
-      <?php if (Access::has('media','delete',$image->uid)) { ?>
-        <a class="btn btn-danger btn-small" href="#confirm_delete_3dmodel_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Delete</a>
+      <?php if (Access::has('media','delete',$model->uid)) { ?>
+        <a class="btn btn-danger btn-small" href="#confirm_delete_3dmodel_<?php echo scrub_out($model->uid); ?>" role="button" data-toggle="modal">Delete</a>
       <?php } ?>
       <?php 
-      if (Access::has('media','delete',$image->uid)) { 
+      if (Access::has('media','delete',$model->uid)) { 
         require \UI\template('/records/modal_delete_3dmodel'); 
       } 
-      if (Access::has('media','write',$image->uid)) { 
+      if (Access::has('media','write',$model->uid)) { 
         require \UI\template('/records/modal_edit_3dmodel'); 
       } 
       ?>

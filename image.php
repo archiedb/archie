@@ -10,16 +10,13 @@ if (!$content->filename) {
   exit; 
 }
 
-// We might need to adjust based on the file type
-switch ($content->type) { 
-  case '3dmodel':
-    $data = $content->thumbnail(); 
-    $content->mime = 'image/png'; 
-  break;
-  default:
-    // Do nothing
-    $data = $content->source(); 
-  break;
+// If they pass 'thumb'
+if (\UI\sess::location('3') == 'thumb') {
+  $data = $content->thumbnail(); 
+  $content->mime = 'image/png'; 
+}
+else {
+  $data = $content->source(); 
 }
 
 // Send the headers and output the image, expires one day later (filenames should be unique)

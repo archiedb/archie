@@ -228,6 +228,18 @@ class Cron {
 
   } // run_qrcode
 
+  /**
+   * run_3dmodel_thumb
+   * This runs a regen of the 3dmodel thumbs
+   */
+  public function run_3dmodel_thumb($options) { 
+
+    Content::regenerate_3dmodel_thumb(); 
+
+    return true; 
+  
+  } // run_3dmodel_thumb
+
 } // cron class 
 
 ?>

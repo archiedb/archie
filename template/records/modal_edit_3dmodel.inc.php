@@ -9,8 +9,8 @@ if (INIT_LOADED != '1') { exit; }
     <h3 id="myModalLabel">Update 3D Model Notes</h3>
   </div>
   <div class="modal-body">
-    <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>" /></p>
-    <p class="text-center"><input type="text" class="span4" name="description" value="<?php echo scrub_out($image->notes); ?>" /></p>
+    <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>/thumb" /></p>
+    <p class="text-center"><input type="text" class="span4" name="description" value="<?php echo scrub_out($model->notes); ?>" /></p>
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-primary">Update Notes</a>

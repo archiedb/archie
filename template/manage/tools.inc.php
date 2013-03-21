@@ -26,7 +26,7 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <div class="row">
   <?php $cron = new Cron('thumb'); ?>
-  <div class="span2">Thumbnails</div>
+  <div class="span2">Image Thumbs</div>
   <div class="span3"><?php echo $cron->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
@@ -34,6 +34,17 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+<div class="row">
+  <?php $cron = new Cron('3dmodel_thumb'); ?>
+  <div class="span2">3D Model Thumbs</div>
+  <div class="span3"><?php echo $cron->state(); ?></div>
+  <div class="span4 offset3">
+    <p class="text-right">
+      <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/manage/regenerate/3dmodel_thumb">Regenerate</a>
+    </p>
+  </div>
+</div>
+
 <div class="page-header">
   <h3>Data Imports</h3>
     <em>You must indicate the type of data you are updating. If the data type selected does not match the uploaded file it will be rejected.</em>
