@@ -1084,12 +1084,19 @@ class content extends database_object {
    */
   public static function regenerate_3dmodel_thumb($model_uid='') { 
 
+    // No timelimit 
+    set_time_limit(0); 
+
     if ($model_uid) { 
       $records = array($model_uid); 
     }
     else { 
-//      $records = Content::record('3dmodel'); 
-      $records = array(); 
+      $sql = "SELECT * FROM `media` WHERE `type`='3dmodel'";
+      $db_results = Dba::read($sql); 
+      while ($row = Dba::fetch_assoc($db_results)) { 
+        parent::add_to_cache('media',$row['uid'],$row); 
+        $records[] = $row['uid']; 
+      } 
     }
 
     foreach ($records as $model_uid) { 
@@ -1101,8 +1108,10 @@ class content extends database_object {
 
       // Build a preview thumbnail
       $cmd = Config::get('stl2pov_cmd') . ' ' . $model->filename . ' > ' .  $pov_filename; 
+      Event::error('STL2POV',$cmd); 
       exec($cmd); 
       $cmd = Config::get('megapov_cmd') . " +I$pov_filename +O$thumb_filename -D +P +W120 +H120 +A0.5";
+      Event::error('MEGAPOV',$cmd); 
       exec($cmd); 
 
       unlink($pov_filename); 
