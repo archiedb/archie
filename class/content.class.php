@@ -412,7 +412,7 @@ class content extends database_object {
   /**
    * write_media
    */
-  private function write_media($uid,$data,$filename,$description) { 
+  private static function write_media($uid,$data,$filename,$description) { 
 
 		// Put it on the filesystem
 		$handle = fopen($filename,'w'); 
@@ -448,7 +448,7 @@ class content extends database_object {
    * write_3dmodel
    * Write a 3dmodel file, whatever that is
    */
-  private function write_3dmodel($uid,$data,$filename,$description) { 
+  private static function write_3dmodel($uid,$data,$filename,$description) { 
 
 		// Put it on the filesystem
 		$handle = fopen($filename,'w'); 
