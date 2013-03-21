@@ -502,11 +502,9 @@ class Record extends database_object {
 		$images = $record->get_images(); 
 		foreach ($images as $image) { 
 			// Delete image and thumbnail if it exists
-			$content = new Content($image['uid'],'record'); 
+			$content = new Content($image['uid'],'image'); 
 			if ($content->uid) { 
 				$content->delete(); 
-				$thumb = new Content($image['uid'],'thumb'); 
-				$thumb->delete(); 
 			}
 		} 
 

@@ -12,7 +12,7 @@ switch (\UI\sess::location('action')) {
   break;
   case 'image_edit': 
     if (!Access::has('media','write',$_POST['uid'])) { break; }
-    Content::update('record',$_POST['uid'],$_POST); 
+    Content::update('image',$_POST['uid'],$_POST); 
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break; 
   case '3dmodel_edit':
@@ -22,21 +22,13 @@ switch (\UI\sess::location('action')) {
   break;
   case 'image_delete':
     if (!Access::has('media','delete',$_POST['uid'])) {  break; }
-    $thumb = new Content($_POST['uid'],'thumb'); 
-    if (!$thumb->delete()) { 
-      Event::error('DELETE','Unable to delete thumbnail for record image:'. $_POST['uid']); 
-      Error::add('delete','Unable to perform deletion request, please contact administrator'); 
+    $image = new Content($_POST['uid'],'image'); 
+    if (!$image->delete()) { 
+      Error::add('delete','Unable to perform image deletion request, please contact administrator'); 
     }
     else { 
-      $image = new Content($_POST['uid'],'record'); 
-      if (!$image->delete()) { 
-        Event::error('DELETE','Unable to delete record image:' . $_POST['uid']); 
-        Error::add('delete','Unable to perform deletion request, please contact administrator'); 
-      }
-      else { 
-        Event::add('success','Media Item Deleted','small'); 
-      }
-    } 
+      Event::add('success','Image Deleted','small'); 
+    }
     // Return to whence we came,
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break; 

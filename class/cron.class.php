@@ -210,7 +210,7 @@ class Cron {
    */
   public function run_thumb($options) { 
 
-    Content::regenerate_thumb($options); 
+    Content::regenerate_thumb(); 
 
     return true;  
 

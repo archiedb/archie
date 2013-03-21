@@ -19,7 +19,7 @@ class content extends database_object {
   public $user; 
   public $type; // Type of object, most likely an image for now
   public $source; // Raw data of the object
-  private $valid_types = array('record','thumb','qrcode','ticket','media','3dmodel'); 
+  private $valid_types = array('image','qrcode','ticket','media','3dmodel'); 
 
   public function __construct($uid='',$type) {
 
@@ -50,7 +50,10 @@ class content extends database_object {
       case 'media':
         $table_name = 'media';
       break;
-      case 'record':
+      case '3dmodel':
+        $table_name = 'media';
+      break;
+      case 'image':
         $table_name = 'image';
       break;
     }
@@ -77,10 +80,10 @@ class content extends database_object {
   } // refresh
 
 	/**
-	 * load_record_data
+	 * load_image_data
 	 * This loads a record image from its UID
 	 */
-	private function load_record_data($uid) {
+	private function load_image_data($uid) {
 
     $retval = true; 
 
@@ -97,28 +100,19 @@ class content extends database_object {
       parent::add_to_cache('image',$uid,$row); 
     }
 
-    $this->filename = Config::get('data_root') . '/' . $row['data'];
-    $this->mime = $row['type'];
-    $this->parentuid = $row['record'];
-    $this->notes = $row['notes']; 
-    $this->user = $row['user']; 
+    $info = pathinfo($row['data']); 
+
+    $this->extension  = $info['extension']; 
+    $this->filename   = Config::get('data_root') . '/' . $row['data'];
+    $this->thumbnail  = Config::get('data_root') . '/' . $row['data'] . '.thumb';
+    $this->mime       = $row['type'];
+    $this->parentuid  = $row['record'];
+    $this->notes      = $row['notes']; 
+    $this->user       = $row['user']; 
 
 		return $retval; 
 
-	} // load_record_data
-
-	/** 
-	 * load_thumb_data
-	 * Loads the thumbnail data for the specified image
-	 */
-	public function load_thumb_data($uid) { 
-
-		$this->load_record_data($uid); 
-		$this->filename = $this->filename . '.thumb'; 
-
-		return true; 
-
-	} // load_thumb_data 
+	} // load_image_data
 
 	/** 
 	 * load_qrcode_data
@@ -204,7 +198,7 @@ class content extends database_object {
   } // load_media_data
 
   /**
-   * load_3model_data
+   * load_3dmodel_data
    * This is kind of a catch all class for general non-image files
    */
   private function load_3dmodel_data($uid) { 
@@ -242,7 +236,6 @@ class content extends database_object {
 	public function source() { 
 
 		$data = file_get_contents($this->filename); 
-		$this->source = $data; 
 		return $data; 	
 
 	} // source
@@ -253,14 +246,7 @@ class content extends database_object {
    */ 
   public function thumbnail() {
 
-    switch ($this->type) { 
-      case '3dmodel': 
-        $data = file_get_contents($this->thumbnail); 
-      break;
-      default:
-        $data = $this->source(); 
-      break;
-    }
+    $data = file_get_contents($this->thumbnail); 
 
     return $data; 
 
@@ -273,10 +259,6 @@ class content extends database_object {
 
 		// First we need to generate a filename /SITE/YYYY/RECORD-MMDDHHMMSS
 		switch ($type) { 
-			case 'thumb': 
-				$filename = $options . '.thumb';  
-				$results = self::write_thumb($data,$filename); 
-			break; 
 			case 'qrcode':
 				// If data is passed, use that as filename
 				$filename = strlen($data) ? $data : self::generate_filename($record->site . '-qrcode-' . $record->catalog_id,'png'); 
@@ -297,14 +279,11 @@ class content extends database_object {
         $filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
         $results = self::write_media($uid,$data,$filename,$options); 
       break; 
-			default: 
-			case 'record': 
+			case 'image': 
 				$extension = self::get_extension($mime_type); 
 				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
-				$results = self::write_record($uid,$data,$filename,$mime_type,$options); 
-        //FIXME: WRONG
-        if ($results) { $results = $filename; }
-			break; 
+				$results = self::write_image($uid,$data,$filename,$mime_type,$options); 
+      break;
 		} 
 
 		return $results; 
@@ -314,7 +293,7 @@ class content extends database_object {
 	/**
 	 * write a record image
 	 */
-	private static function write_record($uid,$data,$filename,$mime_type,$notes) {
+	private static function write_image($uid,$data,$filename,$mime_type,$notes) {
 
 		// Put it on the filesystem
 		$handle = fopen($filename,'w'); 
@@ -344,31 +323,12 @@ class content extends database_object {
 			return false; 
 		} 
 
+    $image_uid = Dba::insert_id(); 
+    Content::regenerate_thumb($image_uid); 
+
 		return $db_results; 
 
-	} // write_record
-
-	/**
-	 * write_thumb
-	 * Write out the thumbnail image of the "image" attached to a record
-	 */
-	private static function write_thumb($data,$filename) { 
-		// Put it on the filesystem
-		$handle = fopen($filename,'w'); 
-		if (!$handle) { 
-			Event::error('Content','Unable to write file - Permission denied'); 
-			return false; 
-		} 
-		$results = fwrite($handle,$data); 
-
-		if (!$results) { 
-			Event::error('Content','Unable to write Image to disk'); 
-			return false; 
-		} 
-
-		return $results; 
-
-	} // write_thumb
+	} // write_image
 
 	/**
 	 * write_qrcode
@@ -536,10 +496,18 @@ class content extends database_object {
 	} // delete
 
 	/**
-	 * delete_record
-	 * Delete a record
+	 * delete_image
+	 * Delete an image assoicated with a record
 	 */
-	private function delete_record() {
+	private function delete_image() {
+
+    if (file_exists($this->thumbnail)) { 
+      $results = unlink($this->thumbnail); 
+      if (!$results) {
+        Event::error('Thumbnail','Unable to delete ' . $this->thumbnail);
+        return false;
+      }
+    }
 
 		$results = unlink($this->filename); 
 		if (!$results AND file_exists($this->filename)) { 
@@ -555,23 +523,7 @@ class content extends database_object {
 
 		return true; 
 
-	} //delete_record
-
-	/**
-	 * delete_thumb
-	 * Delete the thumbnail of this record
-	 */
-	private function delete_thumb() { 
-
-		$results = unlink($this->filename); 
-		if (!$results) { 
-			Event::error('general','Error unable to remove Media Thumbnail'); 
-			return false; 
-		} 
-
-		return true; 
-
-	} // delete_thumb
+	} // delete_image
 
 	/**
 	 * delete_qrcode
@@ -802,16 +754,15 @@ class content extends database_object {
   private static function record_image($record_uid) { 
 
     $record_uid = Dba::escape($record_uid); 
-    $sql = "SELECT `uid` FROM `image` WHERE `record`='$record_uid' ORDER BY `uid`"; 
+    $sql = "SELECT * FROM `image` WHERE `record`='$record_uid' ORDER BY `uid`"; 
     $db_results = Dba::read($sql); 
 
     $results = array(); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('image',$row['uid'],$row); 
       $results[] = $row['uid']; 
     }
-
-    self::build_cache($results,'record'); 
   
     return $results; 
 
@@ -833,7 +784,7 @@ class content extends database_object {
       case 'gif':
       case 'tiff':
       case 'png':
-        $retval = self::upload_record($uid,$input,$source); 
+        $retval = self::upload_image($uid,$input,$source); 
       break; 
       case 'stl':
       case 'ply':
@@ -852,7 +803,7 @@ class content extends database_object {
    * upload_record
    * This handles uploading of an image for a record
    */
-  private static function upload_record($uid,$post,$files) { 
+  private static function upload_image($uid,$post,$files) { 
 
     if (!isset($files['media']['name'])) { 
       Error::add('upload','No file found, please select a file to upload');
@@ -883,24 +834,12 @@ class content extends database_object {
     // We need the mime type now
     $mime = 'image/' . $path_info['extension'];
 
-    // Make a thumbnail
-    $thumb = Image::generate_thumb($image_data,array('height'=>120,'width'=>120),$path_info['extension']);
-
-    if (!$thumb) { 
-      Error::add('upload','Unable to create thumbnail of uploaded image, make sure it is a valid image'); 
-      return false; 
-    }
-
     // Write the thumbnail and record image to the filesystem, and insert into database
-    $filename = Content::write($uid,'record',$image_data,$mime,$post['description']); 
-    if ($filename) { 
-      // We need the filename from the record write
-      Content::write($uid,'thumb',$thumb,$mime,$filename); 
-    } 
+    $retval = Content::write($uid,'image',$image_data,$mime,$post['description']); 
 
     Event::add('success','Image uploaded, thanks!','small'); 
 
-    return true; 
+    return $retval; 
 
   } // upload_record
 
@@ -987,8 +926,8 @@ class content extends database_object {
   public static function update($type,$uid,$input) { 
 
     switch ($type) { 
-      case 'record': 
-        self::update_record($uid,$input); 
+      case 'image':
+        self::update_image($uid,$input); 
       break;
       case '3dmodel':
         self::update_3dmodel($uid,$input); 
@@ -998,10 +937,10 @@ class content extends database_object {
   } // update
 
   /**
-   * update_record
+   * update_image
    * This updates the information on a record
    */
-  private static function update_record($uid,$input) { 
+  private static function update_image($uid,$input) { 
 
     $uid = Dba::escape($uid); 
     $notes = Dba::escape($input['description']); 
@@ -1009,7 +948,7 @@ class content extends database_object {
     $sql = "UPDATE `image` SET `notes`='$notes' WHERE `uid`='$uid' LIMIT 1"; 
     Dba::write($sql); 
 
-  } // update_record
+  } // update_image
 
   /**
    * update_3dmodel
@@ -1050,28 +989,50 @@ class content extends database_object {
    * regenerate_thumb
    * Rebuild thumbnails, can pass an option to rebuild all or just requested
    */
-  public static function regenerate_thumb($option) { 
+  public static function regenerate_thumb($image_uid='') { 
 
     // No timelimit 
     set_time_limit(0); 
 
-    $sql = "SELECT `image`.`record`,`image`.`data`,`image`.`type` FROM `image`"; 
-    $db_results = Dba::read($sql); 
+    if ($image_uid) { 
+      $records = array($image_uid); 
+    }
+    else {
+      $sql = "SELECT * FROM `image`"; 
+      $db_results = Dba::read($sql); 
 
-    while ($row = Dba::fetch_assoc($db_results)) { 
-      // Regenerate thumbnail
-      $image_filename = Config::get('data_root') . '/' . $row['data'];
-      $image_data = file_get_contents($image_filename); 
-      if (!$image_data) { 
-          // Something failed here
-          Event::error('Thumb','Unable to read record image for ' . $row['data']); 
-          continue; 
+      while ($row = Dba::fetch_assoc($db_results)) { 
+        parent::add_to_cache('image',$row['uid'],$row); 
+        $records[] = $row['uid']; 
       }
-      $path_info = explode('/',$row['type']); 
-      $extension = $path_info['1']; 
-      $thumb = Image::generate_thumb($image_data,array('height'=>120,'width'=>120),$extension);
-      Content::write($row['record'],'thumb',$thumb,$row['type'],$image_filename); 
-    } 
+    }
+
+    foreach ($records as $record_uid) { 
+      $image = new Content($record_uid,'image');
+
+      $image_data = $image->source();
+
+      if (!$image_data) {
+          // Something failed here
+          Event::error('Thumb','Unable to read record image for ' . $image->filename);
+          continue;
+      }
+
+      $data = Image::generate_thumb($image_data,array('height'=>120,'width'=>120),$image->extension);
+
+      // Put it on the filesystem
+  		$handle = fopen($image->thumbnail,'w');
+	  	if (!$handle) {
+  			Event::error('Content','Unable to write file - Permission denied');
+        continue;
+  		}
+	  	$results = fwrite($handle,$data);
+
+  		if (!$results) {
+  			Event::error('Content','Unable to write Image to disk');
+  		}
+
+    } // end foreach
 
     return true; 
 

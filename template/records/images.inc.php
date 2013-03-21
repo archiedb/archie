@@ -7,7 +7,7 @@ if (INIT_LOADED != '1') { exit; }
 $images = Content::record($record->uid,'image'); 
 $i=0; 
 foreach ($images as $uid) {
-  $image = new Content($uid,'record'); 
+  $image = new Content($uid,'image'); 
   if ($i/4 == floor($i/4)) {
       echo '</ul><ul class="thumbnails">';
   }
@@ -15,13 +15,13 @@ foreach ($images as $uid) {
 ?>
   <li class="span3">
     <div class="thumbnail">
-      <img src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image->uid);?>" alt="Image <?php echo $i; ?>" />
+      <img src="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid);?>/thumb" alt="Image <?php echo $i; ?>" />
       <hr />
       <p class="text-center">
         <?php echo scrub_out($image->notes); ?>
       </p>
       <p class="text-center">
-        <a class="btn btn-small btn-info" target="_blank" href="<?php echo Config::get('web_path'); ?>/media/record/<?php echo scrub_out($image->uid); ?>">Open</a>
+        <a class="btn btn-small btn-info" target="_blank" href="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid); ?>">Open</a>
       <?php if (Access::has('media','write',$image->uid)) { ?>
         <a class="btn btn-small" href="#confirm_edit_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Edit</a>
       <?php } ?>

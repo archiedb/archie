@@ -8,7 +8,7 @@ if (INIT_LOADED != '1') { exit; }
     <h3 id="myModalLabel">Confirm Delete Record Image</h3>
   </div>
   <div class="modal-body">
-    <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/thumb/<?php echo scrub_out($image->uid);?>" /></p>
+    <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid);?>/thumb" /></p>
     <p class="text-center"><?php echo scrub_out($image->notes); ?></p>
     <p>Are you sure you want to delete this image from <?php echo $record->site . '-' . $record->catalog_id; ?>? This operation can not be reversed.</p>
   </div>
