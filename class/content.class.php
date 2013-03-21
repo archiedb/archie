@@ -1088,7 +1088,8 @@ class content extends database_object {
       $records = array($model_uid); 
     }
     else { 
-      $records = Content::record('3dmodel'); 
+//      $records = Content::record('3dmodel'); 
+      $records = array(); 
     }
 
     foreach ($records as $model_uid) { 
