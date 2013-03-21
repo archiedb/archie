@@ -246,7 +246,12 @@ class content extends database_object {
    */ 
   public function thumbnail() {
 
-    $data = file_get_contents($this->thumbnail); 
+    if (file_exists($this->thumbnail)) { 
+      $data = file_get_contents($this->thumbnail); 
+    }
+    else {
+      $data = '';
+    }
 
     return $data; 
 
