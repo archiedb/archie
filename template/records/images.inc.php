@@ -15,13 +15,13 @@ foreach ($images as $uid) {
 ?>
   <li class="span3">
     <div class="thumbnail">
-      <img src="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid);?>/thumb" alt="Image <?php echo $i; ?>" />
-      <hr />
       <p class="text-center">
+      <a href="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid); ?>" target="_blank"><img src="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid);?>/thumb" alt="Image <?php echo $i; ?>" /></a><br />
         <?php echo scrub_out($image->notes); ?>
       </p>
+      <hr />
       <p class="text-center">
-        <a class="btn btn-small btn-info" target="_blank" href="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid); ?>">Open</a>
+      <?php if (\UI\sess::location('action') != 'view') { ?>
       <?php if (Access::has('media','write',$image->uid)) { ?>
         <a class="btn btn-small" href="#confirm_edit_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Edit</a>
       <?php } ?>
@@ -36,6 +36,7 @@ foreach ($images as $uid) {
         require \UI\template('/records/modal_edit_image'); 
       } 
       ?>
+      <?php } ?>
       </p>
     </div>
   </li>
