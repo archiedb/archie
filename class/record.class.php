@@ -168,7 +168,7 @@ class Record extends database_object {
 		$height = Dba::escape($input['height']); 
 		$width = Dba::Escape($input['width']); 
 		$thickness = Dba::escape($input['thickness']); 
-		$quanity = Dba::escape($input['quanity']); 
+		$quanity = ($input['quanity'] == 0) ? '1' : Dba::escape($input['quanity']); // Default to Quanity 1 
 		$material = Dba::escape($input['material']); 
 		$classification = Dba::escape($input['classification']); 
 		$notes = Dba::escape($input['notes']); 
