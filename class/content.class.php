@@ -250,7 +250,13 @@ class content extends database_object {
       $data = file_get_contents($this->thumbnail); 
     }
     else {
-      $data = '';
+      // Some things have a default!
+      if ($this->type == '3dmodel') { 
+        $data = file_get_contents(Config::get('prefix') .'/images/3dmodel.png');
+      }
+      else { 
+        $data = '';
+      }
     }
 
     return $data; 
