@@ -206,6 +206,8 @@ class Database {
     $versions[] = array('version'=>'0003','description'=>$update_string); 
     $update_string = '- Reduce accuracy of xyz data.<br />'; 
     $versions[] = array('version'=>'0004','description'=>$update_string); 
+    $update_string = '- Increase accuracy of weight,thickness and width to the thousandths<br />';
+    $versions[] = array('version'=>'0005','description'=>$update_string); 
 
 
     return $versions; 
@@ -389,6 +391,30 @@ class Database {
     return $retval; 
 
   } // update_0004
+
+  /**
+   * update_0005
+   * Adjust the accuracy on the height/weight/thickness
+   */
+  private static function update_0005() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `record` CHANGE `weight` `weight` DECIMAL (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `thickness` `thickness` DECIMAL (8,3) NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `record` CHANGE `height` `height` DECIMAL (8,3) NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `record` CHANGE `width` `width` DECIMAL (8,3) NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    return $retval; 
+
+  } // update_0005
 
 } // \Update\Database class
 

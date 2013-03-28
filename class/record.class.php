@@ -335,13 +335,13 @@ class Record extends database_object {
     } // if station_index
     // if no station index then just check format of northing/easting/elevation
     else { 
-        if (floatval($input['northing']) != $input['northing']) { 
+        if (round($input['northing'],3) != $input['northing']) { 
           Error::add('northing','Northing must be numeric'); 
         }
-        if (floatval($input['easting']) != $input['easting']) { 
+        if (round($input['easting'],3) != $input['easting']) { 
           Error::add('easting','Easting must be numeric'); 
         }
-        if (floatval($input['elevation']) != $input['elevation']) { 
+        if (round($input['elevation'],3) != $input['elevation']) { 
           Error::add('elevation','Elevation must be numeric'); 
         }
     }
@@ -351,22 +351,22 @@ class Record extends database_object {
 		}
 
 		// Weight, numeric floating point
-		if (!is_numeric($input['weight']) AND strlen($input['weight'])) { 
-			Error::add('weight','Weight must be numeric and in grams'); 
+		if (round($input['weight'],3) != $input['weight'] AND strlen($input['weight'])) { 
+			Error::add('weight','Weight must be numeric to a thousandth of a gram'); 
 		} 
 
 		// Height, numeric
-		if (!is_numeric($input['height']) AND strlen($input['height'])) { 
-			Error::add('height','Height must be numeric'); 
+		if (round($input['height'],3) != $input['height'] AND strlen($input['height'])) { 
+			Error::add('height','Height must be numeric to a thousandth of an mm'); 
 		} 
 
 		// Width, numeric
-		if (!is_numeric($input['width']) AND strlen($input['width'])) { 
-			Error::add('width','Length must be numeric'); 
+		if (round($input['width'],3) != $input['width'] AND strlen($input['width'])) { 
+			Error::add('width','Length must be numeric to a thousandth of an mm'); 
 		} 
 
 		// Thickness
-		if (!is_numeric($input['thickness']) AND strlen($input['thickness'])) { 
+		if (round($input['thickness'],3) != $input['thickness'] AND strlen($input['thickness'])) { 
 			Error::add('thickness','Thickness must be numeric'); 
 		} 
 		
