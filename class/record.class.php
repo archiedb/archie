@@ -3,27 +3,27 @@
 class Record extends database_object { 
 
 
-	public $uid; // INTERNAL 
-	public $site; // 10IH70.2011 
-	public $catalog_id; // # of item unique to site
-	public $inventory_id; // this is the built ID of the thingy from site + year + catalog id
-	public $unit; 
-	public $quad; 
-	public $feature; 
-	public $level; 
-	public $lsg_unit; 
-	public $station_index; // LISTED AS RN in the interface
-	public $xrf_matrix_index; 
-	public $weight; 
-	public $width; 
-	public $height; 
-	public $thickness; 
-	public $quanity; 
-	public $material; // FK
-	public $classification; // FK
-	public $xrf_artifact_index; 
-	public $notes; 
-	public $user_id; // The ID
+  public $uid; // INTERNAL 
+  public $site; // 10IH70.2011 
+  public $catalog_id; // # of item unique to site
+  public $inventory_id; // this is the built ID of the thingy from site + year + catalog id
+  public $unit; 
+  public $quad; 
+  public $feature; 
+  public $level; 
+  public $lsg_unit; 
+  public $station_index; // LISTED AS RN in the interface
+  public $xrf_matrix_index; 
+  public $weight; 
+  public $width; 
+  public $height; 
+  public $thickness; 
+  public $quanity; 
+  public $material; // FK
+  public $classification; // FK
+  public $xrf_artifact_index; 
+  public $notes; 
+  public $user_id; // The ID
   public $northing; // Northing from station info
   public $easting; // Easting from station info
   public $elevation; // Elevation from station info
