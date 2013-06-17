@@ -33,21 +33,22 @@ while (($raw = fgetcsv($handle)) !== FALSE) {
 	$input['catalog_id']	= intval(trim($raw['1'])) ? intval(trim($raw['1'])) : null;
 	$input['unit'] 		= trim($raw['2']); 
 	$input['level'] 	= is_numeric($raw['4']) ? $raw['4'] : null; 
-	$input['lsg_unit'] 	= lsgunit::name_to_id($raw['19']); 
+	$input['lsg_unit'] 	= lsgunit::name_to_id($raw['20']); 
 	$input['station_index'] = preg_replace('/[^0-9]/','',$raw['0']); // * ?'s on this value, removing them
 	$input['classification'] = $classification_id; 
 	$input['xrf_matrix_index'] = null; 
 
 
 	$input['height'] 	= null;
-	$input['width'] 	= $raw['12']; 
-	$input['thickness'] 	= $raw['13']; 
-	$input['quanity'] 	= preg_replace('/[^0-9]/','',$raw['9']); // * and ?'s on this value, removing them 
+	$input['width'] 	= $raw['13']; 
+	$input['thickness'] 	= $raw['14']; 
+	$input['quanity'] 	= preg_replace('/[^0-9]/','',trim($raw['9'])); // * and ?'s on this value, removing them 
 	$input['xrf_artifact_index'] = null; 
 	$input['material'] 	= material::name_to_id($raw['6']); 
 	$input['quad'] 		= quad::name_to_id(strtoupper($raw['3'])); 
-	$input['notes'] 	= $raw['14'] . ' ' . $raw['15'];  
+	$input['notes'] 	= $raw['15'] . ' ' . $raw['16'];  
 	$input['feature'] 	= null; 
+	$input['user']		= '-1'; 
 
 	if (Record::validate($input)) { 
 		// Do Stuff
