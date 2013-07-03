@@ -67,7 +67,7 @@ switch (\UI\sess::location('action')) {
     $uid = User::create($_POST);  
     if (!$uid) { 
       require_once \UI\template('/users/add'); 
-      break; 
+      exit; 
     }
     $user = new User($uid); 
     require_once \UI\template('/users/view'); 

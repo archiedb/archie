@@ -6,7 +6,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="content-block">
 <fieldset>
 <legend>Add New User</legend>
-<?php Error::display('general'); ?>
+<?php Event::display('errors'); ?>
 <form class="form-horizontal" method="post" action="<?php echo Config::get('web_path'); ?>/users/create">
   <div class="control-group<?php Error::display_class('name','required'); ?>">
     <label class="control-label" for="inputName">Name</label>

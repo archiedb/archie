@@ -179,9 +179,12 @@ class User extends database_object {
 	 */
 	public static function create($input) { 
 
+    // Reset the error state before we start checking
+    Error::clear(); 
+
     // Validate input
     if (!User::validate($input)) {
-      Error::add('general','Error creating user please see below'); 
+      Error::add('general','adding new user'); 
       return false; 
     } 
    
