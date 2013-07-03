@@ -181,7 +181,7 @@ class User extends database_object {
 
     // Validate input
     if (!User::validate($input)) {
-      Error::add('general','Invalid Field Values - please check input'); 
+      Error::add('general','Error creating user please see below'); 
       return false; 
     } 
    
@@ -231,6 +231,12 @@ class User extends database_object {
 
     if (!strlen($input['username'])) { 
       Error::add('username','Username is a required field'); 
+    }
+
+    // Make sure that the username doesn't already exist
+    $user = User::get_from_username($input['username']); 
+    if ($user->uid) {
+      Error::add('username','Username already exists, duplicate usernames not allowed');
     }
 
     if (Error::occurred()) { return false; }
