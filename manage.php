@@ -33,6 +33,23 @@ switch (\UI\sess::location('action')) {
   case 'tools':
     require_once \UI\template('/manage/tools'); 
   break; 
+  case 'material':
+    // Do what with material?
+    switch (\UI\sess::location('objectid')) {
+      case 'add':
+
+      break;
+      case 'disable':
+      break;
+      case 'view':
+      default:
+        require_once \UI\template('/material/view'); 
+      break;
+    }
+  break;
+  case 'classification':
+    require_once \UI\template('/classification/view'); 
+  break; 
   default: 
   case 'status':
     // Include debug tools 
