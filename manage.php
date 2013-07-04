@@ -49,7 +49,19 @@ switch (\UI\sess::location('action')) {
     }
   break;
   case 'classification':
-    require_once \UI\template('/classification/view'); 
+    // Do what?
+    switch (\UI\sess::location('objectid')) { 
+      case 'add':
+      
+      break;
+      case 'disable':
+      break;
+      case 'view':
+      default:
+        $classifications = Classification::get_all(); 
+        require_once \UI\template('/classification/view'); 
+      break;
+    }
   break; 
   default: 
   case 'status':

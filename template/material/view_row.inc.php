@@ -8,10 +8,10 @@ $material_count = Stats::material_records('material',$material->uid);
     <?php echo scrub_out($material->name); ?>
   </td>
   <td><?php echo scrub_out($material_count['count']); ?></td>
-	<td><?php echo scrub_out('true'); ?></td>
+	<td><?php echo \UI\boolean_word('true'); ?></td>
   <td>
 		<div class="btn-group">
-      <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/material/disable/<?php echo scrub_out($user->uid); ?>">Disable</a>
+      <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/material/disable/<?php echo scrub_out($material->uid); ?>">Disable</a>
 		</div>
   </td>
 </tr>
