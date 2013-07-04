@@ -416,6 +416,23 @@ class Database {
 
   } // update_0005
 
+  /**
+   * update_0006
+   * Add enabled boolean to classification and materials
+   */
+  private static function update_0006() { 
+
+    $retval = true; 
+    $sql = "ALTER TABLE `material` ADD `enabled` INT (1) UNSIGNED DEFAULT '1' AFTER `name`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `classification` ADD `enabled` INT (1) UNSIGNED DEFAULT '1' AFTER `name`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval; 
+
+  } // update_0006
+
 } // \Update\Database class
 
 ?>

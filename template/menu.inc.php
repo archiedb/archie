@@ -24,6 +24,8 @@ if (INIT_LOADED != '1') { exit; }
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="<?php echo Config::get('web_path'); ?>/users/manage">Users</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/material">Materials</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/classification">Classifications</a></li>
               <li class="divider"></li>
               <li class="nav-header">System</li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/status">Status</a>

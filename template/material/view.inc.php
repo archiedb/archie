@@ -1,8 +1,6 @@
 <?php
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
-$active_name = $filter . '_active';
-${$active_name} = ' class="active"';
 ?>
 <div class="pull-left">
 <h4>Materials</h4>
@@ -20,7 +18,7 @@ ${$active_name} = ' class="active"';
 </tr>
 </thead>
 <tbody>
-<?php foreach ($materials as $material) { require \UI\template('/manage/material/view_row'); } ?>
+<?php foreach ($materials as $material) { require \UI\template('/material/view_row'); } ?>
 </tbody>
 </table>
 </div><!-- End table container --> 

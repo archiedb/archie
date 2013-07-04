@@ -84,6 +84,10 @@ class Stats {
           $uid = Dba::escape($constraint_value); 
           $constraint_sql = " AND `user`='$uid'"; 
         break; 
+        case 'classification':
+          $uid = Dba::escape($constraint_value);
+          $constraint_sql = " AND `classification`='$uid'"; 
+        break;
         default:
           // Nothin
           $constraint_sql = ''; 
@@ -104,5 +108,43 @@ class Stats {
     return $row; 
 
   } // classification_records
+
+  /**
+   * material_records
+   */
+  public static function material_records($constraint='',$constraint_value='') { 
+
+    switch ($constraint) { 
+      case 'today':
+        $today = time() - 86400;
+        $constraint_sql = " AND `created` >='$today'";
+      break;
+      case 'user':
+        $uid = Dba::escape($constraint_value); 
+        $constraint_sql = " AND `user`='$uid'"; 
+      break;
+      case 'material':
+        $uid = Dba::escape($constraint_value); 
+        $constraint_sql = " AND `material`='$uid'"; 
+      break; 
+      default: 
+        // Nothing
+        $constraint_sql = ''; 
+      break;
+    }
+
+    $site = Dba::escape(Config::get('site')); 
+    $sql = "SELECT COUNT(`uid`) AS `count`,`material` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `material` ORDER BY `count` DESC"; 
+    $db_results = Dba::read($sql); 
+
+    $row = Dba::fetch_assoc($db_results); 
+
+    if (!count($row)) { return false; }
+    $material = new material($row['material']); 
+    $row['material'] = $material->name ? $material->name : 'UNDEF';
+
+    return $row; 
+
+  } // material_records
 
 } // Stats
