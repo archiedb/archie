@@ -206,8 +206,11 @@ class Database {
     $versions[] = array('version'=>'0003','description'=>$update_string); 
     $update_string = '- Reduce accuracy of xyz data.<br />'; 
     $versions[] = array('version'=>'0004','description'=>$update_string); 
-    $update_string = '- Increase accuracy of weight,thickness and width to the thousandths<br />';
+    $update_string = '- Increase accuracy of weight,thickness and width to the thousandths.<br />';
     $versions[] = array('version'=>'0005','description'=>$update_string); 
+    $update_string = '- Add `enabled` to material and classification.<br />' . 
+                      '- Add level/krotovina/feature table.<br />';
+    $versions[] = array('version'=>'0006','description'=>$update_string);
 
 
     return $versions; 
@@ -428,6 +431,43 @@ class Database {
 
     $sql = "ALTER TABLE `classification` ADD `enabled` INT (1) UNSIGNED DEFAULT '1' AFTER `name`";
     $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `classification` ADD INDEX (`enabled`)"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `material` ADD INDEX (`enabled`)"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "CREATE TABLE `level` (" . 
+          "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
+          "`site` varchar(255) CHARACTER SET utf8 NOT NULL," . 
+          "`record_id` varchar(255) NOT NULL," .
+          "`quad`  varchar(255) CHARACTER SET utf8 NOT NULL," . 
+          "`northing` decimal(8,3) NOT NULL," . 
+          "`easting` decimal(8,3) NOT NULL," .
+          "`type` varchar(255) CHARACTER SET utf8 NOT NULL," . 
+          "`elv_a_start` decimal(8,3) NOT NULL," . 
+          "`elv_a_finish` decimal(8,3) NOT NULL," . 
+          "`elv_b_start` decimal(8,3) NOT NULL," . 
+          "`elv_b_finish` decimal(8,3) NOT NULL," . 
+          "`elv_c_start` decimal(8,3) NOT NULL," . 
+          "`elv_c_finish` decimal(8,3) NOT NULL," . 
+          "`elv_d_start` decimal(8,3) NOT NULL," . 
+          "`elv_d_finish` decimal(8,3) NOT NULL," . 
+          "`elv_center_start` decimal(8,3) NOT NULL," . 
+          "`elv_center_finish` decimal(8,3) NOT NULL," . 
+          "PRIMARY KEY (`uid`)) " . 
+          "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD INDEX (`site`)";
+    $retval = \Dba::write($sql) ? $retval : false; 
+ 
+    $sql = "ALTER TABLE `level` ADD INDEX (`record_id`)";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD INDEX (`type`)"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
 
     return $retval; 
 
