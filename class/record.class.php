@@ -102,6 +102,9 @@ class Record extends database_object {
 	// Create
 	public static function create($input) { 
 
+    // Clear any previous errors before we do the validatation
+    Error::clear(); 
+
 		// First verify the input to make sure
 		// all of the fields are within acceptable tolerences 
 		if (!Record::validate($input)) { 
@@ -210,6 +213,9 @@ class Record extends database_object {
 
 	// Update
 	public function update($input) { 
+
+    // Clear any previous errors before we do the validatation
+    Error::clear(); 
   
     // First verify the input to make sure
     // all of the fields are within acceptable tolerences 

@@ -150,6 +150,9 @@ class User extends database_object {
     // Feed some info in
     $input['username'] = $this->username; 
 
+    // Clear the error before we validate
+    Error::clear(); 
+
     // Validate input
     if (!User::validate($input)) {
       Error::add('general','Invalid Field Values - please check input'); 
