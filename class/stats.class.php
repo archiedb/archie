@@ -55,7 +55,7 @@ class Stats {
     } 
 
     $site = Dba::escape(Config::get('site')); 
-    $sql = "SELECT COUNT(`uid`) AS `count`,`user` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `user`";
+    $sql = "SELECT COUNT(`uid`) AS `count`,`user` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `user` ORDER BY `count` DESC";
     $db_results = Dba::read($sql); 
 
     $row = Dba::fetch_assoc($db_results); 
