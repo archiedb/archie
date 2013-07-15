@@ -75,6 +75,7 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template();
   break;
   case 'new':
+    Error::clear(); 
     require_once \UI\template(); 
   break;
   case 'create':
