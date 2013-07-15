@@ -14,7 +14,8 @@ class Stats {
 
     switch ($constraint) { 
       case 'today':
-        $today = time()-86400; 
+        $string_date = date('m/d/Y',time()); 
+        $today = strtotime($string_date); 
         $constraint_sql = ' AND `created`>=\'' . $today . '\'';
       break;
       case 'user':
@@ -45,7 +46,8 @@ class Stats {
     switch ($constraint) { 
       case 'today':
         // This isn't today
-        $today = time()-86400;
+        $string_date = date('m/d/Y',time());
+        $today = strtotime($string_date);
         $constraint_sql = " AND `created`>='$today'";
       break;
       default:
@@ -77,7 +79,8 @@ class Stats {
 
     switch ($constraint) { 
         case 'today': 
-          $today = time() - 86400; 
+          $string_date = date('m/d/Y',time());
+          $today = strtotime($string_date); 
           $constraint_sql = " AND `created`>='$today'"; 
         break;
         case 'user':
@@ -116,7 +119,8 @@ class Stats {
 
     switch ($constraint) { 
       case 'today':
-        $today = time() - 86400;
+        $string_date = date('m/d/Y',time());
+        $today = strtotime($string_date);
         $constraint_sql = " AND `created` >='$today'";
       break;
       case 'user':
