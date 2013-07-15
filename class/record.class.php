@@ -341,13 +341,13 @@ class Record extends database_object {
     } // if station_index
     // if no station index then just check format of northing/easting/elevation
     else { 
-        if (round($input['northing'],3) != $input['northing']) { 
+        if (intval($input['northing']) < 0 OR round($input['northing'],3) != $input['northing']) { 
           Error::add('northing','Northing must be numeric'); 
         }
-        if (round($input['easting'],3) != $input['easting']) { 
+        if (intval($input['easting']) < 0 OR round($input['easting'],3) != $input['easting']) { 
           Error::add('easting','Easting must be numeric'); 
         }
-        if (round($input['elevation'],3) != $input['elevation']) { 
+        if (intval($input['elevation']) < 0 OR round($input['elevation'],3) != $input['elevation']) { 
           Error::add('elevation','Elevation must be numeric'); 
         }
     }
