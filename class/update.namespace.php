@@ -442,6 +442,7 @@ class Database {
           "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
           "`site` varchar(255) CHARACTER SET utf8 NOT NULL," . 
           "`record_id` varchar(255) NOT NULL," .
+          "`unit` varchar(128) NOT NULL," . 
           "`quad`  varchar(255) CHARACTER SET utf8 NOT NULL," . 
           "`northing` decimal(8,3) NOT NULL," . 
           "`easting` decimal(8,3) NOT NULL," .
