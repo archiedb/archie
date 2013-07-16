@@ -16,6 +16,15 @@ switch (\UI\sess::location('page')) {
   case 'manage': 
     require_once 'manage.php';
   break; 
+  case 'level':
+    require_once 'level.php';
+  break;
+  case 'feature':
+    require_once 'feature.php';
+  break;
+  case 'krotovina':
+    require_once 'krotovina.php';
+  break;
   default:
     require_once \UI\template('/header'); 
     require_once \UI\template('/index');
