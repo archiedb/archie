@@ -3,7 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <div class="page-header">
-<h4>New Krotovina Form - <?php echo Config::get('site'); ?></h3>
+<h4>New Krotovina - <?php echo Config::get('site'); ?></h3>
 </div>
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" id="new_krotovina" method="post" action="<?php echo Config::get('web_path'); ?>/krotovina/create">
@@ -17,6 +17,12 @@ if (INIT_LOADED != '1') { exit; }
   <label class="control-label" for="inputDescription">How does it differ from surrounding matrix</label>
   <div class="controls">
     <textarea placeholder="..." rows="4" cols="80" name="description"><?php echo scrub_out($_POST['description']); ?></textarea>
+  </div>
+</div>
+<div class="control-group span8<?php Error::display_class('keywords'); ?>">
+  <label class="control-label" for="inputKeywords">Keywords</label>
+  <div class="controls">
+    <input id="inputKeywords" name="keywords" type="text" value="<?php echo scrub_out($_POST['keywords']); ?>" />
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('image'); ?>">

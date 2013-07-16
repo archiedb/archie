@@ -211,6 +211,10 @@ class Database {
     $update_string = '- Add `enabled` to material and classification.<br />' . 
                       '- Add level/krotovina/feature table.<br />';
     $versions[] = array('version'=>'0006','description'=>$update_string);
+    $update_string = '- Add krotovina and feature and datum_location tables.<br />' . 
+                      '- Update level table to conform to new method.<br />';
+    $versions[] = array('version'=>'0007','description'=>$update_string); 
+
 
 
     return $versions; 
@@ -473,6 +477,106 @@ class Database {
     return $retval; 
 
   } // update_0006
+
+  /**
+   * update_0007
+   * Add krotovina table
+   * Add feature table
+   * Add datum_locations table
+   * Rename level fields to match new values
+   * Add excavators to level table
+   * Rename record_id to level, and remove/re-add index
+   * Add L.U. to level table
+   * Remove type from level table and remove index
+   */
+  private static function update_0007() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `level` DROP INDEX (`type`)"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` DROP `type`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `lsg_unit` int(10) UNSIGNED NOT NULL AFTER `quad`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `excavator_one` int(11) UNSIGNED AFTER `elv_center_finish`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `excavator_two` int(11) UNSIGNED AFTER `excavator_one`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `excavator_three` int(11) UNSIGNED AFTER `excavator_two`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `excavator_four` int(11) UNSIGNED AFTER `excavator_three`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_a_start` `elv_nw_start` decimal (8,3) NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_b_start` `elv_ne_start` decimal (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_c_start` `elv_sw_start` decimal (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_d_start` `elv_se_start` decimal (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_a_finish` `elv_nw_finish` decimal (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_b_finish` `elv_ne_finish` decimal (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_c_finish` `elv_sw_finish` decimal (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_e_finish` `elv_se_finish` decimal (8,3) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `record_id` `record` varchar(255) NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "CREATE TABLE `datum_location` (" . 
+          "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
+          "`record` varchar(255) NOT NULL," . 
+          "`record_type` varchar(255) NOT NULL," . 
+          "`station_index` int(10) UNSIGNED NOT NULL," . 
+          "`northing` decimal(8,3) NOT NULL," . 
+          "`easting` decimal(8,3) NOT NULL," . 
+          "`elevation` decimal(8,3) NOT NULL," . 
+          "`note` varchar(255) NOT NULL," . 
+          "PRIMARY KEY (`uid`)) " . 
+          "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "CREATE TABLE `krotovina` (" . 
+          "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+          "`site` varchar(255) CHARACTER SET utf8 NOT NULL," . 
+          "`record` varchar(255) NOT NULL," . 
+          "`keywords` varchar(2048) NOT NULL," . 
+          "`description` varchar(5000)," . 
+          "PRIMARY KEY (`uid`)) " . 
+          "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "CREATE TABLE `feature` (" . 
+          "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
+          "`site` varchar(255) CHARACTER SET utf8 NOT NULL," . 
+          "`record` varchar(255) NOT NULL," . 
+          "`keywords` varchar(2048) NOT NULL," . 
+          "`description` varchar(5000)," . 
+          "PRIMARY KEY (`uid`)) " . 
+          "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+ 
+    return $retval; 
+
+  } // update_0007
 
 } // \Update\Database class
 
