@@ -121,7 +121,7 @@ class Record extends database_object {
 		while (!$db_results && $times < 5) { 
 
 			// If we make it this far we're good to go, we need to figure out the next station ID
-			$db_results = Dba::query($lock_sql); 
+			$db_results = Dba::write($lock_sql); 
 		
 			if (!$db_results) { sleep(1); $times++; } 
 
@@ -140,7 +140,7 @@ class Record extends database_object {
 		if (!$input['catalog_id']) { 
 			$site = Dba::escape(Config::get('site')); 
 			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`='$site' ORDER BY `catalog_id` DESC LIMIT 1"; 
-			$db_results = Dba::query($catalog_sql); 
+			$db_results = Dba::read($catalog_sql); 
 			$row = Dba::fetch_assoc($db_results); 	
 			Dba::finish($db_results); 
 
@@ -151,12 +151,12 @@ class Record extends database_object {
 			$site = Dba::escape($input['site']); 
 			$catalog_id = Dba::escape($input['catalog_id']); 
 			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`='$site' AND `catalog_id`='$catalog_id' LIMIT 1"; 
-			$db_results = Dba::query($catalog_sql); 
+			$db_results = Dba::read($catalog_sql); 
 			$row = Dba::fetch_assoc($db_results); 
 			Dba::finish($db_results); 
 			if ($row['catalog_id']) { 
 				Error::add('general','Database Failure - Duplicate CatalogID - ' . $catalog_id); 
-				$db_results = Dba::query($unlock_sql); 
+				$db_results = Dba::write($unlock_sql); 
 				return false; 
 			} 
 
@@ -190,16 +190,16 @@ class Record extends database_object {
 		
 		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`station_index`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`user`,`created`,`northing`,`easting`,`elevation`) " . 
 			"VALUES ('$site','$catalog_id','$unit',$level,'$lsg_unit',$station_index,'$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$quad','$feature','$user','$created','$northing','$easting','$elevation')"; 
-		$db_results = Dba::query($sql); 
+		$db_results = Dba::write($sql); 
 
 		if (!$db_results) { 
 			Error::add('general','Unknown Error inserting record into database'); 
-			$db_results = Dba::query($unlock_sql); 
+			$db_results = Dba::write($unlock_sql); 
 			return false; 
 		} 
 		$insert_id = Dba::insert_id(); 
 
-		$db_results = Dba::query($unlock_sql); 
+		$db_results = Dba::write($unlock_sql); 
 
 		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('ADD',$log_line); 

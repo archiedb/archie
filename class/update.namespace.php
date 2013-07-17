@@ -493,9 +493,6 @@ class Database {
 
     $retval = true; 
 
-    $sql = "ALTER TABLE `level` DROP INDEX (`type`)"; 
-    $retval = \Dba::write($sql) ? $retval : false; 
-
     $sql = "ALTER TABLE `level` DROP `type`"; 
     $retval = \Dba::write($sql) ? $retval : false; 
 
@@ -535,7 +532,7 @@ class Database {
     $sql = "ALTER TABLE `level` CHANGE `elv_c_finish` `elv_sw_finish` decimal (8,3) NOT NULL"; 
     $retval = \Dba::write($sql) ? $retval : false; 
 
-    $sql = "ALTER TABLE `level` CHANGE `elv_e_finish` `elv_se_finish` decimal (8,3) NOT NULL"; 
+    $sql = "ALTER TABLE `level` CHANGE `elv_d_finish` `elv_se_finish` decimal (8,3) NOT NULL"; 
     $retval = \Dba::write($sql) ? $retval : false; 
 
     $sql = "ALTER TABLE `level` CHANGE `record_id` `record` varchar(255) NOT NULL";
