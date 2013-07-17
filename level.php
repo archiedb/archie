@@ -28,7 +28,16 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/level/edit');
   break;
   case 'update':
-     
+    $level = new Level($_POST['uid']);
+    $_POST['user'] = \UI\sess::$user->uid;
+    if (!$level->update($_POST)) { 
+      require_once \UI\template('/level/edit');
+    }
+    else {
+      Event::add('success','Level Updated, thanks!','small');
+      $level = new Level($_POST['uid']); 
+      require_once \UI\template('/level/view');
+    }
   break;
   default: 
     // Rien a faire

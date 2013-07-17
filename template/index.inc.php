@@ -46,3 +46,4 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 </tbody>
 </table>
+<?php echo date('m',time()); ?>

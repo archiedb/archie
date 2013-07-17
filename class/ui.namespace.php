@@ -11,7 +11,13 @@ function return_url($input) {
   $check = rtrim($input,'0..9'); 
   $allowed_urls = array('/records/view/',
                     '/records/edit/',
-                    '/users/view'); 
+                    '/users/view',
+                    '/level/edit/',
+                    '/level/view/',
+                    '/krotovina/edit/',
+                    '/krotovina/view/',
+                    '/feature/edit/',
+                    '/feature/view/'); 
 
   if (in_array($check,$allowed_urls)) { 
     return $input;
@@ -49,7 +55,11 @@ function field_name($field) {
       'elv_ne_start'=>'NE Elevation Start',
       'elv_sw_start'=>'SW Elevation Start',
       'elv_se_start'=>'SE Elevation Start',
-      'elv_center_start'=>'Center Elevation Start'
+      'elv_center_start'=>'Center Elevation Start',
+      'elv_nw_finish'=>'NW Elevation Finish',
+      'elv_ne_finish'=>'NE Elevation Finish',
+      'elv_sw_finish'=>'SW Elevation Finish',
+      'elv_se_finish'=>'SE Elevation Finish'
       );
 
   if (in_array($field,array_keys($names))) { return $names[$field]; }

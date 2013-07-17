@@ -265,7 +265,7 @@ class Record extends database_object {
 		Event::record('UPDATE',$log_line); 
 
 		// Remove this object from the cache so the update shows properly
-		Record::remove_from_cache('record',$record_uid); 
+		$this->refresh(); 
 
 		return true; 
 

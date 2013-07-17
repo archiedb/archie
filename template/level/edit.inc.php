@@ -83,7 +83,116 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('elv_ne_start'); ?>">
   <label class="control-label" for="inputElvNEStart">NE Start</label>
   <div class="controls">
-    <input id="inputElvNEStart" name="elv_ne_start" type="text" value="<?php echo scrub_out($level->elv_ne_finish); ?>">
+    <input id="inputElvNEStart" name="elv_ne_start" type="text" value="<?php echo scrub_out($level->elv_ne_start); ?>">
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('elv_ne_finish'); ?>">
+  <label class="control-label" for="inputElvNEFinish">NE Finish</label>
+  <div class="controls">
+    <input id="inputElvNEFinish" name="elv_ne_finish" type="text" value="<?php echo scrub_out($level->elv_ne_finish); ?>">
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('elv_sw_start'); ?>">
+  <label class="control-label" for="inputElvSWStart">SW Start</label>
+  <div class="controls">
+    <input id="inputElvSWStart" name="elv_sw_start" type="text" value="<?php echo scrub_out($level->elv_sw_start); ?>">
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('elv_sw_finish'); ?>">
+  <label class="control-label" for="inputElvSWFinish">SW Finish</label>
+  <div class="controls">
+    <input id="inputElvSWFinish" name="elv_sw_finish" type="text" value="<?php echo scrub_out($level->elv_sw_finish); ?>">
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('elv_se_start'); ?>">
+  <label class="control-label" for="inputElvSEStart">SE Start</label>
+  <div class="controls">
+    <input id="inputElvSEStart" name="elv_se_start" type="text" value="<?php echo scrub_out($level->elv_se_start); ?>">
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('elv_se_finish'); ?>">
+  <label class="control-label" for="inputElvSEFinish">SE Finish</label>
+  <div class="controls">
+    <input id="inputElvSEFinish" name="elv_se_finish" type="text" value="<?php echo scrub_out($level->elv_se_finish); ?>">
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('elv_center_start'); ?>">
+  <label class="control-label" for="inputElvCenterStart">Center Start</label>
+  <div class="controls">
+    <input id="inputElvCenterStart" name="elv_center_start" type="text" value="<?php echo scrub_out($level->elv_center_start); ?>">
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('elv_center_fiish'); ?>">
+  <label class="control-label" for="inputElvCenterFinish">Center Finish</label>
+  <div class="controls">
+    <input id="inputElvCenterFinish" name="elv_center_finish" type="text" value="<?php echo scrub_out($level->elv_center_finish); ?>">
+  </div>
+</div>
+<div class="control-group span10">
+  <h4>Excavators</h4></hr />
+</div>
+<?php 
+  // Current valid users
+  $excavators = User::get('enabled'); 
+?>
+<div class="control-group span4<?php Error::display_class('excavator_one'); ?>">
+  <label class="control-label" for="inputExcavatorone">First</label>
+  <div class="controls">
+    <select id="inputExcavatorone" name="excavator_one">
+      <option value="">&nbsp;</option>
+        <?php 
+        foreach ($excavators as $user) { 
+          $is_selected = '';
+          if ($level->excavator_one == $user->uid) { $is_selected = ' selected="selected"'; }
+        ?>
+      <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
+      <?php } ?>
+    </select>
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('excavator_two'); ?>">
+  <label class="control-label" for="inputExcavatortwo">Second</label>
+  <div class="controls">
+    <select id="inputExcavatortwo" name="excavator_two">
+      <option value="">&nbsp;</option>
+      <?php
+      foreach ($excavators as $user) { 
+        $is_selected = '';
+        if ($level->excavator_two == $user->uid) { $is_selected = ' selected="selected"'; }
+      ?>
+      <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
+      <?php } ?>
+    </select>
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('excavator_three'); ?>">
+  <label class="control-label" for="inputExcavatorthree">Third</label>
+  <div class="controls">
+    <select id="inputExcavatorthree" name="excavator_three">
+      <option value="">&nbsp;</option>
+      <?php
+      foreach ($excavators as $user) { 
+        $is_selected = '';
+        if ($level->excavator_three == $user->uid) { $is_selected = ' selected="selected"'; }
+      ?>
+      <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
+      <?php } ?>
+    </select>
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('excavator_four'); ?>">
+  <label class="control-label" for="inputExcavatorfour">Fourth</label>
+  <div class="controls">
+    <select id="inputExcavatorfour" name="excavator_four">
+      <option value="">&nbsp;</option>
+      <?php 
+      foreach ($excavators as $user) { 
+        $is_selected = '';
+        if ($level->excavator_four == $user->uid) { $is_selected = ' selected="selected"'; }
+      ?>
+      <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
+      <?php } ?>
+    </select>
   </div>
 </div>
 <div class="control-group span10">
@@ -116,8 +225,8 @@ if (INIT_LOADED != '1') { exit; }
 </form>
 </fieldset>
 <fieldset><legend>Upload</legend>
-<form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/records/upload">
- 	<input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />
+<form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/level/upload">
+ 	<input type="hidden" name="uid" value="<?php echo scrub_out($level->uid); ?>" />
   <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
 <div class="row">
   <div class="span4">
@@ -140,21 +249,5 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div>
 </form>
-<!-- Images/3dModels/Media -->
-<ul class="nav nav-tabs" id="media_nav">
-  <li class="active"><a href="#picture" data-toggle="tab">Pictures</a></li>
-  <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>
-  <li><a href="#media" data-toggle="tab">Other Media</a></li>
-</ul>
-<div class="tab-content">
-  <div class="tab-pane active" id="picture">
-    <?php require_once \UI\template('/records/images'); ?>
-  </div> <!-- End Picture tab -->
-  <div class="tab-pane" id="3dmodel">
-    <?php require_once \UI\template('/records/3dmodel'); ?>
-  </div> <!-- End 3dModel Tab -->
-  <div class="tab-pane" id="media">
-    <?php require_once \UI\template('/records/media'); ?>
-  </div> <!-- End Media tab pane -->
-</div> <!-- End Container --> 
+<?php require_once \UI\template('/level/images'); ?>
 </fieldset>

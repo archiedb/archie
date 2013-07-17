@@ -28,6 +28,9 @@ class Level extends database_object {
   public $excavator_two;
   public $excavator_three;
   public $excavator_four;
+  public $description;
+  public $difference;
+  public $notes;
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -150,6 +153,75 @@ class Level extends database_object {
   } // create
 
   /**
+   * update
+   * Updates an existing record
+   */
+  public function update($input) { 
+
+    // Reset the error state
+    Error::clear();
+
+    if (!Level::validate($input)) { 
+      Error::add('general','Invalid field values, please check input');
+      return false;
+    }
+
+    $uid      = Dba::escape($this->uid); 
+    $record   = Dba::escape($input['record']); 
+    $unit     = Dba::escape($input['unit']);
+    $quad     = Dba::escape($input['quad']); 
+    $lsg_unit = Dba::escape($input['lsg_unit']);
+    $user     = Dba::escape(\UI\sess::$user->uid);
+    $updated  = time();
+    $northing = Dba::escape($input['northing']);
+    $easting  = Dba::escape($input['easting']);
+    $elv_nw_start   = Dba::escape($input['elv_nw_start']);
+    $elv_nw_finish  = Dba::escape($input['elv_nw_finish']);
+    $elv_ne_start   = Dba::escape($input['elv_ne_start']);
+    $elv_ne_finish  = Dba::escape($input['elv_ne_finish']);
+    $elv_sw_start   = Dba::escape($input['elv_sw_start']);
+    $elv_sw_finish  = Dba::escape($input['elv_sw_finish']);
+    $elv_se_start   = Dba::escape($input['elv_se_start']);
+    $elv_se_finish  = Dba::escape($input['elv_se_finish']); 
+    $elv_center_start = Dba::escape($input['elv_center_start']);
+    $elv_center_finish  = Dba::escape($input['elv_center_finish']); 
+    $excavator_one  = Dba::escape($input['excavator_one']); 
+    $excavator_two  = Dba::escape($input['excavator_two']); 
+    $excavator_three  = Dba::escape($input['excavator_three']);
+    $excavator_four = Dba::escape($input['excavator_four']); 
+    $description    = Dba::escape($input['description']);
+    $difference     = Dba::escape($input['difference']);
+    $notes          = Dba::escape($input['notes']);
+
+    $sql = "UPDATE `level` SET `record`='$record', `unit`='$unit', `quad`='$quad', `lsg_unit`='$lsg_unit', " . 
+          "`user`='$user', `updated`='$updated', `northing`='$northing', `easting`='$easting', " . 
+          "`elv_nw_start`='$elv_nw_start', `elv_nw_finish`='$elv_nw_finish', `elv_ne_start`='$elv_ne_start', " . 
+          "`elv_ne_finish`='$elv_ne_finish', `elv_sw_start`='$elv_sw_start', `elv_sw_finish`='$elv_sw_finish', " .
+          "`elv_se_start`='$elv_se_start', `elv_se_finish`='$elv_se_finish', `elv_center_start`='$elv_center_start', " . 
+          "`elv_center_start`='$elv_center_start', `elv_center_finish`='$elv_center_finish', " . 
+          "`excavator_one`='$excavator_one', `excavator_two`='$excavator_two', `excavator_three`='$excavator_three', " . 
+          "`excavator_four`='$excavator_four', `description`='$description', `difference`='$difference', `notes`='$notes' " . 
+          "WHERE `level`.`uid`='$uid' LIMIT 1";
+    $retval = Dba::write($sql);
+
+    if (!$retval) { 
+      Error::add('database','Database update failed, please contact administrator');
+      return false;
+    }
+
+    $log_line = "$uid,$record,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_nw_finish,$elv_ne_start," .
+      "$elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start," . 
+      "$elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four," . \UI\sess::$user->username . ",\"" . date('r',$updated) . "\""; 
+    Event::record('LEVEL-UPDATE',$log_line);
+
+    // Refresh record
+    $this->refresh();
+
+    return true; 
+
+  } // update
+
+  /**
    * validate
    * Validates the 'input' we get for update/create operations
    */
@@ -218,7 +290,9 @@ class Level extends database_object {
         }
         // Make sure it's deeper then the start
         $start_name = substr($field,0,strlen($field)-6) . 'start';
-        if ($input[$field] > $input[${$start_name}]) { }         
+        if ($input[$field] > $input[$start_name]) { 
+          Error::add($field,'Must be lower then starting elevation');
+        }         
       }
 
     } // end foreach ends
