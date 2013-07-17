@@ -119,12 +119,14 @@ class Level extends database_object {
     $excavator_two  = Dba::escape($input['excavator_two']); 
     $excavator_thee = Dba::escape($input['excavator_three']); 
     $excavator_four = Dba::escape($input['excavator_four']); 
+    $user = Dba::escape(\UI\sess::$user->uid);
+    $created = time(); 
     
     $sql = "INSERT INTO `level` (`site`,`record`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`," . 
         "`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`excavator_one`,`excavator_two`," . 
-        "`excavator_three`,`excavator_four`) VALUES ('$site','$record','$unit','$quad','$lsg_unit','$northing','$easting'," . 
+        "`excavator_three`,`excavator_four`,`user`,`created`) VALUES ('$site','$record','$unit','$quad','$lsg_unit','$northing','$easting'," . 
         "'$elv_nw_start','$elv_ne_start','$elv_sw_start','$elv_se_start','$elv_center_start','$excavator_one','$excavator_two', " . 
-        "'$excavator_three','$excavator_four')"; 
+        "'$excavator_three','$excavator_four','$user','$created')"; 
     $db_results = Dba::write($sql); 
 
     // If it fails we need to unlock!
@@ -133,6 +135,18 @@ class Level extends database_object {
       Error::add('general','Unable to insert level, DB error please contact administrator'); 
       return false;
     }
+
+    $insert_id = Dba::insert_id();
+
+    // Release the table
+    Dba::write($unlock_sql); 
+
+    $log_line = "$site,$record,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start," . 
+          "$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three," . 
+          "$excavator_four," . \UI\sess::$user->username . ",\"" . date('r',$created) . "\"";
+    Event::record('LEVEL-ADD',$log_line); 
+
+    return $insert_id; 
 
   } // create
 

@@ -487,6 +487,7 @@ class Database {
    * Add excavators to level table
    * Rename record_id to level, and remove/re-add index
    * Add L.U. to level table
+   * Add user, created,updated to level table
    * Remove type from level table and remove index
    */
   private static function update_0007() { 
@@ -494,6 +495,15 @@ class Database {
     $retval = true; 
 
     $sql = "ALTER TABLE `level` DROP `type`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `user` int(11) UNSIGNED NOT NULL AFTER `lsg_unit`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `created` int(10) UNSIGNED NOT NULL AFTER `user`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `updated` int(10) UNSIGNED NOT NULL AFTER `created`"; 
     $retval = \Dba::write($sql) ? $retval : false; 
 
     $sql = "ALTER TABLE `level` ADD `lsg_unit` int(10) UNSIGNED NOT NULL AFTER `quad`";
@@ -557,6 +567,9 @@ class Database {
           "`record` varchar(255) NOT NULL," . 
           "`keywords` varchar(2048) NOT NULL," . 
           "`description` varchar(5000)," . 
+          "`user` int(11) UNSIGNED NOT NULL," . 
+          "`created` int(10) UNSIGNED NOT NULL, " . 
+          "`updated` int(10) UNSIGNED NOT NULL, " .  
           "PRIMARY KEY (`uid`)) " . 
           "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval : false; 
@@ -567,6 +580,9 @@ class Database {
           "`record` varchar(255) NOT NULL," . 
           "`keywords` varchar(2048) NOT NULL," . 
           "`description` varchar(5000)," . 
+          "`user` int(11) UNSIGNED NOT NULL," . 
+          "`created` int(10) UNSIGNED NOT NULL," . 
+          "`updated` int(10) UNSIGNED NOT NULL," . 
           "PRIMARY KEY (`uid`)) " . 
           "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"; 
     $retval = \Dba::write($sql) ? $retval : false; 
