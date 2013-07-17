@@ -67,7 +67,7 @@ class Stats {
 
     $user = new User($row['user']); 
 
-    $row['user'] = $user->username;
+    $row['user'] = $user->name;
     return $row; 
 
   } // worker_records
