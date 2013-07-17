@@ -107,6 +107,7 @@ class content extends database_object {
     $this->parentuid  = $row['record'];
     $this->notes      = $row['notes']; 
     $this->user       = $row['user']; 
+    $this->record_type = $row['type'];
 
 		return $retval; 
 
@@ -267,10 +268,14 @@ class content extends database_object {
     switch ($record_type) { 
       case 'level':
         $record = new Level($uid);
+				$extension = self::get_extension($mime_type); 
+        $filename = self::generate_filename($record->site . '-level-' . $record->record,$extension);
       break;
       case 'record':
       default:
     		$record = new Record($uid); 
+				$extension = self::get_extension($mime_type); 
+				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
       break;
     }
 
@@ -297,14 +302,7 @@ class content extends database_object {
         $results = self::write_media($uid,$data,$filename,$options); 
       break; 
 			case 'image': 
-				$extension = self::get_extension($mime_type); 
-				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
-				$results = self::write_image($uid,$data,$filename,$mime_type,$options,'record'); 
-      break;
-      case 'level':
-        $extension = self::get_extension($mime_type);
-        $filename = self::generate_filename($record->site . '-' . $record->record,$extension);
-        $results = self::write_image($uid,$data,$filename,$mime_type,$options,'level');
+				$results = self::write_image($uid,$data,$filename,$mime_type,$options,$record_type); 
       break;
 		} 
 
@@ -338,7 +336,7 @@ class content extends database_object {
 		$mime_type = Dba::escape($mime_type); 
     $notes = Dba::escape($notes); 
     $user = Dba::escape(\UI\sess::$user->uid); 
-		$sql = "INSERT INTO `image` (`data`,`record`,`mim`,`user`,`notes`,`type`) VALUES ('$filename','$uid','$mime_type','$user','$notes','$type')"; 
+		$sql = "INSERT INTO `image` (`data`,`record`,`mime`,`user`,`notes`,`type`) VALUES ('$filename','$uid','$mime_type','$user','$notes','$type')"; 
 		$db_results = Dba::write($sql); 
 
 		if (!$db_results) { 
@@ -848,10 +846,10 @@ class content extends database_object {
       break; 
       case 'stl':
       case 'ply':
-        $retval = self::upload_3dmodel($uid,$input,$source,$type); 
+        $retval = self::upload_3dmodel($uid,$input,$source); 
       break;
       default:
-        $retval = self::upload_media($uid,$input,$source,$type); 
+        $retval = self::upload_media($uid,$input,$source); 
       break; 
     } // end switch
 

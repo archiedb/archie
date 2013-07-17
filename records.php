@@ -7,7 +7,7 @@ require_once 'template/header.inc.php';
 switch (\UI\sess::location('action')) { 
   case 'upload':
     // Figure out the extension and upload accordingly
-    Content::upload($_POST['record_id'],$_POST,$_FILES); 
+    Content::upload($_POST['record_id'],$_POST,$_FILES,'record'); 
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break;
   case 'image_edit': 

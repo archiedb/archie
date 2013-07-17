@@ -39,6 +39,27 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/level/view');
     }
   break;
+  case 'image_edit': 
+    if (!Access::has('media','write',$_POST['uid'])) { break; }
+    Content::update('image',$_POST['uid'],$_POST); 
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
+  break;
+  case 'image_delete':
+    if (!Access::has('media','delete',$_POST['uid'])) {  break; }
+    $image = new Content($_POST['uid'],'image'); 
+    if (!$image->delete()) { 
+      Error::add('delete','Unable to perform image deletion request, please contact administrator'); 
+    }
+    else { 
+      Event::add('success','Image Deleted','small'); 
+    }
+    // Return to whence we came,
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
+  break;
+  case 'upload':
+    Content::upload($_POST['uid'],$_POST,$_FILES,'level'); 
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
+  break;
   default: 
     // Rien a faire
   break; 
