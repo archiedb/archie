@@ -524,10 +524,13 @@ class Database {
     $sql = "ALTER TABLE `level` ADD `description` varchar(5000) AFTER `excavator_four`";
     $retval = \Dba::write($sql) ? $retval : false; 
 
-    $sql = "ALTER TABLE `level` ADD `difference` varchart(5000) AFTER `description`";
+    $sql = "ALTER TABLE `level` ADD `difference` varchar(5000) AFTER `description`";
     $retval = \Dba::write($sql) ? $retval : false; 
 
     $sql = "ALTER TABLE `level` ADD `notes` varchar(5000) AFTER `difference`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `closed` INT ( 1 ) UNSIGNED AFTER `notes`";
     $retval = \Dba::write($sql) ? $retval : false; 
 
     $sql = "ALTER TABLE `level` CHANGE `elv_a_start` `elv_nw_start` decimal (8,3) NOT NULL";
@@ -579,6 +582,7 @@ class Database {
           "`user` int(11) UNSIGNED NOT NULL," . 
           "`created` int(10) UNSIGNED NOT NULL, " . 
           "`updated` int(10) UNSIGNED NOT NULL, " .  
+          "`closed` int(1) UNSIGNED NOT NULL," .
           "PRIMARY KEY (`uid`)) " . 
           "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval : false; 
@@ -592,6 +596,7 @@ class Database {
           "`user` int(11) UNSIGNED NOT NULL," . 
           "`created` int(10) UNSIGNED NOT NULL," . 
           "`updated` int(10) UNSIGNED NOT NULL," . 
+          "`closed` int(1) UNSIGNED NOT NULL," .
           "PRIMARY KEY (`uid`)) " . 
           "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"; 
     $retval = \Dba::write($sql) ? $retval : false; 
