@@ -223,6 +223,18 @@ class View {
         $this->_state['type'] = $type;  
         $this->set_base_sql(true); 
       break; 
+      case 'level':
+        $this->_state['type'] = $type;
+        $this->set_base_sql(true); 
+      break;
+      case 'krotovina':
+        $this->_state['type'] = $type;
+        $this->set_base_sql(true);
+      break;
+      case 'feature':
+        $this->_state['type'] = $type;
+        $this->set_base_sql(true);
+      break;
     } // end switch 
 
   } // set_type
@@ -235,10 +247,25 @@ class View {
 
     if (strlen($this->_state['base']) && !$force) { return true; } 
 
-    // Maybe in the future we'll switch?!
-    $this->set_select('`record`.`uid`'); 
-    $sql = 'SELECT %%SELECT%% FROM `record` '; 
-
+    // Set our base SQL statement and select based on the type
+    switch ($this->_state['type']) {
+      case 'record':
+        $this->set_select('`record`.`uid`'); 
+        $sql = 'SELECT %%SELECT%% FROM `record` '; 
+      break;
+      case 'level':
+        $this->set_select('`level`.`uid`');
+        $sql = 'SELECT %%SELECT%% FROM `level` ';
+      break;
+      case 'feature':
+        $this->set_select('`feature`.`uid`');
+        $sql = 'SELECT %%SELECT%% FROM `feature` ';
+      break;
+      case 'krotovina':
+        $this->set_select('`krotovina`.`uid`');
+        $sql = 'SELECT %%SELECT%% FROM `krotovina` ';
+      break;
+    }
     $this->_state['base'] = $sql; 
 
   } // set_base_sql

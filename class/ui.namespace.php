@@ -45,9 +45,16 @@ function field_name($field) {
       'xrf_matrix_index'=>'XRF Matrix',
       'xrf_artifact_index'=>'XRF Artifact',
       'lsg_unit'=>'L.U',
+      'elv_nw_start'=>'NW Elevation Start',
+      'elv_ne_start'=>'NE Elevation Start',
+      'elv_sw_start'=>'SW Elevation Start',
+      'elv_se_start'=>'SE Elevation Start',
+      'elv_center_start'=>'Center Elevation Start'
       );
 
   if (in_array($field,array_keys($names))) { return $names[$field]; }
+
+  $field = str_replace('_',' ',$field);
 
   return ucfirst($field); 
 
