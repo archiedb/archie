@@ -212,7 +212,8 @@ class Database {
                       '- Add level/krotovina/feature table.<br />';
     $versions[] = array('version'=>'0006','description'=>$update_string);
     $update_string = '- Add krotovina and feature and datum_location tables.<br />' . 
-                      '- Update level table to conform to new method.<br />';
+                      '- Update level table to conform to new method.<br />' .
+                      '- Rename image.type to image.mime and add image.type as record type. <br />';
     $versions[] = array('version'=>'0007','description'=>$update_string); 
 
 
@@ -493,6 +494,20 @@ class Database {
   private static function update_0007() { 
 
     $retval = true; 
+
+    $sql = "ALTER TABLE `image` ADD `mime` varchar(255) NOT NULL AFTER `record`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    // Itterate through all images and move the data around
+    $sql = "SELECT * FROM `image`";
+    $db_results = \Dba::read($sql);
+
+    while ($row = \Dba::fetch_assoc($db_results)) { 
+      $mime  = \Dba::escape($row['type']);
+      $uid        = \Dba::escape($row['uid']); 
+      $update_sql = "UPDATE `image` SET `mime`='$mime', `type`='record' WHERE `uid`='$uid'";
+      $db_update = \Dba::write($update_sql); 
+    }
 
     $sql = "ALTER TABLE `level` DROP `type`"; 
     $retval = \Dba::write($sql) ? $retval : false; 
