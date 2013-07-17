@@ -156,13 +156,55 @@ class Level extends database_object {
    */
   public static function validate($input) { 
 
-    // Site - set by config
+		// Unit A-Z
+		if (preg_match("/[^A-Za-z]/",$input['unit'])) { 
+			Error::add('unit','UNIT must be A-Z'); 
+		}
+
+		// lsg_unit, numeric less then 50
+		if ((!in_array($input['lsg_unit'],array_keys(lsgunit::$values)) OR $input['lsg_unit'] > 50) AND strlen($input['lsg_unit'])) { 
+			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
+		}
+
+		// The quad has to exist
+		if (!in_array($input['quad'],array_keys(quad::$values)) AND strlen($input['quad'])) { 
+			Error::add('Quad','Invalid Quad selected'); 
+		} 
+
+    // Check the 'start' values 
+    $field_check = array('northing','easting','elv_nw_start','elv_ne_start','elv_sw_start','elv_se_start','elv_center_start');
+
+    foreach ($field_check as $field) { 
+
+      if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) { 
+        Error::add($field,'Must be numeric and rounded to three decimal places'); 
+      }
+
+    } // end foreach starts 
+
+    // Check the 'end' values
+    $field_check = array('elv_nw_finish','elv_ne_finish','elv_sw_finish','elv_se_finish','elv_center_finish'); 
+    
+    foreach ($field_check as $field) { 
+
+      // if they aren't set, we don't care
+      if (isset($input[$field])) {
+        // If its empty then we can ignore
+        if ($input[$field] == '') { continue; }
+
+        // Make sure it's not less then zero and has the correct accuracy
+        if ($input[$field] < 0 OR round($input[$field,3) != $input[$field]) {
+          Error::add($field,'Must be numeric and rounded to three decimal places'); 
+        }
+        // Make sure it's deeper then the start
+        $start_name = substr($field,0,strlen($field)-6) . 'start';
+        if ($input[$field] > $input[${$start_name}]) { }         
+      }
+
+    } // end foreach ends
     // record_id 
     //   K-????? for Krotovina
     //   F-????? for feature
-    //   ??? for Level
-    // quad - NW/NE (list)
-    // unit - A-Z (list)
     // northing - 8,3 decimal
     // easting - ''
     // type - Feature, Krotovina, Level

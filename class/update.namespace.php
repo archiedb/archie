@@ -497,6 +497,9 @@ class Database {
     $sql = "ALTER TABLE `level` DROP `type`"; 
     $retval = \Dba::write($sql) ? $retval : false; 
 
+    $sql = "ALTER TABLE `level` ADD `lsg_unit` int(10) UNSIGNED NOT NULL AFTER `quad`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
     $sql = "ALTER TABLE `level` ADD `user` int(11) UNSIGNED NOT NULL AFTER `lsg_unit`";
     $retval = \Dba::write($sql) ? $retval : false; 
 
@@ -504,9 +507,6 @@ class Database {
     $retval = \Dba::write($sql) ? $retval : false; 
 
     $sql = "ALTER TABLE `level` ADD `updated` int(10) UNSIGNED NOT NULL AFTER `created`"; 
-    $retval = \Dba::write($sql) ? $retval : false; 
-
-    $sql = "ALTER TABLE `level` ADD `lsg_unit` int(10) UNSIGNED NOT NULL AFTER `quad`";
     $retval = \Dba::write($sql) ? $retval : false; 
 
     $sql = "ALTER TABLE `level` ADD `excavator_one` int(11) UNSIGNED AFTER `elv_center_finish`"; 
