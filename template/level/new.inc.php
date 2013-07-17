@@ -6,7 +6,7 @@ if (INIT_LOADED != '1') { exit; }
 <h4>New Level - <?php echo Config::get('site'); ?></h3>
 </div>
 <?php Event::display('errors'); ?>
-<form class="form-horizontal" id="new_eform" method="post" action="<?php echo Config::get('web_path'); ?>/level/create">
+<form class="form-horizontal" id="new_level" method="post" action="<?php echo Config::get('web_path'); ?>/level/create">
 <div class="control-group span4<?php Error::display_class('unit'); ?>">
   <label class="control-label" for="inputUnit">Unit</label>
   <div class="controls">
@@ -42,7 +42,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('level'); ?>">
   <label class="control-label" for="inputLevel">Level</label>
   <div class="controls">
-	  <input id="inputLevel" name="level" type="text" value="<?php echo scrub_out($_POST['level']); ?>" />
+	  <input id="inputLevel" name="record" type="text" value="<?php echo scrub_out($_POST['record']); ?>" />
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('lsg_unit'); ?>">
@@ -60,7 +60,7 @@ if (INIT_LOADED != '1') { exit; }
     </select>
   </div>
 </div>
-<div class="control-group span4<?php Error::display_class('Northing'); ?>">
+<div class="control-group span4<?php Error::display_class('northing'); ?>">
   <label class="control-label" for="inputNorthing">Northing</label>
   <div class="controls">
     <input id="inputNorthing" name="northing" type="text" value="<?php echo scrub_out($_POST['northing']); ?>" />
@@ -110,11 +110,22 @@ if (INIT_LOADED != '1') { exit; }
   <h5>Excavators</h5>
   <hr />
 </div>
+<?php 
+  // Current valid users
+  $excavators = User::get('enabled'); 
+?>
 <div class="control-group span4<?php Error::display_class('excavator_one'); ?>">
   <label class="control-label" for="inputExcavatorone">First</label>
   <div class="controls">
     <select id="inputExcavatorone" name="excavator_one">
       <option value="">&nbsp;</option>
+        <?php 
+        foreach ($excavators as $user) { 
+          $is_selected = '';
+          if ($_POST['excavator_one'] == $user->uid) { $is_selected = ' selected="selected"'; }
+        ?>
+      <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
+      <?php } ?>
     </select>
   </div>
 </div>
@@ -123,6 +134,13 @@ if (INIT_LOADED != '1') { exit; }
   <div class="controls">
     <select id="inputExcavatortwo" name="excavator_two">
       <option value="">&nbsp;</option>
+      <?php
+      foreach ($excavators as $user) { 
+        $is_selected = '';
+        if ($_POST['excavator_two'] == $user->uid) { $is_selected = ' selected="selected"'; }
+      ?>
+      <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
+      <?php } ?>
     </select>
   </div>
 </div>
@@ -131,6 +149,13 @@ if (INIT_LOADED != '1') { exit; }
   <div class="controls">
     <select id="inputExcavatorthree" name="excavator_three">
       <option value="">&nbsp;</option>
+      <?php
+      foreach ($excavators as $user) { 
+        $is_selected = '';
+        if ($_POST['excavator_three'] == $user->uid) { $is_selected = ' selected="selected"'; }
+      ?>
+      <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
+      <?php } ?>
     </select>
   </div>
 </div>
@@ -139,6 +164,13 @@ if (INIT_LOADED != '1') { exit; }
   <div class="controls">
     <select id="inputExcavatorfour" name="excavator_four">
       <option value="">&nbsp;</option>
+      <?php 
+      foreach ($excavators as $user) { 
+        $is_selected = '';
+        if ($_POST['excavator_four'] == $user->uid) { $is_selected = ' selected="selected"'; }
+      ?>
+      <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
+      <?php } ?>
     </select>
   </div>
 </div> 

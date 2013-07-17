@@ -4,6 +4,30 @@
 class Level extends database_object { 
 
 	public $uid; 
+  public $site;
+  public $record; // UID generated and written down
+  public $unit;
+  public $quad;
+  public $lsg_unit;
+  public $user; // User who last modified this record
+  public $created;
+  public $updated;
+  public $northing;
+  public $easting;
+  public $elv_nw_start;
+  public $elv_nw_finish;
+  public $elv_ne_start;
+  public $elv_ne_finish;
+  public $elv_sw_start;
+  public $elv_sw_finish;
+  public $elv_se_start;
+  public $elv_se_finish;
+  public $elv_center_start;
+  public $elv_center_finish;
+  public $excavator_one;
+  public $excavator_two;
+  public $excavator_three;
+  public $excavator_four;
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -15,6 +39,11 @@ class Level extends database_object {
 		foreach ($row as $key=>$value) { 
 			$this->$key = $value; 
 		} 
+
+    // Build the user object, its useful
+    $this->user = new User($this->user);
+    $this->quad = new Quad($this->quad);
+    $this->lsg_unit = new Lsgunit($this->lsg_unit);
 
 		return true; 
 
@@ -69,42 +98,12 @@ class Level extends database_object {
     // what they should have
     if (!Level::validate($input)) { 
       Error::add('general','Invalid field values please check input');
+      Dba::write($unlock_sql);
       return false; 
     }
-
-    $retval = false; 
-    $times = 0; 
-    $lock_sql = "LOCK TABLES `level` WRITE";
-    $unlock_sql = "UNLOCK TABLES";
-
-    // Itterate five times trying to lock the tables before giving up
-    while (!$retval && $times < 5) { 
-
-      $retval = Dba::read($lock_sql) ? true : false;
-
-      if (!$retval) { $times++; sleep(1); }
-
-    }
-
-    // If we never get the lock then bail
-    if (!$retval) { 
-      Error::add('general','Unable to establish Database Lock, retry'); 
-      return false; 
-    }
-
-    // Init row array
-    $row = array(); 
-
-    $site = Dba::escape(Config::get('site')); 
-    $sql = "SELECT `record` FROM `level` WHERE `site`='$site' AND ORDER BY `record` DESC LIMIT 1"; 
-    $db_results = Dba::read($sql);
-    $row = Dba::fetch_assoc($db_results);
-    Dba::finish($db_results); 
-
-    $record = $row['record']+1; 
 
     $site     = Dba::escape(Config::get('site')); 
-    $record   = Dba::escape($record); 
+    $record   = Dba::escape($input['record']); 
     $unit     = Dba::escape($input['unit']); 
     $quad     = Dba::escape($input['quad']); 
     $lsg_unit = Dba::escape($input['lsg_unit']); 
@@ -156,19 +155,35 @@ class Level extends database_object {
    */
   public static function validate($input) { 
 
+    if (!$input['record']) { 
+      Error::add('level','Required field');
+    }
+    else {
+      // Make sure this isn't a duplicate level
+      $record = Dba::escape($input['record']);
+      $quad   = Dba::escape($input['quad']); 
+      $unit   = Dba::escape($input['unit']); 
+      $sql = "SELECT `level`.`uid` FROM `level` WHERE `level`.`record`='$record' AND `quad`='$quad' AND `unit`='$unit'";
+      $db_results = Dba::read($sql); 
+
+      if (Dba::num_rows()) { 
+        Error::add('level','Dupicate Level for this Unit and Quad'); 
+      }
+    }
+
 		// Unit A-Z
 		if (preg_match("/[^A-Za-z]/",$input['unit'])) { 
 			Error::add('unit','UNIT must be A-Z'); 
 		}
 
 		// lsg_unit, numeric less then 50
-		if ((!in_array($input['lsg_unit'],array_keys(lsgunit::$values)) OR $input['lsg_unit'] > 50) AND strlen($input['lsg_unit'])) { 
+		if (!in_array($input['lsg_unit'],array_keys(lsgunit::$values)) OR $input['lsg_unit'] > 50 OR $input['lsg_unit'] < 2) { 
 			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
 		}
 
 		// The quad has to exist
-		if (!in_array($input['quad'],array_keys(quad::$values)) AND strlen($input['quad'])) { 
-			Error::add('Quad','Invalid Quad selected'); 
+		if (!in_array($input['quad'],array_keys(quad::$values))) { 
+			Error::add('quad','Invalid Quad selected'); 
 		} 
 
     // Check the 'start' values 
@@ -178,6 +193,11 @@ class Level extends database_object {
 
       if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) { 
         Error::add($field,'Must be numeric and rounded to three decimal places'); 
+      }
+
+      // Must be set
+      if (!$input[$field]) {
+        Error::add($field,'Required field');
       }
 
     } // end foreach starts 
@@ -193,7 +213,7 @@ class Level extends database_object {
         if ($input[$field] == '') { continue; }
 
         // Make sure it's not less then zero and has the correct accuracy
-        if ($input[$field] < 0 OR round($input[$field,3) != $input[$field]) {
+        if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) {
           Error::add($field,'Must be numeric and rounded to three decimal places'); 
         }
         // Make sure it's deeper then the start
@@ -202,14 +222,36 @@ class Level extends database_object {
       }
 
     } // end foreach ends
-    // record_id 
-    //   K-????? for Krotovina
-    //   F-????? for feature
-    // northing - 8,3 decimal
-    // easting - ''
-    // type - Feature, Krotovina, Level
-    // elv_* are same as northing
-    
+
+    $excavator_check = array('excavator_one','excavator_two','excavator_three','excavator_four'); 
+    $excavator_count = 0;
+    $excavator_exists = array();
+
+    foreach ($excavator_check as $excavator_id) { 
+
+      if ($input[$excavator_id]) {
+        
+        if (in_array($input[$excavator_id],$excavator_exists)) { 
+          Error::add($excavator_id,'Duplicate Excavator, can\'t be in two places at once');
+        }
+
+        $user = new User($input[$excavator_id]); 
+
+        if (!$user->username OR $user->disabled) { 
+          Error::add($excavator_id,'Excavator unknown or disabled'); 
+        }
+        else {
+          $excavator_exists[] = $input[$excavator_id];
+          $excavator_count++;
+        }
+      }
+    } // End foreach
+
+    // We have to have at least one excavator
+    if ($excavator_count == 0) { 
+      Error::add('excavator_one','At least one excavator must be set');
+    }
+  
     if (Error::occurred()) { return false; }
 
     return true; 
