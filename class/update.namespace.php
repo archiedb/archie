@@ -521,6 +521,15 @@ class Database {
     $sql = "ALTER TABLE `level` ADD `excavator_four` int(11) UNSIGNED AFTER `excavator_three`"; 
     $retval = \Dba::write($sql) ? $retval : false; 
 
+    $sql = "ALTER TABLE `level` ADD `description` varchar(5000) AFTER `excavator_four`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `difference` varchart(5000) AFTER `description`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` ADD `notes` varchar(5000) AFTER `difference`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
     $sql = "ALTER TABLE `level` CHANGE `elv_a_start` `elv_nw_start` decimal (8,3) NOT NULL";
     $retval = \Dba::write($sql) ? $retval : false; 
 
