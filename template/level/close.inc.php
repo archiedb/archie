@@ -50,7 +50,7 @@ a level is closed, it cannot be reopened.
 </div>
 <div class="control-group span4 offset4">
   <input type="checkbox" name="connect" value="1" />
-  Connect Scan
+  Kinect Scan
 </div>
 <div class="control-group span4 offset3">
   <div class="controls">

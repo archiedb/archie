@@ -117,7 +117,7 @@ class Level extends database_object {
     $elv_sw_start   = Dba::escape($input['elv_sw_start']); 
     $elv_se_start   = Dba::escape($input['elv_se_start']); 
     $elv_center_start = Dba::escape($input['elv_center_start']); 
-    $excavator_one  = Dba::escape($input['excavator_one']); 
+    $excavator_one  = Dba::escape(\UI\sess::$user->uid); 
     $excavator_two  = Dba::escape($input['excavator_two']); 
     $excavator_thee = Dba::escape($input['excavator_three']); 
     $excavator_four = Dba::escape($input['excavator_four']); 
@@ -412,8 +412,8 @@ class Level extends database_object {
 
     $uid = Dba::escape($this->uid); 
     $updated = time(); 
-    $user = \UI\sess::$user->uid;
-    $sql = "UPDATE `level` SET `closed`='1',`user`='$user',`updated`='$updated' WHERE `uid`='$uid'";
+    $user = Dba::escape(\UI\sess::$user->uid);
+    $sql = "UPDATE `level` SET `closed`='1',`closed_user`='$user',`closed_date`='$updated' WHERE `uid`='$uid'";
     $db_results = Dba::write($sql); 
 
     if (!$db_results) {

@@ -215,6 +215,8 @@ class Database {
                       '- Update level table to conform to new method.<br />' .
                       '- Rename image.type to image.mime and add image.type as record type. <br />';
     $versions[] = array('version'=>'0007','description'=>$update_string); 
+    $update_string = '- Add closed user and closed date to krotovina,level and feature.<br />';
+    $versions[] = array('version'=>'0008','description'=>$update_string); 
 
 
 
@@ -619,6 +621,36 @@ class Database {
     return $retval; 
 
   } // update_0007
+
+  /**
+   * update_0008
+   * Add closed time and user to level, krotovina and feature
+   */
+  private static function update_0008() {
+
+    $retval = true;
+
+    $sql = "ALTER TABLE `level` ADD `closed_date` int(10) UNSIGNED AFTER `closed`";
+    $retval = \Dba::write($sql) ? true : false;
+
+    $sql = "ALTER TABLE `level` ADD `closed_user` int(10) UNSIGNED AFTER `closed_date`";
+    $retval = \Dba::write($sql) ? true : false;
+
+    $sql = "ALTER TABLE `krotovina` ADD `closed_date` int(10) UNSIGNED AFTER `closed`";
+    $retval = \Dba::write($sql) ? true : false;
+
+    $sql = "ALTER TABLE `krotovina` ADD `closed_user` int(10) UNSIGNED AFTER `closed_date`";
+    $retval = \Dba::write($sql) ? true : false;
+
+    $sql = "ALTER TABLE `feature` ADD `closed_date` int(10) UNSIGNED AFTER `closed`";
+    $retval = \Dba::write($sql) ? true : false;
+
+    $sql = "ALTER TABLE `feature` ADD `closed_user` int(10) UNSIGNED AFTER `closed_date`";
+    $retval = \Dba::write($sql) ? true : false;
+
+    return $retval;
+
+  } // update_0008
 
 } // \Update\Database class
 

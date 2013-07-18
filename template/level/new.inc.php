@@ -117,13 +117,13 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('excavator_one'); ?>">
   <label class="control-label" for="inputExcavatorone">First</label>
   <div class="controls">
-    <select id="inputExcavatorone" name="excavator_one">
+    <select id="inputExcavatorone" name="excavator_one" disabled="disabled">
       <option value="">&nbsp;</option>
-        <?php 
-        foreach ($excavators as $user) { 
-          $is_selected = '';
-          if ($_POST['excavator_one'] == $user->uid) { $is_selected = ' selected="selected"'; }
-        ?>
+      <?php
+      foreach ($excavators as $user) { 
+        $is_selected = '';
+        if (\UI\sess::$user->uid == $user->uid) { $is_selected = ' selected="selected"'; }
+      ?>
       <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
       <?php } ?>
     </select>
