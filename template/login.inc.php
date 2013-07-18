@@ -47,7 +47,7 @@
   $user_random = array('one ring to rule them','you will be assimilated','do or do not','I dig','Live long','Archaeologists do it','can you'); 
   $pass_random = array('one ring to bind them','resistance is futile','there is no try','therefor I am','and dig faster','in the dirt','dig it?');
 
-  $int = rand(0,count($user_random)); 
+  $int = rand(1,count($user_random)); 
 ?>
 
 <body>
@@ -56,8 +56,8 @@
 
       <form class="form-signin" method="post" enctype="multipart/form-data" action="<?php echo Config::get('web_path'); ?>/login.php">
         <h2 class="form-signin-heading">Archie :: Login</h2>
-	<input name="username" type="text" class="input-block-level" placeholder="<?php echo scrub_out($user_random[$int]); ?>">
-	<input name="password" type="password" class="input-block-level" placeholder="<?php echo scrub_out($pass_random[$int]); ?>">
+	<input name="username" type="text" class="input-block-level" placeholder="Username">
+	<input name="password" type="password" class="input-block-level" placeholder="Password">
         <button class="btn btn-large btn-primary" type="submit">Login</button>
       </form>
     </div> <!-- /container -->
