@@ -20,7 +20,7 @@ if (INIT_LOADED != '1') { exit; }
 <table class="table table-hover table-bordered table-white">
 <tr>
   <th>UNIT</th><td><?php echo scrub_out($level->unit); ?></td>
-  <th>QUAD</th><td><?php echo scrub_out($level->quad); ?></td>
+  <th>QUAD</th><td><?php echo scrub_out($level->quad->name); ?></td>
   <th>L.U</th><td><?php echo scrub_out($level->lsg_unit->name); ?></td>
 </tr>
 <tr>
@@ -28,7 +28,7 @@ if (INIT_LOADED != '1') { exit; }
   <th colspan="2">EASTING</th><td><?php echo scrub_out($level->easting); ?></td>
 </tr>
 </table>
-<h5>Elevations<h5><hr />
+<h5>Elevations<h5>
 <table class="table table-hover table-bordered table-white">
 <tr>
   <th>NW Start</th><td><?php echo scrub_out($level->elv_nw_start); ?></td>
@@ -51,7 +51,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>Center Finish</th><td><?php echo scrub_out($level->elv_center_finish); ?></td>
 </tr>
 </table>
-<h5>Excavators<h5><hr />
+<h5>Excavators<h5>
 <?php 
   // Setup the users
   $ex_one = new User($level->excavator_one); 
@@ -69,4 +69,27 @@ if (INIT_LOADED != '1') { exit; }
   <th>Fourth</th><td><?php echo scrub_out($ex_four->name); ?></td>
 </tr>
 </table>
+<h5>Notes</h5>
+<table class="table table-hover table-bordered table-white">
+<tr>  
+  <th>Describe: Sediment, Artifacts, Krotovina, Features</th>
+</tr>
+<tr>
+  <td><?php echo scrub_out($level->description); ?></td>
+</tr>
+<tr>
+  <th>Describe the differences and similaraities compared to the last level.</th>
+</tr>
+<tr>
+  <td><?php echo scrub_out($level->difference); ?></td>
+</tr>
+<tr>
+  <th>Did you find anything interesting or significant?</th>
+</tr>
+<tr>
+  <td><?php echo scrub_out($level->notes); ?></td>
+</tr>
+</table>
+<h5>Images</h5>
+<?php require_once \UI\template('/level/images'); ?>
 

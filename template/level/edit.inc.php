@@ -199,7 +199,7 @@ if (INIT_LOADED != '1') { exit; }
   <h4>Notes</h4><hr />
 </div>
 <div class="control-group span4<?php Error::display_class('description'); ?>">
-  <label class="control-label" for="inputDescription">Description</label>
+  <label class="control-label" for="inputDescription">Describe: Sediment, Artifacts, Krotovina, Features </label>
   <div class="controls">
   	<textarea id="inputDescription" name="description" class="textbox" rows="5"><?php echo scrub_out($level->description); ?></textarea>
   </div>
@@ -211,7 +211,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div>
 <div class="control-group span8<?php Error::display_class('notes'); ?>">
-  <label class="control-label" for="inputNotes">Other Comments</label>
+  <label class="control-label" for="inputNotes">Did you find anything interesting or significant?</label>
   <div class="controls">
     <textarea id="inputNotes" name="notes" class="textbox" rows="5"><?php echo scrub_out($level->notes); ?></textarea>
   </div>
