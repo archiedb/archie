@@ -161,6 +161,9 @@ class Level extends database_object {
     // Reset the error state
     Error::clear();
 
+    // Set closed variable for validation
+    $input['closed'] = $this->closed;
+
     if (!Level::validate($input)) { 
       Error::add('general','Invalid field values, please check input');
       return false;
@@ -227,6 +230,10 @@ class Level extends database_object {
    */
   public static function validate($input) { 
 
+    if ($input['closed'] == 1 AND !Access::has('admin','admin',$input['uid'])) {
+      Error::add('closed','Level is closed, unable to updated'); 
+    }
+
     if (!$input['record']) { 
       Error::add('level','Required field');
     }
@@ -235,10 +242,11 @@ class Level extends database_object {
       $record = Dba::escape($input['record']);
       $quad   = Dba::escape($input['quad']); 
       $unit   = Dba::escape($input['unit']); 
-      $sql = "SELECT `level`.`uid` FROM `level` WHERE `level`.`record`='$record' AND `quad`='$quad' AND `unit`='$unit'";
+      $uid    = Dba::escape($input['uid']); 
+      $sql = "SELECT `level`.`uid` FROM `level` WHERE `record`='$record' AND `quad`='$quad' AND `unit`='$unit' AND `uid`<>'$uid'";
       $db_results = Dba::read($sql); 
-
-      if (Dba::num_rows()) { 
+      $row = Dba::fetch_assoc($db_results); 
+      if ($row['uid']) { 
         Error::add('level','Dupicate Level for this Unit and Quad'); 
       }
     }
@@ -331,6 +339,115 @@ class Level extends database_object {
     return true; 
 
   } // validate
+
+  /**
+   * is_excavator
+   * Check if the specified user is an excavator 
+   */
+  public function is_excavator($uid) { 
+
+    $fields = array('excavator_one','excavator_two','excavator_three','excavator_four'); 
+
+    foreach ($fields as $excavator) { 
+      if ($this->$excavator == $uid) { return true; }
+    }
+
+    return false; 
+
+  } // is_excavator
+
+  /**
+   * questions answered
+   * Make sure they've put something in the two questions
+   */
+  public function questions_answered() {
+
+    if (!strlen($this->description)) { return false; }
+    if (!strlen($this->difference)) { return false; }
+
+    return true; 
+
+  } // questions_answered
+
+  /**
+   * has_photo
+   * make sure there's at least one photo for this level
+   */
+  public function has_photo() {
+
+    $images = Content::level($this->uid,'image');
+
+    if (!count($images)) { return false; }
+
+    return true;   
+
+  } // has_photo
+
+  /**
+   * close
+   * Attempt to close the level
+   */
+  public function close($input) { 
+
+    Error::clear();
+
+    // Make sure it's safe to close
+    if (!$this->validate_close($input)) {
+      Error::add('general','Unable to close level');
+      return false;
+    }
+
+    $uid = Dba::escape($this->uid); 
+    $updated = time(); 
+    $user = \UI\sess::$user->uid;
+    $sql = "UPDATE `level` SET `closed`='1',`user`='$user',`updated`='$updated' WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql); 
+
+    if (!$db_results) {
+      Error::add('database','Unknown database error, please contact administrator'); 
+      return false;
+    }
+
+    return true; 
+
+  } // close
+
+  /**
+   * validate_close
+   * Validate the attempt to close
+   */
+  public function validate_close($input) { 
+
+    // Make sure it's an admin or an excavator 
+    if (\UI\sess::$user->access < 100) { 
+      if (!$this->is_excavator()) { 
+        Error::add('excavator','Unable to close, you are not an excavator');
+      }
+    }
+
+    if (!$this->has_photo()) {
+      Error::add('photo','No Level photo found');
+    }
+
+    if (!$this->questions_answered()) {
+      Error::add('questions','Questions not answered'); 
+    }
+
+    $checkboxes = array('kroto_sample','kroto_bag','level_photo','notes_done','connect');
+
+    foreach ($checkboxes as $key) { 
+      if ($input[$key] != 1) { 
+        Error::add($key,'Not completed?'); 
+      }
+    }
+
+    if (Error::occurred()) {
+      return false;
+    }
+
+    return true; 
+
+  } // validate_close
 
 } // end class level
 ?>

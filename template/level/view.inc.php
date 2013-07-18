@@ -4,8 +4,13 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="pull-right">
+  <?php if (Access::has('admin','admin',$level->uid) OR !$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn">Edit Level</a>
+  <?php } ?>
   <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
+  <?php if (!$level->closed) { ?>
+  <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
+  <?php } ?>
 </p>
 <h3><?php echo $level->site . '-' . $level->record; ?>
   <small>Entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>

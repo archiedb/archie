@@ -25,7 +25,12 @@ switch (\UI\sess::location('action')) {
   break;
   case 'edit':
     $level = new Level(\UI\sess::location('objectid'));
-    require_once \UI\template('/level/edit');
+    if (!Access::has('admin','admin',$level->uid) AND $level->closed) {
+      require_once \UI\template('/level/view');
+    }
+    else {
+      require_once \UI\template('/level/edit');
+    }
   break;
   case 'update':
     $level = new Level($_POST['uid']);
@@ -60,8 +65,25 @@ switch (\UI\sess::location('action')) {
     Content::upload($_POST['uid'],$_POST,$_FILES,'level'); 
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
   break;
+  case 'checkclose':
+    $level = new Level(\UI\sess::location('objectid'));
+    require_once \UI\template('/level/close');
+  break;
+  case 'close':
+    $level = new Level($_POST['uid']); 
+    if ($level->close($_POST)) { 
+      require_once \UI\template('/level/view'); 
+    }
+    else {
+      require_once \UI\template('/level/close'); 
+    }
+  break;
   default: 
-    // Rien a faire
+    $view = new View(); 
+    $view->reset(); 
+    $view->set_type('level'); 
+    $levels = $view->run(); 
+    require_once \UI\template('/level/show');
   break; 
 } // end action switch 
 
