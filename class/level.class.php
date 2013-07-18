@@ -97,6 +97,9 @@ class Level extends database_object {
     // Reset errors before we do any validation
     Error::clear(); 
 
+    // hardcode first excavator
+    $input['excavator_one'] = \UI\sess::$user->uid;
+
     // Check the input and make sure we think they gave us 
     // what they should have
     if (!Level::validate($input)) { 
