@@ -169,7 +169,7 @@ class View {
    */
   public function set_sort($sort,$order='') { 
 
-    if (!in_array($sort,self::$allowed_sorts)) { 
+    if (!in_array($sort,$this->get_allowed_sorts($this->get_type()))) { 
       return false; 
     } 
 
@@ -507,7 +507,15 @@ class View {
    */
   public static function get_allowed_filters($type) { 
 
-    return self::$allowed_filters; 
+    switch ($type) { 
+      case 'level':
+        $allowed_filters = array('closed','quad','unit','record','excavator');
+      case 'record':
+        $allowed_filters = self::$allowed_filters; 
+      break;
+    }
+
+    return $allowed_filters;
 
   } // get_allowed_filters
 
@@ -517,7 +525,16 @@ class View {
    */
   public static function get_allowed_sorts($type) { 
 
-    return self::$allowed_sorts; 
+    switch ($type) {
+      case 'level':
+        $allowed_filters = array('closed','quad','unit','record','lsg_unit');
+      break;
+      case 'record':
+        $allowed_filters = self::$allowed_sorts; 
+      break;
+    }
+
+    return $allowed_filters;
 
   } // get_allowed_sorts
   /**
@@ -621,48 +638,63 @@ class View {
 
     $order = ($order == 'DESC') ? 'DESC' : 'ASC';
 
-    switch ($field) { 
-      case 'lsg_unit':
-      case 'notes':
-      case 'updated':
-      case 'created':
-      case 'height': 
-      case 'width': 
-      case 'thickness': 
-      case 'quanity': 
-      case 'weight': 
-      case 'feature':
-      case 'level': 
-      case 'quad': 
-      case 'unit': 
-      case 'catalog_id':
-      case 'xrf_matrix_index':
-      case 'xrf_artifact_index':
-      case 'station_index':
-        $sql = "`record`.`$field`";
+    switch ($this->get_type()) {
+      case 'record':
+       switch ($field) { 
+          case 'lsg_unit':
+          case 'notes':
+          case 'updated':
+          case 'created':
+          case 'height': 
+          case 'width': 
+          case 'thickness': 
+          case 'quanity': 
+          case 'weight': 
+          case 'feature':
+          case 'level': 
+          case 'quad': 
+          case 'unit': 
+          case 'catalog_id':
+          case 'xrf_matrix_index':
+          case 'xrf_artifact_index':
+          case 'station_index':
+            $sql = "`record`.`$field`";
+          break;
+          case 'media':
+          case '3dmodel':
+            $sql = "`media`.`uid`";
+            $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
+          break;
+          case 'image':
+            $sql = "`image`.`uid`";
+            $this->set_join('left','`image`','`image`.`record`','`record`.`uid`',100); 
+          break;
+          case 'material':
+            $sql = "`material`.`name`"; 
+            $this->set_join('left','`material`','`material`.`uid`','`record`.`material`',100); 
+          break;
+          case 'classification': 
+            $sql = "`classification`.`name`";
+            $this->set_join('left','`classification`','`classification`.`uid`','`record`.`classification`',100); 
+          break; 
+          case 'user': 
+            $sql = '`users`.`username`';
+            $this->set_join('left','`users`','`users`.`uid`','`record`.`user`',100); 
+          break; 
+        } // sort of record
       break;
-      case 'media':
-      case '3dmodel':
-        $sql = "`media`.`uid`";
-        $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
+      case 'level':
+        switch ($field) {
+          case 'record':
+          case 'closed':
+          case 'quad':
+          case 'unit':
+          case 'lsg_unit':
+            $sql = "`level`.`$field`";
+          break;
+        }
       break;
-      case 'image':
-        $sql = "`image`.`uid`";
-        $this->set_join('left','`image`','`image`.`record`','`record`.`uid`',100); 
-      break;
-      case 'material':
-        $sql = "`material`.`name`"; 
-        $this->set_join('left','`material`','`material`.`uid`','`record`.`material`',100); 
-      break;
-      case 'classification': 
-        $sql = "`classification`.`name`";
-        $this->set_join('left','`classification`','`classification`.`uid`','`record`.`classification`',100); 
-      break; 
-      case 'user': 
-        $sql = '`users`.`username`';
-        $this->set_join('left','`users`','`users`.`uid`','`record`.`user`',100); 
-      break; 
-    } 
+    }
 
     if ($sql) { $sql_sort = "$sql $order,"; }
 
@@ -679,7 +711,6 @@ class View {
 
     // We want an sql statement, with LIMIT intact
     $sql = $this->get_sql(true); 
-
     $db_results = Dba::read($sql); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 

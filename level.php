@@ -78,6 +78,16 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/level/close'); 
     }
   break;
+  case 'sort':
+    $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'record';
+    $order = \UI\sess::location('3') ? strtoupper(\UI\sess::location('3')) : '';
+    $view = new View(); 
+    $view->set_type('level'); 
+    $view->set_sort($field,$order); 
+    $view->set_start(0); 
+    $levels = $view->run(); 
+    require_once \UI\template('/level/show'); 
+  break;
   default: 
     $view = new View(); 
     $view->reset(); 

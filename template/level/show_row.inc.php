@@ -9,6 +9,7 @@ if (INIT_LOADED != '1') { exit; }
   </td>
 	<td><?php echo scrub_out($level->unit); ?></td>
 	<td><?php echo scrub_out($level->quad->name); ?></td>
+  <td><?php echo scrub_out($level->lsg_unit->name); ?></td>
   <td><?php echo \UI\boolean_word($level->closed); ?></td>
   <td>
     <div class="btn-group">

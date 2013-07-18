@@ -27,6 +27,7 @@ if (INIT_LOADED != '1') { exit; }
     <th><a href="<?php echo Config::get('web_path'); ?>/level/sort/record">ID</a></th>
 	  <th><a href="<?php echo Config::get('web_path'); ?>/level/sort/unit">Unit</a></th>
   	<th><a href="<?php echo Config::get('web_path'); ?>/level/sort/quad">Quad</a></th>
+    <th><a href="<?php echo Config::get('web_path'); ?>/level/sort/lsg_unit">L.U.</a></th>
     <th><a href="<?php echo Config::get('web_path'); ?>/level/sort/closed">Closed</a></th>
     <th>&nbsp;</th>
   </tr>
