@@ -122,7 +122,7 @@ if (INIT_LOADED != '1') { exit; }
     <input id="inputElvCenterStart" name="elv_center_start" type="text" value="<?php echo scrub_out($level->elv_center_start); ?>">
   </div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('elv_center_fiish'); ?>">
+<div class="control-group span4 offset1<?php Error::display_class('elv_center_finish'); ?>">
   <label class="control-label" for="inputElvCenterFinish">Center Finish</label>
   <div class="controls">
     <input id="inputElvCenterFinish" name="elv_center_finish" type="text" value="<?php echo scrub_out($level->elv_center_finish); ?>">

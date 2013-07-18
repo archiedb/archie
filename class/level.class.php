@@ -247,8 +247,12 @@ class Level extends database_object {
       $db_results = Dba::read($sql); 
       $row = Dba::fetch_assoc($db_results); 
       if ($row['uid']) { 
-        Error::add('level','Dupicate Level for this Unit and Quad'); 
+        Error::add('level','Duplicate Level for this Unit and Quad'); 
       }
+    }
+
+    if (!is_numeric($input['record'])) { 
+      Error::add('level','Level must be numeric');
     }
 
 		// Unit A-Z
@@ -271,8 +275,13 @@ class Level extends database_object {
 
     foreach ($field_check as $field) { 
 
-      if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) { 
+      if ($input[$field] <= 0 OR round($input[$field],3) != $input[$field]) { 
         Error::add($field,'Must be numeric and rounded to three decimal places'); 
+      }
+
+      
+      if (!is_numeric($input[$field])) {
+        Error::add($field,'Must be numeric');
       }
 
       // Must be set
@@ -291,6 +300,10 @@ class Level extends database_object {
       if (isset($input[$field])) {
         // If its empty then we can ignore
         if ($input[$field] == '') { continue; }
+
+        if (!is_numeric($input[$field])) {
+          Error::add($field,'Must be numeric');
+        }
 
         // Make sure it's not less then zero and has the correct accuracy
         if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) {

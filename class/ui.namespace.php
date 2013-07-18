@@ -59,7 +59,8 @@ function field_name($field) {
       'elv_nw_finish'=>'NW Elevation Finish',
       'elv_ne_finish'=>'NE Elevation Finish',
       'elv_sw_finish'=>'SW Elevation Finish',
-      'elv_se_finish'=>'SE Elevation Finish'
+      'elv_se_finish'=>'SE Elevation Finish',
+      'elv_center_finish'=>'Center Elevation Finish'
       );
 
   if (in_array($field,array_keys($names))) { return $names[$field]; }

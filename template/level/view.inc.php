@@ -7,7 +7,7 @@ if (INIT_LOADED != '1') { exit; }
   <?php if (Access::has('admin','admin',$level->uid) OR !$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn">Edit Level</a>
   <?php } ?>
-  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
+<!--  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a> -->
   <?php if (!$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
   <?php } ?>
@@ -21,7 +21,7 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <th>UNIT</th><td><?php echo scrub_out($level->unit); ?></td>
   <th>QUAD</th><td><?php echo scrub_out($level->quad); ?></td>
-  <th>L.U</th><td><?php echo scrub_out($level->lsg_unit); ?></td>
+  <th>L.U</th><td><?php echo scrub_out($level->lsg_unit->name); ?></td>
 </tr>
 <tr>
   <th colspan="2">NORTHING</th><td><?php echo scrub_out($level->northing); ?></td>

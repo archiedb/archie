@@ -18,8 +18,10 @@ if (INIT_LOADED != '1') { exit; }
             <ul class="dropdown-menu">
               <li><a href="<?php echo Config::get('web_path'); ?>/records/new">Record</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/level/new">Level</a></li>
+<!--
               <li><a href="<?php echo Config::get('web_path'); ?>/feature/new">Feature</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/krotovina/new">Krotovina</a></li>
+-->
             </ul>
           </li>
           <li class="divider-vertical"></li>
@@ -28,8 +30,10 @@ if (INIT_LOADED != '1') { exit; }
             <ul class="dropdown-menu">
               <li><a href="<?php echo Config::get('web_path'); ?>/records">Record</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/level">Level</a></li>
+<!--
               <li><a href="<?php echo Config::get('web_path'); ?>/feature">Feature</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/krotovina">Krotovina</a></li>
+-->
             </ul>
           <li class="divider-vertical"></li>
 <?php if (Access::has('admin','read')) { ?>
