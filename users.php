@@ -29,10 +29,10 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/users/edit'); 
       break;
     }
-
     // Only reset the password if they typed something in!
     if (strlen($_POST['password'])) { $user->set_password($_POST['password']); }
     // Refresh!
+    Event::add('success','User information updated'); 
     $user->refresh();  
     require_once \UI\template('/users/view'); 
   break;

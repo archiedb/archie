@@ -241,7 +241,7 @@ class User extends database_object {
 
     // Make sure that the username doesn't already exist
     $user = User::get_from_username($input['username']); 
-    if ($user->uid) {
+    if ($user->uid AND $user->uid != $input['uid']) {
       Error::add('username','Username already exists, duplicate usernames not allowed');
     }
 
