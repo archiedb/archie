@@ -21,11 +21,14 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <th>UNIT</th><td><?php echo scrub_out($level->unit); ?></td>
   <th>QUAD</th><td><?php echo scrub_out($level->quad->name); ?></td>
+</tr>
+<tr>
+  <th>LEVEL</th><td><?php echo scrub_out($level->record); ?></td>
   <th>L.U</th><td><?php echo scrub_out($level->lsg_unit->name); ?></td>
 </tr>
 <tr>
-  <th colspan="2">NORTHING</th><td><?php echo scrub_out($level->northing); ?></td>
-  <th colspan="2">EASTING</th><td><?php echo scrub_out($level->easting); ?></td>
+  <th>NORTHING</th><td><?php echo scrub_out($level->northing); ?></td>
+  <th>EASTING</th><td><?php echo scrub_out($level->easting); ?></td>
 </tr>
 </table>
 <h5>Elevations<h5>
