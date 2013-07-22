@@ -48,8 +48,6 @@ class content extends database_object {
 
     switch ($type) { 
       case 'media':
-        $table_name = 'media';
-      break;
       case '3dmodel':
         $table_name = 'media';
       break;
@@ -105,10 +103,11 @@ class content extends database_object {
     $this->extension  = $info['extension']; 
     $this->filename   = Config::get('data_root') . '/' . $row['data'];
     $this->thumbnail  = Config::get('data_root') . '/' . $row['data'] . '.thumb';
-    $this->mime       = $row['type'];
+    $this->mime       = $row['mime'];
     $this->parentuid  = $row['record'];
     $this->notes      = $row['notes']; 
     $this->user       = $row['user']; 
+    $this->record_type = $row['type'];
 
 		return $retval; 
 
@@ -264,9 +263,21 @@ class content extends database_object {
   } // thumbnail
 
 	// This writes out the specified data 
-	public static function write($uid,$type,$data='',$mime_type='',$options='') { 
+	public static function write($uid,$type,$data='',$mime_type='',$options='',$record_type='') { 
 		
-		$record = new Record($uid); 
+    switch ($record_type) { 
+      case 'level':
+        $record = new Level($uid);
+				$extension = self::get_extension($mime_type); 
+        $filename = self::generate_filename($record->site . '-level-' . $record->record,$extension);
+      break;
+      case 'record':
+      default:
+    		$record = new Record($uid); 
+				$extension = self::get_extension($mime_type); 
+				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
+      break;
+    }
 
 		// First we need to generate a filename /SITE/YYYY/RECORD-MMDDHHMMSS
 		switch ($type) { 
@@ -291,9 +302,7 @@ class content extends database_object {
         $results = self::write_media($uid,$data,$filename,$options); 
       break; 
 			case 'image': 
-				$extension = self::get_extension($mime_type); 
-				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
-				$results = self::write_image($uid,$data,$filename,$mime_type,$options); 
+				$results = self::write_image($uid,$data,$filename,$mime_type,$options,$record_type); 
       break;
 		} 
 
@@ -304,7 +313,7 @@ class content extends database_object {
 	/**
 	 * write a record image
 	 */
-	private static function write_image($uid,$data,$filename,$mime_type,$notes) {
+	private static function write_image($uid,$data,$filename,$mime_type,$notes,$type) {
 
 		// Put it on the filesystem
 		$handle = fopen($filename,'w'); 
@@ -323,10 +332,11 @@ class content extends database_object {
 
 		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
 		$uid = Dba::escape($uid); 
+    $type = Dba::escape($type);
 		$mime_type = Dba::escape($mime_type); 
     $notes = Dba::escape($notes); 
     $user = Dba::escape(\UI\sess::$user->uid); 
-		$sql = "INSERT INTO `image` (`data`,`record`,`type`,`user`,`notes`) VALUES ('$filename','$uid','$mime_type','$user','$notes')"; 
+		$sql = "INSERT INTO `image` (`data`,`record`,`mime`,`user`,`notes`,`type`) VALUES ('$filename','$uid','$mime_type','$user','$notes','$type')"; 
 		$db_results = Dba::write($sql); 
 
 		if (!$db_results) { 
@@ -645,7 +655,7 @@ class content extends database_object {
 	private static function generate_directory() { 
 
 		$dir = false; 
-		$directory = Config::get('data_root') . '/' . escapeshellcmd(Config::get('site')) . '/' . date("Y",time()); 
+		$directory = Config::get('data_root') . '/' . escapeshellcmd(Config::get('site')) . '/' . date('Y',time()) . '/' . date('m',time()); 
 	
 		if (!is_dir($directory)) { 
 			$dir = mkdir($directory,0775,true); 
@@ -715,6 +725,22 @@ class content extends database_object {
   } // record
 
   /**
+   * level
+   * Return the content for the specified level of specified type
+   */
+  public static function level($uid,$type) { 
+
+    switch ($type) { 
+      case 'image':
+        $retval = self::level_image($uid); 
+      break;
+    }
+
+    return $retval;
+
+  } // level
+
+  /**
    * record_3dmodel
    * This returns an array of the 3dmodels assoicated with the record
    */
@@ -765,7 +791,7 @@ class content extends database_object {
   private static function record_image($record_uid) { 
 
     $record_uid = Dba::escape($record_uid); 
-    $sql = "SELECT * FROM `image` WHERE `record`='$record_uid' ORDER BY `uid`"; 
+    $sql = "SELECT * FROM `image` WHERE `record`='$record_uid' AND `type`='record' ORDER BY `uid`"; 
     $db_results = Dba::read($sql); 
 
     $results = array(); 
@@ -780,10 +806,31 @@ class content extends database_object {
   } // record_image
 
   /**
+   * level_image
+   * Returns an array of the images assoicated with the level
+   */
+  private static function level_image($uid) { 
+
+    $uid = Dba::escape($uid);
+    $sql = "SELECT * FROM `image` WHERE `record`='$uid' AND `type`='level' ORDER BY `uid`";
+    $db_results = Dba::read($sql);
+
+    $results = array();
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('image',$row['uid'],$row);
+      $results[] = $row['uid'];
+    }
+
+    return $results;
+
+  } // level_image
+
+  /**
    * upload
    * Handles uploading of media (http upload)
    */
-  public static function upload($uid,$input,$source) { 
+  public static function upload($uid,$input,$source,$type) { 
 
     $retval = true; 
 
@@ -795,7 +842,7 @@ class content extends database_object {
       case 'gif':
       case 'tiff':
       case 'png':
-        $retval = self::upload_image($uid,$input,$source); 
+        $retval = self::upload_image($uid,$input,$source,$type); 
       break; 
       case 'stl':
       case 'ply':
@@ -814,7 +861,7 @@ class content extends database_object {
    * upload_record
    * This handles uploading of an image for a record
    */
-  private static function upload_image($uid,$post,$files) { 
+  private static function upload_image($uid,$post,$files,$type) { 
 
     if (!isset($files['media']['name'])) { 
       Error::add('upload','No file found, please select a file to upload');
@@ -846,7 +893,7 @@ class content extends database_object {
     $mime = 'image/' . $path_info['extension'];
 
     // Write the thumbnail and record image to the filesystem, and insert into database
-    $retval = Content::write($uid,'image',$image_data,$mime,$post['description']); 
+    $retval = Content::write($uid,'image',$image_data,$mime,$post['description'],$type); 
 
     Event::add('success','Image uploaded, thanks!','small'); 
 

@@ -115,7 +115,7 @@ class Import {
 
       if (!$row = Dba::fetch_assoc($db_results)) { 
         $warning_lines++; 
-        $missing .= ', ' . $line; 
+        $missing .= ', ' .  $station_index; 
         Event::record('import','FAIL: unable to find RN:' . $station_index . ' northing,easting and elevation not imported'); 
       }
       else { 

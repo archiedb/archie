@@ -33,6 +33,36 @@ switch (\UI\sess::location('action')) {
   case 'tools':
     require_once \UI\template('/manage/tools'); 
   break; 
+  case 'material':
+    // Do what with material?
+    switch (\UI\sess::location('objectid')) {
+      case 'add':
+
+      break;
+      case 'disable':
+      break;
+      case 'view':
+      default:
+        $materials = Material::get_all(); 
+        require_once \UI\template('/material/view'); 
+      break;
+    }
+  break;
+  case 'classification':
+    // Do what?
+    switch (\UI\sess::location('objectid')) { 
+      case 'add':
+      
+      break;
+      case 'disable':
+      break;
+      case 'view':
+      default:
+        $classifications = Classification::get_all(); 
+        require_once \UI\template('/classification/view'); 
+      break;
+    }
+  break; 
   default: 
   case 'status':
     // Include debug tools 

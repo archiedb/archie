@@ -6,6 +6,7 @@ class Material extends database_object {
 
 	public $uid; 
 	public $name; 
+  public $enabled; // Boolean
 
 	/**
 	 * Constructor

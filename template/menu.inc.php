@@ -13,9 +13,28 @@ if (INIT_LOADED != '1') { exit; }
       <a class="brand" href="<?php echo Config::get('web_path'); ?>/">Archie</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
-          <li><a href="<?php echo Config::get('web_path'); ?>/records/new">New</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">New <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="<?php echo Config::get('web_path'); ?>/records/new">Record</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/level/new">Level</a></li>
+<!--
+              <li><a href="<?php echo Config::get('web_path'); ?>/feature/new">Feature</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/krotovina/new">Krotovina</a></li>
+-->
+            </ul>
+          </li>
           <li class="divider-vertical"></li>
-          <li><a href="<?php echo Config::get('web_path'); ?>/records">View</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">View <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="<?php echo Config::get('web_path'); ?>/records">Record</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/level">Level</a></li>
+<!--
+              <li><a href="<?php echo Config::get('web_path'); ?>/feature">Feature</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/krotovina">Krotovina</a></li>
+-->
+            </ul>
           <li class="divider-vertical"></li>
 <?php if (Access::has('admin','read')) { ?>
           <li><a href="<?php echo Config::get('web_path'); ?>/reports">Reports</a></li>
@@ -24,6 +43,8 @@ if (INIT_LOADED != '1') { exit; }
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="<?php echo Config::get('web_path'); ?>/users/manage">Users</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/material">Materials</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/classification">Classifications</a></li>
               <li class="divider"></li>
               <li class="nav-header">System</li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/status">Status</a>

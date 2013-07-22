@@ -150,6 +150,9 @@ class User extends database_object {
     // Feed some info in
     $input['username'] = $this->username; 
 
+    // Clear the error before we validate
+    Error::clear(); 
+
     // Validate input
     if (!User::validate($input)) {
       Error::add('general','Invalid Field Values - please check input'); 
@@ -179,9 +182,12 @@ class User extends database_object {
 	 */
 	public static function create($input) { 
 
+    // Reset the error state before we start checking
+    Error::clear(); 
+
     // Validate input
     if (!User::validate($input)) {
-      Error::add('general','Invalid Field Values - please check input'); 
+      Error::add('general','adding new user'); 
       return false; 
     } 
    
@@ -231,6 +237,12 @@ class User extends database_object {
 
     if (!strlen($input['username'])) { 
       Error::add('username','Username is a required field'); 
+    }
+
+    // Make sure that the username doesn't already exist
+    $user = User::get_from_username($input['username']); 
+    if ($user->uid AND $user->uid != $input['uid']) {
+      Error::add('username','Username already exists, duplicate usernames not allowed');
     }
 
     if (Error::occurred()) { return false; }

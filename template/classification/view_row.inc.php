@@ -1,0 +1,17 @@
+<?php
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
+if (INIT_LOADED != '1') { exit; }
+$classification_count = Stats::classification_records('classification',$classification->uid); 
+?>
+<tr>
+  <td>
+    <?php echo scrub_out($classification->name); ?>
+  </td>
+  <td><?php echo scrub_out($classification_count['count']); ?></td>
+	<td><?php echo \UI\boolean_word('true'); ?></td>
+  <td>
+		<div class="btn-group">
+      <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/classification/disable/<?php echo scrub_out($classification->uid); ?>">Disable</a>
+		</div>
+  </td>
+</tr>

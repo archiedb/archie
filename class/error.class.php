@@ -215,12 +215,23 @@ class Error {
 	public static function dump() { 
 
 		$errors = print_r(Error::$errors,1); 
-		Error::$errors = array(); 
-		Error::$state = false; 
-
+		self::clear(); 
 		return $errors; 	
 
 	} // dump
+
+	/**
+	 * clear
+	 * Reset the error stat
+	 */
+	public static function clear() { 
+
+		Error::$errors = array(); 
+		Error::$state = false; 
+
+		return true; 
+
+	} // clear
 
 	/**
  	 * auto_init
