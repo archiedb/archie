@@ -652,6 +652,22 @@ class Database {
 
   } // update_0008
 
+  /**
+   * update_0009
+   * - Add record_type to media table
+   * - Add indexes where they make sense
+   */
+  private static function update_0009() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `media` ADD `record_type` varchar(255) NOT NULL AFTER `record`"; 
+    $retval = \Dba::write($sql) ? true : false; 
+
+    return $retval; 
+
+  } // update_0009
+
 } // \Update\Database class
 
 ?>

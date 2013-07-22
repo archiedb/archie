@@ -249,5 +249,20 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div>
 </form>
-<?php require_once \UI\template('/level/images'); ?>
+<ul class="nav nav-tabs" id="media_nav">
+  <li class="active"><a href="#picture" data-toggle="tab">Pictures</a></li>
+  <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>
+  <li><a href="#media" data-toggle="tab">Other Media</a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane active" id="picture">
+    <?php require_once \UI\template('/level/images'); ?>
+  </div> <!-- End Picture tab -->
+  <div class="tab-pane" id="3dmodel">
+    <?php require_once \UI\template('/level/3dmodel'); ?>
+  </div> <!-- End 3dModel Tab -->
+  <div class="tab-pane" id="media">
+    <?php require_once \UI\template('/level/media'); ?>
+  </div> <!-- End Media tab pane -->
+</div> <!-- End Container -->
 </fieldset>
