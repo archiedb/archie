@@ -267,9 +267,9 @@ class content extends database_object {
 		
     switch ($record_type) { 
       case 'level':
-        $record = new Level($uid);
+        $level = new Level($uid);
 				$extension = self::get_extension($mime_type); 
-        $filename = self::generate_filename($record->site . '-level-' . $record->record,$extension);
+        $filename = self::generate_filename($level->site . '-level-' . $level->record,$extension);
       break;
       case 'record':
       default:
@@ -836,7 +836,10 @@ class content extends database_object {
 
     // Figure out which one it is based on the file extension
     $info = pathinfo($source['media']['name']); 
-    
+
+    // Lowercase that stuff
+    $info['extension'] = strtolower($info['extension']); 
+
     switch ($info['extension']) { 
       case 'jpg':
       case 'gif':
@@ -874,9 +877,10 @@ class content extends database_object {
     } 
 
     $path_info = pathinfo($files['media']['name']); 
+    $path_info['extension'] = strtolower($path_info['extension']); 
 
     $allowed_types = array('png','jpg','tiff','gif'); 
-    if (!in_array(strtolower($path_info['extension']),$allowed_types)) { 
+    if (!in_array($path_info['extension'],$allowed_types)) { 
       Error::add('upload','Invalid file type, only png,jpg,tiff and gif are allowed'); 
       return false; 
     }
