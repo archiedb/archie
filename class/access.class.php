@@ -7,7 +7,7 @@
  */
 class Access { 
 
-  private static $types = array('user','record','admin','media'); 
+  private static $types = array('user','record','admin','media','level','feature','krotovina','site'); 
   private static $actions = array('write','read','delete','admin','download'); 
   private static $levels = array('0'=>'User','50'=>'Manager','100'=>'Admin'); 
 
@@ -87,6 +87,53 @@ class Access {
     return false; 
 
   } // check_media
+
+  /**
+   * check_level
+   * Make sure they are allowed to edit the level
+   */
+  private static function check_level($action,$uid) { 
+
+      switch ($action) { 
+        case 'read':
+          return true; // You can always read?
+        break;
+        case 'write':
+          // Must be an open level
+          $level = new level($uid); 
+          if ($level->closed) { return false; }
+          else { return true; }
+        break;
+        case 'delete':
+          return false; // No
+        break;
+      } 
+
+      return false; 
+
+  } // check_level
+
+  /**
+   * check_site
+   * Return true/false based on action
+   */
+  private static function check_site($action,$uid) {
+
+    switch ($action) { 
+      case 'read':
+        if (Site::user_level($uid,\UI\sess::$user->uid) == 5) { return true; }
+      break;
+      case 'write':
+        if (Site::user_level($uid,\UI\sess::$user->uid) == 50) { return true; }
+      break;
+      case 'delete':
+        return false; // Admins only!
+      break;
+    }
+
+    return false; 
+
+  } // check_site
 
   /**
    * get_levels
