@@ -6,6 +6,7 @@ Contents:
 
   1. License
   2. Contact Info
+  3. Dependencies
  
 1. License
 
@@ -18,6 +19,19 @@ Contents:
   Hate it?  Love it?  Let us know.  Let us know if you think of any
     more features, bugs, etc.
 
-  Public Source Repository: https://github.com/vollmerk/archie
+  Public Source Repository: https://github.com/archiedb/archie
+  Website: http://archiedb.com
   E-mail: contact@archiedb.com
+
+3. Dependencies
+
+	* Webserver that supports
+	  * rewrites
+	  * php
+	* MySQL
+	* PHP 5.1+ with 
+	  * PHP-GD
+	  * PHP-MySQL
+	* Cron or method to schedule regular script runs
+	* BASH shell for CLI scripts
 
