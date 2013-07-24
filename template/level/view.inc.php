@@ -13,6 +13,7 @@ if (INIT_LOADED != '1') { exit; }
   <?php } ?>
 </p>
 <h3><?php echo $level->site . '-' . $level->record; ?>
+  <?php if ($level->closed) { ?><span class="label label-important">CLOSED</span><?php } ?>
   <small>Entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>
 </h3>
 <?php Event::display(); ?>
