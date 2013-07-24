@@ -46,7 +46,7 @@ class Record extends database_object {
 		$this->lsg_unit	= new lsgunit($this->lsg_unit); 
 		$this->quad = new quad($this->quad); 
     $this->site = new site($this->site);
-		$this->inventory_id = $this->site . '.' . date('Y',$this->created) . '-' . $this->catalog_id;
+		$this->inventory_id = $this->site->name . '.' . date('Y',$this->created) . '-' . $this->catalog_id;
 		$this->user_id = $this->user; 
 		$this->user = new User($this->user); 
 
@@ -474,7 +474,7 @@ class Record extends database_object {
 			case 'csv': 
 				echo "site,catalog id,unit,level,litho unit,station index,xrf matrix index,weight,height,width,thickness,quantity,material,classification,quad,feature,notes,created\n"; 
 				foreach ($results as $record) { 
-					$site = Config::get('site'); 
+					$site = $record->site->name; 
 					$record->notes = str_replace(array("\r\n", "\n", "\r"),' ',$record->notes); 
 					echo "$site," . $record->catalog_id . "," . $record->unit . "," . $record->level . "," . lsgunit::$values[$record->lsg_unit] . "," . 
 						$record->station_index . "," . $record->xrf_matrix_index . "," . $record->weight . "," . $record->height . "," . 

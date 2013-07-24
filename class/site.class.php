@@ -10,7 +10,7 @@ class Site extends database_object {
 	// Constructor takes a uid
 	public function __construct($uid='') { 
 
-		if (!is_numeric($uid)) { return false; } 
+		//if (!is_numeric($uid)) { return false; } 
 
     //FIXME: UID is the site name until we migrate
     // Hack it in until we have a database
@@ -49,6 +49,23 @@ class Site extends database_object {
     return true; 
 
   } //build_cache
+
+  /**
+   * get_from_name
+   * Take a sitename and return the object
+   */
+  public static function get_from_name($name) { 
+
+    $name = Dba::escape($name); 
+
+    $sql = "SELECT `uid` FROM `site` WHERE `name`='$name'";
+    //$db_results = Dba::read($sql); 
+
+    //$row = Dba::fetch_assoc($db_results);
+    $row['uid'] = 1;
+    return $row['uid'];
+
+  } // get_from_name
 
 	/**
 	 * refresh

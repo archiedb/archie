@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<fieldset><legend>Edit Record - <?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></legend>
+<fieldset><legend>Edit Record - <?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></legend>
 <form class="form-horizontal" id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/update">
 <div class="control-group span4<?php Error::display_class('unit'); ?>">
   <label class="control-label" for="inputUnit">Unit</label>

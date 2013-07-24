@@ -111,7 +111,7 @@ switch (\UI\sess::location('action')) {
     $view->set_type('record'); 
     $view->set_filter($_POST['field'],$_POST['value']); 
     $records = $view->run(); 
-    require_once \UI\template('/show_records'); 
+    require_once \UI\template('/records/show'); 
   break;
   case 'sort':
     $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'station_index';
@@ -121,14 +121,14 @@ switch (\UI\sess::location('action')) {
     $view->set_sort($field,$order); 
     $view->set_start(0); 
     $records = $view->run(); 
-    require_once \UI\template('/show_records'); 
+    require_once \UI\template('/records/show'); 
   break; 
   case 'offset': 
     $view = new View(); 
     $view->set_type('record'); 
     $view->set_start(\UI\sess::location('objectid')); 
     $records= $view->run(); 
-    require_once \UI\template('/show_records'); 
+    require_once \UI\template('/records/show'); 
   break;
   default:
     $view = new View(); 
@@ -136,7 +136,7 @@ switch (\UI\sess::location('action')) {
     $view->set_type('record'); 
     $view->set_sort('station_index','ASC');
     $records = $view->run(); 
-    require_once \UI\template('/show_records');
+    require_once \UI\template('/records/show');
   break; 
 } // end switch
 ?>

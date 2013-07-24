@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <img class="img-rounded" src="<?php echo Config::get('web_path'); ?>/images/title.jpg" />
 <div class="page-header">
-  <h3>Hello <?php echo \UI\sess::$user->name; ?>, you are currently working on <?php echo Config::get('site'); ?></h3>
+  <h3>Hello <?php echo \UI\sess::$user->name; ?>, you are currently working on <?php echo scrub_out(\UI\sess::$user->site->name); ?></h3>
 </div>
 <table class="table table-bordered table-white">
 <thead>
