@@ -664,6 +664,15 @@ class Database {
     $sql = "ALTER TABLE `media` ADD `record_type` varchar(255) NOT NULL AFTER `record`"; 
     $retval = \Dba::write($sql) ? true : false; 
 
+    $sql = "CREATE TABLE `site` (" . 
+          "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
+          "`name` varchar(255) CHARACTER SET utf8 NOT NULL," . 
+          "`description` varchar(5000)," . 
+          "PRIMARY KEY (`uid`)) " . 
+          "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+
     return $retval; 
 
   } // update_0009
