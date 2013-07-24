@@ -294,12 +294,22 @@ class Report {
    * csv_site
    * Create a csv for the specified site's records
    */
-  private function csv_site($site) { 
+  private function csv_siterecord($site) { 
 
     $data = ''; 
 
-    $site = Dba::escape($site);
-    $sql = "SELECT `record`.`uid` FROM `record` WHERE `site`='$site'";
+    // If they passed the UID
+    if (is_numeric($site)) { $site = new site($site); }
+    // Else assume they must have passed the name
+    else { 
+      $site = Site::get_from_name($site);
+    }
+
+    // If we still can't find the site, run away
+    if (!$site->uid) { return false; }
+
+    $site_uid = Dba::escape($site->uid);
+    $sql = "SELECT `record`.`uid` FROM `record` WHERE `site`='$site_uid'";
     $db_results = Dba::read($sql);
 
     while ($row = Dba::fetch_assoc($db_results)) {
@@ -316,7 +326,7 @@ class Report {
       $record = new Record($record_uid); 
       $record->notes = str_replace(array("\r\n", "\n", "\r"),' ',$record->notes);
 
-      $data .= "$site," . $record->catalog_id . "," . $record->unit . "," . $record->level . "," . $record->lsg_unit->name . "," .
+      $data .= $site->name . "," . $record->catalog_id . "," . $record->unit . "," . $record->level . "," . $record->lsg_unit->name . "," .
         $record->station_index . "," . $record->xrf_matrix_index . "," . $record->weight . "," . $record->height . "," .
         $record->width . "," . $record->thickness . "," . $record->quanity . "," . $record->material->name . "," .
         trim($record->classification->name) . "," . $record->quad->name . "," . $record->feature . ",\"" .
