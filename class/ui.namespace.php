@@ -134,6 +134,9 @@ class sess {
 
     self::$user = $user; 
 
+    // Hardcode the site FIXME
+    self::$user->site = new \site(1); 
+
     return true; 
 
   } // set user

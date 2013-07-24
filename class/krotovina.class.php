@@ -61,6 +61,23 @@ class Krotovina extends database_object {
 	} // refresh
 
   /**
+   * create
+   * Create a new krotovina entry
+   */
+  public static function create($input) { 
+
+    // Reset the error state
+    Error::clear(); 
+
+    // Check the input and make sure we're cool
+    if (!Krotovina::validate($input)) { 
+      Error::add('general','Invalid field values please check input'); 
+      return false;
+    }
+
+  } // create
+
+  /**
    * validate
    * Validates the 'input' we get for update/create operations
    */

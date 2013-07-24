@@ -4,7 +4,7 @@ class Record extends database_object {
 
 
   public $uid; // INTERNAL 
-  public $site; // 10IH70.2011 
+  public $site; // Site UID  
   public $catalog_id; // # of item unique to site
   public $inventory_id; // this is the built ID of the thingy from site + year + catalog id
   public $unit; 
@@ -45,6 +45,7 @@ class Record extends database_object {
 		$this->classification = new Classification($this->classification); 
 		$this->lsg_unit	= new lsgunit($this->lsg_unit); 
 		$this->quad = new quad($this->quad); 
+    $this->site = new site($this->site);
 		$this->inventory_id = $this->site . '.' . date('Y',$this->created) . '-' . $this->catalog_id;
 		$this->user_id = $this->user; 
 		$this->user = new User($this->user); 
@@ -105,6 +106,9 @@ class Record extends database_object {
     // Clear any previous errors before we do the validatation
     Error::clear(); 
 
+    // Set the site based on the session users current site
+    $input['site'] = \UI\sess::$user->site->uid;
+
 		// First verify the input to make sure
 		// all of the fields are within acceptable tolerences 
 		if (!Record::validate($input)) { 
@@ -138,7 +142,7 @@ class Record extends database_object {
 
 		// If no catalog ID is defined then we need to auto-inc it
 		if (!$input['catalog_id']) { 
-			$site = Dba::escape(Config::get('site')); 
+			$site = Dba::escape($input['site']); 
 			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`='$site' ORDER BY `catalog_id` DESC LIMIT 1"; 
 			$db_results = Dba::read($catalog_sql); 
 			$row = Dba::fetch_assoc($db_results); 	
@@ -163,6 +167,7 @@ class Record extends database_object {
 		} 
 
 		// Insert the new record
+    $site = Dba::escape(\UI\sess::$user->site->uid);
 		$unit = Dba::escape($input['unit']); 
 		$level = Dba::escape($input['level']); 
 		$lsg_unit = Dba::escape($input['lsg_unit']); 
@@ -285,6 +290,11 @@ class Record extends database_object {
 		if (preg_match("/[^A-Za-z]/",$input['unit'])) { 
 			Error::add('unit','UNIT must be A-Z'); 
 		} 
+
+    // Make sure this user is allowed to create records in this site (write)
+    if (!Access::has('site','write',$input['site'])) { 
+      Error::add('site','Insufficient site permission, unable to create record');
+    }
 
 		// Level numeric, most likely less then 50
 		if ((!is_numeric($input['level']) OR $input['level'] > 50) AND strlen($input['level'])) { 

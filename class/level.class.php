@@ -253,6 +253,11 @@ class Level extends database_object {
       Error::add('level','Level must be numeric');
     }
 
+    // User must have access to this site
+    if (!Access::has('site','write',$input['site'])) {
+      Error::add('site','Insufficient access to this site');
+    }
+
 		// Unit A-Z
 		if (preg_match("/[^A-Za-z]/",$input['unit'])) { 
 			Error::add('unit','UNIT must be A-Z'); 

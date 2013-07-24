@@ -25,7 +25,7 @@ switch (\UI\sess::location('action')) {
   break;
   case 'edit':
     $level = new Level(\UI\sess::location('objectid'));
-    if (!Access::has('admin','admin',$level->uid) AND $level->closed) {
+    if (!Access::has('level','write',$level->uid)) {
       require_once \UI\template('/level/view');
     }
     else {
@@ -72,6 +72,7 @@ switch (\UI\sess::location('action')) {
   case 'close':
     $level = new Level($_POST['uid']); 
     if ($level->close($_POST)) { 
+      Event::add('success','Level Closed'); 
       require_once \UI\template('/level/view'); 
     }
     else {
