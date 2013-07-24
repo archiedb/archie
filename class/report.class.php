@@ -237,7 +237,7 @@ class Report {
   /**
    * csv_site_stale
    */
-  public function csv_site_stale() { 
+  public function csv_siterecord_stale() { 
 
     $date = $this->last_report(); 
 
