@@ -104,7 +104,6 @@ class Level extends database_object {
     // what they should have
     if (!Level::validate($input)) { 
       Error::add('general','Invalid field values please check input');
-      Dba::write($unlock_sql);
       return false; 
     }
 
@@ -136,15 +135,11 @@ class Level extends database_object {
 
     // If it fails we need to unlock!
     if (!$db_results) { 
-      Dba::write($unlock_sql); 
       Error::add('general','Unable to insert level, DB error please contact administrator'); 
       return false;
     }
 
     $insert_id = Dba::insert_id();
-
-    // Release the table
-    Dba::write($unlock_sql); 
 
     $log_line = "$site,$record,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start," . 
           "$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three," . 
