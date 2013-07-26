@@ -221,6 +221,9 @@ class Record extends database_object {
 
     // Clear any previous errors before we do the validatation
     Error::clear(); 
+
+    // Set the site, they can't change this
+    $input['site'] = $this->site->uid;
   
     // First verify the input to make sure
     // all of the fields are within acceptable tolerences 
@@ -266,11 +269,13 @@ class Record extends database_object {
 			return false; 
 		} 
 
-		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
-		Event::record('UPDATE',$log_line); 
-
 		// Remove this object from the cache so the update shows properly
 		$this->refresh(); 
+
+    $site = $this->site->name; 
+
+		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
+		Event::record('UPDATE',$log_line); 
 
 		return true; 
 
@@ -313,7 +318,7 @@ class Record extends database_object {
 
 		// Make sure the station index is unique within this site, but only if specified
 		if (strlen($input['station_index'])) { 
-			$sql = "SELECT * FROM `record` WHERE `station_index`='" . Dba::escape($input['station_index']) . "' AND `site`='" . Dba::escape(Config::get('site')) . "'"; 
+			$sql = "SELECT * FROM `record` WHERE `station_index`='" . Dba::escape($input['station_index']) . "' AND `site`='" . Dba::escape($input['site']) . "'"; 
 			$db_results = Dba::read($sql); 
 			$row = Dba::fetch_assoc($db_results); 
 
@@ -459,9 +464,9 @@ class Record extends database_object {
 	 * Export
 	 * This exports all of the records
 	 */
-	public static function export($type) { 
+	public static function export($type,$site) { 
 
-		$site = Dba::escape(Config::get('site')); 
+		$site = Dba::escape($site); 
 		$sql = "SELECT * FROM `record` WHERE `site`='$site'"; 
 		$db_results = Dba::read($sql); 	
 
@@ -494,7 +499,7 @@ class Record extends database_object {
 	 */
 	public static function last_created() { 
 
-		$site = Dba::escape(Config::get('site')); 
+		$site = Dba::escape(\UI\sess::$user->site->uid); 
 	
 		$sql = "SELECT `uid` FROM `record` WHERE `site`='$site' ORDER BY `created` DESC LIMIT 1"; 
 		$db_results = Dba::read($sql); 

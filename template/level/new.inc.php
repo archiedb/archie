@@ -3,7 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <div class="page-header">
-<h4>New Level - <?php echo Config::get('site'); ?></h3>
+<h4>New Level - <?php echo scrub_out(\UI\sess::$user->site->name); ?></h3>
 </div>
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" id="new_level" method="post" action="<?php echo Config::get('web_path'); ?>/level/create">

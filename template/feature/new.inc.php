@@ -3,7 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <div class="page-header">
-<h4>New Feature - <?php echo Config::get('site'); ?></h3>
+<h4>New Feature - <?php echo scrub_out(\UI\sess::$user->site->name); ?></h3>
 </div>
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" id="new_feature" method="post" action="<?php echo Config::get('web_path'); ?>/feature/create">

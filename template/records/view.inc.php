@@ -15,7 +15,7 @@ if (INIT_LOADED != '1') { exit; }
 <table class="table table-hover table-bordered table-white">
 <tr>
   <th>UNIT</th><td><?php echo scrub_out($record->unit); ?></em></td>
-  <th>CATALOG ID</th><td><?php echo scrub_out($record->site . '-' . $record->catalog_id); ?></td>
+  <th>CATALOG ID</th><td><?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></td>
 </tr>
 <tr>
   <th>LEVEL</th><td><?php echo scrub_out($record->level); ?></td>

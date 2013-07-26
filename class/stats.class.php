@@ -28,7 +28,7 @@ class Stats {
       break;
     }
 
-    $site = Dba::escape(Config::get('site'));
+    $site = Dba::escape(\UI\sess::$user->site->uid);
     $sql = "SELECT COUNT(`uid`) AS `total` FROM `record` WHERE `site`='$site'" . $constraint_sql; 
     $db_results = Dba::read($sql); 
 
@@ -56,7 +56,7 @@ class Stats {
       break;
     } 
 
-    $site = Dba::escape(Config::get('site')); 
+    $site = Dba::escape(\UI\sess::$user->site->uid); 
     $sql = "SELECT COUNT(`uid`) AS `count`,`user` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `user` ORDER BY `count` DESC";
     $db_results = Dba::read($sql); 
 
@@ -97,7 +97,7 @@ class Stats {
         break;
     }
 
-    $site = Dba::escape(Config::get('site'));  
+    $site = Dba::escape(\UI\sess::$user->site->uid);  
     $sql = "SELECT COUNT(`uid`) AS `count`,`classification` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `classification` ORDER BY `count` DESC"; 
     $db_results = Dba::read($sql); 
   
@@ -137,7 +137,7 @@ class Stats {
       break;
     }
 
-    $site = Dba::escape(Config::get('site')); 
+    $site = Dba::escape(\UI\sess::$user->site->uid); 
     $sql = "SELECT COUNT(`uid`) AS `count`,`material` FROM `record` WHERE `site`='$site'" . $constraint_sql . " GROUP BY `material` ORDER BY `count` DESC"; 
     $db_results = Dba::read($sql); 
 

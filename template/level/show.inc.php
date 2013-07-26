@@ -17,7 +17,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
   </small>
   <h3>
-    Levels for site <?php echo Config::get('site'); ?>
+    Levels for site <?php echo scrub_out(\UI\sess::$user->site->name); ?>
   </h3>
 </div>
 <?php require \UI\template('/page_header'); ?>

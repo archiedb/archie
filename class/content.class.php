@@ -269,13 +269,13 @@ class content extends database_object {
       case 'level':
         $level = new Level($uid);
 				$extension = self::get_extension($mime_type); 
-        $filename = self::generate_filename($level->site . '-level-' . $level->record,$extension);
+        $filename = self::generate_filename($level->site->name . '-level-' . $level->record,$extension);
       break;
       case 'record':
       default:
     		$record = new Record($uid); 
 				$extension = self::get_extension($mime_type); 
-				$filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
+				$filename = self::generate_filename($record->site->name . '-' . $record->catalog_id,$extension); 
       break;
     }
 
@@ -283,22 +283,22 @@ class content extends database_object {
 		switch ($type) { 
 			case 'qrcode':
 				// If data is passed, use that as filename
-				$filename = strlen($data) ? $data : self::generate_filename($record->site . '-qrcode-' . $record->catalog_id,'png'); 
+				$filename = strlen($data) ? $data : self::generate_filename($record->site->name . '-qrcode-' . $record->catalog_id,'png'); 
 				$results = self::write_qrcode($uid,$filename,$data); 
 			break; 
 			case 'ticket': 
 				// If data is passed, use that as filename
-				$filename = strlen($data) ? $data : self::generate_filename($record->site . '-ticket-' . $record->catalog_id,'pdf');
+				$filename = strlen($data) ? $data : self::generate_filename($record->site->name . '-ticket-' . $record->catalog_id,'pdf');
 				$results = self::write_ticket($record,$filename,$data); 
 			break; 
       case '3dmodel':
         $extension = $mime_type;
-        $filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
+        $filename = self::generate_filename($record->site->name . '-' . $record->catalog_id,$extension); 
         $results = self::write_3dmodel($uid,$data,$filename,$options); 
       break;
       case 'media': 
         $extension = $mime_type; 
-        $filename = self::generate_filename($record->site . '-' . $record->catalog_id,$extension); 
+        $filename = self::generate_filename($record->site->name . '-' . $record->catalog_id,$extension); 
         $results = self::write_media($uid,$data,$filename,$options); 
       break; 
 			case 'image': 
@@ -399,7 +399,7 @@ class content extends database_object {
 		$pdf->Image($qrcode->filename,'0','0','25.4','25.4'); 
 		$pdf->SetFont('Courier','B'); 
 		$pdf->SetFontSize('8'); 
-		$pdf->Text('25','4','SITE:' . $record->site);
+		$pdf->Text('25','4','SITE:' . $record->site->name);
 		$pdf->Text('52','4','UNIT:' . $record->unit); 
 		$pdf->Text('25','8','LVL:' . $record->level);
 		$pdf->Text('52','8','QUAD:' . $record->quad->name); 
@@ -655,7 +655,7 @@ class content extends database_object {
 	private static function generate_directory() { 
 
 		$dir = false; 
-		$directory = Config::get('data_root') . '/' . escapeshellcmd(Config::get('site')) . '/' . date('Y',time()) . '/' . date('m',time()); 
+		$directory = Config::get('data_root') . '/' . escapeshellcmd(\UI\sess::$user->site->name) . '/' . date('Y',time()) . '/' . date('m',time()); 
 	
 		if (!is_dir($directory)) { 
 			$dir = mkdir($directory,0775,true); 

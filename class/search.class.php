@@ -67,7 +67,7 @@ class Search {
 		
 		// Only the catalog #
 		if (count($elements) == '1') { 
-			$site = Dba::escape(Config::get('site')); 
+			$site = Dba::escape(\UI\sess::$user->uid); 
 			$catalog_id = Dba::escape($elements['0']); 
 		} 
 		// They gave us both
@@ -93,7 +93,7 @@ class Search {
 
 		$field = Dba::escape($field); 
 		$value = Dba::escape($value); 
-		$site = Dba::escape(Config::get('site')); 
+		$site = Dba::escape(\UI\sess::$user->site->uid); 
 
 		$where_sql = "`$field` LIKE '%$value%' AND `site`='$site'"; 
 		

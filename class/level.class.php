@@ -47,6 +47,7 @@ class Level extends database_object {
     $this->user = new User($this->user);
     $this->quad = new Quad($this->quad);
     $this->lsg_unit = new Lsgunit($this->lsg_unit);
+    $this->site = new site($this->site);
 
 		return true; 
 
@@ -100,6 +101,9 @@ class Level extends database_object {
     // hardcode first excavator
     $input['excavator_one'] = \UI\sess::$user->uid;
 
+    // Site is determined by session
+    $input['site'] = \UI\sess::$user->site->uid;
+
     // Check the input and make sure we think they gave us 
     // what they should have
     if (!Level::validate($input)) { 
@@ -107,7 +111,7 @@ class Level extends database_object {
       return false; 
     }
 
-    $site     = Dba::escape(Config::get('site')); 
+    $site     = Dba::escape($input['site']); 
     $record   = Dba::escape($input['record']); 
     $unit     = Dba::escape($input['unit']); 
     $quad     = Dba::escape($input['quad']); 
@@ -161,6 +165,9 @@ class Level extends database_object {
 
     // Set closed variable for validation
     $input['closed'] = $this->closed;
+
+    // Site is unchangeable!
+    $input['site'] = $this->site->uid;
 
     if (!Level::validate($input)) { 
       Error::add('general','Invalid field values, please check input');
@@ -241,7 +248,8 @@ class Level extends database_object {
       $quad   = Dba::escape($input['quad']); 
       $unit   = Dba::escape($input['unit']); 
       $uid    = Dba::escape($input['uid']); 
-      $sql = "SELECT `level`.`uid` FROM `level` WHERE `record`='$record' AND `quad`='$quad' AND `unit`='$unit' AND `uid`<>'$uid'";
+      $site   = Dba::escape($intpu['site']); 
+      $sql = "SELECT `level`.`uid` FROM `level` WHERE `record`='$record' AND `quad`='$quad' AND `unit`='$unit' AND `site`='$site' AND `uid`<>'$uid'";
       $db_results = Dba::read($sql); 
       $row = Dba::fetch_assoc($db_results); 
       if ($row['uid']) { 
