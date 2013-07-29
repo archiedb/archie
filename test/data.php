@@ -9,67 +9,48 @@ class TestData {
   private function __construct() {}
 
   /**
-   * Return the data of $type and the valid or invalid
-   * data based on the second params
+   * record
+   * Return data of specified field, either valid or invalid
    */
-  public static function values($type,$valid,$option) { 
+  public static function record($field,$valid=true) { 
 
-    // Function names
-    $valid_str = $valid ? 'invalid' : 'valid';
-    $function = $type . '_' . $valid_str;
-
-    $methods = get_class_methods('TestData'); 
-    
-    $data = array(); 
-    
-    // If the function exists, call it
-    if (in_array($function,$methods)) { 
-      $data = TestData::{$function}($option); 
+    switch ($field) { 
+      case 'unit':
+        $value = $valid ? array('F') : array(null,'1'); 
+      break;
+      case 'level':
+        $value = $valid ? array(null,6) : array('A','51',-21);
+      break;
+      case 'lsg_unit':
+        $value = $valid ? array(null,5) : array('ZZZ','213',-21); 
+      break;
+      case 'station_index':
+        $value = $valid ? array(null,312) : array('ZZZ',-23);
+      break;
+      case 'weight':
+      case 'height':
+      case 'width':
+        $value = $valid ? array(null,111.111) : array('ZZZ',-111); 
+      break;
+      case 'easting':
+      case 'elevation':
+      case 'northing':
+        $value = $valid ? array(null,111.111) : array('ZZZ'); 
+      break;
+      case 'xrf_matrix_index':
+        $value = $valid ? array(null,111) : array('ZZZ'); 
+      break;
+      case 'quanity':
+        $value = $valid ? array(null,111) : array('ZZZ'); 
+      break;
+      case 'notes':
+        $value = $valid ? array(null,111) : array(); 
+      break;
     }
 
-    return $data; 
+    return $value;
 
-  } // populate
-
-  /**
-   * record_invalid
-   * Return invalid data, if option passed only
-   * that field should be invalid
-   */
-  private static function record_invalid($option) { 
-
-
-
-  } // record_invalid
-
-  /**
-   * record_valid
-   * Return all valid data!
-   */
-  private static function record_valid($option) { 
-
-    $input['unit'] = 'A'; 
-    $input['level'] = '49'; 
-    $input['lsg_unit'] = '49'; 
-    $input['station_index'] = '1'; 
-    $input['northing'] = '133.132';
-    $input['easting'] = '133.132';
-    $input['elevation'] = '134.321';
-    $input['xrf_matrix_index'] = '1541'; 
-    $input['weight'] = '123'; 
-    $input['width'] = '123'; 
-    $input['thickness'] = '123';
-    $input['quanity'] = '1'; 
-    $input['xrf_artifact_index'] = '1234'; 
-    $input['material'] = '10'; 
-    $input['classification'] = '11'; 
-    $input['notes'] = 'ZZZ';
-    $input['quad'] = '4'; 
-    $input['user'] = '6'; 
-    
-    return $input; 
-
-  } // record_valid
+  } // record
 
 } 
 
