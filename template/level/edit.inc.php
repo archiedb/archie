@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<fieldset><legend>Edit Level - <?php echo scrub_out($level->site . '-' . $level->record); ?></legend>
+<fieldset><legend>Edit Level - <?php echo scrub_out($level->site->name . '-' . $level->record); ?></legend>
 <form class="form-horizontal" id="update_level" method="post" action="<?php echo Config::get('web_path'); ?>/level/update">
 <div class="control-group span4<?php Error::display_class('unit'); ?>">
   <label class="control-label" for="inputUnit">Unit</label>

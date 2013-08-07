@@ -12,7 +12,7 @@ if (INIT_LOADED != '1') { exit; }
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
   <?php } ?>
 </p>
-<h3><?php echo $level->site . '-' . $level->record; ?>
+<h3><?php echo $level->site->name . '-' . $level->record; ?>
   <?php if ($level->closed) { ?><span class="label label-important">CLOSED</span><?php } ?>
   <small>Entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>
 </h3>
