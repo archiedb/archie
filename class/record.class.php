@@ -302,7 +302,7 @@ class Record extends database_object {
     }
 
 		// Level numeric, most likely less then 50
-		if ((!is_numeric($input['level']) OR $input['level'] > 50) AND strlen($input['level'])) { 
+		if ((!is_numeric($input['level']) OR $input['level'] > 50 OR $input['level'] < 0) AND strlen($input['level'])) { 
 			Error::add('level','Level must be numeric and less than 50'); 
 		} 
 
@@ -312,7 +312,7 @@ class Record extends database_object {
 		}
 
 		// Station Index must be numeric
-		if (!is_numeric($input['station_index']) AND strlen($input['station_index'])) { 
+		if ((!is_numeric($input['station_index']) OR $input['station_index'] <= 0) AND strlen($input['station_index'])) { 
 			Error::add('station_index','Station Index must be numeric'); 
 		} 
 
