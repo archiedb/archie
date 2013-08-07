@@ -16,8 +16,10 @@ foreach ($images as $uid) {
   <li class="span3">
     <div class="thumbnail">
       <p class="text-center">
+      <?php if ($level->image == $image->uid) { ?><span class="label label-success"><?php } ?>
       <a href="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid); ?>" target="_blank"><img src="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid);?>/thumb" alt="Image <?php echo $i; ?>" /></a><br />
         <?php echo scrub_out($image->notes); ?>
+      <?php if ($level->image == $image->uid) { ?></span><?php } ?>
       </p>
       <hr />
       <p class="text-center">
@@ -28,6 +30,7 @@ foreach ($images as $uid) {
       <?php if (Access::has('media','delete',$image->uid)) { ?>
         <a class="btn btn-danger btn-small" href="#confirm_delete_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Delete</a>
       <?php } ?>
+        <a class="btn btn-success btn-small" href="#confirm_primary_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Primary</a>
       <?php 
       if (Access::has('media','delete',$image->uid)) { 
         require \UI\template('/level/modal_delete_image'); 
@@ -35,6 +38,7 @@ foreach ($images as $uid) {
       if (Access::has('media','write',$image->uid)) { 
         require \UI\template('/level/modal_edit_image'); 
       } 
+      require \UI\template('/level/modal_primary_image'); 
       ?>
       <?php } ?>
       </p>

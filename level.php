@@ -44,6 +44,19 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/level/view');
     }
   break;
+  case 'image_primary':
+    $level = new Level($_POST['uid']); 
+    if (!Access::has('level','write',$level->uid)) { 
+      require_once \UI\template('/level/view'); 
+    }
+    if ($level->set_primary_image($_POST['image'])) { 
+      Event::add('success','Level Image Selected','small'); 
+    }
+    else {
+      Error::add('level_image','Unable to set level image'); 
+    }
+    require_once \UI\template('/level/edit'); 
+  break;
   case 'image_edit': 
     if (!Access::has('media','write',$_POST['uid'])) { break; }
     Content::update('image',$_POST['uid'],$_POST); 

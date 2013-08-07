@@ -18,13 +18,13 @@ a level is closed, it cannot be reopened.
   </div>
 </div>
 <div class="control-group span4 offset3">
-  <label class="control-label">Questions Answered</label>
+  <label class="control-label">Questions answered</label>
   <div class="controls">
     <?php echo \UI\boolean_word($level->questions_answered()); ?>
   </div>
 </div>
 <div class="control-group span4 offset3">
-  <label class="control-label">Level Picture Uploaded</label>
+  <label class="control-label">Level picture uploaded and selected</label>
   <div class="controls">
     <?php echo \UI\boolean_word($level->has_photo()); ?>
   </div>

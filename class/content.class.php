@@ -431,6 +431,21 @@ class content extends database_object {
 	} // write_ticket 
 
   /**
+   * write_level
+   * Generate a level report form 
+   */
+  private static function write_level(&$level,$filename,$update_record) { 
+
+    $pdf = new FPDF(); 
+    $pdf->AddPage('P','A4'); 
+
+    // Return the first image
+    $levelimage = new Content($level->uid,'image','level'); 
+
+
+  } // write_level
+
+  /**
    * write_media
    */
   private static function write_media($uid,$data,$filename,$description) { 

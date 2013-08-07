@@ -230,6 +230,32 @@ class Level extends database_object {
   } // update
 
   /**
+   * set_primary_image
+   * Defines which image is the 'level photo'
+   */
+  public function set_primary_image($image) { 
+
+    // Make sure it's an image that is assoicated with this record
+    $images = Content::level($this->uid,'image'); 
+
+    // Not in the current list of images
+    if (!in_array($image,$images)) { 
+      Error::add('Image','Selected Level image not currently assoicated with level'); 
+      return false; 
+    }
+
+    $image  = Dba::escape($image); 
+    $uid    = Dba::escape($this->uid); 
+    $sql = "UPDATE `level` SET `image`='$image' WHERE `uid`='$uid'"; 
+    $retval = Dba::write($sql);
+
+    $this->refresh(); 
+
+    return true; 
+
+  } // set_primary_image
+
+  /**
    * validate
    * Validates the 'input' we get for update/create operations
    */
@@ -402,6 +428,9 @@ class Level extends database_object {
     $images = Content::level($this->uid,'image');
 
     if (!count($images)) { return false; }
+    
+    // The primary image must be in the set of images returned, and exist :)
+    if (!in_array($this->image,$images)) { return false; }
 
     return true;   
 
