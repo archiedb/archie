@@ -217,7 +217,10 @@ class Database {
     $versions[] = array('version'=>'0007','description'=>$update_string); 
     $update_string = '- Add closed user and closed date to krotovina,level and feature.<br />';
     $versions[] = array('version'=>'0008','description'=>$update_string); 
-
+    $update_string = '- Add primary image option to level, krotovina and feature.<br />' . 
+                    '- Add site table.<br />' . 
+                    '- Add record type to media table.<br />';
+    $versions[] = array('version'=>'0009','description'=>$update_string); 
 
 
     return $versions; 
@@ -668,10 +671,26 @@ class Database {
           "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
           "`name` varchar(255) CHARACTER SET utf8 NOT NULL," . 
           "`description` varchar(5000)," . 
+          "`northing` varchar(1024)," .
+          "`easting` varchar(1024)," . 
+          "`elevation` varchar(1024)," .
+          "`principal_investigator` int(11) UNSIGNED NOT NULL," .
+          "`partners` varchar(5000)," . 
+          "`excavation_start` int(11) UNSIGNED NOT NULL," . 
+          "`excavation_end` int(11) UNSIGNED NOT NULL," . 
+          "`enabled` int(1) UNSIGNED NOT NULL," .
           "PRIMARY KEY (`uid`)) " . 
           "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"; 
     $retval = \Dba::write($sql) ? $retval : false; 
 
+    $sql = "ALTER TABLE `level` ADD `image` int(11) UNSIGNED NOT NULL AFTER `notes`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` ADD `image` int(11) UNSIGNED NOT NULL AFTER `updated`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `feature` ADD `image` int(11) UNSIGNED NOT NULL AFTER `updated`"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
 
     return $retval; 
 
