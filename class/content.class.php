@@ -19,7 +19,7 @@ class content extends database_object {
   public $user; 
   public $type; // Type of object, most likely an image for now
   public $source; // Raw data of the object
-  private $valid_types = array('image','qrcode','ticket','media','3dmodel'); 
+  private $valid_types = array('image','qrcode','ticket','media','3dmodel','level'); 
 
   public function __construct($uid='',$type) {
 
@@ -48,6 +48,8 @@ class content extends database_object {
 
     switch ($type) { 
       case 'media':
+      case 'ticket':
+      case 'level':
       case '3dmodel':
         $table_name = 'media';
       break;
@@ -160,6 +162,29 @@ class content extends database_object {
 		return true;  
 
 	} // load_ticket_data
+
+  /**
+   * load_level_data
+   * Loads up the level report pfd
+   */
+  private function load_level_data($uid) { 
+
+    $uid = Dba::escape($uid); 
+    $sql = "SELECT * FROM `media` WHERE `record`='$uid' AND `type`='level'";
+    $db_results = Dba::read($sql); 
+
+    $row = Dba::fetch_assoc($db_results); 
+
+    if (!isset($row['uid'])) { return false; }
+
+    $this->filename = Config::get('data_root') . '/' . $row['filename']; 
+    $this->uid  = $row['uid']; 
+    $this->parentuid = $row['record']; 
+    $this->mime = 'application/pfd';
+
+    return true; 
+
+  } // load_level_data
 
   /**
    * load_media_data
@@ -291,6 +316,11 @@ class content extends database_object {
 				$filename = strlen($data) ? $data : self::generate_filename($record->site->name . '-ticket-' . $record->catalog_id,'pdf');
 				$results = self::write_ticket($record,$filename,$data); 
 			break; 
+      case 'level': 
+        // If data is passed, use that as a filename
+        $filename = strlen($data) ? $data : self::generate_filename($level->site->name . '-level-' . $level->unit . '-' . $level->quad->name . '-' . $level->record,'pdf');
+        $results = self::write_level($level,$filename,$data); 
+      break;
       case '3dmodel':
         $extension = $mime_type;
         $filename = self::generate_filename($record->site->name . '-' . $record->catalog_id,$extension); 
@@ -439,9 +469,94 @@ class content extends database_object {
     $pdf = new FPDF(); 
     $pdf->AddPage('P','A4'); 
 
-    // Return the first image
-    $levelimage = new Content($level->uid,'image','level'); 
+    // Return the primary image
+    $levelimage = new Content($level->image,'image'); 
 
+    $ex_one = new User($level->excavator_one);
+    $ex_two = new User($level->excavator_two);
+    $ex_three = new User($level->excavator_three);
+    $ex_four  = new User($level->excavator_four);
+
+    $excavator_list = $ex_one->name . ', ' . $ex_two->name . ', ' . $ex_three->name . ', ' . $ex_four->name;
+    $excavator_list = rtrim($excavator_list,', '); 
+    $close_user = new User($level->closed_user);
+
+    # Metadata Information
+    $pdf->SetTitle('UNIT:' . $level->unit . ' QUAD:' . $level->quad->name . ' LEVEL:' . $level->record);
+    $pdf->SetSubject('EXCAVATION LEVEL FORM'); 
+    $pdf->SetKeywords(date('d-M-Y',$level->created) . ' ' . $level->quad->name . ' ' . $level->unit . ' ' . $level->record . ' ' . $level->site->name); 
+
+    # Primary Image
+    $pdf->Image($levelimage->filename,'3','17','125','115');
+    $pdf->SetFont('Courier');
+    $pdf->SetFontSize('10'); 
+    $pdf->Text('1','16','NW'); 
+    $pdf->Text('125','16','NE'); 
+    $pdf->Text('1','136','SW'); 
+    $pdf->Text('125','136','SE'); 
+
+    # Default font settings
+    $pdf->SetFont('Courier','B'); 
+		$pdf->SetFontSize('12'); 
+
+    # Header
+		$pdf->Text('5','5',$level->site->name . ' EXCAVATION LEVEL FORM');
+    $pdf->Text('5','9','OSU ARCHAEOLOGY FIELD SCHOOL'); 
+    $pdf->Line('80','0','80','12');
+    $pdf->Text('82','5','Date Started: ' . date('d-M-Y',$level->created) . ' (' . $level->user->name . ')'); 
+    $pdf->Text('82','9','Date Closed: ' . date('d-M-Y',$level->closed_date) . ' (' . $close_user->name . ')'); 
+    $pdf->Line('0','12','220','12');
+
+    # Right side information
+    $pdf->SetFontSize('14'); 
+    $pdf->Text('134','18','UNIT:' . $level->unit . ' QUAD:' . $level->quad->name . ' LEVEL:' . $level->record); 
+    $pdf->SetFontSize('12'); 
+    $pdf->Text('153','25','EXCAVATORS'); 
+    $pdf->Line('132','26','205','26'); 
+    $pdf->Text('132','30','1. ' . $ex_one->name); 
+    $pdf->Text('132','34','2. ' . $ex_two->name); 
+    $pdf->Text('132','38','3. ' . $ex_three->name); 
+    $pdf->Text('132','42','4. ' . $ex_four->name); 
+
+    # Right side elevations
+    $pdf->Text('153','49','ELEVATIONS'); 
+    $pdf->Line('132','50','205','50'); 
+    $pdf->Line('171','50','171','75'); 
+    $pdf->Line('138','50','138','75'); 
+    $pdf->Text('148','54','Start'); 
+    $pdf->Text('181','54','Finish'); 
+    $pdf->Line('132','55','205','55'); 
+    $pdf->Text('132','59','NW'); 
+    $pdf->Text('144','59',$level->elv_nw_start); 
+    $pdf->Text('179','59',$level->elv_nw_finish); 
+    $pdf->Line('132','60','205','60'); 
+    $pdf->Text('132','64','NE'); 
+    $pdf->Text('144','64',$level->elv_ne_start); 
+    $pdf->Text('179','64',$level->elv_ne_finish); 
+    $pdf->Line('132','65','205','65'); 
+    $pdf->Text('132','69','SW'); 
+    $pdf->Text('144','69',$level->elv_sw_start); 
+    $pdf->Text('179','69',$level->elv_sw_finish); 
+    $pdf->Line('132','70','205','70'); 
+    $pdf->Text('132','74','SE');
+    $pdf->Text('144','74',$level->elv_se_start); 
+    $pdf->Text('179','74',$level->elv_se_finish); 
+    $pdf->Line('132','75','205','75'); 
+
+    # Records (list)
+    $pdf->SetFontSize('13');
+    $pdf->Text('5','145','Records'); 
+    $pdf->Line('2','146','205','146'); 
+    
+    $pdf->Text('5','155','Krotovina'); 
+    $pdf->Line('2','156','205','156'); 
+
+    $pdf->Text('5','165','Features'); 
+    $pdf->Line('2','166','205','166');
+    
+
+    ob_end_clean(); 
+    $pdf->Output(); 
 
   } // write_level
 

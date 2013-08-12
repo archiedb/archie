@@ -30,6 +30,10 @@ class Level extends database_object {
   public $excavator_four;
   public $description;
   public $difference;
+  public $closed;
+  public $closed_date;
+  public $closed_user; 
+  public $image; // primary image for level
   public $notes;
 
 	// Constructor takes a uid

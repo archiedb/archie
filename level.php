@@ -44,6 +44,11 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/level/view');
     }
   break;
+  case 'report':
+    $level = new Level(\UI\sess::location('objectid'));
+    $report = new Content(\UI\sess::location('objectid'),'level'); 
+    Content::write(\UI\sess::location('objectid'),'level','','','','level'); 
+  break;
   case 'image_primary':
     $level = new Level($_POST['uid']); 
     if (!Access::has('level','write',$level->uid)) { 
