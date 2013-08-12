@@ -500,59 +500,110 @@ class content extends database_object {
 		$pdf->SetFontSize('12'); 
 
     # Header
-		$pdf->Text('5','5',$level->site->name . ' EXCAVATION LEVEL FORM');
-    $pdf->Text('5','9','OSU ARCHAEOLOGY FIELD SCHOOL'); 
-    $pdf->Line('80','0','80','12');
-    $pdf->Text('82','5','Date Started: ' . date('d-M-Y',$level->created) . ' (' . $level->user->name . ')'); 
-    $pdf->Text('82','9','Date Closed: ' . date('d-M-Y',$level->closed_date) . ' (' . $close_user->name . ')'); 
+		$pdf->Text('3','5',$level->site->name . ' EXCAVATION LEVEL FORM');
+    $pdf->Text('3','9','OSU ARCHAEOLOGY FIELD SCHOOL'); 
+    $pdf->Line('78','0','78','12');
+    $pdf->Text('80','5','Started: ' . date('d-M-Y',$level->created) . ' (' . $level->user->name . ')'); 
+    $pdf->Text('80','9','Closed: ' . date('d-M-Y',$level->closed_date) . ' (' . $close_user->name . ')'); 
     $pdf->Line('0','12','220','12');
+    $pdf->Line('198','0','198','12');
+    $pdf->Text('199','5','L.U.');
+    $pdf->Text('202','9',$level->lsg_unit->name);
 
     # Right side information
     $pdf->SetFontSize('14'); 
     $pdf->Text('134','18','UNIT:' . $level->unit . ' QUAD:' . $level->quad->name . ' LEVEL:' . $level->record); 
+    $pdf->SetFontSize('13'); 
+    $pdf->Text('153','24','EXCAVATORS'); 
     $pdf->SetFontSize('12'); 
-    $pdf->Text('153','25','EXCAVATORS'); 
-    $pdf->Line('132','26','205','26'); 
     $pdf->Text('132','30','1. ' . $ex_one->name); 
     $pdf->Text('132','34','2. ' . $ex_two->name); 
     $pdf->Text('132','38','3. ' . $ex_three->name); 
     $pdf->Text('132','42','4. ' . $ex_four->name); 
 
     # Right side elevations
-    $pdf->Text('153','49','ELEVATIONS'); 
-    $pdf->Line('132','50','205','50'); 
-    $pdf->Line('171','50','171','75'); 
-    $pdf->Line('138','50','138','75'); 
+    $pdf->SetFontSize('13');
+    $pdf->Text('153','48','ELEVATIONS'); 
+    $pdf->SetFontSize('12');
+    $pdf->Rect('131','50','74','40');
+    $pdf->Line('171','50','171','80'); 
+    $pdf->Line('138','50','138','80'); 
     $pdf->Text('148','54','Start'); 
     $pdf->Text('181','54','Finish'); 
-    $pdf->Line('132','55','205','55'); 
+    $pdf->Line('131','55','205','55'); 
     $pdf->Text('132','59','NW'); 
     $pdf->Text('144','59',$level->elv_nw_start); 
     $pdf->Text('179','59',$level->elv_nw_finish); 
-    $pdf->Line('132','60','205','60'); 
+    $pdf->Line('131','60','205','60'); 
     $pdf->Text('132','64','NE'); 
     $pdf->Text('144','64',$level->elv_ne_start); 
     $pdf->Text('179','64',$level->elv_ne_finish); 
-    $pdf->Line('132','65','205','65'); 
+    $pdf->Line('131','65','205','65'); 
     $pdf->Text('132','69','SW'); 
     $pdf->Text('144','69',$level->elv_sw_start); 
     $pdf->Text('179','69',$level->elv_sw_finish); 
-    $pdf->Line('132','70','205','70'); 
+    $pdf->Line('131','70','205','70'); 
     $pdf->Text('132','74','SE');
     $pdf->Text('144','74',$level->elv_se_start); 
     $pdf->Text('179','74',$level->elv_se_finish); 
-    $pdf->Line('132','75','205','75'); 
+    $pdf->Line('131','75','205','75'); 
+    $pdf->Text('132','79','CN');
+    $pdf->Text('144','79',$level->elv_center_start);
+    $pdf->Text('179','79',$level->elv_center_finish);
+    $pdf->Line('153','80','153','90');
+    $pdf->Line('131','80','205','80');
+    $pdf->Text('132','84','Northing');
+    $pdf->Text('155','84',$level->northing);
+    $pdf->Line('131','85','205','85');
+    $pdf->Text('132','89','Easting');
+    $pdf->Text('155','89',$level->easting);
+
+    # Long Answers
+    $pdf->Text('5','144','Describe: Sediment, Artifacts, Krotovina, Features'); 
+    $pdf->Line('2','145','205','145');
+    $pdf->SetFontSize('10');
+    $pdf->SetFont('Courier');
+    $pdf->SetX('0');
+    $pdf->SetY('146');
+    $pdf->Write('4',$level->description);
+
+    # Figure out how chatty they were and start from there
+    $start_y = $pdf->GetY();
+
+    $pdf->SetFontSize('12');
+    $pdf->SetFont('Courier','B');
+    $pdf->Text('5',$start_y+12,'Describe the differences and similaraities compared to the last level');
+    $pdf->Line('2',$start_y+13,'205',$start_y+13);
+    $pdf->SetFontSize('10');
+    $pdf->SetFont('Courier');
+    $pdf->SetX('0');
+    $pdf->SetY($start_y+14);
+    $pdf->Write('4',$level->difference);
+
+    # Figure out how chatty they were and start from there again
+    $start_y = $pdf->GetY();
+
+    $pdf->SetFontSize('12'); 
+    $pdf->SetFont('Courier','B');
+    $pdf->Text('5',$start_y+12,'Did you find anything interesting or significant?'); 
+    $pdf->Line('2',$start_y+13,'205',$start_y+13);
+    $pdf->SetFontSize('10');
+    $pdf->SetFont('Courier');
+    $pdf->SetX('0');
+    $pdf->SetY($start_y+14);
+    $pdf->Write('4',$level->notes);
+
 
     # Records (list)
     $pdf->SetFontSize('13');
-    $pdf->Text('5','145','Records'); 
-    $pdf->Line('2','146','205','146'); 
+    $pdf->Text('5','225','Records'); 
+    $pdf->Line('2','226','205','226'); 
     
-    $pdf->Text('5','155','Krotovina'); 
-    $pdf->Line('2','156','205','156'); 
+    $pdf->Text('5','235','Krotovina'); 
+    $pdf->Line('2','236','205','236'); 
 
-    $pdf->Text('5','165','Features'); 
-    $pdf->Line('2','166','205','166');
+    $pdf->Text('5','245','Features'); 
+    $pdf->Line('2','246','205','246');
     
 
     ob_end_clean(); 
