@@ -18,8 +18,8 @@ if (INIT_LOADED != '1') { exit; }
             <ul class="dropdown-menu">
               <li><a href="<?php echo Config::get('web_path'); ?>/records/new">Record</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/level/new">Level</a></li>
-              <li><a href="<?php echo Config::get('web_path'); ?>/feature/new">Feature</a></li>
 <!--
+              <li><a href="<?php echo Config::get('web_path'); ?>/feature/new">Feature</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/krotovina/new">Krotovina</a></li>
 -->
             </ul>
@@ -30,8 +30,8 @@ if (INIT_LOADED != '1') { exit; }
             <ul class="dropdown-menu">
               <li><a href="<?php echo Config::get('web_path'); ?>/records">Record</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/level">Level</a></li>
-              <li><a href="<?php echo Config::get('web_path'); ?>/feature">Feature</a></li>
 <!--
+              <li><a href="<?php echo Config::get('web_path'); ?>/feature">Feature</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/krotovina">Krotovina</a></li>
 -->
             </ul>
@@ -49,6 +49,9 @@ if (INIT_LOADED != '1') { exit; }
               <li class="nav-header">System</li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/status">Status</a>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/tools">Tools</a>
+<!--
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/sites">Sites</a>
+-->
             </ul>
           </li>
           <li class="divider-vertical"></li>
