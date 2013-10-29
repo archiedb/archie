@@ -277,8 +277,9 @@ class Report {
   private function csv($option='') { 
 
     switch ($this->type) { 
+      case 'siterecord':
       case 'site': 
-        $data = $this->csv_site($option); 
+        $data = $this->csv_siterecord($option); 
       break;
     }
 
@@ -302,7 +303,8 @@ class Report {
     if (is_numeric($site)) { $site = new site($site); }
     // Else assume they must have passed the name
     else { 
-      $site = Site::get_from_name($site);
+      $site_uid = Site::get_from_name($site);
+      $site = new Site($site_uid); 
     }
 
     // If we still can't find the site, run away
