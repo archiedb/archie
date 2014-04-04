@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <?php $record = Record::last_created(); ?>
   <h4>
-    <a href="<?php echo Config::get('web_path'); ?>/records/view/<?php echo scrub_out($record->uid); ?>">Last Record</a>
+    <a href="<?php echo Config::get('web_path'); ?>/records/view/<?php echo scrub_out($record->uid); ?>" class="btn btn-primary" >Last Record</a>
     <small>Created by <?php echo scrub_out($record->user->username); ?> on <?php echo scrub_out(date("d-M-y H:i:s",$record->created)); ?></small>
   </h4>
 <table class="table table-bordered">
