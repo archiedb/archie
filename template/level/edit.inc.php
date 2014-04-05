@@ -7,6 +7,8 @@ if (INIT_LOADED != '1') { exit; }
  <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>" class="btn btn-primary">View Level</a>
   <?php if (!$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
+  <?php } else { ?>
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
   <?php } ?>
 </p>
 <h3>Edit Level - <?php echo scrub_out($level->site . '-' . $level->record); ?></h3>

@@ -7,9 +7,11 @@ if (INIT_LOADED != '1') { exit; }
   <?php if (Access::has('admin','admin',$level->uid) OR !$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn">Edit Level</a>
   <?php } ?>
-<!--  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a> -->
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
   <?php if (!$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
+  <?php } else { ?>
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
   <?php } ?>
 </p>
 <h3><?php echo $level->site . '-' . $level->record; ?>
