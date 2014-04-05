@@ -593,18 +593,85 @@ class content extends database_object {
     $pdf->SetY($start_y+14);
     $pdf->Write('4',$level->notes);
 
+    $records = $level->records(); 
 
     # Records (list)
-    $pdf->SetFontSize('13');
-    $pdf->Text('5','225','Records'); 
-    $pdf->Line('2','226','205','226'); 
-    
+    while (count($records)) { 
+
+      $pdf->AddPage(); 
+      $pdf->SetFontSize('13');
+      $pdf->SetFont('Courier','B'); 
+      $pdf->Text(3,'6','Records'); 
+      $pdf->SetFontSize('10');
+
+      $row = 0;
+      $line_count = 0; 
+      $start_y = 20;
+      $record_count = count($records);
+
+      foreach ($records as $record_id) { 
+        # If we've reached the end, trim and reset
+        if ($line_count == 55) { 
+          $start_y = 20; 
+          $records = array_slice($records,55);
+          break; 
+        }
+
+        $line_count++;  
+        # First and 59th (2nd row) lines and we set the table
+        if ($line_count == 1) { 
+          $pdf->SetFont('Courier','B'); 
+          $pdf->Line(2,'10',202,'10'); 
+          $pdf->Text(5,14,'ID');
+          $pdf->Text(25,14,'RN');
+          $pdf->Text(44,14,'Material');
+          $pdf->Text(68,14,'Classification'); 
+          $pdf->Text(104,14,'Northing');
+          $pdf->Text(125,14,'Easting');
+          $pdf->Text(146,14,'Elevation');
+          $pdf->Text(169,14,'Entered By');
+          $pdf->Line(2,'16',202,'16');
+
+          # Itterate through the records
+          $pdf->SetFontSize('10');
+          $pdf->SetFont('Courier');
+
+          $line_end = ($record_count > 55) ? (55*5)+16 : ($record_count*5)+16;
+          $pdf->Line(2,'10',2,$line_end);
+          $pdf->Line(21,'10',21,$line_end); 
+          $pdf->Line(40,'10',40,$line_end);
+          $pdf->Line(66,'10',66,$line_end);
+          $pdf->Line(101,'10',101,$line_end);
+          $pdf->Line(123,10,123,$line_end);
+          $pdf->Line(144,10,144,$line_end);
+          $pdf->Line(167,10,167,$line_end);
+          $pdf->Line(202,10,202,$line_end);
+        } 
+
+        # Load and print record record
+        $record = new Record($record_id); 
+        $pdf->Text(3,$start_y,$record->uid);
+        $pdf->Text(22,$start_y,$record->station_index);
+        $pdf->Text(41,$start_y,$record->material->name); 
+        $pdf->Text(67,$start_y,$record->classification->name);
+        $pdf->Text(102,$start_y,$record->northing);
+        $pdf->Text(124,$start_y,$record->easting);
+        $pdf->Text(145,$start_y,$record->elevation);
+        $pdf->Text(168,$start_y,$record->user->username);
+        $pdf->Line(2,$start_y+1,202 ,$start_y+1);
+        $start_y += 5;
+
+      } // end foreach
+      if ($line_count < 55) { break; }
+
+    } // end while records
+/*    
     $pdf->Text('5','235','Krotovina'); 
     $pdf->Line('2','236','205','236'); 
 
     $pdf->Text('5','245','Features'); 
     $pdf->Line('2','246','205','246');
-    
+*/  
 
     ob_end_clean(); 
     $pdf->Output(); 

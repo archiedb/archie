@@ -97,4 +97,3 @@ if (INIT_LOADED != '1') { exit; }
 </table>
 <h5>Images</h5>
 <?php require_once \UI\template('/level/images'); ?>
-

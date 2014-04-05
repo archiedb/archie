@@ -441,6 +441,31 @@ class Level extends database_object {
   } // has_photo
 
   /**
+   * records
+   * Return an array of all of the records in this level
+   */
+  public function records() { 
+
+    $level  = Dba::escape($this->record); 
+    $quad   = Dba::escape($this->quad->uid);
+    $unit   = Dba::escape($this->unit);
+    $site   = Dba::escape($this->site->uid); 
+
+    $sql = "SELECT `record`.`uid` FROM `record` WHERE `record`.`level`='$level' AND `record`.`quad`='$quad' AND `record`.`unit`='$unit' " . 
+          " AND `record`.`site`='$site'"; 
+    $db_results = Dba::read($sql); 
+
+    $results = array(); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row['uid']; 
+    }
+
+    return $results; 
+
+  } // records
+
+  /**
    * close
    * Attempt to close the level
    */
