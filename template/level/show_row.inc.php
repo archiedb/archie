@@ -32,7 +32,7 @@ if (INIT_LOADED != '1') { exit; }
           <h3 id="myModalLabel">Confirm Delete Request</h3>
         </div>
         <div class="modal-body">
-          <p>Are you sure you want to delete <?php echo $level->site . '-' . $level->record; ?> level</p>
+          <p>Are you sure you want to delete <?php echo $level->site->name . '-' . $level->record; ?> level</p>
         </div>
         <div class="modal-footer">
           <form method="post" action="<?php echo Config::get('web_path'); ?>/level/delete">

@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<fieldset><legend>Close Level - <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>"><?php echo scrub_out($level->site . '-' . $level->record . '-' . $level->unit . '-' . $level->quad->name); ?></a></legend>
+<fieldset><legend>Close Level - <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>"><?php echo scrub_out($level->site->name . '-' . $level->record . '-' . $level->unit . '-' . $level->quad->name); ?></a></legend>
 <form class="form-horizontal" id="update_level" method="post" action="<?php echo Config::get('web_path'); ?>/level/close">
 <div class="control-group span10">
 Before closing a level, all of the below checks must be true and you must confirm that the listed items have been completed. Once 
