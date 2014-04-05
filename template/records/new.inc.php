@@ -75,7 +75,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('lsg_unit'); ?>">
-  <label class="control-label" for="inputLsgUnit">L. U.</label>
+  <label class="control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
   <div class="controls">
 	  <select name="lsg_unit">
       <?php foreach (lsgunit::$values as $key=>$name) {

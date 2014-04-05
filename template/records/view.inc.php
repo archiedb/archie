@@ -19,7 +19,7 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 <tr>
   <th>LEVEL</th><td><?php echo scrub_out($record->level); ?></td>
-  <th>L. U.</th><td><?php echo scrub_out($record->lsg_unit->name); ?></td>
+  <th><abbr title="Lithostratoigraphic Unit">L. U.</abbr></th><td><?php echo scrub_out($record->lsg_unit->name); ?></td>
 </tr>
 <tr>
   <th>QUANTITY</th><td><?php echo scrub_out($record->quanity); ?></td>

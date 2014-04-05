@@ -30,7 +30,7 @@ if (INIT_LOADED != '1') { exit; }
   	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/quad">Quad</a></th>
   	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/level">Level</a></th>
   	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/feature">Feature</a></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/lsg_unit">L.U.</a></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/lsg_unit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></a></th>
   	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/material">Material</a></th>
   	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/classification">Class.</a></th>
     <th>&nbsp;</th>
