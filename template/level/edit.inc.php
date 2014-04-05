@@ -3,9 +3,18 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
+<p class="pull-right">
+ <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>" class="btn btn-primary">View Level</a>
+  <?php if (!$level->closed) { ?>
+  <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
+  <?php } else { ?>
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
+  <?php } ?>
+</p>
+<h3>Edit Level - <?php echo scrub_out($level->site . '-' . $level->record); ?></h3>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<fieldset><legend>Edit Level - <?php echo scrub_out($level->site->name . '-' . $level->record); ?></legend>
+<fieldset>
 <form class="form-horizontal" id="update_level" method="post" action="<?php echo Config::get('web_path'); ?>/level/update">
 <div class="control-group span4<?php Error::display_class('unit'); ?>">
   <label class="control-label" for="inputUnit">Unit</label>

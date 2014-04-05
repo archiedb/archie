@@ -76,7 +76,7 @@ class View {
       'station_index',
       'thickness',
       'user',
-      'weigth',
+      'weight',
       'updated',
       'width',
       'xrf_matrix_index',

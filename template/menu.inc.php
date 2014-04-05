@@ -37,7 +37,7 @@ if (INIT_LOADED != '1') { exit; }
             </ul>
           <li class="divider-vertical"></li>
 <?php if (Access::has('admin','read')) { ?>
-          <li><a href="<?php echo Config::get('web_path'); ?>/reports">Reports</a></li>
+          <li><a href="<?php echo Config::get('web_path'); ?>/reports">Report</a></li>
           <li class="divider-vertical"></li>
           <li class="dropdown">
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
@@ -79,7 +79,7 @@ if (INIT_LOADED != '1') { exit; }
               </select>
               <?php $search_value = isset($_POST['value']) ? scrub_out($_POST['value']) : ''; ?>
               <input name="value" class="span2" type="text" placeholder="Value..." value="<?php echo $search_value; ?>">
-              <button type="submit" class="btn">Search</button>
+              <button type="submit" class="btn btn-inverse"><i class="icon-search icon-white"></i></button>
             </form>
           </div><!--/.nav-collapse -->
         </div>
