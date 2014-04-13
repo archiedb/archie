@@ -427,7 +427,7 @@ class content extends database_object {
 		// We need the QRcode filename here
 		$qrcode = new Content($record->uid,'qrcode'); 
 		$pdf->Image($qrcode->filename,'0','0','25.4','25.4'); 
-		$pdf->SetFont('Courier','B'); 
+		$pdf->SetFont('Times','B'); 
 		$pdf->SetFontSize('8'); 
 		$pdf->Text('25','4','SITE:' . $record->site->name);
 		$pdf->Text('52','4','UNIT:' . $record->unit); 
@@ -466,8 +466,16 @@ class content extends database_object {
    */
   private static function write_level(&$level,$filename,$update_record) { 
 
+    # We have to calc the length here
+    $records = $level->records(); 
+    $total_pages = ceil(3 + (count($records)/55)); 
+    $current_page = 1; 
+
     $pdf = new FPDF(); 
     $pdf->AddPage('P','A4'); 
+    $pdf->SetFont('Times');
+    $pdf->SetFontSize('10'); 
+    $pdf->Text('200','295',$current_page. '/' . $total_pages); 
 
     // Return the primary image
     $levelimage = new Content($level->image,'image'); 
@@ -486,96 +494,119 @@ class content extends database_object {
     $pdf->SetSubject('EXCAVATION LEVEL FORM'); 
     $pdf->SetKeywords(date('d-M-Y',$level->created) . ' ' . $level->quad->name . ' ' . $level->unit . ' ' . $level->record . ' ' . $level->site->name); 
 
-    # Primary Image
-    $pdf->Image($levelimage->filename,'3','17','125','115');
-    $pdf->SetFont('Courier');
-    $pdf->SetFontSize('10'); 
-    $pdf->Text('1','16','NW'); 
-    $pdf->Text('125','16','NE'); 
-    $pdf->Text('1','136','SW'); 
-    $pdf->Text('125','136','SE'); 
-
+    
     # Default font settings
-    $pdf->SetFont('Courier','B'); 
+    $pdf->SetFont('Times','B'); 
 		$pdf->SetFontSize('12'); 
 
     # Header
 		$pdf->Text('3','5',$level->site->name . ' EXCAVATION LEVEL FORM');
     $pdf->Text('3','9','OSU ARCHAEOLOGY FIELD SCHOOL'); 
-    $pdf->Line('78','0','78','12');
-    $pdf->Text('80','5','Started: ' . date('d-M-Y',$level->created) . ' (' . $level->user->name . ')'); 
-    $pdf->Text('80','9','Closed: ' . date('d-M-Y',$level->closed_date) . ' (' . $close_user->name . ')'); 
+    $pdf->Text('169','5','Started: ' . date('d-M-Y',$level->created)); 
+    $pdf->Text('169','9','Closed: ' . date('d-M-Y',$level->closed_date)); 
     $pdf->Line('0','12','220','12');
-    $pdf->Line('198','0','198','12');
-    $pdf->Text('199','5','L.U.');
-    $pdf->Text('202','9',$level->lsg_unit->name);
 
-    # Right side information
-    $pdf->SetFontSize('14'); 
-    $pdf->Text('134','18','UNIT:' . $level->unit . ' QUAD:' . $level->quad->name . ' LEVEL:' . $level->record); 
-    $pdf->SetFontSize('13'); 
-    $pdf->Text('153','24','EXCAVATORS'); 
-    $pdf->SetFontSize('12'); 
-    $pdf->Text('132','30','1. ' . $ex_one->name); 
-    $pdf->Text('132','34','2. ' . $ex_two->name); 
-    $pdf->Text('132','38','3. ' . $ex_three->name); 
-    $pdf->Text('132','42','4. ' . $ex_four->name); 
+    # Left side information
+    $pdf->SetFontSize('15'); 
+    $pdf->Text('8','20','INFORMATION');
+    $pdf->SetFontSize('12');
+    $pdf->Rect('5','22','94','49');
+    $pdf->Line('41','22','41','71');
+    $pdf->Text('7','27','UNIT'); 
+    $pdf->Text('43','27',$level->unit);
+    $pdf->Line('5','29','99','29');
+    $pdf->Text('7','33','QUAD');
+    $pdf->Text('43','33',$level->quad->name); 
+    $pdf->Line('5','35','99','35');
+    $pdf->Text('7','39',"LEVEL");
+    $pdf->Text('43','39',$level->record);
+    $pdf->Line('5','41','99','41');
+    $pdf->Text('7','45','L.U.');
+    $pdf->Text('43','45',$level->lsg_unit->name);
+    $pdf->Line('5','47','99','47');
+    $pdf->Text('7','51','EXCAVATOR #1'); 
+    $pdf->Text('43','51',$ex_one->name); 
+    $pdf->Line('5','53','99','53');
+    $pdf->Text('7','57','EXCAVATOR #2');
+    $pdf->Text('43','57',$ex_two->name);
+    $pdf->Line('5','59','99','59'); 
+    $pdf->Text('7','63','EXCAVATOR #3');
+    $pdf->Text('43','63',$ex_three->name);
+    $pdf->Line('5','65','99','65'); 
+    $pdf->Text('7','69','EXCAVATOR #4');
+    $pdf->Text('43','69',$ex_four->name); 
 
     # Right side elevations
-    $pdf->SetFontSize('13');
-    $pdf->Text('153','48','ELEVATIONS'); 
+    $pdf->SetFontSize('15');
+    $pdf->Text('113','20','ELEVATIONS'); 
     $pdf->SetFontSize('12');
-    $pdf->Rect('131','50','74','40');
-    $pdf->Line('171','50','171','80'); 
-    $pdf->Line('138','50','138','80'); 
-    $pdf->Text('148','54','Start'); 
-    $pdf->Text('181','54','Finish'); 
-    $pdf->Line('131','55','205','55'); 
-    $pdf->Text('132','59','NW'); 
-    $pdf->Text('144','59',$level->elv_nw_start); 
-    $pdf->Text('179','59',$level->elv_nw_finish); 
-    $pdf->Line('131','60','205','60'); 
-    $pdf->Text('132','64','NE'); 
-    $pdf->Text('144','64',$level->elv_ne_start); 
-    $pdf->Text('179','64',$level->elv_ne_finish); 
-    $pdf->Line('131','65','205','65'); 
-    $pdf->Text('132','69','SW'); 
-    $pdf->Text('144','69',$level->elv_sw_start); 
-    $pdf->Text('179','69',$level->elv_sw_finish); 
-    $pdf->Line('131','70','205','70'); 
-    $pdf->Text('132','74','SE');
-    $pdf->Text('144','74',$level->elv_se_start); 
-    $pdf->Text('179','74',$level->elv_se_finish); 
-    $pdf->Line('131','75','205','75'); 
-    $pdf->Text('132','79','CN');
-    $pdf->Text('144','79',$level->elv_center_start);
-    $pdf->Text('179','79',$level->elv_center_finish);
-    $pdf->Line('153','80','153','90');
-    $pdf->Line('131','80','205','80');
-    $pdf->Text('132','84','Northing');
-    $pdf->Text('155','84',$level->northing);
-    $pdf->Line('131','85','205','85');
-    $pdf->Text('132','89','Easting');
-    $pdf->Text('155','89',$level->easting);
+    $pdf->Rect('111','22','94','36');
+    $pdf->Line('123','22','123','58'); 
+    $pdf->Line('166','22','166','58'); 
+    $pdf->Text('138','26','Start'); 
+    $pdf->Text('181','26','Finish'); 
+    $pdf->Line('111','28','205','28'); 
+    $pdf->Text('113','32','NW'); 
+    $pdf->Text('136','32',$level->elv_nw_start); 
+    $pdf->Text('179','32',$level->elv_nw_finish); 
+    $pdf->Line('111','34','205','34'); 
+    $pdf->Text('113','38','NE'); 
+    $pdf->Text('136','38',$level->elv_ne_start); 
+    $pdf->Text('179','38',$level->elv_ne_finish); 
+    $pdf->Line('111','40','205','40'); 
+    $pdf->Text('113','44','SW'); 
+    $pdf->Text('136','44',$level->elv_sw_start); 
+    $pdf->Text('179','44',$level->elv_sw_finish); 
+    $pdf->Line('111','46','205','46'); 
+    $pdf->Text('113','50','SE');
+    $pdf->Text('136','50',$level->elv_se_start); 
+    $pdf->Text('179','50',$level->elv_se_finish); 
+    $pdf->Line('111','52','205','52'); 
+    $pdf->Text('113','56','CN');
+    $pdf->Text('136','56',$level->elv_center_start);
+    $pdf->Text('179','56',$level->elv_center_finish);
+
+    # Primary Image
+    $pdf->Image($levelimage->filename,'10','87','190','155');
+
+    # Footer
+    $pdf->SetFontSize('24');
+    $pdf->Text('52','270','Unit ' . $level->unit . ' ' . $level->quad->name . ' - Level ' . $level->record . ' - LU ' . $level->lsg_unit->name); 
+
+    # Page 2, grids
+    $pdf->AddPage(); 
+    $pdf->SetFontSize('10');
+    $pdf->SetFont('Times');
+    $current_page++; 
+    $pdf->Text('200','295',$current_page. '/' . $total_pages); 
+
+    # Page 3, questions
+    $pdf->AddPage(); 
+    $pdf->SetFontSize('10');
+    $pdf->SetFont('Times');
+    $current_page++; 
+    $pdf->Text('200','295',$current_page. '/' . $total_pages); 
 
     # Long Answers
-    $pdf->Text('5','144','Describe: Sediment, Artifacts, Krotovina, Features'); 
-    $pdf->Line('2','145','205','145');
-    $pdf->SetFontSize('10');
-    $pdf->SetFont('Courier');
+    $pdf->SetFontSize('13');
+    $pdf->SetFont('Times','B');
+    $pdf->Text('5','14','Describe: Sediment, Artifacts, Krotovina, Features'); 
+    $pdf->Line('2','15','205','15');
+    $pdf->SetFontSize('12');
+    $pdf->SetFont('Times');
     $pdf->SetX('0');
-    $pdf->SetY('146');
+    $pdf->SetY('16');
     $pdf->Write('4',$level->description);
 
     # Figure out how chatty they were and start from there
     $start_y = $pdf->GetY();
 
-    $pdf->SetFontSize('12');
-    $pdf->SetFont('Courier','B');
+    $pdf->SetFontSize('13');
+    $pdf->SetFont('Times','B');
     $pdf->Text('5',$start_y+12,'Describe the differences and similaraities compared to the last level');
     $pdf->Line('2',$start_y+13,'205',$start_y+13);
-    $pdf->SetFontSize('10');
-    $pdf->SetFont('Courier');
+    $pdf->SetFontSize('12');
+    $pdf->SetFont('Times');
     $pdf->SetX('0');
     $pdf->SetY($start_y+14);
     $pdf->Write('4',$level->difference);
@@ -583,24 +614,26 @@ class content extends database_object {
     # Figure out how chatty they were and start from there again
     $start_y = $pdf->GetY();
 
-    $pdf->SetFontSize('12'); 
-    $pdf->SetFont('Courier','B');
+    $pdf->SetFontSize('13'); 
+    $pdf->SetFont('Times','B');
     $pdf->Text('5',$start_y+12,'Did you find anything interesting or significant?'); 
     $pdf->Line('2',$start_y+13,'205',$start_y+13);
-    $pdf->SetFontSize('10');
-    $pdf->SetFont('Courier');
+    $pdf->SetFontSize('12');
+    $pdf->SetFont('Times');
     $pdf->SetX('0');
     $pdf->SetY($start_y+14);
     $pdf->Write('4',$level->notes);
+    $pdf->SetFontSize('10');
 
-    $records = $level->records(); 
 
     # Records (list)
     while (count($records)) { 
 
       $pdf->AddPage(); 
+      $current_page++; 
+      $pdf->Text('200','295',$current_page. '/' . $total_pages); 
       $pdf->SetFontSize('13');
-      $pdf->SetFont('Courier','B'); 
+      $pdf->SetFont('Times','B'); 
       $pdf->Text(3,'6','Records'); 
       $pdf->SetFontSize('10');
 
@@ -620,9 +653,9 @@ class content extends database_object {
         $line_count++;  
         # First and 59th (2nd row) lines and we set the table
         if ($line_count == 1) { 
-          $pdf->SetFont('Courier','B'); 
+          $pdf->SetFont('Times','B'); 
           $pdf->Line(2,'10',202,'10'); 
-          $pdf->Text(5,14,'ID');
+          $pdf->Text(5,14,'Catalog');
           $pdf->Text(25,14,'RN');
           $pdf->Text(44,14,'Material');
           $pdf->Text(68,14,'Classification'); 
@@ -634,7 +667,7 @@ class content extends database_object {
 
           # Itterate through the records
           $pdf->SetFontSize('10');
-          $pdf->SetFont('Courier');
+          $pdf->SetFont('Times');
 
           $line_end = ($record_count > 55) ? (55*5)+16 : ($record_count*5)+16;
           $pdf->Line(2,'10',2,$line_end);
