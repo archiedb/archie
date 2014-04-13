@@ -833,12 +833,18 @@ class content extends database_object {
 	 */
 	private function delete_qrcode() { 
 
-		$results = unlink($this->filename); 
-		if (!$results) { 
-			Event::error('general','Error unable to remove QRCode'); 
-			return false; 
-		} 
+    if (file_exists($this->filename)) { 
+  		$results = unlink($this->filename); 
+  		if (!$results) { 
+  			Event::error('general','Error unable to remove QRCode'); 
+  			return false; 
+  		} 
+    } // if the file is even there
+    else {
+      Event::record('warning','QRCode file - ' . $this->filename . ' was not found when attempting to delete it, this may indicate a problem with your data');
+    }
 
+    // Do the deleting
 		$uid = Dba::escape($this->uid); 
 		$sql = "DELETE FROM `media` WHERE `uid`='$uid' AND `type`='qrcode'"; 
 		$db_results = Dba::write($sql); 
@@ -1321,7 +1327,13 @@ class content extends database_object {
 
 		while ($row = Dba::fetch_assoc($db_results)) {
 			// Overwrite the existing file, if it exists!
-			Content::write($row['uid'],'qrcode',$row['filename']);
+      $row['filename'] = file_exists($row['filename']) ? $row['filename'] : false;
+      // Delete the old entry if the file is no longer there
+      if (!$row['filename']) { 
+        $qrcode = new Content($row['uid'],'qrcode');
+        $qrcode->delete(); 
+      }
+  		Content::write($row['uid'],'qrcode',$row['filename']);
 		}
 
 		return true; 

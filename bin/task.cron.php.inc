@@ -7,6 +7,10 @@ $file_path = dirname(__FILE__);
 $prefix = realpath($file_path . "/../");
 require_once $prefix . '/class/init.php';
 
+// We need a user here so we know which site we're working on, FIXME
+// Use a reserved user name? 
+\UI\sess::set_user(User::get_from_username('cron')); 
+
 // Look for report requests, array of filenames!
 $requests = Cron::current_requests(); 
 
