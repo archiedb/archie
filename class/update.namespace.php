@@ -36,7 +36,7 @@ class Code {
     
     // Avoid asking more then once per page load
     if (!self::$git_version) { 
-      self::$git_version = file_get_contents('https://raw.github.com/vollmerk/archie/master/docs/BUILD');
+      self::$git_version = file_get_contents('https://raw.github.com/archiedb/archie/master/docs/BUILD');
     } 
     return self::$git_version;
 
@@ -167,7 +167,19 @@ class Database {
     */
   private static function post() { 
 
+    $sql = 'SHOW TABLES';
+    $db_results = Dba::read($sql); 
 
+    while ($table = Dba::fetch_assoc($db_results)) {
+      $tables .= "`$table`,";
+    }
+
+    $tables = rtrim($tables,","); 
+
+    $sql = "OPTIMIZE TABLE $tables";
+    $db_results = Dba::write(); 
+
+    return true; 
 
   } // post
 
