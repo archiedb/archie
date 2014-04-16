@@ -10,7 +10,7 @@ if (INIT_LOADED != '1') { exit; }
   <div class="modal-body">
     <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid);?>/thumb" /></p>
     <p class="text-center"><?php echo scrub_out($image->notes); ?></p>
-    <p>Are you sure you want to delete this image from <?php echo $record->site . '-' . $record->catalog_id; ?>? This operation can not be reversed.</p>
+    <p>Are you sure you want to delete this image from <?php echo $record->site->name . '-' . $record->catalog_id; ?>? This operation can not be reversed.</p>
   </div>
   <div class="modal-footer">
   <form method="post" action="<?php echo Config::get('web_path'); ?>/records/image_delete">
