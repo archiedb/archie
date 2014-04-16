@@ -37,9 +37,25 @@ switch (\UI\sess::location('action')) {
     // Do what with material?
     switch (\UI\sess::location('objectid')) {
       case 'add':
-
+        require_once \UI\template('/material/new');
+      break;
+      case 'create':
+        if (!Material::create($_POST['name'])) {
+          require_once \UI\template('/material/new');
+        } else {
+          $materials = Material::get_all(); 
+          require_once \UI\template('/material/view');
+        }
       break;
       case 'disable':
+        $material = new Material(\UI\sess::location('3'));
+        $material->disable();
+        header("Location:" . Config::get('web_path') . '/manage/material');
+      break;
+      case 'enable':
+        $material = new Material(\UI\sess::location('3')); 
+        $material->enable(); 
+        header("Location:" . Config::get('web_path') . '/manage/material');
       break;
       case 'view':
       default:

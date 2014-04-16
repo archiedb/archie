@@ -58,7 +58,10 @@ class Material extends database_object {
 		$this->__construct($this->uid); 
 	} 
 
-	// Check to see if this material has the specified classification
+  /**
+   * has_classification
+   * Return true if classification is assoicated with this material and enabled
+   */
 	public function has_classification($classification) { 
 
 		$material_id = Dba::escape($this->uid); 
@@ -72,7 +75,10 @@ class Material extends database_object {
 
 	} // has_classification
 
-	// Return the materials 
+  /**
+   * get_all
+   * Returns all of the materials
+   */
 	public static function get_all() { 
 
 		$sql = "SELECT * FROM `material`"; 
@@ -86,7 +92,10 @@ class Material extends database_object {
 
 	} // get_all
 
-	// ID from name
+  /**
+   * name_to_id
+   * Takes a material name and returns the UID
+   */
 	public static function name_to_id($name) { 
 
 		$name = Dba::escape($name); 
@@ -99,5 +108,63 @@ class Material extends database_object {
 		return $row['uid']; 
 
 	} // name_to_id
+
+  /**
+   * enable
+   * Enable a material
+   */
+  public function enable() {
+
+    $uid = Dba::escape($this->uid); 
+    $sql = "UPDATE `material` SET `enabled`='1' WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql); 
+
+    return $db_results; 
+
+  } // enable
+
+  /**
+   * disable
+   * Disable a material
+   */
+  public function disable() { 
+  
+    $uid = Dba::escape($this->uid); 
+    $sql = "UPDATE `material` SET `enabled`='0' WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql); 
+
+    return $db_results; 
+  
+  } // disable
+
+  /**
+   * create
+   * Creates a new material
+   */
+  public static function create($name) { 
+
+    // Reset the error state
+    Error::clear(); 
+
+    // Make sure this is a unique name
+    if (Material::name_to_id($name)) {
+      Error::add('general','Duplicate Material - name already exists');
+      return false;
+    }
+
+    // Yeah that was about it, we're good to go here
+    $name = Dba::escape($name); 
+    $sql = "INSERT INTO `material` SET `name`='$name',`enabled`='0'";
+    echo $sql;
+    $db_results = Dba::write($sql); 
+
+    if (!$db_results) { 
+      Error::add('general','Database Write Filaure, please resubmit'); 
+      return false; 
+    }
+
+    return Dba::insert_id();  
+
+  } // create
 
 } // material
