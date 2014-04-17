@@ -75,7 +75,10 @@ class Classification extends database_object {
 
 	} // get_from_material 
 
-	// Get all - returns all of the classifications
+  /**
+   * get_all
+   * Return all of the classifications
+   */
 	public static function get_all() { 
 
 		$sql = "SELECT * FROM `classification`"; 
@@ -91,7 +94,10 @@ class Classification extends database_object {
 
 	} // get_all
 
-	// Get the ID from the name
+  /**
+   * name_to_id
+   * This returns an ID from a name
+   */
 	public static function name_to_id($name) { 
 
 		$name = Dba::escape($name); 
@@ -104,5 +110,63 @@ class Classification extends database_object {
 		return $row['uid']; 
 
 	} // name_to_id
+
+  /**
+   * enable
+   * Enable the classification
+   */
+  public function enable() { 
+
+    $uid = Dba::escape($this->uid);
+    $sql = "UPDATE `classification` SET `enabled`='1' WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql);
+
+    return $db_results;
+
+  } // enable
+
+  /**
+   * disable
+   * Disable the classification
+   */
+  public function disable() { 
+
+    $uid = Dba::escape($this->uid);
+    $sql = "UPDATE `classification` SET `enabled`='0' WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql);
+
+    return $db_results;
+
+  } // disable
+
+
+  /**
+   * create
+   * This is used for creating a new classification
+   */
+  public static function create($input) { 
+
+    // Reset the error state
+    Error::clear();
+
+    if (Classification::name_to_id($input['name'])) { 
+      Error::add('general','Duplicate Classification - name already exists');
+      return false;
+    }
+
+    if (strlen($input['name']) < 1) {
+      Error::add('general','Name cannot be blank');
+      return false;
+    }
+
+    // Nothing else to check... yet
+    $name = Dba::escape($input['name']);
+    $description = Dba::escape($input['description']);
+    $sql = "INSERT INTO `classification` SET `name`='$name', `description`='$description', `enabled`='0'";
+    $db_results = Dba::write($sql);
+
+    return Dba::insert_id();
+
+  } // create
 
 } // classification 

@@ -68,9 +68,25 @@ switch (\UI\sess::location('action')) {
     // Do what?
     switch (\UI\sess::location('objectid')) { 
       case 'add':
-      
+        require_once \UI\template('/classification/new');
+      break;
+      case 'create':
+        if (!Classification::create($_POST)) { 
+          require_once \UI\template('/classification/new'); 
+        } else {
+          $classifications = Classification::get_all();
+          require_once \UI\template('/classification/view');
+        }
+      break;
+      case 'enable':
+        $classification = new Classification(\UI\sess::location('3'));
+        $classification->enable();
+        header("Location:" . Config::get('web_path') . '/manage/classification');
       break;
       case 'disable':
+        $classification = new Classification(\UI\sess::location('3'));
+        $classification->disable();
+        header("Location:" . Config::get('web_path') . '/manage/classification');
       break;
       case 'view':
       default:

@@ -152,10 +152,14 @@ class Material extends database_object {
       return false;
     }
 
+    if (!strlen($name)) { 
+      Error::add('general','Name cannot be blank');
+      return false;
+    }
+
     // Yeah that was about it, we're good to go here
     $name = Dba::escape($name); 
     $sql = "INSERT INTO `material` SET `name`='$name',`enabled`='0'";
-    echo $sql;
     $db_results = Dba::write($sql); 
 
     if (!$db_results) { 
