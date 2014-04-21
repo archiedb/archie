@@ -81,6 +81,8 @@ class Material extends database_object {
    */
 	public static function get_all() { 
 
+    $results = array(); 
+
 		$sql = "SELECT * FROM `material`"; 
 		$db_results = Dba::read($sql); 
 		while ($row = Dba::fetch_assoc($db_results)) { 
