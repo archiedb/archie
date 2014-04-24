@@ -6,7 +6,7 @@ if (INIT_LOADED != '1') { exit; }
 <h4>Sites</h4>
 </div>
 <p class="pull-right text-right">
-  <a class="btn btn-success btn-disabled" href="<?php echo Config::get('web_path'); ?>/manage/material/add">Add Site</a>
+  <a class="btn btn-success" href="<?php echo Config::get('web_path'); ?>/manage/site/add">Add Site</a>
 </p>
 <table class="table table-bordered table-hover">
 <thead>

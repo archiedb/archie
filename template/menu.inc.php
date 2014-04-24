@@ -49,9 +49,7 @@ if (INIT_LOADED != '1') { exit; }
               <li class="nav-header">System</li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/status">Status</a>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/tools">Tools</a>
-<!--
-              <li><a href="<?php echo Config::get('web_path'); ?>/manage/sites">Sites</a>
--->
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/site">Sites</a>
             </ul>
           </li>
           <li class="divider-vertical"></li>

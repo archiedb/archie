@@ -28,7 +28,7 @@ switch (\UI\sess::location('action')) {
   case 'site':
     switch (\UI\sess::location('2')) {
       case 'add':
-
+	require_once \UI\template('/site/new');
       break;
       case 'create':
 
