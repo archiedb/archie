@@ -6,6 +6,14 @@ class Site extends database_object {
 	public $uid; 
   public $name;
   public $description;
+  public $northing; 
+  public $easting;
+  public $elevation;
+  public $pi; // site.principal_investigator
+  public $partners; // text field
+  public $excavation_start; // timestamp
+  public $excavation_end; // timestamp
+  public $enabled; 
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -110,6 +118,25 @@ class Site extends database_object {
     return true; 
 
   } // user_level
+
+  /**
+   * get_all
+   * Return all of the sites
+   */
+  public static function get_all() { 
+
+    $results = array(); 
+
+    $sql = 'SELECT * FROM `site`';
+    $db_results = Dba::read($sql); 
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('site',$row['uid'],$row);
+      $results[] = new Site($row['uid']); 
+    }
+
+    return $results;
+
+  } // get_all
 
 } // end class level
 ?>

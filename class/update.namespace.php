@@ -708,6 +708,13 @@ class Database {
 
   } // update_0009
 
+  /**
+   * update_0010
+   * - Drop feature.image field
+   * - Drop feature.record field
+   */
+
+
 } // \Update\Database class
 
 ?>
