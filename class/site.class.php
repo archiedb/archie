@@ -3,9 +3,17 @@
 
 class Site extends database_object { 
 
-	public $uid; 
+  public $uid; 
   public $name;
   public $description;
+  public $northing; 
+  public $easting;
+  public $elevation;
+  public $pi; // site.principal_investigator
+  public $partners; // text field
+  public $excavation_start; // timestamp
+  public $excavation_end; // timestamp
+  public $enabled; 
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -59,10 +67,9 @@ class Site extends database_object {
     $name = Dba::escape($name); 
 
     $sql = "SELECT `uid` FROM `site` WHERE `name`='$name'";
-    //$db_results = Dba::read($sql); 
+    $db_results = Dba::read($sql); 
 
-    //$row = Dba::fetch_assoc($db_results);
-    $row['uid'] = 1;
+    $row = Dba::fetch_assoc($db_results);
     return $row['uid'];
 
   } // get_from_name
@@ -84,6 +91,23 @@ class Site extends database_object {
    */
   public static function create($input) { 
 
+    // Clear any previous Error state
+    Error::clear(); 
+
+    if (!Site::validate($input)) {
+      Error::add('general','Invalid Field Values - please check input');
+      return false; 
+    }
+
+    $name = Dba::escape($input['name']);
+    $desc = Dba::escape($input['description']);
+    $exc_start = Dba::escape($input['excavation_start']);
+    $exc_end = Dba::escape($input['excavation_end']);
+    $pi = Dba::escape($input['pi']);
+    $elevation = Dba::escape($input['elevation']);
+    $northing = Dba::escape($input['northing']);
+    $easting = Dba::escape($input['easting']);
+    $partners = Dba::escape($input['partners']);
 
 
   } // create
@@ -93,6 +117,20 @@ class Site extends database_object {
    * Validates the 'input' we get for update/create operations
    */
   public static function validate($input) { 
+
+    // Make sure there's a name and it's unique
+    if (!strlen($input['name'])) { 
+      Error::add('name','Required Field');
+    }
+
+    if (Site::get_from_name($input['name'])) {
+      Error::add('name','Name already exists');
+    }
+
+    // Require a start a PI
+    if (!strlen($input['pi'])) {
+      Error::add('pi','Required Field');
+    } 
 
     if (Error::occurred()) { return false; }
 
@@ -110,6 +148,25 @@ class Site extends database_object {
     return true; 
 
   } // user_level
+
+  /**
+   * get_all
+   * Return all of the sites
+   */
+  public static function get_all() { 
+
+    $results = array(); 
+
+    $sql = 'SELECT * FROM `site`';
+    $db_results = Dba::read($sql); 
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('site',$row['uid'],$row);
+      $results[] = new Site($row['uid']); 
+    }
+
+    return $results;
+
+  } // get_all
 
 } // end class level
 ?>

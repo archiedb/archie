@@ -8,7 +8,7 @@ require_once 'template/menu.inc.php';
 switch (\UI\sess::location('action')) {
   case 'regenerate':
     // Regenerate what!?
-    switch (\UI\sess::location('objectid')) {
+    switch (\UI\sess::location('2')) {
       case 'qrcode':
         $cron = new Cron('qrcode'); 
         $cron->request('all'); 
@@ -25,6 +25,28 @@ switch (\UI\sess::location('action')) {
     }
     header("Location:" . Config::get('web_path')  . '/manage/tools'); 
   break;
+  case 'site':
+    switch (\UI\sess::location('2')) {
+      case 'add':
+	require_once \UI\template('/site/new');
+      break;
+      case 'create':
+
+      break;
+      case 'edit':
+        $site = new Site(\UI\sess::location('3'));
+        require_once \UI\template('/site/edit');
+      break;
+      case 'update':
+
+      break;
+      case 'view':
+      default:
+        $sites = Site::get_all();
+        require_once \UI\template('/site/view');
+      break;
+    }
+  break;
   case 'import': 
     $import = new Import($_POST['type']);   
     $import->run($_FILES['import']['tmp_name']);
@@ -35,7 +57,7 @@ switch (\UI\sess::location('action')) {
   break; 
   case 'material':
     // Do what with material?
-    switch (\UI\sess::location('objectid')) {
+    switch (\UI\sess::location('2')) {
       case 'add':
         require_once \UI\template('/material/new');
       break;
@@ -66,7 +88,7 @@ switch (\UI\sess::location('action')) {
   break;
   case 'classification':
     // Do what?
-    switch (\UI\sess::location('objectid')) { 
+    switch (\UI\sess::location('2')) { 
       case 'add':
         require_once \UI\template('/classification/new');
       break;
