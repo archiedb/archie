@@ -724,7 +724,7 @@ class Database {
     $sql = "ALTER TABLE `feature` DROP `image`";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    $sql = "ALTER TABLE `feature` DROP `record`";
+    $sql = "ALTER TABLE `feature` CHANGE `record` `record` INT(11) UNSIGNED";
     $retval = \Dba::write($sql) ? $retval : false; 
 
     $sql = "ALTER TABLE `record` CHANGE `site` `site` INT(11) UNSIGNED";
