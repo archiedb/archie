@@ -712,8 +712,33 @@ class Database {
    * update_0010
    * - Drop feature.image field
    * - Drop feature.record field
+   * - Alter feature.site make it an int(11)
    */
+  public static function update_0010() { 
 
+    $retval = true;
+
+    $sql = "ALTER TABLE `feature` CHANGE `site` `site` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` DROP `image`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` DROP `record`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `record` CHANGE `site` `site` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `site` `site` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `datum_location` CHANGE `record` `record` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } // update_0010
 
 } // \Update\Database class
 
