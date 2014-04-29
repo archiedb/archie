@@ -8,6 +8,9 @@ switch (\UI\sess::location('action')) {
   case 'new':
     require_once \UI\template('/feature/new'); 
   break;
+  case 'create':
+  
+  break;
   default: 
     // Rien a faire
   break; 

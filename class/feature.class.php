@@ -4,10 +4,16 @@
 class Feature extends database_object { 
 
 	public $uid; 
-  public $site;
-  public $record;
+  public $site; // FK Site
+  public $record; // FK Record
   public $keywords;
   public $description;
+  public $user; // FK User
+  public $created;
+  public $updated;
+  public $closed;
+  public $closed_date;
+  public $closed_user; // FK User
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -64,7 +70,17 @@ class Feature extends database_object {
    */
   public static function create($input) { 
 
+    Error::clear();
 
+    // Force the site to the current users site
+    $input['site'] = \UI\sess::$user->site->uid;
+
+    if (!Feature::validate($input)) {
+      Error::add('general','Invalid Field Values - please check input');
+      return false;
+    }
+
+    // Record (id for bag) is generated here
 
   } // create
 
@@ -73,6 +89,7 @@ class Feature extends database_object {
    * Validates the 'input' we get for update/create operations
    */
   public static function validate($input) { 
+
 
     // Site - set by config
     // record_id 
@@ -91,6 +108,7 @@ class Feature extends database_object {
     return true; 
 
   } // validate
+
 
 } // end class level
 ?>
