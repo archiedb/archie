@@ -721,19 +721,49 @@ class Database {
     $sql = "ALTER TABLE `feature` CHANGE `site` `site` INT(11) UNSIGNED";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `feature` ADD INDEX (`site`)";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` ADD INDEX (`record`)";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` ADD INDEX (`record`)";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     $sql = "ALTER TABLE `feature` DROP `image`";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    $sql = "ALTER TABLE `feature` CHANGE `record` `record` INT(11) UNSIGNED";
+    $sql = "ALTER TABLE `feature` CHANGE `record` `catalog_id` INT(11) UNSIGNED";
     $retval = \Dba::write($sql) ? $retval : false; 
 
     $sql = "ALTER TABLE `record` CHANGE `site` `site` INT(11) UNSIGNED";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `record` ADD INDEX (`site`)";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     $sql = "ALTER TABLE `krotovina` CHANGE `site` `site` INT(11) UNSIGNED";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `krotovina` ADD INDEX (`site`)";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     $sql = "ALTER TABLE `datum_location` CHANGE `record` `record` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `datum_location` ADD INDEX (`record_type`)";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Add field to users table for 'current site'
+    $sql = "ALTER TABLE `users` ADD `site` INT(11) UNSIGNED NULL AFTER `password`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "CREATE TABLE `site_users` (" . 
+        "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
+        "`site` int(11) NOT NULL UNSIGNED," . 
+        "`user` int(11) NOT NULL UNSIGNED," . 
+        "PRIMARY KEY (`uid`)) " .
+        "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval;

@@ -25,21 +25,6 @@ if (INIT_LOADED != '1') { exit; }
     <input id="inputKeywords" name="keywords" type="text" value="<?php echo scrub_out($_POST['keywords']); ?>" />
   </div>
 </div>
-<div class="control-group span4<?php Error::display_class('image'); ?>">
-  <label class="control-label" for="inputUpload">Image</label>
-  <div class="controls">
-    <div class="fileupload fileupload-new" data-provides="fileupload">
-     <div class="input-append">
-      <div class="uneditable-input span3">
-        <i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span>
-      </div>
-      <span class="btn btn-file"><span class="fileupload-new">Select</span>
-      <span class="fileupload-exists">Change</span><input name="media" type="file" /></span>
-      <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-     </div>
-    </div>
-  </div>
-</div>
 <div class="control-group span8">
   <div class="controls">
   	<input type="submit" class="btn btn-primary" value="Create" />
