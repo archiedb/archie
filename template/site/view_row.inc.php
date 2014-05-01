@@ -5,7 +5,8 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <td><?php echo scrub_out($site->name); ?></td>
   <td><?php echo scrub_out($site->description); ?></td>
-  <td><?php echo scrub_out($site->pi); ?></td>
+  <td><?php echo scrub_out($site->principal_investigator); ?></td>
+  <td>&nbsp;</td>
 	<td><?php echo \UI\boolean_word($site->enabled); ?></td>
   <td>
 		<div class="btn-group">

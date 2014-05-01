@@ -14,6 +14,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>Name</th>
   <th>Description</th>
   <th>P.I.</th>
+  <th>Records</th>
   <th>Enabled</th>
   <th>&nbsp;</th>
 </tr>

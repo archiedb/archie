@@ -28,17 +28,28 @@ switch (\UI\sess::location('action')) {
   case 'site':
     switch (\UI\sess::location('2')) {
       case 'add':
-	require_once \UI\template('/site/new');
+        require_once \UI\template('/site/new');
       break;
       case 'create':
-
+        if (!Site::create($_POST)) {
+          require_once \UI\template('/site/new');
+        }
+        else {
+          header("Location:" . Config::get('web_path') . '/manage/site/view');
+        }
       break;
       case 'edit':
         $site = new Site(\UI\sess::location('3'));
         require_once \UI\template('/site/edit');
       break;
       case 'update':
-
+        $site = new Site($_POST['site_uid']);
+        if (!$site->update($_POST)) {
+          require_once \UI\template('/site/edit');
+        }
+        else {
+          header("Location:" . Config::get('web_path') . '/manage/site/view');
+        }
       break;
       case 'view':
       default:

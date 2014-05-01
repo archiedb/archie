@@ -9,7 +9,7 @@ class Site extends database_object {
   public $northing; 
   public $easting;
   public $elevation;
-  public $pi; // site.principal_investigator
+  public $principal_investigator; // site.principal_investigator
   public $partners; // text field
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
@@ -18,14 +18,9 @@ class Site extends database_object {
 	// Constructor takes a uid
 	public function __construct($uid='') { 
 
-		//if (!is_numeric($uid)) { return false; } 
+		if (!is_numeric($uid)) { return false; } 
 
-    //FIXME: UID is the site name until we migrate
-    // Hack it in until we have a database
-    $table = array('1'=>array('uid'=>'10IH73','name'=>'10IH73','description'=>'Coopers Ferry')); 
-
-		//$row = $this->get_info($uid,'site'); 
-    $row = $table['1'];
+		$row = $this->get_info($uid,'site'); 
 
 		foreach ($row as $key=>$value) { 
 			$this->$key = $value; 
@@ -108,22 +103,73 @@ class Site extends database_object {
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
     $partners = Dba::escape($input['partners']);
+    $sql = "INSERT INTO `site` (`name`,`description`,`principal_investigator`,`excavation_start`,`excavation_end`,`partners`,`northing`,`easting`,`elevation`,`enabled`) " . 
+      "VALUES ('$name','$desc','$pi','$exc_start','$exc_end','$partners','$northing','$easting','$elevation','1')";
+    $results = Dba::write($sql); 
 
+    $insert_id = Dba::insert_id();
+
+    if (!$insert_id OR !$results) { 
+      Error::add('general','Unknown database error adding new site');
+      return false;
+    }
+
+    return $insert_id;
 
   } // create
+
+  /**
+   * update
+   * Updates a site
+   */
+  public function update($input) { 
+
+    // Reset the error state
+    Error::clear();
+
+    if (!Site::validate($input,$this->uid)) { 
+      Error::add('general','Invalid Field Values - Please check your input and try again');
+      return false;
+    }
+
+    $uid = Dba::escape($this->uid);
+    $name = Dba::escape($input['name']);
+    $pi = Dba::escape($input['pi']);
+    $description = Dba::escape($input['description']);
+    $partners = Dba::escape($input['partners']);
+    $exc_start = Dba::escape($input['excavation_start']);
+    $exc_end = Dba::escape($input['excavation-end']);
+    $elevation = Dba::escape($input['elevation']);
+    $northing = Dba::escape($input['northing']);
+    $easting = Dba::escape($input['easting']);
+    $sql = "UPDATE `site` SET `name`='$name',`principal_investigator`='$pi',`description`='$description'," . 
+      "`partners`='$partners',`excavation_start`='$exc_start',`excavation_end`='$exc_end',`elevation`='$elevation'," . 
+      "`northing`='$northing',`easting`='$easting' WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql);
+
+    if (!$db_results) { 
+      Error::add('general','Unknown Database Error - Please try again');
+      return false;
+    }
+
+    return true;
+
+  } // update
 
   /**
    * validate
    * Validates the 'input' we get for update/create operations
    */
-  public static function validate($input) { 
+  public static function validate($input,$uid=0) { 
 
     // Make sure there's a name and it's unique
     if (!strlen($input['name'])) { 
       Error::add('name','Required Field');
     }
 
-    if (Site::get_from_name($input['name'])) {
+    $site_uid = Site::get_from_name($input['name']);
+
+    if ($site_uid > 0 AND $site_uid != $uid) {
       Error::add('name','Name already exists');
     }
 
@@ -131,6 +177,14 @@ class Site extends database_object {
     if (!strlen($input['pi'])) {
       Error::add('pi','Required Field');
     } 
+
+    // Make sure if start and end are set that end is after start
+    $start = strtotime($input['excavation_start']);
+    $end = strtotime($input['excavation_end']);
+
+    if ($start > 0 AND $end > 0 AND $start > $end) { 
+      Error::add('excavation_end','End must be after Start');
+    }
 
     if (Error::occurred()) { return false; }
 

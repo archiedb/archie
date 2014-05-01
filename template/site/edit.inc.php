@@ -13,7 +13,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
   <label class="control-label" for="inputPI">Principal Investigator</label>
   <div class="controls">
-  	<input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($site->pi); ?>" />
+  	<input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($site->principal_investigator); ?>" />
   </div>
 </div> 
 <div class="control-group span4<?php Error::display_class('description'); ?>">
@@ -60,7 +60,7 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <div class="control-group span8">
   <div class="controls">
-    <input type="hidden" name="site_id" value="<?php echo scrub_out($site->uid); ?>" />
+    <input type="hidden" name="site_uid" value="<?php echo scrub_out($site->uid); ?>" />
     <button class="btn btn-primary" type="submit">Update</button>
   </div>
 </div>
