@@ -127,10 +127,12 @@ if (defined('CHECK_ONLY_SESSION')) {
 }
 elseif (!defined('CLI') AND !defined('NO_SESSION')) { 
 	// Verify their session
-	if (!vauth::session_exists($_COOKIE[Config::get('session_name')])) { 
-		vauth::logout($_COOKIE[Config::get('session_name')]); 
-		exit;
-	} 
+  if (isset($_COOKIE[Config::get('session_name')])) {
+  	if (!vauth::session_exists($_COOKIE[Config::get('session_name')])) { 
+  		vauth::logout($_COOKIE[Config::get('session_name')]); 
+  		exit;
+  	} 
+  }
 
 	// Start the session and pull in the user we've got in it
 	vauth::check_session();
