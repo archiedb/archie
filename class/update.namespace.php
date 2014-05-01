@@ -769,6 +769,9 @@ class Database {
     $sql = "ALTER TABLE `users` ADD `site` INT(11) UNSIGNED NULL AFTER `password`";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `site` CHANGE `principal_investigator` `principal_investigator` VARCHAR(255) NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     // Add table for assigning site rights to users
     $sql = "CREATE TABLE `site_users` (" . 
         "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
