@@ -151,10 +151,10 @@ class Database {
     $sql = 'TRUNCATE `temp_data`';
     $db_results = \Dba::write($sql); 
 
-    $sql = 'OPTIMIZE `session`';
+    $sql = 'OPTIMIZE TABLE `session`';
     $db_results = \Dba::write($sql); 
 
-    $sql = 'OPTIMIZE `temp_data`';
+    $sql = 'OPTIMIZE TABLE `temp_data`';
     $db_results = \Dba::write($sql); 
 
     return true; 
@@ -168,16 +168,16 @@ class Database {
   private static function post() { 
 
     $sql = 'SHOW TABLES';
-    $db_results = Dba::read($sql); 
+    $db_results = \Dba::read($sql); 
 
-    while ($table = Dba::fetch_assoc($db_results)) {
+    while ($table = \Dba::fetch_assoc($db_results)) {
       $tables .= "`$table`,";
     }
 
     $tables = rtrim($tables,","); 
 
     $sql = "OPTIMIZE TABLE $tables";
-    $db_results = Dba::write(); 
+    $db_results = \Dba::write(); 
 
     return true; 
 
@@ -233,6 +233,11 @@ class Database {
                     '- Add site table.<br />' . 
                     '- Add record type to media table.<br />';
     $versions[] = array('version'=>'0009','description'=>$update_string); 
+    $update_string = '- Add User->Site mapping.<br />' . 
+                    '- Add User site preference.<br />' . 
+                    '- Update Krotovina and Feature tables.<br />' . 
+                    '- Add Indexes to speed up database queries.<br />';
+    $versions[] = array('version'=>'0010','description'=>$update_string);
 
 
     return $versions; 
@@ -733,6 +738,9 @@ class Database {
     $sql = "ALTER TABLE `feature` DROP `image`";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `krotovina` DROP `image`";
+    $retval = \Dba::write($sql) ? $retval: false;
+
     $sql = "ALTER TABLE `feature` CHANGE `record` `catalog_id` INT(11) UNSIGNED";
     $retval = \Dba::write($sql) ? $retval : false; 
 
@@ -743,6 +751,9 @@ class Database {
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `krotovina` CHANGE `site` `site` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `record` `catalog_id` INT(11) UNSIGNED";
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `krotovina` ADD INDEX (`site`)";
@@ -758,10 +769,12 @@ class Database {
     $sql = "ALTER TABLE `users` ADD `site` INT(11) UNSIGNED NULL AFTER `password`";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    // Add table for assigning site rights to users
     $sql = "CREATE TABLE `site_users` (" . 
         "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
-        "`site` int(11) NOT NULL UNSIGNED," . 
-        "`user` int(11) NOT NULL UNSIGNED," . 
+        "`site` int(11) UNSIGNED NOT NULL," . 
+        "`user` int(11) UNSIGNED NOT NULL," . 
+        "`level` int(11) UNSIGNED NOT NULL," . 
         "PRIMARY KEY (`uid`)) " .
         "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval : false;
