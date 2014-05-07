@@ -84,6 +84,10 @@ if (INIT_LOADED != '1') { exit; }
     <dd>Any character</dd>
   <dt>INDEX</dt>
     <dd>Must match a record of specified name</dd>
+  <dt>DATE</dt>
+    <dd>Allowed formats mm/dd/yy dd-mm-yy yy.mm.dd pay special attention to seperating character</dd>
+  <dt>**</dt>
+    <dd>Denotes an optional field - see included documentation for more information on importing methods</dd>
 </dl>
 <hr />
 <div class="row">
@@ -94,4 +98,20 @@ if (INIT_LOADED != '1') { exit; }
 <div class="row">
   <div class="span2">XYZ Station</div>
   <div class="span10">INDEX('RN'),DECIMAL('Northing'),DECIMAL('Easting'),DECIMAL('Elevation'),STRING('Notes')</div>
+</div>
+<div class="row">
+  <div class="span2">Feature Info</div>
+  <div class="span10">INT('CATALOGID),STRING(KEYWORDS),STRING(DESCRIPTION),STRING(USERNAME),DATE(mm/dd/yy)</div>
+</div>
+<div class="row">
+  <div class="span2">Krotovina Info</div>
+  <div class="span10">INT('CATALOGID),STRING(KEYWORDS),STRING(DESCRIPTION),STRING(USERNAME),DATE(mm/dd/yy)</div>
+</div>
+<div class="row">
+  <div class="span2">Feature XYZ</div>
+  <div class="span10">INT('CATALOGID'),**INDEX('RN'),**DECIMAL('Northing'),**DECIMAL('Easting'),**DECIMAL('Elevation')</div>
+</div>
+<div class="row">
+  <div class="span2">Krotovina XYZ</div>
+  <div class="span10">INT('CATALOGID'),**INDEX('RN'),**DECIMAL('Northing'),**DECIMAL('Easting'),**DECIMAL('Elevation')</div>
 </div>
