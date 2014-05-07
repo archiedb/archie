@@ -121,8 +121,8 @@ class Record extends database_object {
 		$lock_sql = "LOCK TABLES `record` WRITE;"; 
 		$unlock_sql = "UNLOCK TABLES"; 
 
-		// Only wait 5 seconds for this, it shouldn't take that long
-		while (!$db_results && $times < 5) { 
+		// Only wait 3 seconds for this, it shouldn't take that long
+		while (!$db_results && $times < 3) { 
 
 			// If we make it this far we're good to go, we need to figure out the next station ID
 			$db_results = Dba::write($lock_sql); 
