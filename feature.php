@@ -9,10 +9,29 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/feature/new'); 
   break;
   case 'create':
-  
+    $feature_id = Feature::create($_POST);
+    if ($feature_id) {
+      $feature = new Feature($feature_id);
+      require_once \UI\template('/feature/view');
+    }
+    else {
+      require_once \UI\template('/feature/new');
+    }
+  break;
+  case 'view':
+    $feature = new Feature(\UI\sess::location('2'));
+    require_once \UI\template('/feature/view');
+  break;
+  case 'edit':
+    $feature = new Feature(\UI\sess::locatioN('2'));
+    require_once \UI\template('/feature/edit');
   break;
   default: 
-    // Rien a faire
+    $view = new View();
+    $view->reset();
+    $view->set_type('feature');
+    $features = $view->run();
+    require_once \UI\template('/feature/show');
   break; 
 } // end action switch 
 

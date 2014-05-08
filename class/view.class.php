@@ -513,6 +513,9 @@ class View {
       case 'record':
         $allowed_filters = self::$allowed_filters; 
       break;
+      case 'feature':
+        $allowed_filters = array('record','keywords','description','user');
+      break;
     }
 
     return $allowed_filters;
@@ -531,6 +534,9 @@ class View {
       break;
       case 'record':
         $allowed_filters = self::$allowed_sorts; 
+      break;
+      case 'feature':
+        $allowed_filters = array('catalog_id','created','updated','user');
       break;
     }
 
@@ -691,6 +697,16 @@ class View {
           case 'unit':
           case 'lsg_unit':
             $sql = "`level`.`$field`";
+          break;
+        }
+      break;
+      case 'feature':
+        switch ($field) { 
+          case 'catalog_id':
+          case 'created':
+          case 'updated':
+          case 'user':
+            $sql = "`feature`.`$field`";
           break;
         }
       break;

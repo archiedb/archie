@@ -5,7 +5,7 @@ class Feature extends database_object {
 
 	public $uid; 
   public $site; // FK Site
-  public $record; // FK Record
+  public $catalog_id; // Per site Unique value visually displayed as F-#
   public $keywords;
   public $description;
   public $user; // FK User
@@ -25,6 +25,10 @@ class Feature extends database_object {
 		foreach ($row as $key=>$value) { 
 			$this->$key = $value; 
 		} 
+
+    $this->record = 'F-' . $this->catalog_id;
+    $this->user = new User($this->user);
+    $this->site = new Site($this->site);
 
 		return true; 
 
@@ -83,7 +87,7 @@ class Feature extends database_object {
     // Record (id for bag) is generated here, lock tables time!
     $db_results = false;
     $times = 0;
-    $lock_sql = "LOCAL TABLES `feature` WRITE;";
+    $lock_sql = "LOCK TABLES `feature` WRITE";
     $unlock_sql = "UNLOCK TABLES";
 
     // Only wait 3 seconds for this, shouldn't take that long
@@ -101,7 +105,7 @@ class Feature extends database_object {
       return false;
     }
 
-    if ($input['catalog_id']) {
+    if (!$input['catalog_id']) {
       $site = Dba::escape($input['site']);
       $catalog_sql = "SELECT `catalog_id` FROM `feature` WHERE `site`='$site' ORDER BY `catalogId` DESC LIMIT 1";
       $db_results = Dba::read($catalog_sql);

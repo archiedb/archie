@@ -30,8 +30,8 @@ if (INIT_LOADED != '1') { exit; }
             <ul class="dropdown-menu">
               <li><a href="<?php echo Config::get('web_path'); ?>/records">Record</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/level">Level</a></li>
-<!--
               <li><a href="<?php echo Config::get('web_path'); ?>/feature">Feature</a></li>
+<!--
               <li><a href="<?php echo Config::get('web_path'); ?>/krotovina">Krotovina</a></li>
 -->
             </ul>

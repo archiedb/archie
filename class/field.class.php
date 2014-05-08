@@ -39,6 +39,8 @@ class Field {
       break;
     }
 
+    return $retval;
+
   } // validate
 
 } // end class field
