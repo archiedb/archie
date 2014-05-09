@@ -136,9 +136,9 @@ class Feature extends database_object {
       return false;
     }
 
-    if (!$input['catalog_id']) {
+    if (!isset($input['catalog_id'])) {
       $site = Dba::escape($input['site']);
-      $catalog_sql = "SELECT `catalog_id` FROM `feature` WHERE `site`='$site' ORDER BY `catalogId` DESC LIMIT 1";
+      $catalog_sql = "SELECT `catalog_id` FROM `feature` WHERE `site`='$site' ORDER BY `catalog_id` DESC LIMIT 1";
       $db_results = Dba::read($catalog_sql);
       $row = Dba::fetch_assoc($db_results);
       Dba::finish($db_results);
@@ -176,8 +176,16 @@ class Feature extends database_object {
       return false;
     }
     $insert_id = Dba::insert_id();
-
     $db_results = Dba::write($unlock_sql);
+    
+    // Now we add the initial spatial data
+    $spatialdata = SpatialData::create(array('record'=>$insert_id,'type'=>'feature','rn'=>$input['initial_rn'],'northing'=>$input['northing'],
+                      'easting'=>$input['easting'],'elevation'=>$input['elevation']));
+
+    if (!$spatialdata) { 
+      Error::add('general','Error inserting Spatial Information - please contact your administrator');
+    }
+
 
     $log_line = "$site,F-$catalog_id,\"" . addslashes($description) . "\",\"$keywords\"," . \UI\sess::$user->username . ",\"" . date('r',$created) . "\"";
     Event::record('ADD-FEATURE',$log_line);

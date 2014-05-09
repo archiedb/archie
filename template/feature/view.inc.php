@@ -21,3 +21,24 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 </table>
 <h5>Feature Spatial Information</h5>
+<table class="table table-hover table-bordered table-white">
+<tr>
+  <th>RN</th>
+  <th>Northing</th>
+  <th>Easting</th>
+  <th>Elevation</th>
+  <th>Note</th>
+</tr>
+<?php 
+$spatialdata = SpatialData::get_record_data($feature->uid,'feature'); 
+foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']); 
+?>
+<tr>
+  <td><?php echo scrub_out($spatialdata->station_index); ?></td>
+  <td><?php echo scrub_out($spatialdata->northing); ?></td>
+  <td><?php echo scrub_out($spatialdata->easting); ?></td>
+  <td><?php echo scrub_out($spatialdata->elevation); ?></td>
+  <td><?php echo scrub_out($spatialdata->note); ?></td>
+</tr>
+<?php } ?>
+</table>

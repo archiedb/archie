@@ -24,13 +24,13 @@ class Field {
       case 'easting':
       case 'elevation':
         // Must be int and rounded to 3 places
-        if ($value != intval($value) OR round($value,3) != $value) {
+        if (!is_numeric($value) OR round($value,3) != $value) {
           $retval = false;
         }
       break;
       case 'rn':
         // Must be Int
-        if ($value != intval($value)) {
+        if (!is_numeric($value)) {
           $retval = false;
         }
       break;
