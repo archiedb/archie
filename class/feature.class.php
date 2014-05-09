@@ -70,7 +70,38 @@ class Feature extends database_object {
 	} // refresh
 
   /**
+   * update
+   * Update an existing feature, this is only related to the description and keywords
+   * this doesn't deal with the location/media information
+   */
+  public function update($input) { 
+
+    Error::clear();
+
+    if (!Feature::validate($input)) {
+      Error::add('general','Invalid Field Values - please check input');
+      return false;
+    }
+
+    $uid = Dba::escape($input['feature_id']);
+    $description = Dba::escape($input['description']);
+    $keywords = Dba::escape($input['keywords']);
+    $updated = time();
+    $sql = "UPDATE `feature` SET `updated`='$updated', `keywords`='$keywords', `description`='$description' WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql); 
+
+    $this->refresh();
+    $record = $this->record;
+    $log_line = "$site,$record,\"" . addslashes($description) . "\",\"$keywords\"," . \UI\sess::$user->username . ",\"" . date('r',$updated) . "\"";
+    Event::record('UPDATE-FEATURE',$log_line);
+
+    return $db_results;
+
+  } // update
+
+  /**
    * create
+   * Create a new Feature, this also has to insert the initial spatial location
    */
   public static function create($input) { 
 
@@ -173,9 +204,8 @@ class Feature extends database_object {
     if (strlen($input['initial_rn']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
       Error::add('initial_rn','Initial RN and North/East/Elevation can not be specified at the same time');
     }
-
-    // If no RN then all others
-    if (strlen($input['initial_rn']) == 0 AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
+    // If no RN then all others - unless we have a feature_id
+    if (!$input['feature_id'] AND strlen($input['initial_rn']) == 0 AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
       Error::add('general','Northing, Easting and Elevation are all required if no Initial RN set');
       if (!strlen($input['easting'])) {
         Error::add('easting','Easting Required');
@@ -199,7 +229,7 @@ class Feature extends database_object {
         Error::add('easting','Must be numeric and rounded to three decimals');
       }
     }
-    else {
+    elseif (strlen($input['initial_rn']) > 0) {
       if (!Field::validate('rn',$input['initial_rn'])) {
         Error::add('initial_rn','Must be numeric');
       }

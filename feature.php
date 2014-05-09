@@ -23,8 +23,18 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/feature/view');
   break;
   case 'edit':
-    $feature = new Feature(\UI\sess::locatioN('2'));
+    $feature = new Feature(\UI\sess::location('2'));
     require_once \UI\template('/feature/edit');
+  break;
+  case 'update':
+    $feature = new Feature($_POST['feature_id']);
+    if ($feature->update($_POST)) {
+      Event::add('success','Feature has been updated','small');
+      require_once \UI\template('/feature/view');
+    }
+    else {
+      require_once \UI\template('/feature/edit');
+    }
   break;
   default: 
     $view = new View();

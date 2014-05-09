@@ -16,4 +16,8 @@ if (INIT_LOADED != '1') { exit; }
   <th>Keywords</th><td><?php echo scrub_out($feature->keywords); ?></em></td>
   <th>User</th><td><?php echo scrub_out($feature->user->name); ?></td>
 </tr>
+<tr>
+  <th>Description</th><td colspan="3"><?php echo scrub_out($feature->description); ?></td>
+</tr>
 </table>
+<h5>Feature Spatial Information</h5>
