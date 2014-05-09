@@ -238,6 +238,8 @@ class Database {
                     '- Update Krotovina and Feature tables.<br />' . 
                     '- Add Indexes to speed up database queries.<br />';
     $versions[] = array('version'=>'0010','description'=>$update_string);
+    $update_string = '- Rename datum_location table to spatial_data.<br />';
+    $versions[] = array('version'=>'0011','description'=>$update_string);
 
 
     return $versions; 
@@ -785,6 +787,21 @@ class Database {
     return $retval;
 
   } // update_0010
+
+  /**
+   * update_0011
+   * - Rename datum_location table
+   */
+  public static function update_0011() {
+
+    $retval = true;
+
+    $sql = "RENAME TABLE `datum_location` TO `spatial_data`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } // update_0011
 
 } // \Update\Database class
 
