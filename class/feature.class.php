@@ -63,7 +63,7 @@ class Feature extends database_object {
 	public function refresh() { 
 
 		// Remove cache
-		User::remove_from_cache('feature',$this->uid); 
+		parent::remove_from_cache('feature',$this->uid); 
 		// Rebuild	
 		$this->__construct($this->uid); 
 

@@ -24,7 +24,7 @@ if (INIT_LOADED != '1') { exit; }
 <table class="table table-hover table-bordered table-condensed">
   <thead>
   <tr>
-    <th><a href="<?php echo Config::get('web_path'); ?>/records/sort/catalog_id">Catalog</a></th>
+    <th><a href="<?php echo Config::get('web_path'); ?>/records/sort/catalog_id">Catalog #</a></th>
   	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/station_index">R.N.</a></th>
 	  <th><a href="<?php echo Config::get('web_path'); ?>/records/sort/unit">Unit</a></th>
   	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/quad">Quad</a></th>

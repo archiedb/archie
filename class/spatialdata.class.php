@@ -13,7 +13,7 @@ class SpatialData extends database_object {
   public $note; // Allowed by total station so why not!
 
   // Valid types
-  private static $valid_types = array('record','feature','krotovoina');
+  private static $valid_types = array('record','feature','krotovina');
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 

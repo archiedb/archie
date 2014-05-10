@@ -516,6 +516,8 @@ class View {
       case 'feature':
         $allowed_filters = array('record','keywords','description','user');
       break;
+      case 'krotovina':
+        $allowed_filters = array('record','keywords','description','user');
     }
 
     return $allowed_filters;
@@ -536,6 +538,9 @@ class View {
         $allowed_filters = self::$allowed_sorts; 
       break;
       case 'feature':
+        $allowed_filters = array('catalog_id','created','updated','user');
+      break;
+      case 'krotovina':
         $allowed_filters = array('catalog_id','created','updated','user');
       break;
     }
@@ -707,6 +712,16 @@ class View {
           case 'updated':
           case 'user':
             $sql = "`feature`.`$field`";
+          break;
+        }
+      break;
+      case 'krotovina':
+        switch ($field) {
+          case 'catalog_id':
+          case 'created':
+          case 'updated':
+          case 'user':
+            $sql = "`krotovina`.`$field`";
           break;
         }
       break;
