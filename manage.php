@@ -69,6 +69,10 @@ switch (\UI\sess::location('action')) {
   case 'material':
     // Do what with material?
     switch (\UI\sess::location('2')) {
+      case 'edit':
+        $material = new Material(\UI\sess::location('3'));
+        require_once \UI\template('/material/edit');
+      break;
       case 'add':
         require_once \UI\template('/material/new');
       break;
