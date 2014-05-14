@@ -6,7 +6,7 @@ if (INIT_LOADED != '1') { exit; }
 <h4>Edit <?php echo scrub_out($material->name); ?></h3>
 </div>
 <?php Event::display('errors'); ?>
-<form class="form-horizontal" id="edit_material" method="post" action="<?php echo Config::get('web_path'); ?>/manage/material/edit">
+<form class="form-horizontal" id="edit_material" method="post" action="<?php echo Config::get('web_path'); ?>/manage/material/update">
 <div class="control-group span8<?php Error::display_class('name'); ?>">
   <label class="control-label" for="inputName">Name</label>
   <div class="controls">

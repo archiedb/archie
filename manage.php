@@ -73,11 +73,14 @@ switch (\UI\sess::location('action')) {
         $material = new Material(\UI\sess::location('3'));
         require_once \UI\template('/material/edit');
       break;
+      case 'update':
+        print_r($_POST);
+      break;
       case 'add':
         require_once \UI\template('/material/new');
       break;
       case 'create':
-        if (!Material::create($_POST['name'])) {
+        if (!Material::create($_POST)) {
           require_once \UI\template('/material/new');
         } else {
           $materials = Material::get_all(); 

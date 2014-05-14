@@ -16,6 +16,10 @@ $material_count = Stats::material_records('material',$material->uid);
       <?php } else { ?>
       <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/material/enable/<?php echo scrub_out($material->uid); ?>">Enable</a>
       <?php } ?>
+      <a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+       <ul class="dropdown-menu">
+        <li><a href="<?php echo Config::get('web_path'); ?>/manage/material/edit/<?php echo scrub_out($material->uid); ?>">Edit</a></li>
+       </ul>
 		</div>
   </td>
 </tr>

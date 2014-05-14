@@ -142,24 +142,18 @@ class Material extends database_object {
    * create
    * Creates a new material
    */
-  public static function create($name) { 
+  public static function create($input) { 
 
     // Reset the error state
     Error::clear(); 
 
-    // Make sure this is a unique name
-    if (Material::name_to_id($name)) {
-      Error::add('general','Duplicate Material - name already exists');
-      return false;
-    }
-
-    if (!strlen($name)) { 
-      Error::add('general','Name cannot be blank');
+    if (!Material::validate($input)) {
+      Error::add('general','Invalid Input please check');
       return false;
     }
 
     // Yeah that was about it, we're good to go here
-    $name = Dba::escape($name); 
+    $name = Dba::escape($input['name']); 
     $sql = "INSERT INTO `material` SET `name`='$name',`enabled`='0'";
     $db_results = Dba::write($sql); 
 
@@ -171,5 +165,59 @@ class Material extends database_object {
     return Dba::insert_id();  
 
   } // create
+
+  /**
+   * validate
+   * Make sure we've given valid input
+   */
+  public static function validate($input) { 
+
+    // Make sure this is a unique name
+    if (Material::name_to_id($input['name'])) {
+      Error::add('name','Duplicate Material - name already exists');
+      return false;
+    }
+
+    if (!strlen($input['name'])) { 
+      Error::add('name','Name cannot be blank');
+      return false;
+    }
+
+    if (Error::occurred()) { return false; }
+
+    return true;
+
+  } // validate
+
+  /** 
+   * update
+   * This updates the name, and re-builds the Material<-->Classification mapping
+   */
+  public function update($input) { 
+
+    Error::clear(); 
+
+    if (!Material::validate($input)) {
+      Error::add('general','Invalid Input please check');
+      return false;
+    }
+
+    // Delete all of the current material->classification mappings, easier then figuring out what we missed
+    $uid = Dba::escape($input['material_id']);
+    $sql = "DELETE * FROM `material_classification` WHERE `material`='$uid'";
+    $db_results = Dba::write($sql); 
+
+    foreach ($input['classification'] as $classification) {
+      $classification = Dba::escape($classification);
+      $uid = Dba::escape($input['material_id']);
+      $sql = "INSERT INTO `material_classification` (`material`,`classification`) VALUES ('$uid','$classification')";
+      $db_results = Dba::write($sql);
+    }
+
+    $this->refresh();
+
+    return true;
+
+  } // update
 
 } // material
