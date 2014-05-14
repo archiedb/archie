@@ -78,7 +78,7 @@ class Krotovina extends database_object {
 
     Error::clear();
 
-    if (!Feature::validate($input)) {
+    if (!Krotovina::validate($input)) {
       Error::add('general','Invalid Field Values - please check input');
       return false;
     }
@@ -211,6 +211,9 @@ class Krotovina extends database_object {
     // If RN then no others
     if (strlen($input['initial_rn']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
       Error::add('initial_rn','Initial RN and North/East/Elevation can not be specified at the same time');
+      if (!Field::validate('rn',$input['initial_rn'])) {
+        Error::add('initial_rn','Must be numeric');
+      }
     }
     // If no RN then all others - unless we have a krotovina_id
     if (!$input['krotovina_id'] AND strlen($input['initial_rn']) == 0 AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
@@ -224,9 +227,6 @@ class Krotovina extends database_object {
       if (!strlen($input['elevation'])) {
         Error::add('elevation','Elevation Required');
       }
-    }
-
-    if (strlen($input['initial_rn']) == 0) {
       if (!Field::validate('northing',$input['northing'])) {
         Error::add('northing','Must be numeric and rounded to three decimals');
       }
@@ -236,12 +236,7 @@ class Krotovina extends database_object {
       if (!Field::validate('elevation',$input['elevation'])) {
         Error::add('easting','Must be numeric and rounded to three decimals');
       }
-    }
-    elseif (strlen($input['initial_rn']) > 0) {
-      if (!Field::validate('rn',$input['initial_rn'])) {
-        Error::add('initial_rn','Must be numeric');
-      }
-    }
+    } // End if No RN
 
     if (Error::occurred()) { return false; }
 
