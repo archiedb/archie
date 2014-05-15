@@ -173,7 +173,8 @@ class Material extends database_object {
   public static function validate($input) { 
 
     // Make sure this is a unique name
-    if (Material::name_to_id($input['name'])) {
+    $uid = Material::name_to_id($input['name']);
+    if ($uid AND ($uid != $input['material_id'])) {
       Error::add('name','Duplicate Material - name already exists');
       return false;
     }
@@ -204,7 +205,7 @@ class Material extends database_object {
 
     // Delete all of the current material->classification mappings, easier then figuring out what we missed
     $uid = Dba::escape($input['material_id']);
-    $sql = "DELETE * FROM `material_classification` WHERE `material`='$uid'";
+    $sql = "DELETE FROM `material_classification` WHERE `material`='$uid'";
     $db_results = Dba::write($sql); 
 
     foreach ($input['classification'] as $classification) {

@@ -74,7 +74,13 @@ switch (\UI\sess::location('action')) {
         require_once \UI\template('/material/edit');
       break;
       case 'update':
-        print_r($_POST);
+        $material = new Material($_POST['material_id']);
+        if (!$material->update($_POST)) {
+          require_once \UI\template('/material/edit');
+        }
+        else {
+          header("Location:" . Config::get('web_path') . '/manage/material/view');
+        }
       break;
       case 'add':
         require_once \UI\template('/material/new');
