@@ -245,6 +245,39 @@ class Feature extends database_object {
 
   } // validate
 
+  /**
+   * add_point
+   * Add a feature spatial_data point
+   */
+  public function add_point($input) { 
+
+    Error::clear(); 
+
+    $retval = SpatialData::create(array(
+      'record'=>$this->uid,
+      'type'=>'feature',
+      'rn'=>$input['rn'],
+      'northing'=>$input['northing'],
+      'easting'=>$input['easting'],
+      'elevation'=>$input['elevation'],
+      'note'=>$input['note']));
+
+    return $retval;
+
+  } //add_point
+
+  /**
+   * del_point
+   * Remove a point from the feature
+   */
+  public function del_point($uid) { 
+
+    $retval = SpatialData::remove($uid);
+
+    return $retval;
+
+  } // del_point
+
 
 } // end class level
 ?>

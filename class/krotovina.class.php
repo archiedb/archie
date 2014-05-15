@@ -255,7 +255,7 @@ class Krotovina extends database_object {
     // Really we're just going to be using the spatialdata class for this, but
     // we want to set the data and type correctly so here we are
     $retval = SpatialData::create(array(
-      'record'=>$input['krotovina_id'],
+      'record'=>$this->uid,
       'type'=>'krotovina',
       'rn'=>$input['rn'],
       'northing'=>$input['northing'],

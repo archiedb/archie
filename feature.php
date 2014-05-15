@@ -18,6 +18,16 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/feature/new');
     }
   break;
+  case 'delpoint':
+    $feature = new Feature($_POST['feature_id']);
+    $feature->del_point($_POST['uid']);
+    require_once \UI\template('/feature/view');
+  break;
+  case 'addpoint':
+    $feature = new Feature($_POST['feature_id']);
+    $feature->add_point($_POST);
+    require_once \UI\template('/feature/view');
+  break;
   case 'view':
     $feature = new Feature(\UI\sess::location('2'));
     require_once \UI\template('/feature/view');
