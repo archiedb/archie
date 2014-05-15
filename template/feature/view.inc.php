@@ -26,7 +26,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>Easting</th>
   <th>Elevation</th>
   <th>Note</th>
-  <th>&nsbp;</th>
+  <th>&nbsp;</th>
 </tr>
 <?php 
 $spatialdata = SpatialData::get_record_data($feature->uid,'feature'); 
