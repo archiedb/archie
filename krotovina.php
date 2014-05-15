@@ -18,6 +18,16 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/krotovina/new');
     }
   break;
+  case 'delpoint':
+    $krotovina = new Krotovina($_POST['krotovina_id']);
+    $krotovina->del_point($_POST['uid']);
+    require_once \UI\template('/krotovina/view');
+  break;
+  case 'addpoint':
+    $krotovina = new Krotovina($_POST['krotovina_id']);
+    $krotovina->add_point($_POST);
+    require_once \UI\template('/krotovina/view');
+  break;
   case 'view':
     $krotovina = new Krotovina(\UI\sess::location('2'));
     require_once \UI\template('/krotovina/view');

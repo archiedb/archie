@@ -244,6 +244,41 @@ class Krotovina extends database_object {
 
   } // validate
 
+  /**
+   * add_point
+   * Add a krotovina spatial_data point
+   */
+  public function add_point($input) { 
+
+    Error::clear();
+
+    // Really we're just going to be using the spatialdata class for this, but
+    // we want to set the data and type correctly so here we are
+    $retval = SpatialData::create(array(
+      'record'=>$input['krotovina_id'],
+      'type'=>'krotovina',
+      'rn'=>$input['rn'],
+      'northing'=>$input['northing'],
+      'easting'=>$input['easting'],
+      'elevation'=>$input['elevation'],
+      'note'=>$input['note']));
+
+    return $retval;
+
+  } // add_point
+
+  /*
+   * del_point
+   * Remove a point from the krotovina record
+   */
+  public function del_point($uid) { 
+
+    $retval = SpatialData::remove($uid);
+
+    return $retval;
+
+  } // del_point
+
 
 } // end class level
 ?>

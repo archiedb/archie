@@ -5,6 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="pull-right">
   <a href="<?php echo Config::get('web_path'); ?>/krotovina/edit/<?php echo scrub_out($krotovina->uid); ?>" class="btn">Edit Krotovina</a>
+  <a class="btn btn-success" href="#addspatial" role="button" data-toggle="modal">Add Spatial Point</a>
 </p>
 <h3><?php echo $krotovina->site->name . ' ' . $krotovina->record; ?>
   <small>Entered by <?php echo $krotovina->user->username; ?> on <?php echo date("d-M-Y H:i:s",$krotovina->created); ?></small>
@@ -13,11 +14,10 @@ if (INIT_LOADED != '1') { exit; }
 <?php Event::display('errors'); ?>
 <table class="table table-hover table-bordered table-white">
 <tr>
-  <th>Keywords</th><td><?php echo scrub_out($krotovina->keywords); ?></em></td>
-  <th>User</th><td><?php echo scrub_out($krotovina->user->name); ?></td>
+  <th>Description</th><td><?php echo scrub_out($krotovina->description); ?></td>
 </tr>
 <tr>
-  <th>Description</th><td colspan="3"><?php echo scrub_out($krotovina->description); ?></td>
+  <th>Other Notes</th><td><?php echo scrub_out($krotovina->keywords); ?></em></td>
 </tr>
 </table>
 <h5>Krotovina Spatial Information</h5>
@@ -28,6 +28,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>Easting</th>
   <th>Elevation</th>
   <th>Note</th>
+  <th>&nbsp;</th>
 </tr>
 <?php 
 $spatialdata = SpatialData::get_record_data($krotovina->uid,'krotovina'); 
@@ -39,6 +40,11 @@ foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']);
   <td><?php echo scrub_out($spatialdata->easting); ?></td>
   <td><?php echo scrub_out($spatialdata->elevation); ?></td>
   <td><?php echo scrub_out($spatialdata->note); ?></td>
+  <td>
+    <a href="#confirmdel_<?php echo scrub_out($spatialdata->uid); ?>" class="btn btn-danger" role="button" data-toggle="modal">Remove</a>
+    <?php include \UI\template('/krotovina/modal_confirmdel_point'); ?>
+  </td>
 </tr>
 <?php } ?>
 </table>
+<?php require_once \UI\template('/krotovina/modal_add_point'); ?>

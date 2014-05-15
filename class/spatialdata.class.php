@@ -63,6 +63,26 @@ class SpatialData extends database_object {
 	} // refresh
 
   /**
+   * remove
+   * Delete a record
+   * Input should be uid
+   */
+  public static function remove($uid) {
+
+    // Load it we need to track this
+    $spatialdata = new SpatialData($uid);
+
+    $uid = Dba::escape($uid);
+    $sql = "DELETE FROM `spatial_data` WHERE `uid`='$uid' LIMIT 1";
+    $db_results = Dba::write($sql); 
+
+    Event::record('SpatialData','Deleted Spatial Data UID:' . $uid . ' RN:' . $spatialdata->station_index . ' North:' . $spatialdata->northing . ' East:' . $spatialdata->easting . ' Elev:' . $spatialdata->elevation . ' Note:' . $spatialdata->note);
+
+    return $db_results;
+
+  } // remove
+
+  /**
    * create
    * Enter in a new record
    * Input array should be array('record','type','rn','northing','easting','elevation','note');
@@ -107,30 +127,68 @@ class SpatialData extends database_object {
     // just fails
     $retval = true;
 
-    if (!Field::validate('rn',$input['rn'])) { 
-      Event::error('SpatialData',$intpu['rn'] . ' is not a valid RN');
-      $retval = false;
+    // If specified
+    if (strlen($input['rn'])) { 
+      if (!Field::validate('rn',$input['rn'])) { 
+        Event::error('SpatialData',$input['rn'] . ' is not a valid RN');
+        Error::add('Total Station Index','Invalid RN specified');
+        $retval = false;
+      }
     }
 
     if (strlen($input['rn']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
       Event::error('SpatialData',$input['rn'] . ' was specified in addition to easting/northing or elevation');
+      Error::add('Total Station Index','RN and Elevation/Northing/Easting specified, only one may be set');
       $retval = false;
     }
 
-    // Make sure this RN + Record + Type is unique
-    $rn = Dba::escape($input['rn']);
-    $type = Dba::escape($input['type']);
-    $record = Dba::escape($input['record']);
-    $sql = "SELECT * FROM `spatial_data` WHERE `station_index`='$rn' AND `record_type`='$type' AND `record`='$record'";
-    $db_results = Dba::read($sql);
+    if (strlen($input['rn'])) {
+      // Make sure this RN + Record + Type is unique
+      $rn = Dba::escape($input['rn']);
+      $type = Dba::escape($input['type']);
+      $record = Dba::escape($input['record']);
+      $sql = "SELECT * FROM `spatial_data` WHERE `station_index`='$rn' AND `record_type`='$type' AND `record`='$record'";
+      $db_results = Dba::read($sql);
 
-    $row = Dba::fetch_assoc($db_results); 
-    if (count($row)) {
-      if ($row['uid']) { 
+      $row = Dba::fetch_assoc($db_results); 
+      if (isset($row['uid'])) { 
         Event::error('SpatialData','Attempted to add duplicate record - ' . $input['rn'] . ' -> ' . $input['type'] . ' - ' . $input['record']); 
+        Error::add('Total Station Index','RN Already assoicated with this record');
         $retval = false; 
       }
-    }
+    } // end if RN
+    else { 
+      // Make sure that the northing/easting/elevation are unique
+      $northing = Dba::escape($input['northing']); 
+      $easting = Dba::escape($input['easting']); 
+      $elevation = Dba::escape($input['elevation']);
+      $type = Dba::escape($input['type']);
+      $record = Dba::escape($input['record']);
+      $sql = "SELECT * FROM `spatial_data` WHERE `northing`='$northing' AND `easting`='$easting' AND `elevation`='$elevation' AND `record_type`='$type' AND `record`='$record'";
+      $db_results = Dba::read($sql); 
+
+      $row = Dba::fetch_assoc($db_results);
+      if (isset($row['uid'])) {
+        Event::error('SpatialData','Attempted to add duplicate record - ' . $input['northing'] . ' / ' . $input['easting'], ' / ' . $input['elevation'] . ' -> ' . $input['type'] . ' / ' . $input['record']);
+        Error::add('Northing / Easting / Elevation','Point already assoicated with this record');
+        $retval = false;
+      }
+
+      // Make sure northing/easting/elevation are valid
+      if (!Field::validate('northing',$input['northing'])) {
+        Error::add('Northing','Invalid Value, must be numeric and rounded to 3 places');
+        $retval = false;
+      }
+      if (!Field::validate('easting',$input['easting'])) {
+        Error::add('Easting','Invalid Value, must be numeric and rounded to 3 places');
+        $retval = false;
+      }
+      if (!Field::validate('elevation',$input['elevation'])) {
+        Error::add('Elevation','Invalid Value, must be numeric and rounded to 3 places');
+        $retval = false;
+      }
+        
+    } // if northing/easting/elevation
 
     return $retval; 
 

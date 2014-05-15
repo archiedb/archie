@@ -30,7 +30,7 @@ class Field {
       break;
       case 'rn':
         // Must be Int
-        if (!is_numeric($value)) {
+        if (!is_numeric($value) ) {
           $retval = false;
         }
       break;
