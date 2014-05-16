@@ -1,8 +1,11 @@
--------------------------------------------------------------------------------
----------                README - Archie - Pre-release              -----------
--------------------------------------------------------------------------------
+ARCHIE
+=======
 
-Contents:
+An open source digitial inventory system designed for field and lab use by
+archelogists.  
+
+Contents
+--------
 
   1. License
   2. Contact Info
@@ -19,9 +22,9 @@ Contents:
   Hate it?  Love it?  Let us know.  Let us know if you think of any
     more features, bugs, etc.
 
-  Public Source Repository: https://github.com/archiedb/archie
-  Website: http://archiedb.com
-  E-mail: contact@archiedb.com
+  Public Source Repository: [GitHub Repo](https://github.com/archiedb/archie)
+  Website: [Archiedb.com](http://archiedb.com)
+  E-mail: [contact@archiedb.com](mailto:contact@archiedb.com)
 
 3. Dependencies
 
@@ -43,9 +46,10 @@ Contents:
   running.
 
   Your two cron-jobs should look something like this
-
+<pre>
   */5 * * * * www-data php /var/www/bin/report.cron.php.inc
   */5 * * * * www-data php /var/www/bin/task.cron.php.inc
+</pre>
 
 5. QRCode Cache Directory
 
