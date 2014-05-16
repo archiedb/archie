@@ -55,6 +55,14 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo \UI\boolean_word(\debug\check_time_limit()); ?></td>
 </tr>
 <tr>
+  <td>PHP Uploads Enabled</td>
+  <td><?php echo \UI\boolean_word(\debug\check_uploads()); ?></td>
+</tr>
+<tr>
+  <td>PHP Uploads at least 20MB</td>
+  <td><?php echo \UI\boolean_word(\debug\check_upload_size(),\debug\return_upload_size()); ?></td>
+</tr>
+<tr>
   <td>QRCode Cache Directory Writeable</td>
   <td><?php echo \UI\boolean_word(\debug\check_qrcode_cache_writeable()); ?></td>
 </tr>
