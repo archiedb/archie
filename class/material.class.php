@@ -215,6 +215,15 @@ class Material extends database_object {
       $db_results = Dba::write($sql);
     }
 
+    // Update the name of the material
+    $uid = Dba::escape($input['material_id']);
+    $name = Dba::escape($input['name']);
+    $sql = "UPDATE `material` SET `name`='$name' WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql);
+
+    // Record this change incase this is actually bad juju
+    Event::record('Material','NAME CHANGE - Old ' . $this->name . ' --> New ' . $name);
+
     $this->refresh();
 
     return true;

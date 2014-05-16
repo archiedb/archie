@@ -7,10 +7,13 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" id="edit_material" method="post" action="<?php echo Config::get('web_path'); ?>/manage/material/update">
-<div class="control-group span8<?php Error::display_class('name'); ?>">
+<div class="control-group span8">
+</div>
+<div class="control-group span10<?php Error::display_class('name'); ?>">
   <label class="control-label" for="inputName">Name</label>
   <div class="controls">
     <input id="inputName" name="name" type="text" value="<?php echo scrub_out($material->name); ?>" />
+    <span class="help-inline label label-important">Changing the name may invalidate data</span>
   </div>
 </div>
 <div class="control-group offset1 span10">
