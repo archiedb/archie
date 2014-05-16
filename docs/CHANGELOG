@@ -1,214 +1,275 @@
-FIX: report->stale() for siterecords report
-REFACTOR: Implement new site methodology
-ADD: Level reports
-ADD: Visual indication of a closed level
-- Correct access checks, and add required variables
-- Add level and site access checks
-- Add skeleton site table and logical structure
-- Fix bug with uppercase extensions
-- Remove unused table locking, not required for level
-- Initial work on 3dmodel/media files for levels, krotovina and features
-- Fix file permissions
-- Fix regression from prevent duplicate username fix.
-- Formating
-- Disable awesome
-- Fix initial level form check
-- Add close user,date tracking - Make the user opening the level the first excavator - Add sillyness
-- Add L.U to level view - Level records are now sortable
-- Improve questions on level form - Add more info to single view
-- Fix bad validation
-- Make level form open/close/edit work
-- Image upload/edit/delete on level now works
-- Fix content to deal with multiple types of parent records
-- Add mime field and move image.type to image.mime
-- Change username --> name for stats of users
-- Add concept of closed to database
-- Add notes,description,difference fields to level table
-- Adding a level works - Viewing a level works - Editing a level is in progress
-- Add additional view types (level,krotovina,feature) - Add UI references to new field names - white-space change
-- Done for the day
-- Add user,created,updated to new tables
-- Initial work on krotovina, level and feature classes - Fix typo in update for database
-- New database upgrade - Updated / fixed typos on feature, krotovina and level forms
-- Creation forms for krotovina and feature
-- Add excavation forms
-- Update .gitignor for windows stuff - Add krotovina, feature and level to index - Some fonts - Update menu
-- Add level class
-- Add Unit to level table
-- Northing,Easting and Elevation must be greater then zero
-- Increase build to 0005
-- Fix errors carrying over from other pages on new record create
-- Fix stats to be "today" not within last 24hr
-Add classification management interface
-- Fix incorrect sorting on busiest work stats function
-Add level table and enabled to classification and material
-Fix issue where error state wasn't cleared so once you made a mistake you had to start over
-Add classification management interface
-Add material management view with stats on the materials
-Add material management interface
-- Fix visual issues with error reporting on new user creation
-- Fix bug where you could create multiple users of the same username
-Update to the importer
-Merge branch 'master' of github.com:vollmerk/archie
-- Adjust the accuracy of weight,height,thickness and width
-Data generating class for tests
-Add default image for 3dmodels without a thumbnail preview
-Fix #17 - default quanity to 1 if set to 0/notset. does not affect Record updates, only newly entered records.
-Make /view of records read-only make the thumbnail image a link to the "view" for said object (3d model view or fullsize image)
-Add conditional on returning data from thumbnail
-Non-static functions that should be static
-Fix #14 - refactor 'record' and 'thumb' content types into a single 'image' content type
-Fix #11 made the regen 3d model thumbnail work
-whups need to go to sleep though
-Can now edit/delete 3d models, and also added ability to regen 3dmodel thumbnails, and improved thumbnail use
-Now creates thumbnail of stl files
-Adjustment to the permissions structure
-Alpha-sort the serach/sort fields
-Restrict downloading to manages and admins
-Add search for media
-Add ability to search for images and assoicated notes, also fix issue with multiple images on a single record causing search to return multiple rows of the same record
-Improve 3dmodel search so that if you specify a string it will narrow it down to records with 3dmodels with that in the notes
-Update view for new 3dmodel content type
-Add ability to search / sort by existance of a 3dmodel
-Add concept of 3dmodel media type, improve logic for uploading and simplify interface
-Tweak name in header
-Use filename, not entire directory
-Minor cleanup
-Improve media/3dviewer interface, enable deletion of media items
-Add notes and user to content objects, improve interface for 3dmodels and restrict it to just stl files
-Remove some options that kill browsers
-Initial attempt at integrating 3d view, crashes my browser on complex files :(
-Temp fix for file to big
-Fixed users not having access to themselves
-add [header]/[footer] to station import notes
-Fix #1 Add warnings concept and adjust import so that it allows unknown rns through as warnings
-Make the error message clearer
-Add elevation.northing and easting to csv report
-Fix #1 Import of station data works.
-Reduce accuracy of xyz data
-Arg inputs aren't passed if disabled, somewhat annoying
-Typo due to copy/paste mishap
-Implement updating of elevation/easting/northing
-Standardize button color
-Improve error display
-Standardize appearance
-Add description and user to other_media uploads
-Add xyz data fields, and update view to match edit screen
-Re-format new record form
-Fix re-direct on enable/disable
-Improve enable/disable on users, seperate modal into its own file
-Fix #5 You can now modify the access level of a user through the web interface
-Remove old files, update to reflect move to github
-Add interface for data import, import does not work yet
-- Update database to build 003, adds station data fields and user and notes to media
-Make edit_record conform to new template org
-Don't show empty table if no attached media
-Make notes searchable and sortable
-Fix thumbnail layout if more then 4 images are on a single record
-Add ply mime type
-Add ability to upload stl and ply files, testing interface change for media items
-Allow login redirect to record view/edit pages (QRCode scans primarly)
-Regenerate thumbnails added fixed thumbnail generation race condition
-Now make little pretty labels that tell you if your report might be out of date
-Improve how request is generated so that hitting refresh won't re-request generation
-Add ability to sort by everything via drop-down on view page
-Add user caching
-Take an update oppertunity to optimize our high-turnover tables
-extranious s caused view gc to fail
-Add missing fields to search and fix PHP warnings
-Fix issue where reciptes weren't correctly re-generated
-Only say it worked, if it worked
-Add ability to update the nodes on an image after its been uploaded
-Missed it on the view
-Fix upload code and add in support for notes on images
-Add fileupload js from bootstrap and style our upload form a little better.
-Create closable event notices for things like scheduling of a report
-Rearrange system tools
-Cleanup some php warnings
-Add caching for classification and material
-Fix false postive failure on dba::write on update
-Fix UNIT search
-Add material and classification to search
-View print ticket opens in a new window
-Add user search, fix but where if you search before you view it breaks pagination
-Database 0002, improves media/image handling
-Make thumbnails 120x120 instead of 75x75
-Missed a field
-Fix #23 - Reduced size of frames around thumbnails
-Thumbnails are now 75x75 max, and ratio is maintained
-Restrict reports to admins
-CSV generation now done as scheduled cronjob, bin/report.cron.php.inc must be added to your cron, and run as the web-user for reports to work
-Merge branch 'master' of gitorious.org:archie/archie
-Add sorting and searching by catalog id
-Typos
-Fix a few potential parse errors by encaspulating them in checks
-Remove $GLOBALS[user] references, and remove unused files
-Search now uses the new method, also remembers the field you last searched for
-Update build
-Add ability to sort records view, and implement good pageination - breaks search though
-Improve Image delete functionality, reduce replicated code
-Add sql for notes field on image table
-Add ability to delete images assoicated with records, currently restricted to admins only
-Add 'online' tabe to /users/manage, shows all users with an active session
-Ability to create new users in web interface
-Improve \UI\template() to save typing
-- Users can edit themselves - Admins can enable/disable users from interface - Admin users page now has "Enabled"/"Disabled"/"All" sections
-- Edit of user now works
-- Remove globals references
-- Add ability to edit/update a user - Fix stats (I think?)
-- Switched to encaspulated user and location information under \UI namespace - Testing out \UI\template() which follows /template/[page]/[action].inc.php format   but can be overridden by passing the exact name you want
-- Ticket opens in new window - Start of a User view, with ability to reset their own password
-- Add link to "LAST RECORD" on new record page - Add logout button!
-- Build updated to 0002
-- Database upgrade now works - Add Database 0001 update
-- Add checks for database is up to date - Add page with info on updating database
-- Add version to footer
-- Add update functionality - Add initial checks for code and the db being up to date - Add check for filesystem write access on required directories
-- Set Build, used by update-checker
-- Make ticket font BOLD
-- Fix typo in menu, CVS --> CSV
-- Add order by functionality, without any ui to back it up
-- Fix silly stats - Fix a few more php notices
-- Fix generation of qrcode, unexpected QRCode::png return value caused false failure
-- Add favicon (thanks famfamfam!) - Fix PHP Warnings in a few different classes - Add debug info section to manage - Add Regenerate QRcode button/function - Fix messy handling of invalid content on media pages
-- Add new index page with silly stats, maybe we'll add graphs later?
-- Forgot a link
-- Improve image display on records
-- Fix delete, cleans up thumbnails and tickets as expected now
-- Add link to print ticket from multi-report view
-- Add fpdf lib - Fix cached record causing display after update to look wrong - Add "ticket" pdf generation support
-- Adjust qrcode to fit a 1" printed square
-Updated sql structure file
-New SQL
-- Removed useless operations from init script - Made constructor and clone private on Config:: class - Fix update of single record, was missing USER ID - Fix error generated by unknown user on record::update
-- Add QRcode image to record view - /media now references image.php
-- Add script to regenerate qrcodes - Add Content:: support for qrcode read/write
-- Broken record delete... don't use this
-- Fix classification not set correctly on record edit
-- Add testing framework
-- Add display('general') error to new record
-New gitignore
-- Fix clean url not working if there is a trailing / on the web_path
-Ignore the .htaccess file as its site specific
-- Removed simpletest, think I'm going to use enhance php - Fix record class so it isnt faking user check anymore - Add define('NO_LOG') which disables logging, useful for unit tests
-Add php-simpletest lib and a /test dir
-- Known bug, edit record classification doesn't show existing classification - Moved edit button on view - Added 'disabled' print ticket button
-- Update Login to use new style
-Disabling qrcode for now, need to index properly
-- Update 'view' of record, and switch clicking of link on records/ to records/view/# - Update content allowing it to better handle qrcode images
-Generate a QRcode whenever a new record is created
-Add new file used by clean url methods
-Add default rewrite rules
-Add delete confirmation with option to cancel, some migration to the new clean url system
-Classification not Description
-Fix the edit record to match new style
-New Record now saves material and classification on 'create' attempt, even if there is an error
-Using jquery + bootstrap now, ajax has changed, all visual stuff still
-View has div style, and looks a lot less ugly, no new functionality but I hate it less
-Style changes - fixed menu, next for the rest
-Add scriptaculous and phpqrcode library
-Fix RN always being null on new record creation
-move record and user to database_object class
-Added database object class from Ampache, automates caching of reguarlly used objects, uses ram rather then queries. Showing 100 records it saved us 477 SQL commands
-Add GPL license file and a simple readme, along with a .gitignore file so settings.php isn't accidently commited
-Import Signed-off-by: Karl Vollmer <vollmer@ampache.org>
+ CHANGE - Re-word fields on Feature
+ ADD - Ability to add/remove points from features
+ ADD - Ability to add/remove spatial points to krotovina
+ ADD - Ability to edit classification <--> material assoication.
+ UNTESTED - Getting this in before I switch dev boxes, untested material -> classification mapping
+ ADD - Material Edit page
+ FIX - Issue with krotovina error checking
+ FIX - Error checking on feature update
+ ADD - SQL file with initial admin/admin user and material/classification mappings
+ ADD - Ability to create krotovinas
+ FIX - Initial RN/Elevation not being inserted, also make it so it's displayed
+ ADD - Spatialdata class
+ RENAME - Rename table
+ ADD - Ability to update/view/create features
+ ADD - Creation / View / Multi_view of Features
+ ADD - new import type definitions
+ ADD - Field class for standardizing on field validation(not sure if this is the right way). Also make the feature create work
+ ADD - Northing/Easting/Elevation incase they don't have a total station
+ ADD - Management of Sites can now created/edit - no delete/disable yet
+ FIX - Make principal invesgator a text field
+ SYNC - Make edit/new look the same positionally
+ FIX - pre() optimize wasn't running, final build 010 db updates
+ FIX - php warning
+ ADD - Additional db indexes and a site_users table (not done), also remove image from initial feature page
+ ADD - Adding feature stuff
+ CHANGE - Don't drop record, we need that
+ CHANGE - database fields for multi-site support
+ ADD - More site management
+ ADD - Some intitial work to allow folks to edit / create sites
+ ADD - options FollowSymlinks to default htaccess file
+ UPDATE - Database skeleton file
+ FIX - Missing array() init in get_all() function
+ FIX #2 - Don't show last record if there are no last records
+ FIX #3 - Add ability to create classifications
+ FIX - Site->name not referenced correctly
+ ADD - ability to create new materials, they are created in a disabled state ADD - ability to enable/disable materials
+ ADD - Optimize tables query after upgrade has been completed
+ FIX - A potential situation where qrcodes wouldn't get regenerated properly, and it would continue to dump extranious records into the database
+ UPDATE - Level report, still missing the scatter plots, generated by python script UPDATE - Readme to explain how to use cronjobs and writeable QR code cache
+ ADD - Records list to level report
+ ADD - Add Lithostratoigraphic Unit tooltext to L.U. references
+ FIX - References to level->site which should be level->site->name
+ CHANGE - Updated 3dmodel icon
+ CHANGE - Update bootstrap to 2.3.2 from 2.3.0
+ ADD - Logic so generate report button shows up once level has been closed, includes some debug, to allow generation early
+ ADD - Added close and view buttons to edit level screen
+ Create README.md
+ CHANGE - Add error handling to backup-site.sh script, tells you whats wrong now, and won't try to backup when it's not possible to
+ CHANGE - Cleaned up UI for new records CHANGE - Switched to inverted button and search icon instead of word
+ FIX - Typo in filter name prevented search / sort from working properly
+ FIX: Issue with reports created by multi-site support changes
+ CHANGE: Hide some unused menu options
+ ADD: Comments to the report
+ ADD Working Level Report, missing logic for records,krot and feats
+ ADD: Concept of level image, needed for report generation
+ ADD: database update 009 implements site concept
+ FIX: Don't allow negative values
+ REFACTOR: Adjust for site as an object
+ ADD: Level tests, initial work
+ ADD: New tests for record creation
+ REFACTOR: Remove Config::get('site') in favor of \UI\sess::$user->site->uid for multi-site support
+ CHANGE: version to 'pre-release'
+ UPDATE: Readme with correct source and website addresses
+ FIX: report->stale() for siterecords report
+ REFACTOR: Implement new site methodology
+ ADD: Level reports
+ ADD: Visual indication of a closed level
+ - Correct access checks, and add required variables
+ - Add level and site access checks
+ - Add skeleton site table and logical structure
+ - Fix bug with uppercase extensions
+ - Remove unused table locking, not required for level
+ - Initial work on 3dmodel/media files for levels, krotovina and features
+ - Fix file permissions
+ - Fix regression from prevent duplicate username fix.
+ - Formating
+ - Disable awesome
+ - Fix initial level form check
+ - Add close user,date tracking - Make the user opening the level the first excavator - Add sillyness
+ - Add L.U to level view - Level records are now sortable
+ - Improve questions on level form - Add more info to single view
+ - Fix bad validation
+ - Make level form open/close/edit work
+ - Image upload/edit/delete on level now works
+ - Fix content to deal with multiple types of parent records
+ - Add mime field and move image.type to image.mime
+ - Change username --> name for stats of users
+ - Add concept of closed to database
+ - Add notes,description,difference fields to level table
+ - Adding a level works - Viewing a level works - Editing a level is in progress
+ - Add additional view types (level,krotovina,feature) - Add UI references to new field names - white-space change
+ - Done for the day
+ - Add user,created,updated to new tables
+ - Initial work on krotovina, level and feature classes - Fix typo in update for database
+ - New database upgrade - Updated / fixed typos on feature, krotovina and level forms
+ - Creation forms for krotovina and feature
+ - Add excavation forms
+ - Update .gitignor for windows stuff - Add krotovina, feature and level to index - Some fonts - Update menu
+ - Add level class
+ - Add Unit to level table
+ - Northing,Easting and Elevation must be greater then zero
+ - Increase build to 0005
+ - Fix errors carrying over from other pages on new record create
+ - Fix stats to be "today" not within last 24hr
+ Add classification management interface
+ - Fix incorrect sorting on busiest work stats function
+ Add level table and enabled to classification and material
+ Fix issue where error state wasn't cleared so once you made a mistake you had to start over
+ Add classification management interface
+ Add material management view with stats on the materials
+ Add material management interface
+ - Fix visual issues with error reporting on new user creation
+ - Fix bug where you could create multiple users of the same username
+ Update to the importer
+ - Adjust the accuracy of weight,height,thickness and width
+ Data generating class for tests
+ Add default image for 3dmodels without a thumbnail preview
+ Fix #17 - default quanity to 1 if set to 0/notset. does not affect Record updates, only newly entered records.
+ Make /view of records read-only make the thumbnail image a link to the "view" for said object (3d model view or fullsize image)
+ Add conditional on returning data from thumbnail
+ Non-static functions that should be static
+ Fix #14 - refactor 'record' and 'thumb' content types into a single 'image' content type
+ Fix #11 made the regen 3d model thumbnail work
+ whups need to go to sleep though
+ Can now edit/delete 3d models, and also added ability to regen 3dmodel thumbnails, and improved thumbnail use
+ Now creates thumbnail of stl files
+ Adjustment to the permissions structure
+ Alpha-sort the serach/sort fields
+ Restrict downloading to manages and admins
+ Add search for media
+ Add ability to search for images and assoicated notes, also fix issue with multiple images on a single record causing search to return multiple rows of the same record
+ Improve 3dmodel search so that if you specify a string it will narrow it down to records with 3dmodels with that in the notes
+ Update view for new 3dmodel content type
+ Add ability to search / sort by existance of a 3dmodel
+ Add concept of 3dmodel media type, improve logic for uploading and simplify interface
+ Tweak name in header
+ Use filename, not entire directory
+ Minor cleanup
+ Improve media/3dviewer interface, enable deletion of media items
+ Add notes and user to content objects, improve interface for 3dmodels and restrict it to just stl files
+ Remove some options that kill browsers
+ Initial attempt at integrating 3d view, crashes my browser on complex files :(
+ Temp fix for file to big
+ Fixed users not having access to themselves
+ add [header]/[footer] to station import notes
+ Fix #1 Add warnings concept and adjust import so that it allows unknown rns through as warnings
+ Make the error message clearer
+ Add elevation.northing and easting to csv report
+ Fix #1 Import of station data works.
+ Reduce accuracy of xyz data
+ Arg inputs aren't passed if disabled, somewhat annoying
+ Typo due to copy/paste mishap
+ Implement updating of elevation/easting/northing
+ Standardize button color
+ Improve error display
+ Standardize appearance
+ Add description and user to other_media uploads
+ Add xyz data fields, and update view to match edit screen
+ Re-format new record form
+ Fix re-direct on enable/disable
+ Improve enable/disable on users, seperate modal into its own file
+ Fix #5 You can now modify the access level of a user through the web interface
+ Remove old files, update to reflect move to github
+ Add interface for data import, import does not work yet
+ - Update database to build 003, adds station data fields and user and notes to media
+ Make edit_record conform to new template org
+ Don't show empty table if no attached media
+ Make notes searchable and sortable
+ Fix thumbnail layout if more then 4 images are on a single record
+ Add ply mime type
+ Add ability to upload stl and ply files, testing interface change for media items
+ Allow login redirect to record view/edit pages (QRCode scans primarly)
+ Regenerate thumbnails added fixed thumbnail generation race condition
+ Now make little pretty labels that tell you if your report might be out of date
+ Improve how request is generated so that hitting refresh won't re-request generation
+ Add ability to sort by everything via drop-down on view page
+ Add user caching
+ Take an update oppertunity to optimize our high-turnover tables
+ extranious s caused view gc to fail
+ Add missing fields to search and fix PHP warnings
+ Fix issue where reciptes weren't correctly re-generated
+ Only say it worked, if it worked
+ Add ability to update the nodes on an image after its been uploaded
+ Missed it on the view
+ Fix upload code and add in support for notes on images
+ Add fileupload js from bootstrap and style our upload form a little better.
+ Create closable event notices for things like scheduling of a report
+ Rearrange system tools
+ Cleanup some php warnings
+ Add caching for classification and material
+ Fix false postive failure on dba::write on update
+ Fix UNIT search
+ Add material and classification to search
+ View print ticket opens in a new window
+ Add user search, fix but where if you search before you view it breaks pagination
+ Database 0002, improves media/image handling
+ Make thumbnails 120x120 instead of 75x75
+ Missed a field
+ Fix #23 - Reduced size of frames around thumbnails
+ Thumbnails are now 75x75 max, and ratio is maintained
+ Restrict reports to admins
+ CSV generation now done as scheduled cronjob, bin/report.cron.php.inc must be added to your cron, and run as the web-user for reports to work
+ Add sorting and searching by catalog id
+ Typos
+ Fix a few potential parse errors by encaspulating them in checks
+ Remove $GLOBALS[user] references, and remove unused files
+ Search now uses the new method, also remembers the field you last searched for
+ Update build
+ Add ability to sort records view, and implement good pageination - breaks search though
+ Improve Image delete functionality, reduce replicated code
+ Add sql for notes field on image table
+ Add ability to delete images assoicated with records, currently restricted to admins only
+ Add 'online' tabe to /users/manage, shows all users with an active session
+ Ability to create new users in web interface
+ Improve \UI\template() to save typing
+ - Users can edit themselves - Admins can enable/disable users from interface - Admin users page now has "Enabled"/"Disabled"/"All" sections
+ - Edit of user now works
+ - Remove globals references
+ - Add ability to edit/update a user - Fix stats (I think?)
+ - Switched to encaspulated user and location information under \UI namespace - Testing out \UI\template() which follows /template/[page]/[action].inc.php format but can be overridden by passing the exact name you want
+ - Ticket opens in new window - Start of a User view, with ability to reset their own password
+ - Add link to "LAST RECORD" on new record page - Add logout button!
+ - Build updated to 0002
+ - Database upgrade now works - Add Database 0001 update
+ - Add checks for database is up to date - Add page with info on updating database
+ - Add version to footer
+ - Add update functionality - Add initial checks for code and the db being up to date - Add check for filesystem write access on required directories
+ - Set Build, used by update-checker
+ - Make ticket font BOLD
+ - Fix typo in menu, CVS --> CSV
+ - Add order by functionality, without any ui to back it up
+ - Fix silly stats - Fix a few more php notices
+ - Fix generation of qrcode, unexpected QRCode::png return value caused false failure
+ - Add favicon (thanks famfamfam!) - Fix PHP Warnings in a few different classes - Add debug info section to manage - Add Regenerate QRcode button/function - Fix messy handling of invalid content on media pages
+ - Add new index page with silly stats, maybe we'll add graphs later?
+ - Forgot a link
+ - Improve image display on records
+ - Fix delete, cleans up thumbnails and tickets as expected now
+ - Add link to print ticket from multi-report view
+ - Add fpdf lib - Fix cached record causing display after update to look wrong - Add "ticket" pdf generation support
+ - Adjust qrcode to fit a 1" printed square
+ Updated sql structure file
+ New SQL
+ - Removed useless operations from init script - Made constructor and clone private on Config:: class - Fix update of single record, was missing USER ID - Fix error generated by unknown user on record::update
+ - Add QRcode image to record view - /media now references image.php
+ - Add script to regenerate qrcodes - Add Content:: support for qrcode read/write
+ - Broken record delete... don't use this
+ - Fix classification not set correctly on record edit
+ - Add testing framework
+ - Add display('general') error to new record
+ New gitignore
+ - Fix clean url not working if there is a trailing / on the web_path
+ Ignore the .htaccess file as its site specific
+ - Removed simpletest, think I'm going to use enhance php - Fix record class so it isnt faking user check anymore - Add define('NO_LOG') which disables logging, useful for unit tests
+ Add php-simpletest lib and a /test dir
+ - Known bug, edit record classification doesn't show existing classification - Moved edit button on view - Added 'disabled' print ticket button
+ - Update Login to use new style
+ Disabling qrcode for now, need to index properly
+ - Update 'view' of record, and switch clicking of link on records/ to records/view/# - Update content allowing it to better handle qrcode images
+ Generate a QRcode whenever a new record is created
+ Add new file used by clean url methods
+ Add default rewrite rules
+ Add delete confirmation with option to cancel, some migration to the new clean url system
+ Classification not Description
+ Fix the edit record to match new style
+ New Record now saves material and classification on 'create' attempt, even if there is an error
+ Using jquery + bootstrap now, ajax has changed, all visual stuff still
+ View has div style, and looks a lot less ugly, no new functionality but I hate it less
+ Style changes - fixed menu, next for the rest
+ Add scriptaculous and phpqrcode library
+ Fix RN always being null on new record creation
+ move record and user to database_object class
+ Added database object class from Ampache, automates caching of reguarlly used objects, uses ram rather then queries. Showing 100 records it saved us 477 SQL commands
+ Add GPL license file and a simple readme, along with a .gitignore file so settings.php isn't accidently commited
+ Import Signed-off-by: Karl Vollmer <vollmer@ampache.org>
