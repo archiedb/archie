@@ -46,6 +46,17 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/krotovina/edit');
     }
   break;
+  case 'sort':
+    $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'created';
+    $order = \UI\sess::location('3') ? strtoupper(\UI\sess::location('3')) : '';
+    $view = new View();
+    $view->set_type('krotovina');
+    $view->set_sort($field,$order);
+    $view->set_start(0);
+    $krotovinas = $view->run();
+    require_once \UI\template('/krotovina/show');
+  break;
+
   default: 
     $view = new View();
     $view->reset();

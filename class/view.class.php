@@ -397,6 +397,30 @@ class View {
 
   } // get_sort
 
+  /** 
+   * get_field_sort_order
+   * Returns ASC/DESC for the specified field, digs it out from $this->_state['sort']
+   */
+  public function get_field_sort_order($field) {
+
+    if (!isset($this->_state['sort'][$field])) {
+      return false; 
+    }
+
+    return $this->_state['sort'][$field];
+
+  } // get_field_sort_order
+
+  /**
+   * display_sort
+   * Shows the sort icon
+   */
+  public function display_sort($field) { 
+
+    echo " " . \UI\sort_icon($this->get_field_sort_order($field));
+
+  } // display_sort
+
   /**
    * get_sort_sql
    * Construct the sorting sql statement 
@@ -548,6 +572,7 @@ class View {
     return $allowed_filters;
 
   } // get_allowed_sorts
+
   /**
    * sql_filter
    * Take a filter name and value (we're filtering) and return the

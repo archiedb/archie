@@ -2,7 +2,7 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 /**
- * referrer
+ * return_url
  * We have a specific list of urls we're allowed to redirect to!
  */
 function return_url($input) {
@@ -38,6 +38,27 @@ function return_url($input) {
   return '/'; 
 
 } // return url
+
+/**
+ * sort_icon
+ * Takes a field and sort (ASC/DESC), and returns the html for the correct icon baesd on its current sort
+ * state
+ */
+function sort_icon($sort) {
+
+  // Easy!
+  if (!$sort) { return ''; }
+
+  if ($sort == 'ASC') { 
+    $return = '<i class="icon-arrow-down"></i>';
+  }
+  else { 
+    $return = '<i class="icon-arrow-up"></i>';
+  }
+
+  return $return;
+
+} // sort_icon
 
 /**
  * field_name

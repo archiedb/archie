@@ -24,7 +24,7 @@ if (INIT_LOADED != '1') { exit; }
 <table class="table table-hover table-bordered table-condensed">
   <thead>
   <tr>
-    <th><a href="<?php echo Config::get('web_path'); ?>/krotovina/sort/catalog_id">Catalog #</a></th>
+    <th><a href="<?php echo Config::get('web_path'); ?>/krotovina/sort/catalog_id">Catalog #</a> <?php $view->display_sort('catalog_id'); ?></th>
   	<th>Keywords</th>
     <th>Description</th>
     <th>&nbsp;</th>

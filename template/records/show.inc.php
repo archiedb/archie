@@ -24,15 +24,15 @@ if (INIT_LOADED != '1') { exit; }
 <table class="table table-hover table-bordered table-condensed">
   <thead>
   <tr>
-    <th><a href="<?php echo Config::get('web_path'); ?>/records/sort/catalog_id">Catalog #</a></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/station_index">R.N.</a></th>
-	  <th><a href="<?php echo Config::get('web_path'); ?>/records/sort/unit">Unit</a></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/quad">Quad</a></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/level">Level</a></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/feature">Feature</a></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/lsg_unit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></a></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/material">Material</a></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/classification">Class.</a></th>
+    <th><a href="<?php echo Config::get('web_path'); ?>/records/sort/catalog_id">Catalog #</a><?php $view->display_sort('catalog_id'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/station_index">R.N.</a><?php $view->display_sort('station_index'); ?></th>
+	  <th><a href="<?php echo Config::get('web_path'); ?>/records/sort/unit">Unit</a><?php $view->display_sort('unit'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/quad">Quad</a><?php $view->display_sort('quad'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/level">Level</a><?php $view->display_sort('level'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/feature">Feature</a><?php $view->display_sort('feature'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/lsg_unit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></a><?php $view->display_sort('lsg_unit'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/material">Material</a><?php $view->display_sort('material'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/classification">Class.</a><?php $view->display_sort('classification'); ?></th>
     <th>&nbsp;</th>
   </tr>
   </thead>
