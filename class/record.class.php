@@ -438,9 +438,13 @@ class Record extends database_object {
 			Error::add('Quad','Invalid Quad selected'); 
 		} 
 
-		if (!preg_match("/[A-Za-z0-9]/",$input['feature']) AND strlen($input['feature'])) { 
-			Error::add('Feature','Feature must be numeric'); 
-		} 
+    // Feature must exist first
+    if (strlen($input['feature'])) { 
+      $feature_uid = Feature::get_uid_from_record($input['feature']); 
+      if (!$feature_uid) {
+  			Error::add('Feature','Feature not found, please create feature record first'); 
+  		} 
+    } // if feature specified
 
 		// Notes... character limit
 		if (strlen($input['notes']) > 500) { 

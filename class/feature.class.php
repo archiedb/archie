@@ -278,6 +278,31 @@ class Feature extends database_object {
 
   } // del_point
 
+  /**
+   * get_uid_from_record
+   * Return the UID from the record 
+   */
+  public static function get_uid_from_record($record,$site='') { 
 
-} // end class level
+    if (!$site) { 
+      $site = \UI\sess::$user->site->uid;
+    }
+
+    // Remove the F- if it's there
+    $catalog_id = ltrim($record,'F-');
+
+    $site = Dba::escape($site);
+    $catalog_id = Dba::escape($catalog_id); 
+
+    $sql = "SELECT * FROM `feature` WHERE `catalog_id`='$catalog_id' AND `site`='$site'";
+    $db_results = Dba::read($sql); 
+    $results = Dba::fetch_assoc($db_results);
+
+    if (!isset($results['uid'])) { return false; }
+
+    return $results['uid'];
+
+  } // get_uid_from_record
+
+} // end feature level
 ?>
