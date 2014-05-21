@@ -547,13 +547,16 @@ class Level extends database_object {
     $sql = "SELECT * FROM `level` WHERE `site`='$site' AND `record`='$record'";
     $db_results = Dba::read($sql); 
 
-    $results = Dba::fetch_assoc($db_results); 
+    $row = Dba::fetch_assoc($db_results); 
 
-    if (!isset($results['uid'])) { 
+    if (!isset($row['uid'])) { 
       return false;
     }
 
-    return $results['uid'];
+    // Cache it
+    parent::add_to_cache('level',$row['uid'],$row);
+
+    return $row['uid'];
 
   } // get_uid_from_record
 
