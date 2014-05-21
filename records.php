@@ -62,7 +62,6 @@ switch (\UI\sess::location('action')) {
 		} 
 		else { 
       Event::add('success','Record has been updated, thanks!','small'); 
-			$record = new Record($record->uid); 
 			require_once \UI\template('/records/view'); 
 	  } 
 	break; 

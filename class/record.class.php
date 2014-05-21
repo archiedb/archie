@@ -37,7 +37,7 @@ class Record extends database_object {
 		if (!is_numeric($uid)) { return false; } 
 		
 		$row = $this->get_info($uid,'record'); 
-	
+
 		foreach ($row as $key=>$value) { $this->$key = $value; } 
 
 		// Setup the Material and classification
@@ -95,8 +95,9 @@ class Record extends database_object {
 	 */
 	public function refresh() { 
 
-		Record::remove_from_cache('records',$this->uid); 
-		$this->__construct($this->uid); 
+		Record::remove_from_cache('record',$this->uid); 
+		$retval = $this->__construct($this->uid); 
+
 
 	} // refresh
 
@@ -445,6 +446,14 @@ class Record extends database_object {
   			Error::add('Feature','Feature not found, please create feature record first'); 
   		} 
     } // if feature specified
+
+    // The level must exist!
+    if (strlen($input['level'])) {
+      $level_uid = Level::get_uid_from_record($input['level']);
+      if (!$level_uid) {
+        Error::add('Level','Level not found, please create level record first');
+      }
+    }
 
 		// Notes... character limit
 		if (strlen($input['notes']) > 500) { 

@@ -531,5 +531,30 @@ class Level extends database_object {
 
   } // validate_close
 
+  /**
+   * get_uid_from_record
+   * Take the record and current site and return the UID (if it exists)
+   */
+  public static function get_uid_from_record($record,$site='') {
+
+    if (!$site) {
+      $site = \UI\sess::$user->site->uid;
+    }
+
+    $site = Dba::escape($site);
+    $sql = "SELECT * FROM `level` WHERE `site`='$site' AND `record`='$record'";
+    $db_results = Dba::read($sql); 
+
+    $results = Dba::fetch_assoc($db_results); 
+
+    if (!isset($results['uid'])) { 
+      return false;
+    }
+
+    return $results['uid'];
+
+  } // get_uid_from_record
+
+
 } // end class level
 ?>
