@@ -490,6 +490,8 @@ class Level extends database_object {
       return false;
     }
 
+    $this->refresh();
+
     return true; 
 
   } // close
