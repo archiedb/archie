@@ -18,7 +18,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>CATALOG ID</th><td><?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></td>
 </tr>
 <tr>
-  <th>LEVEL</th><td><?php echo scrub_out($record->level); ?></td>
+  <th>LEVEL</th><td><?php echo \UI\record_link($record->level,'level'); ?></td>
   <th><abbr title="Lithostratoigraphic Unit">L. U.</abbr></th><td><?php echo scrub_out($record->lsg_unit->name); ?></td>
 </tr>
 <tr>
@@ -27,7 +27,7 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 <tr>
   <th>QUAD</th><td><?php echo scrub_out($record->quad->name); ?></td>
-  <th>FEATURE</th><td><?php echo scrub_out($record->feature); ?></td>
+  <th>FEATURE</th><td><?php echo \UI\record_link($record->feature,'feature'); ?></td>
 </tr>
 <tr>
   <th>WEIGHT</th><td><?php echo scrub_out($record->weight); ?> grams</td>
