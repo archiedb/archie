@@ -468,7 +468,9 @@ class content extends database_object {
 
     # We have to calc the length here
     $records = $level->records(); 
-    $total_pages = ceil(3 + (count($records)/55)); 
+    $total_pages = ceil(2 + (count($records)/55)); 
+    // Once we add the scatter plots back in 
+    //$total_pages = ceil(3 + (count($records)/55)); 
     $current_page = 1; 
 
     $pdf = new FPDF(); 
@@ -501,7 +503,7 @@ class content extends database_object {
 
     # Header
 		$pdf->Text('3','5',$level->site->name . ' EXCAVATION LEVEL FORM');
-    $pdf->Text('3','9','OSU ARCHAEOLOGY FIELD SCHOOL'); 
+    $pdf->Text('3','9',$level->site->description); 
     $pdf->Text('169','5','Started: ' . date('d-M-Y',$level->created)); 
     $pdf->Text('169','9','Closed: ' . date('d-M-Y',$level->closed_date)); 
     $pdf->Line('0','12','220','12');
@@ -573,13 +575,14 @@ class content extends database_object {
     $pdf->SetFontSize('24');
     $pdf->Text('52','270','Unit ' . $level->unit . ' ' . $level->quad->name . ' - Level ' . $level->record . ' - LU ' . $level->lsg_unit->name); 
 
+/*
     # Page 2, grids
     $pdf->AddPage(); 
     $pdf->SetFontSize('10');
     $pdf->SetFont('Times');
     $current_page++; 
     $pdf->Text('200','295',$current_page. '/' . $total_pages); 
-
+*/
     # Page 3, questions
     $pdf->AddPage(); 
     $pdf->SetFontSize('10');
