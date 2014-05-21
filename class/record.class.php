@@ -449,7 +449,7 @@ class Record extends database_object {
 
     // The level must exist!
     if (strlen($input['level'])) {
-      $level_uid = Level::get_uid_from_record($input['level']);
+      $level_uid = Level::get_uid_from_record($input['level'],$input['quad'],$input['unit']);
       $level = new Level($level_uid);
       if (!$level_uid OR $level->quad->uid != $input['quad'] OR $level->unit != $input['unit']) {
         Error::add('Level','Level not found, please create level record first');

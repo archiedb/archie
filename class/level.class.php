@@ -537,14 +537,17 @@ class Level extends database_object {
    * get_uid_from_record
    * Take the record and current site and return the UID (if it exists)
    */
-  public static function get_uid_from_record($record,$site='') {
+  public static function get_uid_from_record($record,$quad,$unit,$site='') {
 
     if (!$site) {
       $site = \UI\sess::$user->site->uid;
     }
 
     $site = Dba::escape($site);
-    $sql = "SELECT * FROM `level` WHERE `site`='$site' AND `record`='$record'";
+    $quad = Dba::escape($quad);
+    $unit = Dba::escape($unit);
+    $record = Dba::escape($record);
+    $sql = "SELECT * FROM `level` WHERE `site`='$site' AND `quad`='$quad' AND `unit`='$unit' AND `record`='$record'";
     $db_results = Dba::read($sql); 
 
     $row = Dba::fetch_assoc($db_results); 
