@@ -37,13 +37,13 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('level'); ?>">
   <label class="control-label" for="inputLevel">Level</label>
   <div class="controls">
-  	<input id="inputLevel" name="level" type="text" value="<?php echo scrub_out($record->level); ?>" />
+  	<input id="inputLevel" name="level" type="text" value="<?php echo scrub_out($record->level->record); ?>" />
   </div>
 </div> 
 <div class="control-group span4 offset1<?php Error::display_class('feature'); ?>">
   <label class="control-label" for="inputFeature">Feature</label>
   <div class="controls">
-  	<input id="inputFeature" name="feature" type="text" value="<?php echo scrub_out($record->feature); ?>" />
+  	<input id="inputFeature" name="feature" type="text" value="<?php echo scrub_out($record->feature->catalog_id); ?>" />
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('lsg_unit'); ?>">

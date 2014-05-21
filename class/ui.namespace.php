@@ -44,7 +44,7 @@ function return_url($input) {
  * if there's no uid passed (0/null) then return
  * just ''
  */
-function record_link($uid,$type) {
+function record_link($uid,$type,$text='') {
 
   $type_map = array(
     'record'=>'records',
@@ -53,13 +53,12 @@ function record_link($uid,$type) {
   );
 
   if (!$uid) { return ''; }
+  if (!$text) { $text = $uid; }
   if (!isset($type_map[$type])) { return $uid; }
 
-
-  
   $url = \Config::get('web_path') . '/' . $type_map[$type] . '/view/' . scrub_out($uid);
 
-  $return = scrub_out($uid) . ' <a class="pull-right" href="' . $url . '" title="View Record" alt="View Record"><i class="icon-eye-open"></i></a>';
+  $return = scrub_out($text) . ' <a class="pull-right" href="' . $url . '" title="View Record" alt="View Record"><i class="icon-eye-open"></i></a>';
 
   return $return;
 

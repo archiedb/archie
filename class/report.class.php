@@ -328,10 +328,10 @@ class Report {
       $record = new Record($record_uid); 
       $record->notes = str_replace(array("\r\n", "\n", "\r"),' ',$record->notes);
 
-      $data .= $site->name . "," . $record->catalog_id . "," . $record->unit . "," . $record->level . "," . $record->lsg_unit->name . "," .
+      $data .= $site->name . "," . $record->catalog_id . "," . $record->unit . "," . $record->level->record . "," . $record->lsg_unit->name . "," .
         $record->station_index . "," . $record->xrf_matrix_index . "," . $record->weight . "," . $record->height . "," .
         $record->width . "," . $record->thickness . "," . $record->quanity . "," . $record->material->name . "," .
-        trim($record->classification->name) . "," . $record->quad->name . "," . $record->feature . ",\"" .
+        trim($record->classification->name) . "," . $record->quad->name . "," . $record->feature->record . ",\"" .
         addslashes($record->notes) . "\"," . date("m-d-Y h:i:s",$record->created) . "," . $record->northing . "," . $record->easting . "," . 
         $record->elevation . "\n";
      } // end foreach 

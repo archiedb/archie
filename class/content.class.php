@@ -431,12 +431,12 @@ class content extends database_object {
 		$pdf->SetFontSize('8'); 
 		$pdf->Text('25','4','SITE:' . $record->site->name);
 		$pdf->Text('52','4','UNIT:' . $record->unit); 
-		$pdf->Text('25','8','LVL:' . $record->level);
+		$pdf->Text('25','8','LVL:' . $record->level->record);
 		$pdf->Text('52','8','QUAD:' . $record->quad->name); 
 		$pdf->Text('25','12','MAT:' . $record->material->name);
 		$pdf->Text('52','12','CLASS:' . $record->classification->name); 	
 		$pdf->Text('25','16','L.U.:' . $record->lsg_unit->name);
-		$pdf->Text('52','16','FEAT:' . $record->feature); 
+		$pdf->Text('52','16','FEAT:' . $record->feature->record); 
 		$pdf->Text('25','20','CAT#:' . $record->catalog_id);
 		$pdf->Text('52','20','RN:' . $record->station_index); 
 		$pdf->Text('25','24',date('d-M-Y',$record->created));

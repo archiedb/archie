@@ -48,6 +48,8 @@ class Record extends database_object {
     $this->site = new site($this->site);
 		$this->inventory_id = $this->site->name . '.' . date('Y',$this->created) . '-' . $this->catalog_id;
 		$this->user_id = $this->user; 
+    $this->feature = new Feature($this->feature);
+    $this->level = new Level($this->level);
 		$this->user = new User($this->user); 
 
 		return true; 
@@ -167,10 +169,14 @@ class Record extends database_object {
 
 		} 
 
+    // We need the real UID of the following objects
+    $level_uid    = Level::get_uid_from_record($input['level'],$input['quad'],$input['unit']);
+    $feature_uid  = Feature::get_uid_from_record($input['feature']);
+
 		// Insert the new record
     $site = Dba::escape(\UI\sess::$user->site->uid);
 		$unit = Dba::escape($input['unit']); 
-		$level = Dba::escape($input['level']); 
+		$level = Dba::escape($level_uid); 
 		$lsg_unit = Dba::escape($input['lsg_unit']); 
 		$xrf_matrix_index = Dba::escape($input['xrf_matrix_index']); 
 		$weight = Dba::escape($input['weight']); 
@@ -183,7 +189,7 @@ class Record extends database_object {
 		$notes = Dba::escape($input['notes']); 
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
 		$quad = Dba::escape($input['quad']); 
-		$feature = Dba::escape($input['feature']);  
+		$feature = Dba::escape($feature_uid);  
     $northing = Dba::escape($input['northing']); 
     $easting = Dba::escape($input['easting']); 
     $elevation = Dba::escape($input['elevation']); 
@@ -207,7 +213,7 @@ class Record extends database_object {
 
 		$db_results = Dba::write($unlock_sql); 
 
-		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
+		$log_line = "$site,$catalog_id,$unit," . $input['level'] . ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] .",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('ADD',$log_line); 
 
 		// We're sure we've got a record so lets generate our QR code. 
@@ -233,6 +239,10 @@ class Record extends database_object {
       return false;
     }
 
+    // We need the real UID of the following objects
+    $level_uid    = Level::get_uid_from_record($input['level'],$input['quad'],$input['unit']);
+    $feature_uid  = Feature::get_uid_from_record($input['feature']);
+
     $unit = Dba::escape($input['unit']); 
 		$lsg_unit = Dba::escape($input['lsg_unit']); 
 		$xrf_matrix_index = Dba::escape($input['xrf_matrix_index']); 
@@ -246,7 +256,7 @@ class Record extends database_object {
 		$notes = Dba::escape($input['notes']); 
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
 		$quad = Dba::escape($input['quad']); 
-		$feature = Dba::escape($input['feature']); 
+		$feature = Dba::escape($feature_uid); 
     $northing = isset($input['northing']) ? Dba::escape($input['northing']) : Dba::escape($this->northing); 
     $easting = isset($input['easting']) ? Dba::escape($input['easting']) : Dba::escape($this->easting); 
     $elevation = isset($input['elevation']) ? Dba::escape($input['elevation']) : Dba::escape($this->elevation); 
@@ -256,7 +266,7 @@ class Record extends database_object {
 
 		// Allow this to be null
 		$station_index = $input['station_index'] ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
-		$level = $input['level'] ? "'" . Dba::escape($input['level']) . "'" : "NULL"; 
+		$level = $input['level'] ? "'" . Dba::escape($level_uid) . "'" : "NULL"; 
 
 		$sql = "UPDATE `record` SET `unit`='$unit', `level`=$level, `lsg_unit`='$lsg_unit', `station_index`=$station_index, " . 
 			"`xrf_matrix_index`='$xrf_matrix_index', `weight`='$weight', `height`='$height', `width`='$width', `thickness`='$thickness', " . 
@@ -275,7 +285,7 @@ class Record extends database_object {
 
     $site = $this->site->name; 
 
-		$log_line = "$site,$catalog_id,$unit,$level,$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad,$feature\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
+		$log_line = "$site,$catalog_id,$unit," . $input['level']. ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('UPDATE',$log_line); 
 
 		return true; 
@@ -495,10 +505,10 @@ class Record extends database_object {
 				foreach ($results as $record) { 
 					$site = $record->site->name; 
 					$record->notes = str_replace(array("\r\n", "\n", "\r"),' ',$record->notes); 
-					echo "$site," . $record->catalog_id . "," . $record->unit . "," . $record->level . "," . lsgunit::$values[$record->lsg_unit] . "," . 
+					echo "$site," . $record->catalog_id . "," . $record->unit . "," . $record->level->record . "," . lsgunit::$values[$record->lsg_unit] . "," . 
 						$record->station_index . "," . $record->xrf_matrix_index . "," . $record->weight . "," . $record->height . "," . 
 						$record->width . "," . $record->thickness . "," . $record->quanity . "," . $record->material->name . "," . 
-						trim($record->classification->name) . "," . quad::$values[$record->quad] . "," . $record->feature . ",\"" . 
+						trim($record->classification->name) . "," . quad::$values[$record->quad] . "," . $record->feature->record . ",\"" . 
 						addslashes($record->notes) . "\"," . date("m-d-Y h:i:s",$record->created) . "\n"; 
 				} // end foreach 
 
