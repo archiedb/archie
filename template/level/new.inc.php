@@ -42,7 +42,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('level'); ?>">
   <label class="control-label" for="inputLevel">Level</label>
   <div class="controls">
-	  <input id="inputLevel" name="record" type="text" value="<?php echo scrub_out($_POST['record']); ?>" />
+	  <input id="inputLevel" name="catalog_id" type="text" value="<?php echo scrub_out($_POST['catalog_id']); ?>" />
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('lsg_unit'); ?>">

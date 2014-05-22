@@ -240,6 +240,9 @@ class Database {
     $versions[] = array('version'=>'0010','description'=>$update_string);
     $update_string = '- Rename datum_location table to spatial_data.<br />';
     $versions[] = array('version'=>'0011','description'=>$update_string);
+    $update_string = '- Add krotovina to record table.<br />' . 
+                    '- Rename level.record to level.catalog_id to match other tables.<br />';
+    $versions[] = array('version'=>'0012','description'=>$update_string);
 
 
     return $versions; 
@@ -812,7 +815,7 @@ class Database {
 
     $retval = true;
 
-    $sql = "ALTER TABLE `record` ADD `krotovina` INT(11) UNSIGNED NULL AFTER `feature``";
+    $sql = "ALTER TABLE `record` ADD `krotovina` INT(11) UNSIGNED NULL AFTER `feature`";
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `level` CHANGE `record` `catalog_id` INT(11) UNSIGNED NOT NULL";

@@ -533,15 +533,15 @@ class View {
 
     switch ($type) { 
       case 'level':
-        $allowed_filters = array('closed','quad','unit','record','excavator');
+        $allowed_filters = array('closed','quad','unit','catalog_id','excavator');
       case 'record':
         $allowed_filters = self::$allowed_filters; 
       break;
       case 'feature':
-        $allowed_filters = array('record','keywords','description','user');
+        $allowed_filters = array('catalog_id','keywords','description','user');
       break;
       case 'krotovina':
-        $allowed_filters = array('record','keywords','description','user');
+        $allowed_filters = array('catalog_id','keywords','description','user');
     }
 
     return $allowed_filters;
@@ -556,7 +556,7 @@ class View {
 
     switch ($type) {
       case 'level':
-        $allowed_filters = array('closed','quad','unit','record','lsg_unit');
+        $allowed_filters = array('closed','quad','unit','catalog_id','lsg_unit');
       break;
       case 'record':
         $allowed_filters = self::$allowed_sorts; 
@@ -721,7 +721,7 @@ class View {
       break;
       case 'level':
         switch ($field) {
-          case 'record':
+          case 'catalog_id':
           case 'closed':
           case 'quad':
           case 'unit':

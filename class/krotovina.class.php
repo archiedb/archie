@@ -283,21 +283,21 @@ class Krotovina extends database_object {
    * get_uid_from_record
    * Return the UID from the record entry
    */
-  public function get_uid_from_record($record,$site='') {
+  public function get_uid_from_record($catalog_id,$site='') {
 
     if (!$site) { 
       $site = \UI\sess::$user->site->uid;
     }
 
-    $record = Dba::escape($record);
+    $catalog_id = Dba::escape($catalog_id);
     $site = Dba::escape($site);
 
-    $sql = "SELECT * FROM `krotovina` WHERE `catalog_id`='$record' AND `site`='$site'";
+    $sql = "SELECT * FROM `krotovina` WHERE `catalog_id`='$catalog_id' AND `site`='$site'";
     $db_results = Dba::read($sql);
 
     $row = Dba::fetch_assoc($db_results);
 
-    if (isset($row['uid'])) { return false; }
+    if (!isset($row['uid'])) { return false; }
 
     // Cache it!
     parent::add_to_cache('krotovina',$row['uid'],$row);

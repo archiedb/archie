@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <td>
       <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>">
-      <?php echo scrub_out($level->record); ?></a>
+      <?php echo scrub_out($level->catalog_id); ?></a>
   </td>
 	<td><?php echo scrub_out($level->unit); ?></td>
 	<td><?php echo scrub_out($level->quad->name); ?></td>

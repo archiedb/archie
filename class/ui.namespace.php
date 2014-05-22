@@ -50,6 +50,7 @@ function record_link($uid,$type,$text='') {
     'record'=>'records',
     'level'=>'level',
     'feature'=>'feature',
+    'krotovina'=>'krotovina',
   );
 
   if (!$uid) { return ''; }

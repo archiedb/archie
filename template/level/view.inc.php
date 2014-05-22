@@ -13,7 +13,7 @@ if (INIT_LOADED != '1') { exit; }
   <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
   <?php } ?>
 </p>
-<h3><?php echo $level->site->name . '-' . $level->record; ?>
+<h3><?php echo scrub_out($level->record); ?>
   <?php if ($level->closed) { ?><span class="label label-important">CLOSED</span><?php } ?>
   <small>Entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>
 </h3>
@@ -25,7 +25,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>QUAD</th><td><?php echo scrub_out($level->quad->name); ?></td>
 </tr>
 <tr>
-  <th>LEVEL</th><td><?php echo scrub_out($level->record); ?></td>
+  <th>LEVEL</th><td><?php echo scrub_out($level->catalog_id); ?></td>
   <th><abbr title="Lithostratoigraphic Unit">L. U.</abbr></th><td><?php echo scrub_out($level->lsg_unit->name); ?></td>
 </tr>
 <tr>

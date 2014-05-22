@@ -466,6 +466,14 @@ class Record extends database_object {
   		} 
     } // if feature specified
 
+    // Krotovina must exist first
+    if (strlen($input['krotovina'])) {
+      $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
+      if (!$krotovina_uid) {
+        Error::add('Krotovina','Krotovina not found, please create Krotovina record first');
+      }
+    }
+
     // The level must exist!
     if (strlen($input['level'])) {
       $level_uid = Level::get_uid_from_record($input['level'],$input['quad'],$input['unit']);
@@ -473,6 +481,12 @@ class Record extends database_object {
       if (!$level_uid OR $level->quad->uid != $input['quad'] OR $level->unit != $input['unit']) {
         Error::add('Level','Level not found, please create level record first');
       }
+    }
+
+    // Make sure they entered only one of the three (krot/level/feature)
+    $items = intval(!empty($input['krotovina'])) + intval(!empty($input['level'])) + intval(!empty($input['feature']));
+    if ($items > 1) { 
+      Error::add('Association','Record must be associated with only one of the following: Krotovina, Feature, Level');
     }
 
 		// Notes... character limit

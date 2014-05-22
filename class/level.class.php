@@ -6,7 +6,7 @@ class Level extends database_object {
 	public $uid; 
   public $site;
   public $catalog_id; // Numeric value of item
-  public $record; // UID generated and written down (public facing value)
+  public $record; // UID generated and written down (public facing value) SITE-CAT#
   public $unit;
   public $quad;
   public $lsg_unit;
@@ -53,7 +53,7 @@ class Level extends database_object {
     $this->quad = new Quad($this->quad);
     $this->lsg_unit = new Lsgunit($this->lsg_unit);
     $this->site = new site($this->site);
-    $this->record = $this->catalog_id;
+    $this->record = $this->site->name . '-' . $this->catalog_id;
 
 		return true; 
 
@@ -118,12 +118,12 @@ class Level extends database_object {
     }
 
     $site     = Dba::escape($input['site']); 
-    $record   = Dba::escape($input['record']); 
     $unit     = Dba::escape($input['unit']); 
     $quad     = Dba::escape($input['quad']); 
     $lsg_unit = Dba::escape($input['lsg_unit']); 
     $northing = Dba::escape($input['northing']); 
     $easting  = Dba::escape($input['easting']); 
+    $catalog_id     = Dba::escape($input['catalog_id']); 
     $elv_nw_start   = Dba::escape($input['elv_nw_start']); 
     $elv_ne_start   = Dba::escape($input['elv_ne_start']); 
     $elv_sw_start   = Dba::escape($input['elv_sw_start']); 
@@ -138,7 +138,7 @@ class Level extends database_object {
     
     $sql = "INSERT INTO `level` (`site`,`catalog_id`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`," . 
         "`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`excavator_one`,`excavator_two`," . 
-        "`excavator_three`,`excavator_four`,`user`,`created`) VALUES ('$site','$record','$unit','$quad','$lsg_unit','$northing','$easting'," . 
+        "`excavator_three`,`excavator_four`,`user`,`created`) VALUES ('$site','$catalog_id','$unit','$quad','$lsg_unit','$northing','$easting'," . 
         "'$elv_nw_start','$elv_ne_start','$elv_sw_start','$elv_se_start','$elv_center_start','$excavator_one','$excavator_two', " . 
         "'$excavator_three','$excavator_four','$user','$created')"; 
     $db_results = Dba::write($sql); 
@@ -151,7 +151,7 @@ class Level extends database_object {
 
     $insert_id = Dba::insert_id();
 
-    $log_line = "$site,$record,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start," . 
+    $log_line = "$site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start," . 
           "$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three," . 
           "$excavator_four," . \UI\sess::$user->username . ",\"" . date('r',$created) . "\"";
     Event::record('LEVEL-ADD',$log_line); 
@@ -181,7 +181,7 @@ class Level extends database_object {
     }
 
     $uid      = Dba::escape($this->uid); 
-    $record   = Dba::escape($input['record']); 
+    $catalog_id   = Dba::escape($input['catalog_id']); 
     $unit     = Dba::escape($input['unit']);
     $quad     = Dba::escape($input['quad']); 
     $lsg_unit = Dba::escape($input['lsg_unit']);
@@ -207,7 +207,7 @@ class Level extends database_object {
     $difference     = Dba::escape($input['difference']);
     $notes          = Dba::escape($input['notes']);
 
-    $sql = "UPDATE `level` SET `catalog_id`='$record', `unit`='$unit', `quad`='$quad', `lsg_unit`='$lsg_unit', " . 
+    $sql = "UPDATE `level` SET `catalog_id`='$catalog_id', `unit`='$unit', `quad`='$quad', `lsg_unit`='$lsg_unit', " . 
           "`user`='$user', `updated`='$updated', `northing`='$northing', `easting`='$easting', " . 
           "`elv_nw_start`='$elv_nw_start', `elv_nw_finish`='$elv_nw_finish', `elv_ne_start`='$elv_ne_start', " . 
           "`elv_ne_finish`='$elv_ne_finish', `elv_sw_start`='$elv_sw_start', `elv_sw_finish`='$elv_sw_finish', " .
@@ -223,7 +223,7 @@ class Level extends database_object {
       return false;
     }
 
-    $log_line = "$uid,$record,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_nw_finish,$elv_ne_start," .
+    $log_line = "$uid,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_nw_finish,$elv_ne_start," .
       "$elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start," . 
       "$elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four," . \UI\sess::$user->username . ",\"" . date('r',$updated) . "\""; 
     Event::record('LEVEL-UPDATE',$log_line);
@@ -271,17 +271,17 @@ class Level extends database_object {
       Error::add('closed','Level is closed, unable to updated'); 
     }
 
-    if (!$input['record']) { 
+    if (!$input['catalog_id']) { 
       Error::add('level','Required field');
     }
     else {
       // Make sure this isn't a duplicate level
-      $record = Dba::escape($input['record']);
+      $catalog_id = Dba::escape($input['catalog_id']);
       $quad   = Dba::escape($input['quad']); 
       $unit   = Dba::escape($input['unit']); 
       $uid    = Dba::escape($input['uid']); 
       $site   = Dba::escape($intpu['site']); 
-      $sql = "SELECT `level`.`uid` FROM `level` WHERE `record`='$record' AND `quad`='$quad' AND `unit`='$unit' AND `site`='$site' AND `uid`<>'$uid'";
+      $sql = "SELECT `level`.`uid` FROM `level` WHERE `catalog_id`='$catalog_id' AND `quad`='$quad' AND `unit`='$unit' AND `site`='$site' AND `uid`<>'$uid'";
       $db_results = Dba::read($sql); 
       $row = Dba::fetch_assoc($db_results); 
       if ($row['uid']) { 
@@ -289,7 +289,7 @@ class Level extends database_object {
       }
     }
 
-    if (!is_numeric($input['record'])) { 
+    if (!is_numeric($input['catalog_id'])) { 
       Error::add('level','Level must be numeric');
     }
 
@@ -318,20 +318,18 @@ class Level extends database_object {
 
     foreach ($field_check as $field) { 
 
-      if ($input[$field] <= 0 OR round($input[$field],3) != $input[$field]) { 
-        Error::add($field,'Must be numeric and rounded to three decimal places'); 
-      }
-
-      
-      if (!is_numeric($input[$field])) {
-        Error::add($field,'Must be numeric');
-      }
-
       // Must be set
       if (!$input[$field]) {
         Error::add($field,'Required field');
+        continue;
       }
-
+      if (!is_numeric($input[$field])) {
+        Error::add($field,'Must be numeric');
+        continue;
+      }
+      if ($input[$field] <= 0 OR round($input[$field],3) != $input[$field]) { 
+        Error::add($field,'Must be numeric and rounded to three decimal places'); 
+      }
     } // end foreach starts 
 
     // Check the 'end' values
@@ -346,6 +344,7 @@ class Level extends database_object {
 
         if (!is_numeric($input[$field])) {
           Error::add($field,'Must be numeric');
+          continue;
         }
 
         // Make sure it's not less then zero and has the correct accuracy
@@ -539,7 +538,7 @@ class Level extends database_object {
    * get_uid_from_record
    * Take the record and current site and return the UID (if it exists)
    */
-  public static function get_uid_from_record($record,$quad,$unit,$site='') {
+  public static function get_uid_from_record($catalog_id,$quad,$unit,$site='') {
 
     if (!$site) {
       $site = \UI\sess::$user->site->uid;
@@ -548,8 +547,8 @@ class Level extends database_object {
     $site = Dba::escape($site);
     $quad = Dba::escape($quad);
     $unit = Dba::escape($unit);
-    $record = Dba::escape($record);
-    $sql = "SELECT * FROM `level` WHERE `site`='$site' AND `quad`='$quad' AND `unit`='$unit' AND `record`='$record'";
+    $catalog_id = Dba::escape($catalog_id);
+    $sql = "SELECT * FROM `level` WHERE `site`='$site' AND `quad`='$quad' AND `unit`='$unit' AND `catalog_id`='$catalog_id'";
     $db_results = Dba::read($sql); 
 
     $row = Dba::fetch_assoc($db_results); 

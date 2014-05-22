@@ -62,10 +62,13 @@ if (INIT_LOADED != '1') { exit; }
 	  </select>
   </div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('station_index'); ?>">
-  <label class="control-label" for="inputStationIndex">RN</label>
+<div class="control-group span4 offset1<?php Error::display_class('krotovina'); ?>">
+  <label class="control-label" for="inputKrotovina">Krotovina</label>
   <div class="controls">
-	  <input id="inputStationIndex" name="station_index" type="text" value="<?php echo scrub_out($record->station_index); ?>" />
+    <div class="input-prepend">
+      <span class="add-on">K-</span>
+    	<input id="inputKrotovina" class="span2" name="krotovina" type="text" value="<?php echo scrub_out($record->krotovina->catalog_id); ?>" />
+    </div>
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('material'); ?>">
@@ -171,12 +174,19 @@ if (INIT_LOADED != '1') { exit; }
 	  <input id="inputXrfMatrixIndex" name="xrf_matrix_index" type="text" value="<?php echo scrub_out($record->xrf_matrix_index); ?>" />
   </div>
 </div> 
-<div class="control-group span8<?php Error::display_class('notes'); ?>">
+<div class="control-group span4<?php Error::display_class('notes'); ?>">
   <label class="control-label" for="inputNotes">Notes</label>
   <div class="controls">
   	<textarea name="notes" class="textbox" rows="5"><?php echo scrub_out($record->notes); ?></textarea>
   </div>
 </div>
+<div class="control-group span4 offset1<?php Error::display_class('station_index'); ?>">
+  <label class="control-label" for="inputStationIndex">RN</label>
+  <div class="controls">
+	  <input id="inputStationIndex" name="station_index" type="text" value="<?php echo scrub_out($record->station_index); ?>" />
+  </div>
+</div>
+
 <div class="control-group span8">
   <div class="controls">
     <input type="hidden" name="record_id" value="<?php echo scrub_out($record->uid); ?>" />

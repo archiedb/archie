@@ -11,7 +11,7 @@ if (INIT_LOADED != '1') { exit; }
   <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
   <?php } ?>
 </p>
-<h3>Edit Level <?php echo scrub_out($level->site->name . '-' . $level->record); ?></h3>
+<h3>Edit Level <?php echo scrub_out($level->record); ?></h3>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
 <fieldset>
@@ -46,7 +46,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('level'); ?>">
   <label class="control-label" for="inputLevel">Level</label>
   <div class="controls">
-  	<input id="inputLevel" name="record" type="text" value="<?php echo scrub_out($level->record); ?>" />
+  	<input id="inputLevel" name="catalog_id" type="text" value="<?php echo scrub_out($level->catalog_id); ?>" />
   </div>
 </div> 
 <div class="control-group span4 offset1<?php Error::display_class('lsg_unit'); ?>">

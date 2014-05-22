@@ -12,8 +12,8 @@ switch (\UI\sess::location('action')) {
     // Attempt to create it
     $level_id = Level::create($_POST);
     if ($level_id) {
-      $level = new Level($level_id);
-      require_once \UI\template('/level/view');
+      header('Location:' . Config::get('web_path') . '/level/view/' . scrub_out($level_id));
+      exit;
     }
     else {
       require_once \UI\template('/level/new');

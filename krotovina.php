@@ -11,8 +11,8 @@ switch (\UI\sess::location('action')) {
   case 'create':
     $krotovina_id = Krotovina::create($_POST);
     if ($krotovina_id) {
-      $krotovina = new Krotovina($krotovina_id);
-      require_once \UI\template('/krotovina/view');
+      header('Location:' . Config::get('web_path') . '/krotovina/view/' . scrub_out($krotovina_id));
+      exit;
     }
     else {
       require_once \UI\template('/krotovina/new');
@@ -40,7 +40,8 @@ switch (\UI\sess::location('action')) {
     $krotovina = new Krotovina($_POST['krotovina_id']);
     if ($krotovina->update($_POST)) {
       Event::add('success','Krotovina has been updated','small');
-      require_once \UI\template('/krotovina/view');
+      header('Location:' . Config::get('web_path') . '/krotovina/view/' . scrub_out($krotovina->uid));
+      exit;
     }
     else {
       require_once \UI\template('/krotovina/edit');

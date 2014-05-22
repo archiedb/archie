@@ -62,7 +62,7 @@ switch (\UI\sess::location('action')) {
 		} 
 		else { 
       Event::add('success','Record has been updated, thanks!','small'); 
-			require_once \UI\template('/records/view'); 
+      header('Location:' . Config::get('web_path') . '/records/view/' . scrub_out($record->uid));
 	  } 
 	break; 
   case 'edit':

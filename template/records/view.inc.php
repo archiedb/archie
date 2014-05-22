@@ -22,12 +22,12 @@ if (INIT_LOADED != '1') { exit; }
   <th><abbr title="Lithostratoigraphic Unit">L. U.</abbr></th><td><?php echo scrub_out($record->lsg_unit->name); ?></td>
 </tr>
 <tr>
-  <th>QUANTITY</th><td><?php echo scrub_out($record->quanity); ?></td>
-  <th>RN</th><td><?php echo scrub_out($record->station_index); ?></td>
+  <th>FEATURE</th><td><?php echo \UI\record_link($record->feature->uid,'feature',$record->feature->record); ?></td>
+  <th>KROTOVINA</th><td><?php echo \UI\record_link($record->krotovina->uid,'krotovina',$record->krotovina->record); ?></td>
 </tr>
 <tr>
   <th>QUAD</th><td><?php echo scrub_out($record->quad->name); ?></td>
-  <th>FEATURE</th><td><?php echo \UI\record_link($record->feature->uid,'feature',$record->feature->record); ?></td>
+  <th>RN</th><td><?php echo scrub_out($record->station_index); ?></td>
 </tr>
 <tr>
   <th>WEIGHT</th><td><?php echo scrub_out($record->weight); ?> grams</td>
@@ -49,8 +49,12 @@ if (INIT_LOADED != '1') { exit; }
   <th>EASTING</th><td><?php echo scrub_out($record->easting); ?></td>
 <tr>
   <th>ELEVATION</th><td><?php echo scrub_out($record->elevation); ?></td>
-  <th>NOTES</th><td><?php echo scrub_out($record->notes); ?></td>
+  <th>QUANTITY</th><td><?php echo scrub_out($record->quanity); ?></td>
 </tr>
+<tr>
+  <th>NOTES</th><td colspan="3"><?php echo scrub_out($record->notes); ?></td>
+</tr>
+  
 </table>
 <ul class="nav nav-tabs" id="media_nav">
   <li class="active"><a href="#picture" data-toggle="tab">Pictures</a></li>
