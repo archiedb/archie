@@ -50,7 +50,7 @@ class Event {
           unset($errors['general']); 
         }
         foreach ($errors as $key=>$value) { 
-          $message .= "<li><strong>" . \UI\field_name($key) . ":</strong> $value<br /></li>";
+          $message .= "<dl><dt>" . \UI\field_name($key) . "</dt><dd>$value</dd></dl>";
         }
         $css_class = ' alert-error';
         $header = '<h4>Error:' . $header_small . '</h4>';
@@ -65,7 +65,7 @@ class Event {
           unset($warnings['general']); 
         }
         foreach ($warnings as $key=>$value) { 
-          $message .= "<li><strong>" . \UI\field_name($key) . ":</strong> $value<br /></li>";
+          $message .= "<dl><dt>" . \UI\field_name($key) . "</dt><dd>$value</dd></dl>";
         }
         $css_class = ''; 
         $header = '<h4>Warning:' . $header_small . '</h4>';
