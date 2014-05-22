@@ -10,6 +10,7 @@ class Record extends database_object {
   public $unit; 
   public $quad; 
   public $feature; 
+  public $krotovina;
   public $level; 
   public $lsg_unit; 
   public $station_index; // LISTED AS RN in the interface
@@ -49,6 +50,7 @@ class Record extends database_object {
 		$this->inventory_id = $this->site->name . '.' . date('Y',$this->created) . '-' . $this->catalog_id;
 		$this->user_id = $this->user; 
     $this->feature = new Feature($this->feature);
+    $this->krotovina = new Krotovina($this->krotovina);
     $this->level = new Level($this->level);
 		$this->user = new User($this->user); 
 
@@ -172,6 +174,7 @@ class Record extends database_object {
     // We need the real UID of the following objects
     $level_uid    = Level::get_uid_from_record($input['level'],$input['quad'],$input['unit']);
     $feature_uid  = Feature::get_uid_from_record($input['feature']);
+    $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
 
 		// Insert the new record
     $site = Dba::escape(\UI\sess::$user->site->uid);
@@ -190,6 +193,7 @@ class Record extends database_object {
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
 		$quad = Dba::escape($input['quad']); 
 		$feature = Dba::escape($feature_uid);  
+    $krotovina = Dba::escape($krotovina_uid);
     $northing = Dba::escape($input['northing']); 
     $easting = Dba::escape($input['easting']); 
     $elevation = Dba::escape($input['elevation']); 
@@ -200,8 +204,8 @@ class Record extends database_object {
 		$station_index = $input['station_index'] ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
 		$level = $level ? "'" . Dba::escape($input['level']) . "'" : "NULL"; 
 		
-		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`station_index`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`user`,`created`,`northing`,`easting`,`elevation`) " . 
-			"VALUES ('$site','$catalog_id','$unit',$level,'$lsg_unit',$station_index,'$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$quad','$feature','$user','$created','$northing','$easting','$elevation')"; 
+		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`station_index`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`krotovina`,`user`,`created`,`northing`,`easting`,`elevation`) " . 
+			"VALUES ('$site','$catalog_id','$unit',$level,'$lsg_unit',$station_index,'$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$quad','$feature','$krotovina','$user','$created','$northing','$easting','$elevation')"; 
 		$db_results = Dba::write($sql); 
 
 		if (!$db_results) { 
@@ -213,7 +217,9 @@ class Record extends database_object {
 
 		$db_results = Dba::write($unlock_sql); 
 
-		$log_line = "$site,$catalog_id,$unit," . $input['level'] . ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] .",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
+    $legend_line = "Site,Catalog ID,Unit,Level,LSG Unit,RN,XRF Matrix Index, Weight (grams),Height(mm),Width(mm),Thickness(mm),Quanity,Material,Classification,Quad,Feature ID,Krotovina ID,User,Date";
+    Event::record('ADD-LEGEND',$legend_line);
+		$log_line = "$site,$catalog_id,$unit," . $input['level'] . ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] ."," . $input['krotovina'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('ADD',$log_line); 
 
 		// We're sure we've got a record so lets generate our QR code. 
@@ -242,6 +248,7 @@ class Record extends database_object {
     // We need the real UID of the following objects
     $level_uid    = Level::get_uid_from_record($input['level'],$input['quad'],$input['unit']);
     $feature_uid  = Feature::get_uid_from_record($input['feature']);
+    $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
 
     $unit = Dba::escape($input['unit']); 
 		$lsg_unit = Dba::escape($input['lsg_unit']); 
@@ -257,6 +264,7 @@ class Record extends database_object {
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
 		$quad = Dba::escape($input['quad']); 
 		$feature = Dba::escape($feature_uid); 
+    $krotovina = Dba::escape($krotovina_uid);
     $northing = isset($input['northing']) ? Dba::escape($input['northing']) : Dba::escape($this->northing); 
     $easting = isset($input['easting']) ? Dba::escape($input['easting']) : Dba::escape($this->easting); 
     $elevation = isset($input['elevation']) ? Dba::escape($input['elevation']) : Dba::escape($this->elevation); 
@@ -271,7 +279,8 @@ class Record extends database_object {
 		$sql = "UPDATE `record` SET `unit`='$unit', `level`=$level, `lsg_unit`='$lsg_unit', `station_index`=$station_index, " . 
 			"`xrf_matrix_index`='$xrf_matrix_index', `weight`='$weight', `height`='$height', `width`='$width', `thickness`='$thickness', " . 
 			"`quanity`='$quanity', `material`='$material', `classification`='$classification', `notes`='$notes', `xrf_artifact_index`='$xrf_artifact_index', " . 
-			"`user`='$user', `updated`='$updated', `quad`='$quad', `feature`='$feature', `northing`='$northing', `easting`='$easting', `elevation`='$elevation' " . 
+			"`user`='$user', `updated`='$updated', `quad`='$quad', `feature`='$feature', `northing`='$northing', `easting`='$easting', `elevation`='$elevation', " . 
+      "`krotovina`='$krotovina' " .
 			"WHERE `uid`='$record_uid'"; 
 		$db_results = Dba::write($sql); 
 

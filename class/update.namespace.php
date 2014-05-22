@@ -803,6 +803,25 @@ class Database {
 
   } // update_0011
 
+  /**
+   * update_0012
+   * Add krotovina field to record table
+   * Rename level.record level.catalog_id for consistancy
+   */
+  public static function update_0012() {
+
+    $retval = true;
+
+    $sql = "ALTER TABLE `record` ADD `krotovina` INT(11) UNSIGNED NULL AFTER `feature``";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `record` `catalog_id` INT(11) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } // update_0012
+
 } // \Update\Database class
 
 ?>

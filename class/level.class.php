@@ -5,7 +5,8 @@ class Level extends database_object {
 
 	public $uid; 
   public $site;
-  public $record; // UID generated and written down
+  public $catalog_id; // Numeric value of item
+  public $record; // UID generated and written down (public facing value)
   public $unit;
   public $quad;
   public $lsg_unit;
@@ -52,6 +53,7 @@ class Level extends database_object {
     $this->quad = new Quad($this->quad);
     $this->lsg_unit = new Lsgunit($this->lsg_unit);
     $this->site = new site($this->site);
+    $this->record = $this->catalog_id;
 
 		return true; 
 
@@ -134,7 +136,7 @@ class Level extends database_object {
     $user = Dba::escape(\UI\sess::$user->uid);
     $created = time(); 
     
-    $sql = "INSERT INTO `level` (`site`,`record`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`," . 
+    $sql = "INSERT INTO `level` (`site`,`catalog_id`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`," . 
         "`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`excavator_one`,`excavator_two`," . 
         "`excavator_three`,`excavator_four`,`user`,`created`) VALUES ('$site','$record','$unit','$quad','$lsg_unit','$northing','$easting'," . 
         "'$elv_nw_start','$elv_ne_start','$elv_sw_start','$elv_se_start','$elv_center_start','$excavator_one','$excavator_two', " . 
@@ -205,7 +207,7 @@ class Level extends database_object {
     $difference     = Dba::escape($input['difference']);
     $notes          = Dba::escape($input['notes']);
 
-    $sql = "UPDATE `level` SET `record`='$record', `unit`='$unit', `quad`='$quad', `lsg_unit`='$lsg_unit', " . 
+    $sql = "UPDATE `level` SET `catalog_id`='$record', `unit`='$unit', `quad`='$quad', `lsg_unit`='$lsg_unit', " . 
           "`user`='$user', `updated`='$updated', `northing`='$northing', `easting`='$easting', " . 
           "`elv_nw_start`='$elv_nw_start', `elv_nw_finish`='$elv_nw_finish', `elv_ne_start`='$elv_ne_start', " . 
           "`elv_ne_finish`='$elv_ne_finish', `elv_sw_start`='$elv_sw_start', `elv_sw_finish`='$elv_sw_finish', " .
@@ -446,7 +448,7 @@ class Level extends database_object {
    */
   public function records() { 
 
-    $level  = Dba::escape($this->record); 
+    $level  = Dba::escape($this->catalog_id); 
     $quad   = Dba::escape($this->quad->uid);
     $unit   = Dba::escape($this->unit);
     $site   = Dba::escape($this->site->uid); 

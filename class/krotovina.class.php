@@ -279,6 +279,33 @@ class Krotovina extends database_object {
 
   } // del_point
 
+  /**
+   * get_uid_from_record
+   * Return the UID from the record entry
+   */
+  public function get_uid_from_record($record,$site='') {
+
+    if (!$site) { 
+      $site = \UI\sess::$user->site->uid;
+    }
+
+    $record = Dba::escape($record);
+    $site = Dba::escape($site);
+
+    $sql = "SELECT * FROM `krotovina` WHERE `catalog_id`='$record' AND `site`='$site'";
+    $db_results = Dba::read($sql);
+
+    $row = Dba::fetch_assoc($db_results);
+
+    if (isset($row['uid'])) { return false; }
+
+    // Cache it!
+    parent::add_to_cache('krotovina',$row['uid'],$row);
+
+    return $row['uid'];
+
+  } // get_uid_from_record
+
 
 } // end class level
 ?>

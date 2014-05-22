@@ -64,18 +64,6 @@ if (INIT_LOADED != '1') { exit; }
 	  <input id="inputLevel" name="level" type="text" value="<?php echo scrub_out($_POST['level']); ?>" />
   </div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('station_index'); ?>">
-  <label class="control-label" for="inputStationIndex">RN</label>
-  <div class="controls">
-    <input id="inputStationIndex" name="station_index" type="text" value="<?php echo scrub_out($_POST['station_index']); ?>" />
-  </div>
-</div>
-<div class="control-group span4<?php Error::display_class('feature'); ?>">
-  <label class="control-label" for="inputFeature">Feature</label>
-	<div class="controls">
-    <input id="inputFeature" name="feature" type="text" value="<?php echo scrub_out($_POST['feature']); ?>" />
-  </div>
-</div>
 <div class="control-group span4 offset1<?php Error::display_class('lsg_unit'); ?>">
   <label class="control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
   <div class="controls">
@@ -89,6 +77,25 @@ if (INIT_LOADED != '1') { exit; }
       <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
       <?php } ?>
     </select>
+  </div>
+</div>
+
+<div class="control-group span4<?php Error::display_class('feature'); ?>">
+  <label class="control-label" for="inputFeature">Feature</label>
+	<div class="controls">
+    <div class="input-prepend">
+      <span class="add-on">F-</span>
+      <input id="inputFeature" class="span2" name="feature" type="text" value="<?php echo scrub_out($_POST['feature']); ?>" />
+    </div>
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('krotovina'); ?>">
+  <label class="control-label" for="inputKrotovina">Krotovina</label>
+	<div class="controls">
+    <div class="input-prepend">
+      <span class="add-on">K-</span>
+      <input id="inputKrotovina" class="span2" name="krotovina" type="text" value="<?php echo scrub_out($_POST['krotovina']); ?>" />
+    </div>
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('material'); ?>">
@@ -121,12 +128,19 @@ if (INIT_LOADED != '1') { exit; }
     </select>
   </div>
 </div>
-<div class="control-group span8<?php Error::display_class('notes'); ?>">
+<div class="control-group span4<?php Error::display_class('notes'); ?>">
   <label class="control-label" for="inputNotes">Notes</label>
   <div class="controls">
 	  <textarea placeholder="Notes..." rows="4" name="notes"><?php echo scrub_out($_POST['notes']); ?></textarea>
   </div>
 </div>
+<div class="control-group span4 offset1<?php Error::display_class('station_index'); ?>">
+  <label class="control-label" for="inputStationIndex">RN</label>
+  <div class="controls">
+    <input id="inputStationIndex" name="station_index" type="text" value="<?php echo scrub_out($_POST['station_index']); ?>" />
+  </div>
+</div>
+
 <div class="control-group span8">
   <div class="controls">
   	<input type="submit" class="btn btn-primary" value="Create" />
