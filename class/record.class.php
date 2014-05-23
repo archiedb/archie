@@ -123,7 +123,7 @@ class Record extends database_object {
 
 		$db_results = false; 
 		$times = 0; 
-		$lock_sql = "LOCK TABLES `record` WRITE;"; 
+		$lock_sql = "LOCK TABLES `record` WRITE, `krotovina` READ, `feature` READ, `level` READ;"; 
 		$unlock_sql = "UNLOCK TABLES"; 
 
 		// Only wait 3 seconds for this, it shouldn't take that long
@@ -221,6 +221,8 @@ class Record extends database_object {
     Event::record('ADD-LEGEND',$legend_line);
 		$log_line = "$site,$catalog_id,$unit," . $input['level'] . ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] ."," . $input['krotovina'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('ADD',$log_line); 
+
+    // Clear any cache that might have gotten created
 
 		// We're sure we've got a record so lets generate our QR code. 
 		Content::write($insert_id,'qrcode'); 

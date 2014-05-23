@@ -424,6 +424,8 @@ class content extends database_object {
 		$pdf = new FPDF();
 		$pdf->AddPage('L',array('88.9','25.4'));
 
+    $feat_krot = $record->feature->uid ? $record->feature->record : $record->krotovina->record;
+
 		// We need the QRcode filename here
 		$qrcode = new Content($record->uid,'qrcode'); 
 		$pdf->Image($qrcode->filename,'0','0','25.4','25.4'); 
@@ -436,7 +438,7 @@ class content extends database_object {
 		$pdf->Text('25','12','MAT:' . $record->material->name);
 		$pdf->Text('52','12','CLASS:' . $record->classification->name); 	
 		$pdf->Text('25','16','L.U.:' . $record->lsg_unit->name);
-		$pdf->Text('52','16','FEAT:' . $record->feature->record); 
+		$pdf->Text('52','16','FEAT/KROT:' . $feat_krot); 
 		$pdf->Text('25','20','CAT#:' . $record->catalog_id);
 		$pdf->Text('52','20','RN:' . $record->station_index); 
 		$pdf->Text('25','24',date('d-M-Y',$record->created));

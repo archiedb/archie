@@ -283,7 +283,7 @@ class Krotovina extends database_object {
    * get_uid_from_record
    * Return the UID from the record entry
    */
-  public function get_uid_from_record($catalog_id,$site='') {
+  public static function get_uid_from_record($catalog_id,$site='') {
 
     if (!$site) { 
       $site = \UI\sess::$user->site->uid;

@@ -80,8 +80,7 @@ switch (\UI\sess::location('action')) {
   case 'create':
     $_POST['user'] = \UI\sess::$user->uid;
     if ($record_id = Record::create($_POST)) {
-      $record = new Record($record_id);
-      require_once \UI\template('/records/view');
+      header('Location:' . Config::get('web_path') . '/records/view/' . scrub_out($record_id));
     }
     else {
       require_once \UI\template('/records/new'); 
