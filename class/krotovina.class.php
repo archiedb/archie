@@ -18,7 +18,7 @@ class Krotovina extends database_object {
 	// Constructor takes a uid
 	public function __construct($uid='') { 
 
-		if (!is_numeric($uid)) { return false; } 
+		if (!is_numeric($uid) OR !$uid) { return false; } 
 
 		$row = $this->get_info($uid,'krotovina'); 
 
