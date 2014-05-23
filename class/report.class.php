@@ -322,7 +322,7 @@ class Report {
     Record::build_cache($results); 
 
     // The header
-    $data = "site,catalog id,unit,level,litho unit,station index,xrf matrix index,weight,height,width,thickness,quantity,material,classification,quad,feature,notes,created,northing,easting,elevation\n";
+    $data = "site,catalog id,unit,level,litho unit,station index,xrf matrix index,weight,height,width,thickness,quantity,material,classification,quad,feature,krotovina,notes,created,northing,easting,elevation\n";
 
     foreach ($results as $record_uid) {
       $record = new Record($record_uid); 
@@ -331,7 +331,7 @@ class Report {
       $data .= $site->name . "," . $record->catalog_id . "," . $record->unit . "," . $record->level->record . "," . $record->lsg_unit->name . "," .
         $record->station_index . "," . $record->xrf_matrix_index . "," . $record->weight . "," . $record->height . "," .
         $record->width . "," . $record->thickness . "," . $record->quanity . "," . $record->material->name . "," .
-        trim($record->classification->name) . "," . $record->quad->name . "," . $record->feature->record . ",\"" .
+        trim($record->classification->name) . "," . $record->quad->name . "," . $record->feature->record . "," . $record->krotovina->record . ",\"" .
         addslashes($record->notes) . "\"," . date("m-d-Y h:i:s",$record->created) . "," . $record->northing . "," . $record->easting . "," . 
         $record->elevation . "\n";
      } // end foreach 

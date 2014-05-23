@@ -8,7 +8,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" id="new_feature" method="post" action="<?php echo Config::get('web_path'); ?>/feature/create">
 <div class="control-group span4<?php Error::display_class('description'); ?>">
-  <label class="control-label" for="inputDescription">How is the krotovina differentiated from the surrounding sediments? What are its defining characteristics?</label>
+  <label class="control-label" for="inputDescription">How is the feature differentiated from the surrounding sediments? What are its defining characteristics?</label>
   <div class="controls">
     <textarea placeholder="..." rows="4" cols="80" name="description" id="inputDescription" tabindex="1"><?php echo scrub_out($_POST['description']); ?></textarea>
   </div>
