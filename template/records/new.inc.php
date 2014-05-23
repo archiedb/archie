@@ -120,6 +120,7 @@ if (INIT_LOADED != '1') { exit; }
   <label class="control-label" for="classification">Classification</label>
   <div class="controls">
     <select id="classification" name="classification">
+    	<option value="">&nbsp;</option> 
       <?php 
       if (isset($_POST['material'])) { $classes = Classification::get_from_material($_POST['material']); }
       else { $classes = Classification::get_all(); } 
