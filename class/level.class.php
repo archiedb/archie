@@ -280,7 +280,7 @@ class Level extends database_object {
       $quad   = Dba::escape($input['quad']); 
       $unit   = Dba::escape($input['unit']); 
       $uid    = Dba::escape($input['uid']); 
-      $site   = Dba::escape($intpu['site']); 
+      $site   = Dba::escape($input['site']); 
       $sql = "SELECT `level`.`uid` FROM `level` WHERE `catalog_id`='$catalog_id' AND `quad`='$quad' AND `unit`='$unit' AND `site`='$site' AND `uid`<>'$uid'";
       $db_results = Dba::read($sql); 
       $row = Dba::fetch_assoc($db_results); 
@@ -563,6 +563,56 @@ class Level extends database_object {
     return $row['uid'];
 
   } // get_uid_from_record
+
+  /**
+   * get_open_user_levels
+   * return the levels for specified user, default to this
+   */
+  public static function get_open_user_levels($user_uid='') { 
+
+    if (!$user_uid) {
+      $user_uid = \UI\sess::$user->uid;
+    }
+
+    $results = array();
+
+    $user = Dba::escape($user_uid);
+    $site = Dba::escape(\UI\sess::$user->site->uid);
+    $sql = "SELECT * FROM `level` WHERE (`excavator_one`='$user' OR `excavator_two`='$user' OR `excavator_three`='$user' OR `excavator_four`='$user') AND `closed` IS NULL AND `site`='$site'";
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row['uid'];
+      parent::add_to_cache('level',$row['uid'],$row);
+    }
+
+    return $results;
+
+  } // get_open_user_levels
+
+  /**
+   * get_open_levels
+   * Return an array of the currently open levels for this site
+   */
+  public static function get_open_levels() { 
+
+    $results = array(); 
+
+    $site = Dba::escape(\UI\sess::$user->site->uid);
+
+
+    $sql = "SELECT * FROM `level` WHERE `closed`='0' AND `site`='$site'";
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row['uid'];
+      parent::add_to_cache('level',$row['uid'],$row);
+    }
+
+    return $results;
+
+  } // get_open_levels
+  
 
 
 } // end class level
