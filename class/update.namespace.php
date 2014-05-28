@@ -833,11 +833,17 @@ class Database {
    * - Create Blank Krotovina if record.krot set
    * - Remove record.quad and record.unit, now linked directly to level
    * - Remove record.northing record.easting record.elevation, now stored in spatial_data table
+   * - Switch record.level to NOT NULL
    */
   public static function update_0013() { 
 
     $retval = true; 
 
+    // Switch record.level to NOT NULL
+    $sql = "ALTER TABLE `record` CHANGE `level` `level` INT(11) UNSIGNED NOT NULL";
+    $db_results = \Dba::write($sql) ? $retval : false;
+
+    // We've moved everything drop the extranous information
     $sql = "ALTER TABLE `record` DROP `quad`,`unit`,`northing`,`easting`,`elevation`";
     $db_results = \Dba::write($sql) ? $retval : false;
 
