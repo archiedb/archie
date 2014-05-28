@@ -11,13 +11,13 @@ if (INIT_LOADED != '1') { exit; }
   </h4>
 <table class="table table-bordered">
 <thead>
-	<th>RN</th><th>Unit</th><th>Quad</th><th>Level</th>
+	<th>RN</th><th>Level</th><th>Krotovina</th><th>Feature</th>
 </thead>
 <tr>
 	<td><?php echo scrub_out($record->station_index); ?></td>
-	<td><?php echo scrub_out($record->unit); ?></td>
-	<td><?php echo scrub_out($record->quad->name); ?></td>
-	<td><?php echo scrub_out($record->level); ?></td>
+	<td><?php echo \UI\record_link($record->level->uid,'level',$record->level->record); ?></td>
+	<td><?php echo \UI\record_link($record->krotovina->uid,'krotovina',$record->krotovina->record); ?></td>
+	<td><?php echo \UI\record_link($record->feature->uid,'feature',$record->feature->record); ?></td>
 </tr>
 </table>
 <?php } ?>
@@ -44,7 +44,7 @@ if (INIT_LOADED != '1') { exit; }
           if ($_POST['level'] == $level_uid) { $is_selected=' selected="selected="'; }
         }
     ?>
-      <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($level->unit . ' - ' .$level->quad->name . ' - ' . $level->catalog_id); ?></option>
+      <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($level->record); ?></option>
     <?php } ?>
     </select>
   </div>

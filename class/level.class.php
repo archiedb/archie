@@ -53,7 +53,7 @@ class Level extends database_object {
     $this->quad = new Quad($this->quad);
     $this->lsg_unit = new Lsgunit($this->lsg_unit);
     $this->site = new site($this->site);
-    $this->record = $this->site->name . '-' . $this->catalog_id;
+    $this->record = $this->unit . ':' . $this->quad->name . ':' . $this->catalog_id;
 
 		return true; 
 

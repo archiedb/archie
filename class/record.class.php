@@ -172,14 +172,14 @@ class Record extends database_object {
 		} 
 
     // We need the real UID of the following objects
-    $level_uid    = Level::get_uid_from_record($input['level'],$input['quad'],$input['unit']);
+    $level = new Level($input['level']);
     $feature_uid  = Feature::get_uid_from_record($input['feature']);
     $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
 
 		// Insert the new record
     $site = Dba::escape(\UI\sess::$user->site->uid);
-		$unit = Dba::escape($input['unit']); 
-		$level = Dba::escape($level_uid); 
+		$unit = Dba::escape($level->unit); 
+		$level = Dba::escape($level->uid); 
 		$lsg_unit = Dba::escape($input['lsg_unit']); 
 		$xrf_matrix_index = Dba::escape($input['xrf_matrix_index']); 
 		$weight = Dba::escape($input['weight']); 
@@ -191,7 +191,7 @@ class Record extends database_object {
 		$classification = Dba::escape($input['classification']); 
 		$notes = Dba::escape($input['notes']); 
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
-		$quad = Dba::escape($input['quad']); 
+		$quad = Dba::escape($level->quad->uid); 
 		$feature = Dba::escape($feature_uid);  
     $krotovina = Dba::escape($krotovina_uid);
     $northing = Dba::escape($input['northing']); 
@@ -202,7 +202,6 @@ class Record extends database_object {
 
 		// This can be null needs to be handled slightly differently
 		$station_index = $input['station_index'] ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
-		$level = $level ? "'" . Dba::escape($input['level']) . "'" : "NULL"; 
 		
 		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`station_index`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`krotovina`,`user`,`created`,`northing`,`easting`,`elevation`) " . 
 			"VALUES ('$site','$catalog_id','$unit',$level,'$lsg_unit',$station_index,'$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$quad','$feature','$krotovina','$user','$created','$northing','$easting','$elevation')"; 

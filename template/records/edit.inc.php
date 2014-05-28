@@ -7,39 +7,27 @@ if (INIT_LOADED != '1') { exit; }
 <?php Event::display('errors'); ?>
 <fieldset><legend>Edit Record - <?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></legend>
 <form class="form-horizontal" id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/update">
-<div class="control-group span4<?php Error::display_class('unit'); ?>">
-  <label class="control-label" for="inputUnit">Unit</label>
-  <div class="controls">
-	  <select name="unit">
-  	<?php foreach (unit::$values as $value) { 
-	  	$is_selected = ''; 
-  		if ($record->unit == $value) { $is_selected=" selected=\"selected\""; } 
-  	?>
-  		<option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option> 
-  	<?php } ?>
-    </select>
-  </div>
-</div>
-<div class="control-group span4 offset1<?php Error::display_class('quad'); ?>">
-  <label class="control-label" for="inputQuad">Quad</label>
-  <div class="controls">
-    <select id="inputQuad" name="quad">
-      <option value="">&nbsp;</option>
-      <?php foreach (quad::$values as $key=>$value) {
-        $is_selected = '';
-        if ($record->quad->uid == $key) { $is_selected=" selected=\"selected\""; }
-      ?>
-      <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
-     <?php } ?>
-   </select>
-  </div>
-</div>
 <div class="control-group span4<?php Error::display_class('level'); ?>">
   <label class="control-label" for="inputLevel">Level</label>
   <div class="controls">
-  	<input id="inputLevel" name="level" type="text" value="<?php echo scrub_out($record->level->record); ?>" />
+    <?php
+      $user_levels = Level::get_open_user_levels();
+      if (!count($user_levels)) { $default_level_value = 'No Open Levels'; }
+      else { $default_level_value = '&nbsp;'; }
+    ?>
+    <select id="inputLevel" name="level">
+      <option value=""><?php echo $default_level_value; ?></option>
+    <?php
+      foreach ($user_levels as $level_uid) {
+        $level = new Level($level_uid);
+        $is_selected = '';
+        if ($record->level->uid == $level_uid) { $is_selected=' selected="selected="'; }
+    ?>
+      <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($level->record); ?></option>
+    <?php } ?>
+    </select>
   </div>
-</div> 
+</div>
 <div class="control-group span4 offset1<?php Error::display_class('feature'); ?>">
   <label class="control-label" for="inputFeature">Feature</label>
   <div class="controls">

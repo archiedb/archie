@@ -14,11 +14,11 @@ if (INIT_LOADED != '1') { exit; }
 <?php Event::display('errors'); ?>
 <table class="table table-hover table-bordered table-white">
 <tr>
-  <th>UNIT</th><td><?php echo scrub_out($record->unit); ?></em></td>
+  <th>UNIT</th><td><?php echo scrub_out($record->level->unit); ?></em></td>
   <th>CATALOG ID</th><td><?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></td>
 </tr>
 <tr>
-  <th>LEVEL</th><td><?php echo \UI\record_link($record->level->uid,'level',$record->level->record); ?></td>
+  <th>LEVEL</th><td><?php echo \UI\record_link($record->level->uid,'level',$record->level->catalog_id); ?></td>
   <th><abbr title="Lithostratoigraphic Unit">L. U.</abbr></th><td><?php echo scrub_out($record->lsg_unit->name); ?></td>
 </tr>
 <tr>
@@ -26,7 +26,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>KROTOVINA</th><td><?php echo \UI\record_link($record->krotovina->uid,'krotovina',$record->krotovina->record); ?></td>
 </tr>
 <tr>
-  <th>QUAD</th><td><?php echo scrub_out($record->quad->name); ?></td>
+  <th>QUAD</th><td><?php echo scrub_out($record->level->quad->name); ?></td>
   <th>RN</th><td><?php echo scrub_out($record->station_index); ?></td>
 </tr>
 <tr>
