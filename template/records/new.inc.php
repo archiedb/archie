@@ -26,42 +26,27 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" id="new_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/create">
-<div class="control-group span4<?php Error::display_class('unit'); ?>">
-  <label class="control-label" for="inputUnit">Unit</label>
-  <div class="controls">
-	  <select id="inputUnit" name="unit">
-    	<option value="-1">&nbsp;</option> 
-	    <?php foreach (unit::$values as $value) {
-	        $is_selected = '';
-          if (isset($_POST['unit'])) { 
-  	        if ($_POST['unit'] == $value) { $is_selected=" selected=\"selected\""; }
-          } 
-	    ?>
-	    <option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
-      <?php } ?>
-  	</select>
-  </div>
-</div>
-<div class="control-group span4 offset1<?php Error::display_class('quad'); ?>">
-  <label class="control-label" for="inputQuad">Quad</label>
-  <div class="controls">
-	  <select id="inputQuad" name="quad"> 
-		  <option value="">&nbsp;</option> 
-      <?php foreach (quad::$values as $key=>$value) { 
-        $is_selected = '';
-        if (isset($_POST['quad'])) { 
-          if ($_POST['quad'] == $key) { $is_selected=" selected=\"selected\""; }
-        }
-      ?>
-      <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
-      <?php } ?>
-    </select>
-  </div>
-</div>
 <div class="control-group span4<?php Error::display_class('level'); ?>">
   <label class="control-label" for="inputLevel">Level</label>
   <div class="controls">
-	  <input id="inputLevel" name="level" type="text" value="<?php echo scrub_out($_POST['level']); ?>" />
+    <?php 
+      $user_levels = Level::get_open_user_levels(); 
+      if (!count($user_levels)) { $default_level_value = 'No Open Levels'; }
+      else { $default_level_value = '&nbsp;'; }
+    ?>
+    <select id="inputLevel" name="level">
+      <option value=""><?php echo $default_level_value; ?></option>
+    <?php 
+      foreach ($user_levels as $level_uid) {
+        $level = new Level($level_uid);
+        $is_selected = '';
+        if (isset($_POST['level'])) {
+          if ($_POST['level'] == $level_uid) { $is_selected=' selected="selected="'; }
+        }
+    ?>
+      <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($level->unit . ' - ' .$level->quad->name . ' - ' . $level->catalog_id); ?></option>
+    <?php } ?>
+    </select>
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('lsg_unit'); ?>">
@@ -129,10 +114,22 @@ if (INIT_LOADED != '1') { exit; }
     </select>
   </div>
 </div>
-<div class="control-group span4<?php Error::display_class('notes'); ?>">
-  <label class="control-label" for="inputNotes">Notes</label>
+<div class="control-group span4<?php Error::display_class('northing'); ?>">
+  <label class="control-label" for="inputNorthing">Northing</label>
   <div class="controls">
-	  <textarea placeholder="Notes..." rows="4" name="notes"><?php echo scrub_out($_POST['notes']); ?></textarea>
+    <input id="inputNorthing" type="text" name="northing" value="<?php echo scrub_out($_POST['northing']); ?>">
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('easting'); ?>">
+  <label class="control-label" for="inputEasting">Easting</label>
+  <div class="controls">
+    <input id="inputEasting" type="text" name="easting" value="<?php echo scrub_out($_POST['easting']); ?>">
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('elevation'); ?>">
+  <label class="control-label" for="inputElevation">Elevation</label>
+  <div class="controls">
+    <input id="inputElevation" type="text" name="elevation" value="<?php echo scrub_out($_POST['elevation']); ?>">
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('station_index'); ?>">
@@ -141,7 +138,12 @@ if (INIT_LOADED != '1') { exit; }
     <input id="inputStationIndex" name="station_index" type="text" value="<?php echo scrub_out($_POST['station_index']); ?>" />
   </div>
 </div>
-
+<div class="control-group span8<?php Error::display_class('notes'); ?>">
+  <label class="control-label" for="inputNotes">Notes</label>
+  <div class="controls">
+	  <textarea placeholder="Notes..." rows="4" name="notes"><?php echo scrub_out($_POST['notes']); ?></textarea>
+  </div>
+</div>
 <div class="control-group span8">
   <div class="controls">
   	<input type="submit" class="btn btn-primary" value="Create" />

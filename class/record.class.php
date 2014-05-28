@@ -248,11 +248,11 @@ class Record extends database_object {
     }
 
     // We need the real UID of the following objects
-    $level_uid    = Level::get_uid_from_record($input['level'],$input['quad'],$input['unit']);
+    $level = new Level($input['level']);
+    $level_uid = $level->uid;
     $feature_uid  = Feature::get_uid_from_record($input['feature']);
     $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
 
-    $unit = Dba::escape($input['unit']); 
 		$lsg_unit = Dba::escape($input['lsg_unit']); 
 		$xrf_matrix_index = Dba::escape($input['xrf_matrix_index']); 
 		$weight = Dba::escape($input['weight']); 
@@ -264,7 +264,6 @@ class Record extends database_object {
 		$classification = Dba::escape($input['classification']); 
 		$notes = Dba::escape($input['notes']); 
 		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
-		$quad = Dba::escape($input['quad']); 
 		$feature = Dba::escape($feature_uid); 
     $krotovina = Dba::escape($krotovina_uid);
     $northing = isset($input['northing']) ? Dba::escape($input['northing']) : Dba::escape($this->northing); 
@@ -278,10 +277,10 @@ class Record extends database_object {
 		$station_index = $input['station_index'] ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
 		$level = $input['level'] ? "'" . Dba::escape($level_uid) . "'" : "NULL"; 
 
-		$sql = "UPDATE `record` SET `unit`='$unit', `level`=$level, `lsg_unit`='$lsg_unit', `station_index`=$station_index, " . 
+		$sql = "UPDATE `record` SET `level`=$level, `lsg_unit`='$lsg_unit', `station_index`=$station_index, " . 
 			"`xrf_matrix_index`='$xrf_matrix_index', `weight`='$weight', `height`='$height', `width`='$width', `thickness`='$thickness', " . 
 			"`quanity`='$quanity', `material`='$material', `classification`='$classification', `notes`='$notes', `xrf_artifact_index`='$xrf_artifact_index', " . 
-			"`user`='$user', `updated`='$updated', `quad`='$quad', `feature`='$feature', `northing`='$northing', `easting`='$easting', `elevation`='$elevation', " . 
+			"`user`='$user', `updated`='$updated', `feature`='$feature', `northing`='$northing', `easting`='$easting', `elevation`='$elevation', " . 
       "`krotovina`='$krotovina' " .
 			"WHERE `uid`='$record_uid'"; 
 		$db_results = Dba::write($sql); 
@@ -313,20 +312,10 @@ class Record extends database_object {
     // If we were given the record for which these values are assoicated
     if ($record_id) { $record = new Record($record_id); }
 		
-		// Unit A-Z
-		if (preg_match("/[^A-Za-z]/",$input['unit'])) { 
-			Error::add('unit','UNIT must be A-Z'); 
-		} 
-
     // Make sure this user is allowed to create records in this site (write)
     if (!Access::has('site','write',$input['site'])) { 
       Error::add('site','Insufficient site permission, unable to create record');
     }
-
-		// Level numeric, most likely less then 50
-		if ((!is_numeric($input['level']) OR $input['level'] > 50 OR $input['level'] < 0) AND strlen($input['level'])) { 
-			Error::add('level','Level must be numeric and less than 50'); 
-		} 
 
 		// lsg_unit, numeric less then 50
 		if ((!in_array($input['lsg_unit'],array_keys(lsgunit::$values)) OR $input['lsg_unit'] > 50) AND strlen($input['lsg_unit'])) { 
@@ -455,11 +444,6 @@ class Record extends database_object {
 			} 
 		} // end if material 
 
-		// The quad has to exist
-		if (!in_array($input['quad'],array_keys(quad::$values)) AND strlen($input['quad'])) { 
-			Error::add('Quad','Invalid Quad selected'); 
-		} 
-
     // Feature must exist first
     if (strlen($input['feature'])) { 
       $feature_uid = Feature::get_uid_from_record($input['feature']); 
@@ -478,17 +462,19 @@ class Record extends database_object {
 
     // The level must exist!
     if (strlen($input['level'])) {
-      $level_uid = Level::get_uid_from_record($input['level'],$input['quad'],$input['unit']);
-      $level = new Level($level_uid);
-      if (!$level_uid OR $level->quad->uid != $input['quad'] OR $level->unit != $input['unit']) {
+      $level = new Level($input['level']);
+      if (!$level->catalog_id) {
         Error::add('Level','Level not found, please create level record first');
       }
     }
+    else { 
+      Error::add('Level','Level must be specified for all records');
+    }
 
     // Make sure they entered only one of the three (krot/level/feature)
-    $items = intval(!empty($input['krotovina'])) + intval(!empty($input['level'])) + intval(!empty($input['feature']));
+    $items = intval(!empty($input['krotovina'])) + intval(!empty($input['feature']));
     if ($items > 1) { 
-      Error::add('Association','Record must be associated with only one of the following: Krotovina, Feature, Level');
+      Error::add('Association','Record must be associated with only either a feature or a krotovina');
     }
 
 		// Notes... character limit

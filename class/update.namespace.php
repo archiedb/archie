@@ -825,6 +825,26 @@ class Database {
 
   } // update_0012
 
+  /**
+   * update_0013
+   * - Migrate existing northing/easting/elevations to spatial_data
+   * - Create Blank Levels if quad/unit specified but no level record found
+   * - Create Blank Featuers if record.feature set
+   * - Create Blank Krotovina if record.krot set
+   * - Remove record.quad and record.unit, now linked directly to level
+   * - Remove record.northing record.easting record.elevation, now stored in spatial_data table
+   */
+  public static function update_0013() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `record` DROP `quad`,`unit`,`northing`,`easting`,`elevation`";
+    $db_results = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } // update_0013
+
 } // \Update\Database class
 
 ?>
