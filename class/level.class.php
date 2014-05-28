@@ -7,6 +7,7 @@ class Level extends database_object {
   public $site;
   public $catalog_id; // Numeric value of item
   public $record; // UID generated and written down (public facing value) SITE-CAT#
+  public $name; // UNIT:QUAD:CATALOGID (used for drop-downs to identify the level)
   public $unit;
   public $quad;
   public $lsg_unit;
@@ -53,7 +54,8 @@ class Level extends database_object {
     $this->quad = new Quad($this->quad);
     $this->lsg_unit = new Lsgunit($this->lsg_unit);
     $this->site = new site($this->site);
-    $this->record = $this->unit . ':' . $this->quad->name . ':' . $this->catalog_id;
+    $this->record = 'L-' . $this->catalog_id;
+    $this->name = $this->unit . ':' . $this->quad->name . ':' . $this->catalog_id;
 
 		return true; 
 

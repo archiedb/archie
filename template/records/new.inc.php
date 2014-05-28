@@ -44,7 +44,7 @@ if (INIT_LOADED != '1') { exit; }
           if ($_POST['level'] == $level_uid) { $is_selected=' selected="selected="'; }
         }
     ?>
-      <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($level->record); ?></option>
+      <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($level->name); ?></option>
     <?php } ?>
     </select>
   </div>
