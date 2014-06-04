@@ -23,6 +23,7 @@ class User extends database_object {
 		} 
 		// Don't actually keep this in the object 
 		unset($this->password); 
+    if (!$this->name) { $this->name = $this->username; }
 
 		return true; 
 
