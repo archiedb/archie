@@ -10,8 +10,8 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo scrub_out($record->station_index); ?></td>
 	<td><?php echo scrub_out($record->unit); ?></td>
 	<td><?php echo scrub_out($record->quad->name); ?></td>
-	<td><?php echo scrub_out($record->level); ?></td>
-	<td><?php echo scrub_out($record->feature); ?></td>
+	<td><?php echo \UI\record_link($record->level->uid,'level',$record->level->catalog_id); ?></td>
+	<td><?php echo \UI\record_link($record->feature->uid,'feature',$record->feature->catalog_id); ?></td>
 	<td><?php echo scrub_out($record->lsg_unit->name); ?></td>
 	<td><?php echo scrub_out($record->material->name); ?></td>
 	<td><?php echo scrub_out($record->classification->name); ?></td>
