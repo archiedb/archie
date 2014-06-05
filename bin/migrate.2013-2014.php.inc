@@ -64,14 +64,15 @@ $db_results = Dba::read($sql);
 $levels = array();
 
 while ($row = Dba::fetch_assoc($db_results)) { 
-	$levels[$row['uid']] = $row;
+	$levels[$row['catalog_id']] = $row;
 }
 
 foreach ($records as $record) { 
+	echo "Starting work on #" . $record['catalog_id'] . " UID [ " . $record['uid'] . " ]\n";
 
 	// If no level defined, skip
 	if (!$record['level']) { 
-		echo "Record: #" . $record['catalog_id'] . " [ " . $record['uid'] . " ] has no level skipping \n";
+		echo "\tRecord: #" . $record['catalog_id'] . " [ " . $record['uid'] . " ] has no level skipping \n";
 		continue;
 	}
 
@@ -80,44 +81,195 @@ foreach ($records as $record) {
 		// Now make sure it's really really the same thing
 		if ($record['quad'] == $levels[$record['level']]['quad'] AND $record['unit'] == $levels[$record['level']]['unit']) {
 			// Ok ok it is the same, move on
-			echo "Record: #" . $record['catalog_id'] . " with level L-" . $levels[$record['level']]['catalog_id'] . " found checking excavators\n";
+			echo "\tRecord: #" . $record['catalog_id'] . " with level L-" . $levels[$record['level']]['catalog_id'] . " found checking excavators\n";
 			$excavator = excavator_fix($record['user'],$levels[$record['level']]);
-			if (!$excavator) { continue; }
+			if (!$excavator) { 
+				record_level_fix($record['uid'],$levels[$record['level']]['uid']);
+				continue; 
+			}
 			$levels[$record['level']][$excavator] = $record['user'];
-			echo "User: " . $record['user'] . " Added as $excavator ON level L-" . $levels[$record['level']]['catalog_id'] . "\n";
+			echo "\tUser: " . $record['user'] . " Added as $excavator ON level L-" . $levels[$record['level']]['catalog_id'] . "\n";
+			// Update the record to point at the right (new level) 
+			record_level_fix($record['uid'],$levels[$record['level']]['uid']);
 		}
 		else { 
-			echo "Record: #" . $record['catalog_id'] . " doesn't match level L-" . $levels[$recdord['level']]['catalog_id'] . " searching...\n";
+			echo "\tRecord: #" . $record['catalog_id'] . " doesn't match level L-" . $levels[$record['level']]['catalog_id'] . " searching...\n";
 			$sql = "SELECT * FROM `level` WHERE `quad`='" . $record['quad'] . "' AND `unit`='" . $record['unit'] . "' AND `catalog_id`='" . $record['level'] . "'";
 			$db_results = Dba::read($sql); 
-			$row = Dba::fetch_assoc($db_results)
+			$row = Dba::fetch_assoc($db_results);
+			// If it doesn't exists we need to create it
 			if (!$row['uid']) { 
-				$level_uid = migration_create_level($record['user'],$record['level'],$record['unit'],$record['quad']);
-				echo "Level Created: [ $level_uid ] - L-" . $record['level'];
+				$level_uid = migration_create_level($record['user'],$record['level'],$record['unit'],$record['quad'],$record['site']);
+				echo "\tLevel Created: [ $level_uid ] - L-" . $record['level'] . "\n";
 				$level = array('catalog_id'=>$record['level'],'quad'=>$record['quad'],'unit'=>$record['unit'],'uid'=>$level_uid,'excavator_one'=>$record['user']);
-				$levels[$level_uid] = $level;
+				$levels[$record['level']] = $level;
+				record_level_fix($record['uid'],$levels[$record['level']]['uid']);
+			}
+			// Add to excavators if new
+			else { 
+				$excavator = excavator_fix($record['user'],$levels[$record['level']]);
+				if (!$excavator) { 
+					record_level_fix($record['uid'],$row['uid']);
+					continue; 
+				}
+				$levels[$record['level']][$excavator] = $record['user'];
+				echo "\tUser: " . $record['user'] . " Added as $excavator ON level L-" . $levels[$record['level']]['catalog_id'] . "\n";
+				record_level_fix($record['uid'],$row['uid']);
 			}
 		}
 	} // if level is set
 	// No level found
 	else { 
-		echo "Record: #"  . $record['catalog_id'] . " doesn't match any levels, creating a new one\n";
+		echo "\tRecord: #"  . $record['catalog_id'] . " doesn't match any levels, creating a new one\n";
 		$level_uid = migration_create_level($record['user'],$record['level'],$record['unit'],$record['quad']);
-		echo "Level Created: [ $level_uid ] - L-" . $record['level'];
-		$level = array('catalog_id'=>$record['level'],'quad'=>$record['quad'],'unit'=>$record['unit'],'uid'=>$level_uid);
-		$levels[$level_uid] = $level;
+		echo "\tLevel Created: [ $level_uid ] - L-" . $record['level'] . "\n";
+		$level = array('catalog_id'=>$record['level'],'quad'=>$record['quad'],'unit'=>$record['unit'],'uid'=>$level_uid,'excavator_one'=>$record['user']);
+		$levels[$record['level']] = $level;
+		record_level_fix($record['uid'],$levels[$record['level']]['uid']);
 	}
 
 } // foreach records
 
+unset($levels);
+unset($records);
+
+echo "**************************\nSTARTING WORK ON KROTOVINA\n***************************\n";
+
+// Now load the records and krotovinas
+$sql = "SELECT * FROM `record`";
+$db_results = Dba::read($sql); 
+
+$records = array();
+$krotovinas = array();
+
+while ($row = Dba::fetch_assoc($db_results)) { 
+	$records[] = $row;
+}
+
+
+foreach ($records as $record) { 
+
+	echo "Starting work on Record #" . $record['catalog_id'] . "\n";
+
+	if (!$record['krotovina']) { 
+		echo "\tNo Krotovina Found skipping...\n";
+		continue;
+	}
+	// If we've created this krotovina already
+	if (isset($krotovinas[$record['krotovina']])) {
+		record_krotovina_fix($record['uid'],$krotovinas[$record['krotovina']]['uid']);
+	}
+	else { 
+		// Create the krotovina right here and now
+		$krotovina_uid = migration_create_krotovina($record['krotovina'],$record['site'],$record['user']);
+		echo "\tAdded new Krotovina Record [ $krotovina_uid ] for Record [ " . $record['uid'] . " ]\n";
+		// Add it to the list of krotovinas available
+		$krotovinas[$record['krotovina']] = array('uid'=>$krotovina_uid);
+		record_krotovina_fix($record['uid'],$krotovina_uid);
+	}
+
+
+} // end foreach records for krotovinas
+
+echo "**************************\nSTARTING WORK ON FEATURES\n***************************\n";
+
+unset($krotovina);
+unset($records);
+
+// Now load the records and features
+$sql = "SELECT * FROM `record`";
+$db_results = Dba::read($sql); 
+
+$records = array();
+$features = array();
+$bad=0;
+
+while ($row = Dba::fetch_assoc($db_results)) { 
+	$records[] = $row;
+}
+
+
+foreach ($records as $record) { 
+
+	echo "Starting work on Record #" . $record['catalog_id'] . "\n";
+
+	if (!$record['feature']) { 
+		echo "\tNo Feature Found skipping...\n";
+		continue;
+	}
+
+	if (!is_numeric($record['feature'])) { 
+		echo "\tERROR FEATURE IS NOT AN INT ON " . $record['catalog_id'] . " UID:" . $record['uid'] . " this is BAD BAD BAD\n";
+		$bad++; 
+		continue;
+	}
+
+	// If we've created this feature already
+	if (isset($features[$record['feature']])) {
+		record_feature_fix($record['uid'],$features[$record['feature']]['uid']);
+	}
+	else { 
+		// Create the krotovina right here and now
+		$feature_uid = migration_create_feature($record['feature'],$record['site'],$record['user']);
+		echo "\tAdded new Feature Record #" . $record['feature'] . " [ $feature_uid ] for Record [ " . $record['uid'] . " ]\n";
+		// Add it to the list of features available
+		$features[$record['feature']] = array('uid'=>$feature_uid);
+		record_feature_fix($record['uid'],$feature_uid);
+	}
+
+
+
+} // record
+
+echo "Found $bad bad features\n";
+
+/**
+ * FUNCTIONS
+ */
+
+// hack'n'slash a feature in, does not follow normal rules we have to add it though
+function migration_create_feature($catalog_id,$site,$user) { 
+
+	$catalog_id = Dba::escape($catalog_id);
+	$site = Dba::escape($site);
+	$user = Dba::escape($user);
+	$now = time();
+
+	$sql = "INSERT INTO `feature` (`site`,`catalog_id`,`user`,`created`) VALUES ('$site','$catalog_id','$user','$now')";
+	$db_results = Dba::write($sql); 
+
+	$insert_id = Dba::insert_id();
+
+	return $insert_id;
+
+} // migration_create_feature
+
+// hack'n'slash a krotovina in, does not follow normal rules we have to add it
+function migration_create_krotovina($catalog_id,$site,$user) { 
+
+	$user = Dba::escape($user);
+	$catalog_id = Dba::escape($catalog_id);
+	$site = Dba::escape($site);
+	$now = time();
+	$sql = "INSERT INTO `krotovina` (`site`,`catalog_id`,`user`,`created`) VALUES ('$site','$catalog_id','$user','$now')";
+	$db_results = Dba::write($sql); 
+
+	$insert_id = Dba::insert_id(); 
+
+	return $insert_id;
+
+} // migration_create_krotovina
+
 // Hack'n'slash doesn't follow normal rules because this is a "shit its too late garbage in guess garbage is coming out" type deal
-function migration_create_level($user,$catalog_id,$unit,$quad) {
+function migration_create_level($user,$catalog_id,$unit,$quad,$site) {
 
 	$user = Dba::escape($user);
 	$catalog_id = Dba::escape($catalog_id);
 	$unit = Dba::escape($unit);
 	$quad = Dba::escape($quad);
-	$sql = "INSERT INTO `level` (`user`,`catalog_id`,`unit`,`quad`,`created`,`excavator_one`) VALUES ('$user','$catalog_id','$unit','$quad')";
+	$site = Dba::escape($site);
+	$now = time();
+	$sql = "INSERT INTO `level` (`user`,`site`,`catalog_id`,`unit`,`quad`,`created`,`excavator_one`) VALUES ('$user','$site','$catalog_id','$unit','$quad','$now','$user')";
 	$db_results = Dba::write($sql);
 
 	$insert_id = Dba::insert_id();
@@ -132,9 +284,15 @@ function excavator_fix($user,$level) {
 	$uid = Dba::escape($level['uid']);
 	$clean_user = Dba::escape($user);
 
+	if (!$user) { 
+		echo "\tExcavator is blank, skipping\n";
+		return false;
+	}
+
 	// See if this user is listed already
 	if ($level['excavator_one'] == $user OR $level['excavator_two'] == $user OR $level['excavator_three'] == $user OR $level['excavator_four'] == $user) {
 		// return false nothing done/fixed
+		echo "\tExcavator [ $user ] found on L-" . $level['catalog_id'] . " skipping\n";
 		return false; 
 	}
 	// Crap not listed, ok any free spots, if so JAM IT IN THERE
@@ -151,7 +309,7 @@ function excavator_fix($user,$level) {
 		$field = 'excavator_four';
 	}
 	else {
-		echo "NO ROOM TO ADD $user TO Level: [ " . $level['uid'] . " ]  L-" . $level['catalog_id'] . "\n";
+		echo "\tNo Room to add user $user to Level: [ " . $level['uid'] . " ]  L-" . $level['catalog_id'] . "\n";
 		return false;
 	}
 
@@ -161,5 +319,50 @@ function excavator_fix($user,$level) {
 	return $field;
 
 } //excavator_fix
+
+function record_level_fix($record_uid,$level_uid) { 
+
+	$level_uid = Dba::escape($level_uid);
+	$record_uid = Dba::escape($record_uid); 
+
+	$sql = "UPDATE `record` SET `level`='$level_uid' WHERE `uid`='$record_uid'";
+	$db_results = Dba::write($sql); 
+
+	echo "\tSet Record UID [ $record_uid ] to Level UID [ $level_uid ]\n";
+
+	return true; 
+
+} //record_level_fix
+
+// Record krotovina fix
+function record_krotovina_fix($record_uid,$krotovina_uid) { 
+
+	$record_uid = Dba::escape($record_uid);
+	$krotovina_uid = Dba::escape($krotovina_uid); 
+
+	$sql = "UPDATE `record` SET `krotovina`='$krotovina_uid' WHERE `uid`='$record_uid'";
+	$db_results = Dba::write($sql); 
+
+	echo "\tUpdated Record [ $record_uid ] set Krotovina UID to $krotovina_uid\n";
+
+	return true; 
+
+} // record_krotovina_fix
+
+// Record feature fix
+function record_feature_fix($record_uid,$feature_uid) { 
+
+	$record_uid = Dba::escape($record_uid);
+	$feature_uid = Dba::escape($feature_uid); 
+
+	$sql = "UPDATE `record` SET `feature`='$feature_uid' WHERE `uid`='$record_uid'";
+	$db_results = Dba::write($sql); 
+
+	echo "\tUpdated Record [ $record_uid ] set Feature UID to $feature_uid\n";
+
+	return true; 
+
+} // record_krotovina_fix
+
 
 ?>
