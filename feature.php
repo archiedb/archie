@@ -46,6 +46,13 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/feature/edit');
     }
   break;
+  case 'offset':
+    $view = new View();
+    $view->set_type('feature');
+    $view->set_start(\UI\sess::location('objectid'));
+    $features = $view->run();
+    require_once \UI\template('/feature/show');
+  break;
   case 'sort':
     $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'created';
     $order = \UI\sess::location('3') ? strtoupper(\UI\sess::location('3')) : '';
