@@ -133,6 +133,74 @@ foreach ($records as $record) {
 unset($levels);
 unset($records);
 
+echo "**************************\nSTARTING WORK ON FEATURES\n***************************\n";
+
+// Now load the records and features
+$sql = "SELECT * FROM `record`";
+$db_results = Dba::read($sql); 
+
+$records = array();
+$features = array();
+$bad=0;
+
+while ($row = Dba::fetch_assoc($db_results)) { 
+	$records[] = $row;
+}
+
+
+foreach ($records as $record) { 
+
+	echo "Starting work on Record #" . $record['catalog_id'] . "\n";
+
+	if (!$record['feature']) { 
+		echo "\tNo Feature Found skipping...\n";
+		continue;
+	}
+
+	if (preg_match("/[Kk](\d+)$/",$record['feature'],$matches)) { 
+		// This is actually a krotovina
+		record_feature_fix($record['uid'],'');
+		echo "\tKrotovina found in Feature field, switching " . $record['feature'] . " to Krotovina [ " . $matches['1'] . " ] \n";
+		record_krotovina_fix($record['uid'],$matches['1']);
+		continue;
+	}
+
+	if (preg_match("/Krotovina-\s?(\d+)/",$record['feature'],$matches)) { 
+		// This is actually a krotovina
+		record_feature_fix($record['uid'],'');
+		echo "\tKrotovina found in Feature field, switching " . $record['feature'] . " to Krotovina [ " . $matches['1'] . " ] \n";
+		record_krotovina_fix($record['uid'],$matches['1']);
+		continue;
+	}
+
+	if (!is_numeric($record['feature'])) { 
+		echo "\tERROR: Feature not numeric on UID [" . $record['uid'] . "] Feature [" . $record['feature'] . "] If Intval'd [" . intval($record['feature']) . "]\n";
+		$bad++; 
+		continue;
+	}
+
+	// If we've created this feature already
+	if (isset($features[$record['feature']])) {
+		record_feature_fix($record['uid'],$features[$record['feature']]['uid']);
+	}
+	else { 
+		// Create the krotovina right here and now
+		$feature_uid = migration_create_feature($record['feature'],$record['site'],$record['user']);
+		echo "\tAdded new Feature Record #" . $record['feature'] . " [ $feature_uid ] for Record [ " . $record['uid'] . " ]\n";
+		// Add it to the list of features available
+		$features[$record['feature']] = array('uid'=>$feature_uid);
+		record_feature_fix($record['uid'],$feature_uid);
+	}
+
+
+
+} // record
+
+echo "Found $bad bad features\n";
+
+unset($records);
+unset($features);
+
 echo "**************************\nSTARTING WORK ON KROTOVINA\n***************************\n";
 
 // Now load the records and krotovinas
@@ -171,57 +239,6 @@ foreach ($records as $record) {
 
 } // end foreach records for krotovinas
 
-echo "**************************\nSTARTING WORK ON FEATURES\n***************************\n";
-
-unset($krotovina);
-unset($records);
-
-// Now load the records and features
-$sql = "SELECT * FROM `record`";
-$db_results = Dba::read($sql); 
-
-$records = array();
-$features = array();
-$bad=0;
-
-while ($row = Dba::fetch_assoc($db_results)) { 
-	$records[] = $row;
-}
-
-
-foreach ($records as $record) { 
-
-	echo "Starting work on Record #" . $record['catalog_id'] . "\n";
-
-	if (!$record['feature']) { 
-		echo "\tNo Feature Found skipping...\n";
-		continue;
-	}
-
-	if (!is_numeric($record['feature'])) { 
-		echo "\tERROR FEATURE IS NOT AN INT ON " . $record['catalog_id'] . " UID:" . $record['uid'] . " this is BAD BAD BAD\n";
-		$bad++; 
-		continue;
-	}
-
-	// If we've created this feature already
-	if (isset($features[$record['feature']])) {
-		record_feature_fix($record['uid'],$features[$record['feature']]['uid']);
-	}
-	else { 
-		// Create the krotovina right here and now
-		$feature_uid = migration_create_feature($record['feature'],$record['site'],$record['user']);
-		echo "\tAdded new Feature Record #" . $record['feature'] . " [ $feature_uid ] for Record [ " . $record['uid'] . " ]\n";
-		// Add it to the list of features available
-		$features[$record['feature']] = array('uid'=>$feature_uid);
-		record_feature_fix($record['uid'],$feature_uid);
-	}
-
-
-
-} // record
-
-echo "Found $bad bad features\n";
 
 /**
  * FUNCTIONS
