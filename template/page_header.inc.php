@@ -5,6 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 $limit = $view->get_offset(); 
 $start = $view->get_start(); 
 $total = $view->get_total(); 
+$type  = strtolower($view->get_type());
 $sides = 5; 
 
 
@@ -63,7 +64,7 @@ if ($pages > 1) {
 ?>
 <div class="pagination pagination-centered">
   <ul>
-  <li><a href="<?php echo Config::get('web_path'); ?>/records/offset/<?php echo $prev_offset; ?>">&laquo;</a></li>
+  <li><a href="<?php echo Config::get('web_path'); ?>/<?php echo $type; ?>/offset/<?php echo $prev_offset; ?>">&laquo;</a></li>
 <?php 
   $current_page++; // Also starts at 1 not zero
   foreach ($page_data['down'] as $page => $offset) { 
@@ -74,7 +75,7 @@ if ($pages > 1) {
     } else {
     $page++; // This starts on 1 not zero
 ?> 
-    <li><a href="<?php echo Config::get('web_path'); ?>/records/offset/<?php echo $offset; ?>"><?php echo $page; ?></a></li>
+    <li><a href="<?php echo Config::get('web_path'); ?>/<?php echo $type; ?>/offset/<?php echo $offset; ?>"><?php echo $page; ?></a></li>
 <?php } } ?>
     <li class="active"><a href="#"><?php echo $current_page; ?></a></li>
 <?php 
@@ -86,9 +87,9 @@ if ($pages > 1) {
     } else {
   $page++; // We don't do zero
 ?>  
-    <li><a href="<?php echo Config::get('web_path'); ?>/records/offset/<?php echo $offset; ?>"><?php echo $page; ?></a></li>
+    <li><a href="<?php echo Config::get('web_path'); ?>/<?php echo $type; ?>/offset/<?php echo $offset; ?>"><?php echo $page; ?></a></li>
 <?php } }?>
-  <li><a href="<?php echo Config::get('web_path'); ?>/records/offset/<?php echo $next_offset; ?>">&raquo;</a></li>
+  <li><a href="<?php echo Config::get('web_path'); ?>/<?php echo $type; ?>/offset/<?php echo $next_offset; ?>">&raquo;</a></li>
   </ul>
 </div>
 <?php } // if we have pages at all ?>
