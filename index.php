@@ -4,6 +4,7 @@ require_once 'class/init.php';
 
 // The first is "what" we are doing
 switch (\UI\sess::location('page')) { 
+  case 'record':
   case 'records':
     require_once 'records.php';
   break;
