@@ -27,5 +27,19 @@ class unit {
 
   } // name_to_id
 
+  /**
+   * is_valid
+   * Returns true/false if the UNIT is a valid unit value
+   */
+  public static function is_valid($name) { 
+
+    if (in_array($name,self::$values)) { 
+      return true;
+    }
+
+    return false;
+
+  } // is_valid
+
 }
 ?>

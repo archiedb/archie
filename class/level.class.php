@@ -301,7 +301,7 @@ class Level extends database_object {
     }
 
 		// Unit A-Z
-		if (preg_match("/[^A-Za-z]/",$input['unit'])) { 
+		if (!Unit::is_valid($input['unit'])) { 
 			Error::add('unit','UNIT must be A-Z'); 
 		}
 
