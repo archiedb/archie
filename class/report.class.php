@@ -322,7 +322,7 @@ class Report {
     Record::build_cache($results); 
 
     // The header
-    $data = "site,catalog id,unit,level,litho unit,station index,xrf matrix index,weight,height,width,thickness,quantity,material,classification,quad,feature,krotovina,notes,created,northing,easting,elevation\n";
+    $data = "site,catalog id,unit,level,litho unit,station index,xrf matrix index,weight,height,width,thickness,quantity,material,classification,quad,feature,krotovina,notes,created,northing,easting,elevation,user\n";
 
     foreach ($results as $record_uid) {
       $record = new Record($record_uid); 
@@ -333,7 +333,7 @@ class Report {
         $record->width . "," . $record->thickness . "," . $record->quanity . "," . $record->material->name . "," .
         trim($record->classification->name) . "," . $record->level->quad->name . "," . $record->feature->record . "," . $record->krotovina->record . ",\"" .
         addslashes($record->notes) . "\"," . date("m-d-Y h:i:s",$record->created) . "," . $record->northing . "," . $record->easting . "," . 
-        $record->elevation . "\n";
+        $record->elevation . ",\"" . $record->user->username . "\"\n";
      } // end foreach 
 
     return $data; 
