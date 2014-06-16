@@ -4,6 +4,9 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="pull-right">
+  <?php if (Access::is_admin() AND $level->closed) { ?>
+  <a href="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" role="button" data-toggle="modal">Re-Open Level</a>
+  <?php } ?>
   <?php if (Access::has('level','write',$level->uid)) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn">Edit Level</a>
   <?php } ?>
@@ -13,6 +16,9 @@ if (INIT_LOADED != '1') { exit; }
   <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
   <?php } ?>
 </p>
+<?php if (Access::is_admin() AND $level->closed) { ?>
+  <?php include \UI\template('/level/modal_open_confirm'); ?>
+<?php } ?>
 <h3>Level: <?php echo scrub_out($level->site->name); ?>-<?php echo scrub_out($level->catalog_id); ?>
   <?php if ($level->closed) { ?><span class="label label-important">CLOSED</span><?php } ?>
   <small>Entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>

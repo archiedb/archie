@@ -465,6 +465,25 @@ class Level extends database_object {
   } // records
 
   /**
+   * open
+   * Re-open the level
+   */
+  public function open() { 
+
+    // Really not much to do here
+    $uid = Dba::escape($this->uid);
+
+    $sql = "UPDATE `level` SET `closed`='0' WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql); 
+
+    $log_line = "Level " . $this->catalog_id . " re-opened in site " . $this->site->name;
+    Event::record('LEVEL-REOPEN',$log_line);
+
+    return true; 
+
+  } // open
+
+  /**
    * close
    * Attempt to close the level
    */

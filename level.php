@@ -97,6 +97,12 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/level/close'); 
     }
   break;
+  case 'reopen_level':
+    if (!Access::is_admin()) { break; }
+    $level = new Level($_POST['uid']);
+    $level->open();
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
+  break;
   case 'offset':
     $view = new View();
     $view->set_type('level');

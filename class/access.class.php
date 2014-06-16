@@ -156,4 +156,16 @@ class Access {
 
   } // get_level_name
 
+  /**
+   * is_admin
+   * Return true if the person is a full admin
+   */
+  public static function is_admin() { 
+
+    if (\UI\sess::$user->access == '100') { return true; }
+
+    return false; 
+
+  } // is_admin
+
 } // Access
