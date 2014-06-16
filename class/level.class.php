@@ -449,13 +449,9 @@ class Level extends database_object {
    */
   public function records() { 
 
-    $level  = Dba::escape($this->catalog_id); 
-    $quad   = Dba::escape($this->quad->uid);
-    $unit   = Dba::escape($this->unit);
-    $site   = Dba::escape($this->site->uid); 
+    $level  = Dba::escape($this->uid); 
 
-    $sql = "SELECT `record`.`uid` FROM `record` WHERE `record`.`level`='$level' AND `record`.`quad`='$quad' AND `record`.`unit`='$unit' " . 
-          " AND `record`.`site`='$site'"; 
+    $sql = "SELECT `record`.`uid` FROM `record` WHERE `record`.`level`='$level'"; 
     $db_results = Dba::read($sql); 
 
     $results = array(); 
