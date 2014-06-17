@@ -11,7 +11,7 @@ if (INIT_LOADED != '1') { exit; }
   </h4>
 <table class="table table-bordered">
 <thead>
-	<th>RN</th><th>Locus</th><th>Krotovina</th><th>Feature</th>
+	<th>RN</th><th><abbr title="Unit:Quad:Level">Locus</abbr></th><th>Krotovina</th><th>Feature</th>
 </thead>
 <tr>
 	<td><?php echo scrub_out($record->station_index); ?></td>
@@ -27,7 +27,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" id="new_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/create">
 <div class="control-group span4<?php Error::display_class('level'); ?>">
-  <label class="control-label" for="inputLevel">Locus</label>
+  <label class="control-label" for="inputLevel"><abbr title="Unit:Quad:Level">Locus</abbr></label>
   <div class="controls">
     <?php 
       $user_levels = Level::get_open_user_levels(); 
