@@ -12,7 +12,8 @@ if (INIT_LOADED != '1') { exit; }
   <tr>
     <th>Total records</th>
     <th>Records entered today</th>
-    <th>Todays busiest worker</th>
+    <th>Last Record Entered</th>
+    <th>Last Classification</th>
     <th>Todays most common classification</th>
   </tr>
 </thead>
@@ -22,16 +23,24 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo Stats::total_records('today'); ?></td>
   <td>
   <?php 
-      $info = Stats::worker_records('today'); 
-      
-      if ($info['count'] > 0) {  
-        echo $info['user'] . ' with '. $info['count'] . ' record(s) entered'; 
-      }
-      else { 
-        echo "<strong class=\"text-error\">Nobody!</strong>";
-      }
+    $record = Record::last_created(); 
+    if (!$record->uid) { 
+      echo "<strong class=\"text-error\">None</strong>";
+    }
+    else { 
+      echo \UI\record_link($record->uid,'record',$record->record); 
+    }
   ?>
   </td>
+  <td>
+    <?php
+      if (!$record->uid) {
+        echo "<strong class=\"text-error\">None</strong>";
+      }
+      else {
+        echo $record->classification->name;
+      }
+    ?>
   <td>
   <?php 
       $info = Stats::classification_records('today'); 
