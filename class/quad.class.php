@@ -5,7 +5,7 @@ class quad {
 
 	public $uid; 
 	public $name; 
-	public static $values = array('1'=>'NE','2'=>'SE','3'=>'SW','4'=>'NW'); 
+	public static $values = array('0'=>'','1'=>'NE','2'=>'SE','3'=>'SW','4'=>'NW'); 
 
 	// Constructor
 	public function __construct($uid) { 

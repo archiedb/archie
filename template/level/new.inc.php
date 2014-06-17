@@ -27,7 +27,6 @@ if (INIT_LOADED != '1') { exit; }
   <label class="control-label" for="inputQuad">Quad</label>
   <div class="controls">
 	  <select id="inputQuad" name="quad"> 
-		  <option value="">&nbsp;</option> 
       <?php foreach (quad::$values as $key=>$value) { 
         $is_selected = '';
         if (isset($_POST['quad'])) { 
