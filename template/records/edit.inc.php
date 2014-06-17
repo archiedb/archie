@@ -8,7 +8,7 @@ if (INIT_LOADED != '1') { exit; }
 <fieldset><legend>Edit Record - <?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></legend>
 <form class="form-horizontal" id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/update">
 <div class="control-group span4<?php Error::display_class('level'); ?>">
-  <label class="control-label" for="inputLevel">Level</label>
+  <label class="control-label" for="inputLevel"><abbr title="Unit:Quad:Level">Locus</abbr></label>
   <div class="controls">
     <?php
       $user_levels = Level::get_open_user_levels();
