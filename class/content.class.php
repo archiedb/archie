@@ -688,7 +688,7 @@ class content extends database_object {
 
         # Load and print record record
         $record = new Record($record_id); 
-        $pdf->Text(3,$start_y,$record->uid);
+        $pdf->Text(3,$start_y,$record->catalog_id);
         $pdf->Text(22,$start_y,$record->station_index);
         $pdf->Text(41,$start_y,$record->material->name); 
         $pdf->Text(67,$start_y,$record->classification->name);
