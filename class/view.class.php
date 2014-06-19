@@ -63,6 +63,7 @@ class View {
       'classification',
       'created',
       'feature',
+      'krotovina',
       'height',
       'image',
       'level',
@@ -592,8 +593,21 @@ class View {
       case 'lsg_unit':
         $filter_sql = " `record`.`lsg_unit` = '" . Dba::escape(Lsgunit::name_to_id($value)) . "' AND "; 
       break; 
+      case 'krotovina':
+        $uid = Krotovina::get_uid_from_record($value);
+        if (!$uid) {
+          $filter_sql = " 1=0 AND ";
+        } else {
+          $filter_sql = " `record`.`krotovina` = '" . Dba::escape($uid) . "' AND ";
+        }
+      break;
       case 'feature':
-        $filter_sql = " `record`.`feature` = '" . Dba::escape($value) . "' AND "; 
+        $uid = Feature::get_uid_from_record($value);
+        if (!$uid) {
+          $filter_sql = " 1=0 AND ";
+        } else {
+          $filter_sql = " `record`.`feature` = '" . Dba::escape($uid) . "' AND "; 
+        }
       break;
       case 'user':
         $user = User::get_from_username($value);
