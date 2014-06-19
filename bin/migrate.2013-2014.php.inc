@@ -15,6 +15,14 @@ Config::set('site','10IH73',1);
 
 $retval = true; 
 
+// Remove junk from record.feature
+$sql = "UPDATE `record` SET `feature`='' WHERE `feature`='s' OR `feature`='CENTER SED SAMPLE' OR `feature`='SOUTH SED SAMPLE' OR `feature`='EAST SED SAMPLE'";
+$db_results = Dba::write($sql); 
+
+// Make K733 Pt. 24 just K733
+$sql = "UPDATE `record` SET `feature`='K733' WHERE `feature`='K733 Pt. 24'";
+$db_results = Dba::write($sql);
+
 // Make sure that all records have a site created for them, if
 // a record doesn't have it print it out and exit
 
@@ -141,14 +149,22 @@ $db_results = Dba::read($sql);
 
 $records = array();
 $features = array();
+$auto_gen_feature = array();
 $bad=0;
+
+// Mapping for crazy ass features
+$newfeature = array('PF1'=>50,'PF 1'=>50,'PF1 outside'=>50,'13-1'=>51,'13-2'=>52,'13-3'=>53,'13-4'=>54,'13-6'=>54,'13-7'=>55,'13-8'=>56,
+	'E-2'=>57,'e1-1'=>58,'f13-1'=>51,'F13-1'=>51,'O1'=>59,'P1'=>60,'P2'=>61,'P3'=>62,'Sand Mound'=>63,'E1-1'=>58,'F13-3'=>53);
+$newkeyfeatures = array_keys($newfeature);
 
 while ($row = Dba::fetch_assoc($db_results)) { 
 	$records[] = $row;
 }
 
-
 foreach ($records as $record) { 
+
+	// Cut out any whitespace they added
+	$record['feature'] = trim($record['feature']);
 
 	echo "Starting work on Record #" . $record['catalog_id'] . "\n";
 
@@ -156,6 +172,7 @@ foreach ($records as $record) {
 		echo "\tNo Feature Found skipping...\n";
 		continue;
 	}
+
 
 	if (preg_match("/[Kk](\d+)$/",$record['feature'],$matches)) { 
 		// This is actually a krotovina
@@ -171,6 +188,16 @@ foreach ($records as $record) {
 		echo "\tKrotovina found in Feature field, switching " . $record['feature'] . " to Krotovina [ " . $matches['1'] . " ] \n";
 		record_krotovina_fix($record['uid'],$matches['1']);
 		continue;
+	}
+
+	// Add a note then adjust the value of feature
+	if (in_array($record['feature'],$newkeyfeatures)) {
+		// Update the notes to show we've tweaked the feature
+		$record['feature'] = trim($record['feature']);
+		echo "\tWARN: Adding " . $record['feature'] . " to notes for [ " . $record['uid'] . " ]\n";
+		record_notes_fix($record['uid'],$record['notes'],$record['feature']);
+		echo "\tWARN: New Feature Value [ " . $newfeature[$record['feature']] . " ] mapped from [ " . $record['feature'] . " ]\n";
+		$record['feature'] = $newfeature[$record['feature']];
 	}
 
 	if (!is_numeric($record['feature'])) { 
@@ -195,6 +222,7 @@ foreach ($records as $record) {
 
 
 } // record
+
 
 echo "Found $bad bad features\n";
 
@@ -379,7 +407,21 @@ function record_feature_fix($record_uid,$feature_uid) {
 
 	return true; 
 
-} // record_krotovina_fix
+} // record_featre_fix
+
+// Record notes fix
+function record_notes_fix($record_uid,$notes,$feature) { 
+
+	$record_uid = Dba::escape($record_uid); 
+	$notes = $notes . " ::Migration 2014:: Feature was $feature ::End::";
+	$notes = Dba::escape($notes);
+
+	$sql = "UPDATE `record` SET `notes`='$notes' WHERE `uid`='$record_uid'";
+	$db_results = Dba::write($sql); 
+
+	return true; 
+
+} // record_notes_fix
 
 
 ?>
