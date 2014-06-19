@@ -31,6 +31,13 @@
 // fixes some CSS issues
 ob_start();
 
+if (defined('CLI')) {
+  $_SERVER['HTTP_HOST'] = false;
+  $_SERVER['SERVER_PORT'] = false;
+  $_SERVER['SERVER_NAME'] = false;
+  $_SERVER['REQUEST_URI'] = false;
+}
+
 // Do a check for PHP5 because nothing will work without it
 if (floatval(phpversion()) < 5.3) {
 	echo "ERROR: Ampache requires PHP5.3";
