@@ -15,7 +15,7 @@ if (INIT_LOADED != '1') { exit; }
 </thead>
 <tr>
 	<td><?php echo scrub_out($record->station_index); ?></td>
-	<td><?php echo \UI\record_link($record->level->uid,'level',$record->level->record); ?></td>
+	<td><?php echo \UI\record_link($record->level->uid,'level',$record->level->name); ?></td>
 	<td><?php echo \UI\record_link($record->krotovina->uid,'krotovina',$record->krotovina->record); ?></td>
 	<td><?php echo \UI\record_link($record->feature->uid,'feature',$record->feature->record); ?></td>
 </tr>
