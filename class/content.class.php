@@ -1191,7 +1191,12 @@ class content extends database_object {
     // Write the thumbnail and record image to the filesystem, and insert into database
     $retval = Content::write($uid,'image',$image_data,$mime,$post['description'],$type); 
 
-    Event::add('success','Image uploaded, thanks!','small'); 
+    if ($retval) { 
+      Event::add('success','Image uploaded, thanks!','small'); 
+    }
+    else {
+      Error::add('upload','Error uploading image, please contact your administrator');
+    }
 
     return $retval; 
 
