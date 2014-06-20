@@ -1177,6 +1177,13 @@ class content extends database_object {
       return false; 
     }
 
+    // Make sure it's not too smal
+    $image_info = getimagesize($files['media']['tmp_name']);
+
+    if ($image_info['0'] < 640 OR $image_info['1'] < 480) { 
+      Event::add('warning','Uploaded Image is less than 640x480. Thumbnails and reports may not work correctly with this image');
+    }
+
     // Read in source file
     $image_data = file_get_contents($files['media']['tmp_name']); 
 
