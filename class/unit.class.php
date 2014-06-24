@@ -5,7 +5,8 @@ class unit {
 
 	public $uid; 
 	public $name; 
-	public static $values = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'); 
+  public static $values = array();
+	//public static $values = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20'); 
 
 	// Constructor
 	public function __construct($uid) { 
@@ -40,6 +41,19 @@ class unit {
     return false;
 
   } // is_valid
+
+  /**
+   * This is called when the class is included, we want
+   * to load up the allowed UNITS from the config/units.csv
+   */
+  public static function _auto_init() {
+
+    // Read in the units.csv
+    $fhandle = fopen(Config::get('prefix') . '/config/units.csv','r');
+    $units = fgetcsv($fhandle);
+    self::$values = $units;
+
+  } // _auto_init
 
 }
 ?>
