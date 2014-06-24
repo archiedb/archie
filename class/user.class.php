@@ -69,10 +69,11 @@ class User extends database_object {
 	public static function get_from_username($username) { 
 
 		$username = Dba::escape($username); 
-		$sql = "SELECT `uid` FROM `users` WHERE `username`='$username'"; 
+		$sql = "SELECT * FROM `users` WHERE `username`='$username'"; 
 		$db_results = Dba::read($sql); 
 
 		$row = Dba::fetch_assoc($db_results); 
+    parent::add_to_cache('users',$row['uid'],$row);
 
 		$user = new User($row['uid']); 
 
@@ -106,10 +107,11 @@ class User extends database_object {
 
 		$users = array(); 
 
-		$sql = 'SELECT `uid` FROM `users` WHERE 1=1' . $constraint_sql . " ORDER BY `name`";
+		$sql = 'SELECT * FROM `users` WHERE 1=1' . $constraint_sql . " ORDER BY `name`";
 		$db_results = Dba::read($sql); 
 
 		while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('users',$row['uid'],$row);
 			$users[] = new User($row['uid']); 
 		} 
 		return $users; 
