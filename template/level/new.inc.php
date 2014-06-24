@@ -136,7 +136,9 @@ if (INIT_LOADED != '1') { exit; }
       <?php
       foreach ($excavators as $user) { 
         $is_selected = '';
-        if ($_POST['excavator_two'] == $user->uid) { $is_selected = ' selected="selected"'; }
+        if (isset($_POST['excavator_tow'])) {
+          if ($_POST['excavator_two'] == $user->uid) { $is_selected = ' selected="selected"'; }
+        }
       ?>
       <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
       <?php } ?>
@@ -151,7 +153,9 @@ if (INIT_LOADED != '1') { exit; }
       <?php
       foreach ($excavators as $user) { 
         $is_selected = '';
-        if ($_POST['excavator_three'] == $user->uid) { $is_selected = ' selected="selected"'; }
+        if (isset($_POST['excavator_three'])) {
+          if ($_POST['excavator_three'] == $user->uid) { $is_selected = ' selected="selected"'; }
+        }
       ?>
       <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
       <?php } ?>
@@ -166,7 +170,9 @@ if (INIT_LOADED != '1') { exit; }
       <?php 
       foreach ($excavators as $user) { 
         $is_selected = '';
-        if ($_POST['excavator_four'] == $user->uid) { $is_selected = ' selected="selected"'; }
+        if (isset($_POST['excavator_four'])) {
+          if ($_POST['excavator_four'] == $user->uid) { $is_selected = ' selected="selected"'; }
+        }
       ?>
       <option value="<?php echo scrub_out($user->uid); ?>"<?php echo $is_selected; ?>><?php echo $user->name; ?></option>
       <?php } ?>
