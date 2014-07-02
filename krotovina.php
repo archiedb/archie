@@ -18,6 +18,14 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/krotovina/new');
     }
   break;
+  case 'delete':
+    $krotovina = new Krotovina($_POST['krotovina_id']);
+    if (!$krotovina->uid OR $krotovina->has_records() OR !Access::has('krotovina','delete',\UI\sess::$user->uid)) {
+      break;
+    }
+    $krotovina->delete();
+    header('Location:' . Config::get('web_path') . '/krotovina');
+  break;
   case 'delpoint':
     $krotovina = new Krotovina($_POST['krotovina_id']);
     $krotovina->del_point($_POST['uid']);

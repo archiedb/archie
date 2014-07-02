@@ -312,6 +312,17 @@ class Krotovina extends database_object {
    */
   public function delete () { 
 
+    // remove the spatial data
+    if (!SpatialData::delete_by_record($this->uid,'krotovina')) {
+      Event::error('Krotovina','Unable to delete Spatial data [ ' . $this->uid . ' ] aborting krotovina delete');
+      return false; 
+    }
+
+    $uid = Dba::escape($this->uid);
+    $sql = "DELETE FROM `krotovina` WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql);
+
+    return true;
 
   } // delete
 

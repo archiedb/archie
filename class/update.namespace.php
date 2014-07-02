@@ -170,8 +170,8 @@ class Database {
     $sql = 'SHOW TABLES';
     $db_results = \Dba::read($sql); 
 
-    while ($table = \Dba::fetch_assoc($db_results)) {
-      $tables .= "`$table`,";
+    while ($table = \Dba::fetch_row($db_results)) {
+      $tables .= "`" . $table['0']. "`,";
     }
 
     $tables = rtrim($tables,","); 
