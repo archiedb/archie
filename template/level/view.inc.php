@@ -19,7 +19,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php if (Access::is_admin() AND $level->closed) { ?>
   <?php include \UI\template('/level/modal_open_confirm'); ?>
 <?php } ?>
-<h3>Level: <?php echo scrub_out($level->site->name); ?>-<?php echo scrub_out($level->catalog_id); ?>
+<h3>Level: <?php echo scrub_out($level->site->name); ?><?php echo scrub_out($level->record); ?>
   <?php if ($level->closed) { ?><span class="label label-important">CLOSED</span><?php } ?>
   <small>Entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>
 </h3>
