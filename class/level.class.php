@@ -630,7 +630,5 @@ class Level extends database_object {
 
   } // get_open_levels
   
-
-
 } // end class level
 ?>
