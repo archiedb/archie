@@ -195,6 +195,24 @@ class SpatialData extends database_object {
   } // validate
 
   /**
+   * delete_by_record
+   * Delete all spatial points related to the specified record
+   */
+  public static function delete_by_record($record,$type) { 
+
+    if (!is_numeric($record) or !in_array($type,SpatialData::$valid_types)) { return false; }
+
+    $record = Dba::escape($record);
+    $type = Dba::escape($type);
+
+    $sql = "DELETE FROM `spatial_data` WHERE `record_type`='$type' AND `record`='$record'";
+    $db_results = Dba::write($sql); 
+
+    return true; 
+
+  } // delete_by_record
+
+  /**
    * get_record_data
    * Returns an array of the data for a specific record
    */

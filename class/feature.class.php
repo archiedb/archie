@@ -195,6 +195,26 @@ class Feature extends database_object {
   } // create
 
   /**
+   * delete
+   * Delete this object
+   */
+  public function delete() { 
+
+    // remove the spatial data
+    if (!SpatialData::delete_by_record($this->uid,'feature')) { 
+      Event::error('Feature','Unable to delete Spatial data for [ ' . $this->uid . ' ] aborting feature delete');
+      return false; 
+    }
+
+    $uid = Dba::escape($this->uid); 
+    $sql = "DELETE FROM `feature` WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql);
+
+    return true; 
+
+  } // delete
+
+  /**
    * validate
    * Validates the 'input' we get for update/create operations
    */
@@ -303,6 +323,28 @@ class Feature extends database_object {
     return $results['uid'];
 
   } // get_uid_from_record
+
+  /**
+   * has_records
+   * Check if this feature has associated records
+   */
+  public function has_records() {
+
+    // Return true false if there are records for this feature
+    $uid = Dba::escape($this->uid);
+
+    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `feature`='$uid'";
+    $db_results = Dba::read($sql);
+
+    $results = Dba::fetch_assoc($db_results);
+
+    if ($results['count'] > 0) { 
+      return true; 
+    }
+
+    return false; 
+
+  } // has_records
 
 } // end feature level
 ?>
