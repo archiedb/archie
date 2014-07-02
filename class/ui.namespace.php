@@ -2,6 +2,18 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 /**
+ * redirect
+ * Uses header Location: to redirect
+ * FIXME: check path to make sure it's allowed
+ */
+function redirect($path) {
+
+  header('Location:' . Config::get('web_path') . '/' . $path);
+  exit; 
+
+} // redirect
+
+/**
  * return_url
  * We have a specific list of urls we're allowed to redirect to!
  */
