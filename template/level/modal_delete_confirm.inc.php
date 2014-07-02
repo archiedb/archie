@@ -8,7 +8,7 @@
     <p>
       <ul><li> Has Records: <?php echo \UI\boolean_word($has_records); ?></li></ul>
     <?php if ($has_records) { ?>
-      Unable to delete leve, there are still records associated with it. You must re-assign all of the
+      Unable to delete level, there are still records associated with it. You must re-assign all of the
       <a href="<?php echo Config::get('web_path'); ?>/record/search/level/<?php echo scrub_out($level->uid); ?>">Records</a>
       before deleting this Level.
     <?php } else { ?>

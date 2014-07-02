@@ -306,6 +306,34 @@ class Krotovina extends database_object {
 
   } // get_uid_from_record
 
+  /**
+   * delete
+   * Delete the krotovina record
+   */
+  public function delete () { 
+
+
+  } // delete
+
+  /**
+   * has_records
+   * Returns true if there are records for this krotovina
+   */
+  public function has_records() { 
+
+    $uid = Dba::escape($this->uid);
+
+    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `krotovina`='$uid'";
+    $db_results = Dba::read($sql);
+
+    $results = Dba::fetch_assoc($db_results);
+
+    if ($results['count'] > 0) { return true; }
+
+    return false;
+
+  } // has_records
+
 
 } // end class level
 ?>
