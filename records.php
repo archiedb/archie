@@ -104,6 +104,15 @@ switch (\UI\sess::location('action')) {
     header("Location:" . Config::get('web_path') . '/media/ticket/' . \UI\sess::location('objectid'));
   break; 
   case 'search':
+    // If no post check for get
+    if (!isset($_POST['field']) AND !isset($_POST['value'])) { 
+      $field = \UI\sess::location('2');
+      $value = \UI\sess::location('3');
+      if (strlen($field) AND strlen($value)) {
+        $_POST['field'] = $field;
+        $_POST['value'] = $value;
+      }
+    }
     $view = new View(); 
     $view->reset(); 
     $view->set_type('record'); 

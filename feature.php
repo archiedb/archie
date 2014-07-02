@@ -18,6 +18,14 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/feature/new');
     }
   break;
+  case 'delete':
+    $feature = new Feature($_POST['feature_id']);
+    if (!$feature->uid OR $feature->has_records() OR !Access::has('feature','delete',\UI\sess::$user->uid)) {
+      break;
+    }
+    $feature->delete();
+    header('Location:' . Config::get('web_path') . '/feature');
+  break;
   case 'delpoint':
     $feature = new Feature($_POST['feature_id']);
     $feature->del_point($_POST['uid']);

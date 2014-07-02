@@ -12,6 +12,18 @@ if (INIT_LOADED != '1') { exit; }
   <td>
     <div class="btn-group">
       <a class="btn" href="<?php echo Config::get('web_path'); ?>/feature/edit/<?php echo scrub_out($feature->uid); ?>">Edit</a>
+      <a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li><a href="<?php echo Config::get('web_path'); ?>/record/search/feature/<?php echo scrub_out($feature->catalog_id); ?>">Records</a></li>
+        <?php if (Access::has('feature','delete',$feature->uid)) { ?>
+        <li><a href="#confirmdel_<?php echo scrub_out($feature->uid); ?>" role="button" data-toggle="modal">Delete</a></li>
+        <?php } ?>
+      </ul>
     </div>
+    <?php 
+      if (Access::has('record','delete',$feature->uid)) {
+        include \UI\template('/feature/modal_confirm_delete');
+      }
+    ?>
   </td>
 </tr> 
