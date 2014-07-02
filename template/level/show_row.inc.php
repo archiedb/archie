@@ -19,31 +19,18 @@ if (INIT_LOADED != '1') { exit; }
       <?php if (Access::has('admin','admin',$level->uid) OR !$level->closed) { ?>
       <li><a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>">Edit</a></li>
       <?php } ?>
-      <li><a href="<?php echo Config::get('web_path'); ?>/record/search/level/<?php echo scrub_out($level->uid); ?>">Records</a</li>
+      <li><a href="<?php echo Config::get('web_path'); ?>/record/search/level/<?php echo scrub_out($level->uid); ?>">Records</a></li>
       <?php if (Access::has('level','delete',$level->uid)) { ?>
       <li><a href="#confirmdel_<?php echo scrub_out($level->uid); ?>" role="button" data-toggle="modal">Delete</a></li>
       <?php } ?>
       <li><a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid); ?>">Generate Report</a></li>
     </ul>
     </div>
-    <?php if (Access::has('level','delete',$level->uid)) { ?>
-      <div id="confirmdel_<?php echo scrub_out($level->uid); ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-          <h3 id="myModalLabel">Confirm Delete Request</h3>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure you want to delete <?php echo $level->site->name . '-' . $level->record; ?> level</p>
-        </div>
-        <div class="modal-footer">
-          <form method="post" action="<?php echo Config::get('web_path'); ?>/level/delete">
-          <button type="submit" class="btn btn-danger">Delete</a>
-          <input type="hidden" name="record_id" value="<?php echo scrub_out($level->uid); ?>" />
-          <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-          </form>
-        </div>
-    </div>
-  <?php } ?>
+    <?php 
+      if (Access::has('level','delete',$level->uid)) { 
+        include \UI\template('/level/modal_delete_confirm'); 
+      }
+    ?>
   </td>
 </tr> 
 <tr style="border:0px;">

@@ -238,6 +238,38 @@ class Level extends database_object {
   } // update
 
   /**
+   * delete
+   * This deletes a level
+  */
+  public function delete() { 
+
+    // Delete any content first
+    $images = Content::level($this->uid,'image');
+    foreach ($images as $uid) { 
+      $image = new Content($uid,'image');
+      $image->delete();
+    }
+    $models = Content::level($this->uid,'3dmodel');
+    foreach ($models as $uid) { 
+      $model = new Content($uid,'3dmodel');
+      $model->delete();
+    }
+    $others = Content::level($this->uid,'media');
+    foreach ($others as $uid) { 
+      $other = new Content($uid,'media');
+      $other->delete();
+    }
+
+    $uid = Dba::escape($this->uid);
+
+    $sql = "DELETE FROM `level` WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql);
+
+    return true;
+
+  } // delete
+
+  /**
    * set_primary_image
    * Defines which image is the 'level photo'
    */
@@ -442,6 +474,25 @@ class Level extends database_object {
     return true;   
 
   } // has_photo
+
+  /**
+   * has_records
+   * this makes sure the level has records
+   */
+  public function has_records() { 
+
+    $uid = Dba::escape($this->uid); 
+
+    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `level`='$uid'";
+    $db_results = Dba::read($sql); 
+
+    $results = Dba::fetch_assoc($db_results);
+
+    if ($results['count'] > 0) { return true; }
+
+    return false; 
+
+  } // has_records
 
   /**
    * records

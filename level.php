@@ -19,6 +19,14 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/level/new');
     }
   break;
+  case 'delete':
+    $level = new Level($_POST['level_id']);
+    if (!$level->uid OR !Access::has('level','delete',\UI\sess::$user->uid) OR $level->has_records()) {
+      break;
+    }
+    $level->delete();
+    header('Location:' . Config::get('web_path') . '/level');
+  break;
   case 'view':
     $level = new Level(\UI\sess::location('objectid'));
     require_once \UI\template('/level/view'); 
