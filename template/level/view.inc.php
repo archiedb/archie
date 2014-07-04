@@ -4,6 +4,7 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="pull-right">
+  <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/record/search/level/<?php echo scrub_out($level->uid); ?>">View Records</a>
   <?php if (Access::is_admin() AND $level->closed) { ?>
   <a href="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" role="button" data-toggle="modal">Re-Open Level</a>
   <?php } ?>
