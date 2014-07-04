@@ -48,6 +48,7 @@ class Record extends database_object {
 		$this->quad = new quad($this->quad); 
     $this->site = new site($this->site);
 		$this->inventory_id = $this->site->name . '.' . date('Y',$this->created) . '-' . $this->catalog_id;
+    $this->record = $this->site->name . '-' . $this->catalog_id;
 		$this->user_id = $this->user; 
     $this->feature = new Feature($this->feature);
     $this->krotovina = new Krotovina($this->krotovina);
@@ -636,5 +637,31 @@ class Record extends database_object {
 		return $ticket; 
 
 	} // get_ticket
+
+  /**
+   * get_user_last
+   * Get the users last X records
+   */
+  public static function get_user_last($count,$uid='') { 
+
+    if (!$uid) {
+      $uid = \UI\sess::$user->uid;
+    }
+
+    $results = array();
+    $uid = Dba::escape($uid);
+    $count = abs(floor($count));
+
+    $sql = "SELECT * FROM `record` WHERE `user`='$uid' ORDER BY `created` DESC LIMIT $count";
+    $db_results = Dba::read($sql);
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row['uid'];
+      parent::add_to_cache('record',$row['uid'],$row);
+    }
+
+    return $results;
+
+  } // get_user_last
 
 } // end record class 

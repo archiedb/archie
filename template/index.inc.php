@@ -3,10 +3,6 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<img class="img-rounded" src="<?php echo Config::get('web_path'); ?>/images/title.jpg" />
-<div class="page-header">
-  <h3>Hello <?php echo \UI\sess::$user->name; ?>, you are currently working on <?php echo scrub_out(\UI\sess::$user->site->name); ?></h3>
-</div>
 <table class="table table-bordered table-white">
 <thead>
   <tr>
@@ -55,3 +51,94 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 </tbody>
 </table>
+<div class="page-header">
+  <h4>Hello <?php echo \UI\sess::$user->name; ?>, you are currently working on <?php echo scrub_out(\UI\sess::$user->site->name); ?></h4>
+</div>
+<div class="row">
+  <div>
+    <p class="pull-right">
+        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/records/new">Open New Record</a>
+    </p>
+    <strong>Your last five records</strong>
+  </div>
+</div>
+<div class="well">
+<div class="row">
+  <div class="span2"><strong>Catalog #</strong></div>
+  <div class="span2"><strong>Material</strong></div>
+  <div class="span2"><strong>Classification</strong></div>
+  <div class="span1"><strong>Level</strong></div>
+  <div class="span1"><strong>Feat/Krot</strong></div>
+</div>
+<?php 
+  $records = Record::get_user_last('5');
+  foreach ($records as $uid) {
+    $record = new Record($uid);
+?>
+<div class="row">
+  <div class="span2">
+    <a href="<?php echo Config::get('web_path'); ?>/records/view/<?php echo scrub_out($record->uid); ?>"><?php echo scrub_out($record->record); ?></a>
+  </div>
+  <div class="span2">
+    <?php echo scrub_out($record->material->name); ?>
+  </div>
+  <div class="span2">
+    <?php echo scrub_out($record->classification->name); ?>
+  </div>
+  <div class="span1">
+    <?php echo \UI\record_link($record->level->uid,'level',$record->level->record); ?>
+  </div>
+  <div class="span1">
+    <?php 
+    if ($record->feature->uid) { 
+      echo \UI\record_link($record->feature->uid,'feature',$record->feature->record);
+    }
+    elseif ($record->krotovina->uid) {
+      echo \UI\record_link($record->krotovina->uid,'krotovina',$record->krotovina->record);
+    }
+    ?>
+  </div>
+</div>
+<?php } ?>
+</div>
+<div class="row">
+  <div>
+    <p class="pull-right">
+        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/level/new">Open New Level</a>
+    </p>
+    <strong>Your Open Levels</strong>
+  </div>
+</div>
+<div class="well">
+<div class="row">
+  <div class="span2"><strong>Catalog #</strong></div>
+  <div class="span1"><strong>Unit</strong></div>
+  <div class="span1"><strong>Quad</strong></div>
+  <div class="span1"><strong>LSG</strong></div>
+  <div class="span2"><strong>Closed</strong></div>
+</div>
+<?php 
+  $levels = Level::get_open_user_levels();
+  foreach ($levels as $uid) {
+    $level = new Level($uid);
+?>
+<div class="row">
+  <div class="span2">
+    <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>"><?php echo scrub_out($level->record); ?></a>
+  </div>
+  <div class="span1">
+    <?php echo scrub_out($level->unit); ?>
+  </div>
+  <div class="span1">
+    <?php echo scrub_out($level->quad->name); ?>
+  </div>
+  <div class="span1">
+    <?php echo scrub_out($level->lsg_unit->name); ?>
+  </div>
+  <div class="span2">
+    <?php echo \UI\boolean_word($level->closed); ?>
+  </div>
+</div>
+<?php } ?>
+</div>
+      
