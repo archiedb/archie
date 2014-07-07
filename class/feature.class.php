@@ -224,10 +224,6 @@ class Feature extends database_object {
       Error::add('description','Required field');
     }
 
-    if (!strlen($input['keywords'])) {
-      Error::add('keywords','Required field');
-    }
-
     // If RN then no others
     if (strlen($input['initial_rn']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
       Error::add('initial_rn','Initial RN and North/East/Elevation can not be specified at the same time');
