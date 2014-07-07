@@ -573,9 +573,9 @@ class Level extends database_object {
 
     // Make sure it's an admin or an excavator 
     if (\UI\sess::$user->access < 100) { 
-      if (!$this->is_excavator(\UI\sess::$user->uid)) { 
-        Error::add('excavator','Unable to close, you are not an excavator');
-      }
+//      if (!$this->is_excavator(\UI\sess::$user->uid)) { 
+        Error::add('excavator','Unable to close, you are not a site manager');
+//      }
     }
 
     if (!$this->has_photo()) {

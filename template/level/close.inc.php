@@ -12,9 +12,9 @@ Before closing a level, all of the below checks must be true and you must confir
 a level is closed, it cannot be reopened. 
 </div>
 <div class="control-group span4 offset3">
-  <label class="control-label">Excavator of Level</label>
+  <label class="control-label">Site Manager</label>
   <div class="controls">
-    <?php echo \UI\boolean_word($level->is_excavator(\UI\sess::$user->uid)); ?> 
+    <?php echo \UI\boolean_word(Access::is_admin()); ?> 
   </div>
 </div>
 <div class="control-group span4 offset3">
