@@ -1,3 +1,77 @@
+ FIX #25 can now delete krotovina, features and levels
+ CHANGE - continued work on #25 also correct typo
+ FIX #24, admins can now delete levels that do not have any records
+ ADD - redirect function for header Location: calls
+ ADD link to level's records on level view page
+ ADD ability to delete a feature, addresses #25
+ Add ability to specify search via GET
+ FIX level close not working properly
+ REMOVE - Debug
+ CHANGE Work on #33 implement quad from csv file
+ UPDATE Units so that they can be defined by a config/units.csv file related to #33
+ FIX PHP warnings
+ FIX Excessive SQL queriues but using code cache
+ ADD - 1-20 to UNIT value
+ FIX #37 - Warning now thrown if the image is less than 640x480.
+ FIX #39 throw an error if upload failed, rather then always showing success
+ FIX - Last entered wasn't LOCUS but was # instead, corrected
+ CHANGE - Bump version
+ FIX - Additional messed up features
+ FIX - Krotovina and Feature record searching
+ FIX - Additional screwed up feature records, translated to new blank features
+ FIX - PHP Warnings when running CLI
+ CHANGE - wording on final checkbox for level close
+ FIX - Should be catalog_id not uid for record on level report
+ ADD - hover text for edit screen as well
+ ADD pop up text for what Locus means
+ CHANGE - Allow quad to be empty
+ ADD last classifcation, and switch busiest worker for last record fix #31
+ FIX #30 Admins can now re-open previously closed levels
+ ADD - Open Confirm Modal
+ FIX #35 correct level->records() query
+ FIX #26 added users to exports
+ FIX - Exports for records quad/unit should reference LEVEL not RECORD
+ CHANGE - Wording on level to locus for new records
+ FIX - Unit check on level so that it looks at what unit will accept, not it's own pre-defined list
+ ADD - Additional exceptions to attempt to migrate all data that we can be sure is valid
+ FIX - Missing offset option for view
+ FIX - Page headers were hardcoded to /records now uses strtolower($view->get_type())
+ FIX - /record -> record.php leaving /records in redirect list for now
+ ADD krot/feature migration, still some issues to sort out, specifically how to deal with non-compliant values in feat/krot
+ FIX - Defualt to username if no name set
+ FIX visual issues showing record level and feature
+ ADD Migration script for pre2013 archie data, this will no work with modern data, so this is very much a one time script
+ ADD L- to level name
+ CHANGE - working on #23 logical functions now working, some question still remain on visual representation of Level records
+ ADD - More staged changes for db, nothing implemented yet
+ ADD Travis YML file, attempting to move towards automated unit testing
+ CHANGE - New record now uses drop down of current open levels for this user, and includes XYZ on creation page
+ FIX bug with duplicate level checking
+ FIX - Don't try to fill the object if they pass UID=0
+ FIX - Extranous row delete whups
+ FIX - Krot/Feature/Level lookups not working on record creation due to LOCK TABLE issues relates to #17 changes
+ FIX Report relating to #17 changes, also correct typo on feature/new
+ FIX #17 - Records can now be associated with krotovina, and cannot be associated with krotovina or features at the same time as a level
+ CHANGE - Adjust UI of error display so it's easier to read
+ Working on #17 incomplete, zero testing this is effectively broken
+ FIX - Assoication with levels and records use UID's not ID's (which are non-unique across sites)
+ FIX - Level exists check for record creation/edit
+ ADD - "View" link for assoicated records
+ FIX - Level existance change, wasn't considering quad or unit
+ REVERT - Remove empty pages and correct page count
+ FIX - Object not refreshed on close, visual inconsistancy
+ FIX - Level existance not being checked, and record not being refreshed visually on update
+ REMOVE - Duplicate fields, and incorrect user insert
+ CHANGE - Force Record -> Feature to exist, no type ahead find yet
+ FIX - Listing on contact info
+ UPDATE - Formating of readme to look shiny on github
+ MOVE - delete_record modal to its own file
+ ADD - Visual indication of sort order
+ ADD - PHP Upload setting checks
+ UPDATE - Base Readme
+ UPDATE - Build # and Changelog
+ CHANGE - Menu order
+ ADD - Warning for changing Material name, also store change in the plain text log
  CHANGE - Re-word fields on Feature
  ADD - Ability to add/remove points from features
  ADD - Ability to add/remove spatial points to krotovina

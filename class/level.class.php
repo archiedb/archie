@@ -133,7 +133,7 @@ class Level extends database_object {
     $elv_center_start = Dba::escape($input['elv_center_start']); 
     $excavator_one  = Dba::escape(\UI\sess::$user->uid); 
     $excavator_two  = Dba::escape($input['excavator_two']); 
-    $excavator_thee = Dba::escape($input['excavator_three']); 
+    $excavator_three = Dba::escape($input['excavator_three']); 
     $excavator_four = Dba::escape($input['excavator_four']); 
     $user = Dba::escape(\UI\sess::$user->uid);
     $created = time(); 
