@@ -114,7 +114,7 @@ if (INIT_LOADED != '1') { exit; }
   <div class="span2"><strong>Catalog #</strong></div>
   <div class="span1"><strong>Unit</strong></div>
   <div class="span1"><strong>Quad</strong></div>
-  <div class="span1"><strong>LSG</strong></div>
+  <div class="span1"><strong>L.U.</strong></div>
   <div class="span2"><strong>Closed</strong></div>
 </div>
 <?php 
