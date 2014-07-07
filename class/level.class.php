@@ -524,7 +524,7 @@ class Level extends database_object {
     // Really not much to do here
     $uid = Dba::escape($this->uid);
 
-    $sql = "UPDATE `level` SET `closed`='0' WHERE `uid`='$uid'";
+    $sql = "UPDATE `level` SET `closed` = NULL, `closed_date` = NULL, `closed_user` = NULL WHERE `uid`='$uid'";
     $db_results = Dba::write($sql); 
 
     $log_line = "Level " . $this->catalog_id . " re-opened in site " . $this->site->name;

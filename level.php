@@ -99,7 +99,8 @@ switch (\UI\sess::location('action')) {
     $level = new Level($_POST['uid']); 
     if ($level->close($_POST)) { 
       Event::add('success','Level Closed'); 
-      require_once \UI\template('/level/view'); 
+      header('Location:' . Config::get('web_path') . '/level/view/' . scrub_out($level->uid));
+      break;
     }
     else {
       require_once \UI\template('/level/close'); 
