@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  * @package	Ampache
- * @copyright	2001 - 2011 Ampache.org
+ * @copyright	2001 - 2011 Ampache.org /  2012-2014 Karl Vollmer
  * @license	http://opensource.org/licenses/gpl-2.0 GPLv2
  * @link	http://www.ampache.org/
  */
@@ -143,6 +143,16 @@ abstract class database_object {
 		}
 
 	} // remove_from_cache
+
+	/**
+	 * _print
+	 * Prints the specified variable
+	 */
+	public function _print($variable) {
+
+		echo scrub_out($this->$variable);
+
+	} // _print
 
 	/**
 	 * _auto_init
