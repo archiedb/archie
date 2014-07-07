@@ -141,4 +141,56 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php } ?>
 </div>
-      
+<div class="row">
+  <div>
+    <p class="pull-right">
+       <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/krotovina/new">Open New Krotovina</a>
+    </p>
+    <strong>Your last three Krotovina</strong>
+  </div>
+</div>
+<div class="well">
+  <div class="row">
+    <div class="span2"><strong>Catalog #</strong></div>
+    <div class="span3"><strong>Entered on</strong></div>
+  </div>
+<?php 
+  $krotovinas = Krotovina::get_user_krotovina();
+  foreach ($krotovinas as $uid) {
+    $krotovina = new Krotovina($uid);
+?>
+  <div class="row">
+    <div class="span2">
+      <a href="<?php echo Config::get('web_path'); ?>/krotovina/view/<?php $krotovina->_print('uid'); ?>"><?php $krotovina->_print('record'); ?></a>
+    </div>
+    <div class="span3">
+      <?php echo date('d-M-Y H:i:s',$krotovina->created); ?>
+    </div>
+  </div>
+<?php } ?>
+</div>
+<div class="row">
+  <div>
+    <p class="pull-right">
+       <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/feature/new">Open New Feature</a>
+    </p>
+    <strong>Your last three Features</strong>
+  </div>
+</div>
+<div class="well">
+  <div class="row">
+    <div class="span2"><strong>Catalog #</strong></div>
+    <div class="span3"><strong>Entered on</strong></div>
+  </div>
+<?php 
+  $features = Feature::get_user_features();
+  foreach ($features as $uid) { 
+    $feature = new Feature($uid);
+?>
+  <div class="row">
+    <div class="span2"><a href="<?php echo Config::get('web_path'); ?>/feature/view/<?php $feature->_print('uid'); ?>"><?php $feature->_print('record'); ?></a></div>
+    <div class="span3"><?php echo date('d-M-Y H:i:s',$feature->created); ?></div>
+  </div>
+<?php } ?>
+</div>
+

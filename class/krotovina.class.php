@@ -345,6 +345,31 @@ class Krotovina extends database_object {
 
   } // has_records
 
+  /**
+   * get_user_krotovina
+   * Returns the krotovina assoicated with this user
+  */
+  public static function get_user_krotovina($uid,$limit=3) { 
+
+    if (!$uid) {
+      $uid = \UI\sess::$user->uid;
+    }
+
+    $results = array();
+
+    $uid = Dba::escape($uid);
+    $limit = abs(floor($limit));
+    $sql = "SELECT * FROM `krotovina` WHERE `user`='$uid' ORDER BY `created` DESC LIMIT $limit";
+    $db_results = Dba::read($sql);
+
+    while ($row = Dba::fetch_assoc($db_results)) {
+      $results[] = $row['uid'];
+      parent::add_to_cache('krotovina',$row['uid'],$row);
+    }
+
+    return $results;
+
+  } // get_user_krotovina
 
 } // end class level
 ?>

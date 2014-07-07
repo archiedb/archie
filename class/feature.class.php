@@ -325,6 +325,32 @@ class Feature extends database_object {
   } // get_uid_from_record
 
   /**
+   * get_user_features
+   * return an array of the last 3 user features (by defualt)
+  */
+  public static function get_user_features($uid,$limit=3) {
+
+    if (!$uid) {
+      $uid = \UI\sess::$user->uid;
+    }
+
+    $results = array();
+
+    $uid = Dba::escape($uid);
+    $limit = abs(floor($limit));
+    $sql = "SELECT * FROM `feature` WHERE `user`='$uid' ORDER BY `created` DESC LIMIT $limit";
+    $db_results = Dba::read($sql);
+
+    while ($row = Dba::fetch_assoc($db_results)) {
+      $results[] = $row['uid'];
+      parent::add_to_cache('feature',$row['uid'],$row);
+    }
+
+    return $results;
+
+  } // get_user_features
+
+  /**
    * has_records
    * Check if this feature has associated records
    */
