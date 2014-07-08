@@ -111,9 +111,9 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <div class="well">
 <div class="row">
-  <div class="span2"><strong>Catalog #</strong></div>
   <div class="span1"><strong>Unit</strong></div>
   <div class="span1"><strong>Quad</strong></div>
+  <div class="span2"><strong>Level</strong></div>
   <div class="span1"><strong>L.U.</strong></div>
   <div class="span2"><strong>Closed</strong></div>
 </div>
@@ -123,14 +123,14 @@ if (INIT_LOADED != '1') { exit; }
     $level = new Level($uid);
 ?>
 <div class="row">
-  <div class="span2">
-    <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>"><?php echo scrub_out($level->record); ?></a>
-  </div>
   <div class="span1">
     <?php echo scrub_out($level->unit); ?>
   </div>
   <div class="span1">
     <?php echo scrub_out($level->quad->name); ?>
+  </div>
+  <div class="span2">
+    <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>"><?php echo scrub_out($level->record); ?></a>
   </div>
   <div class="span1">
     <?php echo scrub_out($level->lsg_unit->name); ?>
