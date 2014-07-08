@@ -116,7 +116,8 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('excavator_one'); ?>">
   <label class="control-label" for="inputExcavatorone">First</label>
   <div class="controls">
-    <select id="inputExcavatorone" name="excavator_one" disabled="disabled">
+    <?php if (!Access::is_admin()) { $onedisabled='disabled="disabled"'; } ?>
+    <select id="inputExcavatorone" name="excavator_one" <?php echo $onedisabled; ?>>
       <option value="">&nbsp;</option>
       <?php
       foreach ($excavators as $user) { 

@@ -106,8 +106,10 @@ class Level extends database_object {
     // Reset errors before we do any validation
     Error::clear(); 
 
-    // hardcode first excavator
-    $input['excavator_one'] = \UI\sess::$user->uid;
+    // If they aren't an admin then hardcode first excavator
+    if (!Access::is_admin() OR !$input['excavator_one']) {
+      $input['excavator_one'] = \UI\sess::$user->uid;
+    }
 
     // Site is determined by session
     $input['site'] = \UI\sess::$user->site->uid;
@@ -131,7 +133,7 @@ class Level extends database_object {
     $elv_sw_start   = Dba::escape($input['elv_sw_start']); 
     $elv_se_start   = Dba::escape($input['elv_se_start']); 
     $elv_center_start = Dba::escape($input['elv_center_start']); 
-    $excavator_one  = Dba::escape(\UI\sess::$user->uid); 
+    $excavator_one  = Dba::escape($input['excavator_one']); 
     $excavator_two  = Dba::escape($input['excavator_two']); 
     $excavator_three = Dba::escape($input['excavator_three']); 
     $excavator_four = Dba::escape($input['excavator_four']); 
