@@ -649,10 +649,10 @@ class Level extends database_object {
     $user = Dba::escape($user_uid);
     $site = Dba::escape(\UI\sess::$user->site->uid);
     if (Access::is_admin()) { 
-      $sql = "SELECT * FROM `level` WHERE `closed` IS NULL and `site`='$site'";
+      $sql = "SELECT * FROM `level` WHERE `closed` IS NULL and `site`='$site' ORDER BY `unit` ASC";
     }
     else {
-      $sql = "SELECT * FROM `level` WHERE (`excavator_one`='$user' OR `excavator_two`='$user' OR `excavator_three`='$user' OR `excavator_four`='$user') AND `closed` IS NULL AND `site`='$site'";
+      $sql = "SELECT * FROM `level` WHERE (`excavator_one`='$user' OR `excavator_two`='$user' OR `excavator_three`='$user' OR `excavator_four`='$user') AND `closed` IS NULL AND `site`='$site' ORDER BY `unit` ASC";
     }
     $db_results = Dba::read($sql); 
 
