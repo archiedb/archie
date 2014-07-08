@@ -24,9 +24,9 @@ if (INIT_LOADED != '1') { exit; }
 <table class="table table-hover table-bordered table-condensed">
   <thead>
   <tr>
-    <th><a href="<?php echo Config::get('web_path'); ?>/level/sort/catalog_id">Catalog #</a><?php $view->display_sort('catalog_id'); ?></th>
 	  <th><a href="<?php echo Config::get('web_path'); ?>/level/sort/unit">Unit</a><?php $view->display_sort('unit'); ?></th>
   	<th><a href="<?php echo Config::get('web_path'); ?>/level/sort/quad">Quad</a><?php $view->display_sort('quad'); ?></th>
+    <th><a href="<?php echo Config::get('web_path'); ?>/level/sort/catalog_id">Level</a><?php $view->display_sort('catalog_id'); ?></th>
     <th><a href="<?php echo Config::get('web_path'); ?>/level/sort/lsg_unit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></a><?php $view->display_sort('lsg_unit'); ?></th>
     <th><a href="<?php echo Config::get('web_path'); ?>/level/sort/closed">Closed</a><?php $view->display_sort('closed'); ?></th>
     <th>&nbsp;</th>

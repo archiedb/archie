@@ -3,12 +3,12 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <tr>
+	<td><?php echo scrub_out($level->unit); ?></td>
+	<td><?php echo scrub_out($level->quad->name); ?></td>
   <td>
       <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>">
       <?php $level->_print('record'); ?></a>
   </td>
-	<td><?php echo scrub_out($level->unit); ?></td>
-	<td><?php echo scrub_out($level->quad->name); ?></td>
   <td><?php echo scrub_out($level->lsg_unit->name); ?></td>
   <td><?php echo \UI\boolean_word($level->closed); ?></td>
   <td>

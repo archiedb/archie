@@ -133,6 +133,7 @@ switch (\UI\sess::location('action')) {
     $view = new View(); 
     $view->reset(); 
     $view->set_type('level'); 
+    $view->set_sort('unit','ASC');
     $levels = $view->run(); 
     require_once \UI\template('/level/show');
   break; 
