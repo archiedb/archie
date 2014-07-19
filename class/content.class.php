@@ -504,11 +504,11 @@ class content extends database_object {
 		$pdf->SetFontSize('12'); 
 
     # Header
-		$pdf->Text('3','5',$level->site->name . ' EXCAVATION LEVEL FORM');
-    $pdf->Text('3','9',$level->site->description); 
-    $pdf->Text('169','5','Started: ' . date('d-M-Y',$level->created)); 
-    $pdf->Text('169','9','Closed: ' . date('d-M-Y',$level->closed_date)); 
-    $pdf->Line('0','12','220','12');
+		$pdf->Text('3','8',$level->site->name . ' EXCAVATION LEVEL FORM');
+    $pdf->Text('3','13',$level->site->description); 
+    $pdf->Text('169','8','Started: ' . date('d-M-Y',$level->created)); 
+    $pdf->Text('169','13','Closed: ' . date('d-M-Y',$level->closed_date)); 
+    $pdf->Line('0','15','220','15');
 
     # Left side information
     $pdf->SetFontSize('15'); 
@@ -639,7 +639,7 @@ class content extends database_object {
       $pdf->Text('200','295',$current_page. '/' . $total_pages); 
       $pdf->SetFontSize('13');
       $pdf->SetFont('Times','B'); 
-      $pdf->Text(3,'6','Records'); 
+      $pdf->Text(3,'9','Records'); 
       $pdf->SetFontSize('10');
 
       $row = 0;
