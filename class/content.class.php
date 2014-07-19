@@ -434,7 +434,7 @@ class content extends database_object {
 		$pdf->Text('25','4','SITE:' . $record->site->name);
 		$pdf->Text('52','4','UNIT:' . $record->unit); 
 		$pdf->Text('25','8','LVL:' . $record->level->record);
-		$pdf->Text('52','8','QUAD:' . $record->quad->name); 
+		$pdf->Text('52','8','QUAD:' . $record->level->quad->name); 
 		$pdf->Text('25','12','MAT:' . $record->material->name);
 		$pdf->Text('52','12','CLASS:' . $record->classification->name); 	
 		$pdf->Text('25','16','L.U.:' . $record->lsg_unit->name);
@@ -504,18 +504,18 @@ class content extends database_object {
 		$pdf->SetFontSize('12'); 
 
     # Header
-		$pdf->Text('3','8',$level->site->name . ' EXCAVATION LEVEL FORM');
-    $pdf->Text('3','13',$level->site->description); 
-    $pdf->Text('169','8','Started: ' . date('d-M-Y',$level->created)); 
-    $pdf->Text('169','13','Closed: ' . date('d-M-Y',$level->closed_date)); 
-    $pdf->Line('0','15','220','15');
+		$pdf->Text('3','10',$level->site->name . ' EXCAVATION LEVEL FORM');
+    $pdf->Text('3','15',$level->site->description); 
+    $pdf->Text('169','10','Started: ' . date('d-M-Y',$level->created)); 
+    $pdf->Text('169','15','Closed: ' . date('d-M-Y',$level->closed_date)); 
+    $pdf->Line('0','17','220','17');
 
     # Left side information
     $pdf->SetFontSize('15'); 
-    $pdf->Text('8','20','INFORMATION');
+    $pdf->Text('8','22','INFORMATION');
     $pdf->SetFontSize('12');
-    $pdf->Rect('5','22','94','49');
-    $pdf->Line('41','22','41','71');
+    $pdf->Rect('5','23','94','49');
+    $pdf->Line('41','23','41','71');
     $pdf->Text('7','27','UNIT'); 
     $pdf->Text('43','27',$level->unit);
     $pdf->Line('5','29','99','29');
@@ -542,33 +542,44 @@ class content extends database_object {
 
     # Right side elevations
     $pdf->SetFontSize('15');
-    $pdf->Text('113','20','ELEVATIONS'); 
+    $pdf->Text('105','22','ELEVATIONS'); 
     $pdf->SetFontSize('12');
-    $pdf->Rect('111','22','94','36');
-    $pdf->Line('123','22','123','58'); 
-    $pdf->Line('166','22','166','58'); 
-    $pdf->Text('138','26','Start'); 
-    $pdf->Text('181','26','Finish'); 
-    $pdf->Line('111','28','205','28'); 
-    $pdf->Text('113','32','NW'); 
-    $pdf->Text('136','32',$level->elv_nw_start); 
-    $pdf->Text('179','32',$level->elv_nw_finish); 
-    $pdf->Line('111','34','205','34'); 
-    $pdf->Text('113','38','NE'); 
-    $pdf->Text('136','38',$level->elv_ne_start); 
-    $pdf->Text('179','38',$level->elv_ne_finish); 
-    $pdf->Line('111','40','205','40'); 
-    $pdf->Text('113','44','SW'); 
-    $pdf->Text('136','44',$level->elv_sw_start); 
-    $pdf->Text('179','44',$level->elv_sw_finish); 
-    $pdf->Line('111','46','205','46'); 
-    $pdf->Text('113','50','SE');
-    $pdf->Text('136','50',$level->elv_se_start); 
-    $pdf->Text('179','50',$level->elv_se_finish); 
-    $pdf->Line('111','52','205','52'); 
-    $pdf->Text('113','56','CN');
-    $pdf->Text('136','56',$level->elv_center_start);
-    $pdf->Text('179','56',$level->elv_center_finish);
+    $pdf->Text('103','26','Level');
+    $pdf->SetFontSize('10');
+    $pdf->Rect('103','27','38','31');
+    $pdf->Line('111','27','111','58'); 
+    $pdf->Line('127','27','127','58'); 
+    $pdf->Text('113','30','Start'); 
+    $pdf->Text('129','30','Finish'); 
+    $pdf->Line('103','31','141','31'); 
+    $pdf->Text('104','35','NW'); 
+    $pdf->Text('112','35',$level->elv_nw_start); 
+    $pdf->Text('128','35',$level->elv_nw_finish); 
+    $pdf->Line('103','37','141','37'); 
+    $pdf->Text('104','41','NE'); 
+    $pdf->Text('112','41',$level->elv_ne_start); 
+    $pdf->Text('128','41',$level->elv_ne_finish); 
+    $pdf->Line('103','42','141','42'); 
+    $pdf->Text('104','46','SW'); 
+    $pdf->Text('112','46',$level->elv_sw_start); 
+    $pdf->Text('128','46',$level->elv_sw_finish); 
+    $pdf->Line('103','47','141','47'); 
+    $pdf->Text('104','51','SE');
+    $pdf->Text('112','51',$level->elv_se_start); 
+    $pdf->Text('128','51',$level->elv_se_finish); 
+    $pdf->Line('103','52','141','52'); 
+    $pdf->Text('104','56','CN');
+    $pdf->Text('112','56',$level->elv_center_start);
+    $pdf->Text('128','56',$level->elv_center_finish);
+
+    # Unit Northing/Easting/Elevation
+#    $pdf->SetFontSize('12');
+#    $pdf->Text('150','26','Unit');
+#    $pdf->SetFontSize('10');
+#    $pdf->Rect('150','27','38','31');
+#    $pdf->Text('152','31','Northing');
+#    $pdf->Line('150','32','188','32');
+#    $pdf->Text('151','36',$level->unit->northing); 
 
     # Primary Image
     $pdf->Image($levelimage->filename,'10','87','190','155');

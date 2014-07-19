@@ -3,8 +3,8 @@
 
 class unit { 
 
-	public $uid; 
-	public $name; 
+  public $uid; 
+  public $name; 
   public static $values = array();
 
 	// Constructor
