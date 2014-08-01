@@ -293,6 +293,10 @@ class Record extends database_object {
 		// Remove this object from the cache so the update shows properly
 		$this->refresh(); 
 
+    // Rebuild the ticket as values may have changed
+    $ticket = new Content($record_uid,'ticket');
+    Content::write($record_uid,'ticket',$ticket->filename);
+
     $site = $this->site->name; 
 
 		$log_line = "$site,$catalog_id,$unit," . $input['level']. ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
