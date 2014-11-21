@@ -1,3 +1,22 @@
+ CHANGE - Always rebuild ticket on record update, time drift issues could cause updates that don't update the ticket based solely on filemtime()
+ ADD - Northing/Easting to level report
+ FIX - ticket lack of quad on new records FIX - top being cut off on level reports
+ FIX - top being cut off
+ FIX - index to match other level views
+ FIX - order of level locus `unit` ASC is new default
+ CHANGE - Admins now see all open levels on records
+ ADD - Ability for managers to create new levels as people other then themselves
+ CHANGE - Adjust display and sort defaults for level
+ FIX - Only admins can close levels, students are too silly
+ FIX - label for show level
+ FIX - TYpo
+ CHANGE - Notes not required
+ FIX - Create level 3rd excavator typo
+ ADD feature/krotovina to index page
+ ADD - helper function _print
+ FIX - level re-open not working properly
+ CHANGE - Update the index page, make it more useful
+ ADD - View records link to single view of feature/level/krotovina
  FIX #25 can now delete krotovina, features and levels
  CHANGE - continued work on #25 also correct typo
  FIX #24, admins can now delete levels that do not have any records

@@ -1,0 +1,18 @@
+backup-site.sh
+
+  Shell script for backing up the database and content in Archie, requires some
+  modification of the script to correct for local path settings
+
+build-scatter-plots [--level=UID]
+
+ PREREQ - python-matplotlib, python-mysqldb
+
+  Using matplotlib this script takes the cords entered for the objects located in the level and
+  creates 3 scatterplots of the data (X,Y) (X,Z) (Y,Z). These images are generated and saved
+  in the content directory and then assoicated with the Level. This script can be scheduled
+  to be run in the web interface or via cron. If it is run without arugments all level images
+  are re-generated.
+ 
+build-changelog.sh
+
+  Simple script to auto-generate a changelog
