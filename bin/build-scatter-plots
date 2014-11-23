@@ -8,13 +8,12 @@ import matplotlib.pyplot as plt
 archiedb=MySQLdb.connect(host='localhost',user='root',passwd='bob123',db='archie')
 
 levels=archiedb.cursor()
-levels.execute("""SELECT `uid`,`northing`,`easting` FROM `level` WHERE `northing`>0 AND `easting`>0""")
+levels.execute("""SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`site`.`name` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site` WHERE `level`.`northing`>0 AND `level`.`easting`>0 AND `closed`='1'""")
 
 level=levels.fetchone()
 while level is not None:
   cursor=archiedb.cursor()
-  ## Hardcoded Level for now
-  cursor.execute("""SELECT `northing`,`easting`,`elevation` FROM `record` WHERE `level`='%s' AND (`northing`>0 AND `easting`>0 AND `elevation`>0)""",level[0])
+  cursor.execute("""SELECT `northing`,`easting`,`elevation` FROM `record` WHERE `level`='%s' AND (`northing`>0 AND `easting`>0 AND `elevation`>0)""",int(level[0]))
 
   # Easting on the XY plot
   est = ();
@@ -23,7 +22,8 @@ while level is not None:
   # Elevation (Y) / Easting (X)
   elv = ();
 
-  print "Level ", level[0]
+
+  print "Fetching cords for Level ", level[0], ' Site:',level[3]
   cords = cursor.fetchone()
   while cords is not None:
     est = est + (cords[1],)
@@ -31,7 +31,16 @@ while level is not None:
     elv = elv + (cords[2],)
   
     cords = cursor.fetchone()
-  print "EST",nor
+
+  # Setup title for the plot
+  scattertitle = str(level[3])+"-L-"+str(level[0])+" (Y) Northing / (X) Easting"
+  print "Generating scatterplot " + scattertitle
+  plt.title(scattertitle)
+  plt.ylim(float(level[1]),float(level[1]+1));
+  plt.xlim(float(level[2]),float(level[2]+1));
+  plt.scatter(est,nor,marker='x')
+  plt.show()
+  # Fetch the next level
   level = levels.fetchone()
 #N = 50
 #x = np.random.rand(N)
