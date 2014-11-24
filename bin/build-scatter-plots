@@ -2,18 +2,78 @@
 # vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 import MySQLdb
+import os, errno, csv
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+
+def save_scatterplot(plottitle,plotfilename,xmin,xmax,ymin,ymax,plotx,ploty,xlabel,ylabel):
+  """
+  Save a scatterplot to the specified filename 
+  """
+  print "Building:" + plottitle + " saving to " + plotfilename
+  plt.figure()
+  plt.title(plottitle)
+  plt.rcParams.update({'font.size': 8})
+  plt.ticklabel_format(useOffset=False)
+#  plt.ylim(float(ymin),float(ymax))
+#  plt.xlim(float(xmin),float(xmax))
+  plt.xlabel(xlabel)
+  plt.ylabel(ylabel)
+  plt.scatter(plotx,ploty,marker='x')
+  plt.savefig(plotfilename,format='png')
+  plt.close()
+def ensure_dir(dirname):
+    """
+    Ensure that a named directory exists; if it does not, attempt to create it.
+    """
+    try:
+        os.makedirs(dirname)
+    except OSError, e:
+        if e.errno != errno.EEXIST:
+            raise
+def is_number(s):
+  try:
+    float(s)
+    return True
+  except ValueError:
+    return False
 
 archiedb=MySQLdb.connect(host='localhost',user='root',passwd='bob123',db='archie')
+data_root='/data/content'
+units = ()
+with open('../config/units.csv','rb') as units_f:
+  reader = csv.reader(units_f,delimiter=',')
+  for row in reader:
+    units = units + tuple(row)
+quads = ()
+with open('../config/quads.csv','rb') as quads_f:
+  reader = csv.reader(quads_f)
+  for row in reader:
+    quads = quads + tuple(row)
 
 levels=archiedb.cursor()
-levels.execute("""SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`site`.`name` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site` WHERE `level`.`northing`>0 AND `level`.`easting`>0 AND `closed`='1'""")
+levels.execute("""SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`site`.`name`,`level`.`catalog_id`,`level`.`unit`,`level`.`quad` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site` WHERE `level`.`northing`>0 AND `level`.`easting`>0 ORDER BY `level`.`uid`""")
 
 level=levels.fetchone()
 while level is not None:
+
+  if (is_number(level[5]) == False) or (is_number(level[6]) == False):
+    print "Unable to continue invalid Quad or Unit -- "+str(level[5])+ " -- " +str(level[6])
+    level=levels.fetchone()
+    continue
+  if (int(level[5]) > len(units)) or (int(level[6]) > len(quads)):
+    print "Unit/Quad to large, no value found U:" + level[5] + " > " + str(len(units))
+    level=levels.fetchone()
+    continue
+
+  locus_txt = str(units[int(level[5])])+'-'+str(quads[int(level[6])])+'-'+str(level[4])
   cursor=archiedb.cursor()
   cursor.execute("""SELECT `northing`,`easting`,`elevation` FROM `record` WHERE `level`='%s' AND (`northing`>0 AND `easting`>0 AND `elevation`>0)""",int(level[0]))
+
+  # Set the sitename
+  site=level[3]
 
   # Easting on the XY plot
   est = ();
@@ -22,38 +82,70 @@ while level is not None:
   # Elevation (Y) / Easting (X)
   elv = ();
 
-
-  print "Fetching cords for Level ", level[0], ' Site:',level[3]
   cords = cursor.fetchone()
   while cords is not None:
-    est = est + (cords[1],)
-    nor = nor + (cords[0],)
-    elv = elv + (cords[2],)
+    est = est + (float(cords[1]),)
+    nor = nor + (float(cords[0]),)
+    elv = elv + (float(cords[2]),)
   
     cords = cursor.fetchone()
 
-  # Setup title for the plot
-  scattertitle = str(level[3])+"-L-"+str(level[0])+" (Y) Northing / (X) Easting"
-  print "Generating scatterplot " + scattertitle
-  plt.title(scattertitle)
-  plt.ylim(float(level[1]),float(level[1]+1));
-  plt.xlim(float(level[2]),float(level[2]+1));
-  plt.scatter(est,nor,marker='x')
-  plt.show()
+  # If we didn't find anything then just move on
+  if (len(est) < 1) or (len(nor) < 1) or (len(elv) < 1):
+    print "Insufficient cordinates, skipping level"
+    # Fetch the next level
+    level = levels.fetchone()
+    continue
+  print "Found Est:"+str(len(est))+" Nor:"+str(len(nor))+" Elv:"+str(len(elv))+" records"
+
+  # We need to get the highest and lowest values from the level's elevation
+  level_elv = archiedb.cursor()
+  level_elv.execute("""SELECT `elv_nw_start`,`elv_nw_finish`,`elv_ne_start`,`elv_nw_finish`,`elv_sw_start`,`elv_sw_finish`,`elv_se_start`,`elv_se_finish`,`elv_center_start`,`elv_center_finish` FROM `level` WHERE `uid`='%s'""",int(level[0]))
+  elvs = level_elv.fetchone()
+
+  lowest_elv = min(elvs[1],elvs[3],elvs[5],elvs[7],elvs[9])
+  highest_elv = max(elvs[0],elvs[2],elvs[4],elvs[6],elvs[8])
+
+
+  # Create the 
+  full_path=data_root+'/'+site+'/plots'
+  # Create the directory(s)
+  ensure_dir(full_path)
+
+  # Create the Easting / Northing Graph 
+  plot_title = " East by North"
+  plot_filename = full_path+'/Level-'+locus_txt+'-EstXNor.png'
+  xlabel = 'Easting (meters)'
+  ylabel = 'Northing (meters)'
+  save_scatterplot(plot_title,plot_filename,level[2]-1,level[2],level[1]-1,level[1],est,nor,xlabel,ylabel)
+
+  # Create the Easting / Elevation Graph
+## Title should be SITE-UNIT-QUAD-LEVEL X BY Y
+  plot_title = " East by MASL"
+  plot_filename = full_path+'/Level-'+locus_txt+'-EstXElv.png'
+  xlabel = 'Easting (meters)'
+  ylabel = 'MASL'
+  save_scatterplot(plot_title,plot_filename,level[2]-1,level[2],lowest_elv,highest_elv,est,elv,xlabel,ylabel)
+
+  # Create the Northing / Elevation Graph
+  plot_title =" North by MASL"
+  plot_filename = full_path+'/Level-'+locus_txt+'-NorXElv.png'
+  xlabel = 'Northing (meters)'
+  ylabel = 'MASL'
+  save_scatterplot(plot_title,plot_filename,level[1]-1,level[1],lowest_elv,highest_elv,nor,elv,xlabel,ylabel)  
+
+  # make 3d plot
+  plot_filename = full_path+'/Level-'+locus_txt+'-3D.png'
+  fig = plt.figure()
+  ax = fig.add_subplot(111,projection='3d')
+  ax.scatter(est,nor,elv,marker='x')
+  ax.set_xlabel('Easting (meters)')
+  ax.set_ylabel('Northing (meters)')
+  ax.set_zlabel('MASL')
+  plt.ticklabel_format(useOffset=False)
+  plt.savefig(plot_filename,format='png')
+  plt.close()
+
+
   # Fetch the next level
   level = levels.fetchone()
-#N = 50
-#x = np.random.rand(N)
-#y = np.random.rand(N)
-#colors = np.random.rand(N)
-#area = np.pi * (15 * np.random.rand(N))**2 # 0 to 15 point radiuses
-# Scatter ( X, Y, )
-#plt.title('Level 14 (X) Easting / (Y) Northing',weight='bold')
-#plt.scatter(est, nor,marker='x')
-#plt.show()
-#plt.savefig('estnor.png')
-#plt.scatter(est,elv,marker='x')
-#plt.savefig('estelv.png')
-#plt.scatter(nor,elv,marker='x')
-#plt.savefig('norelv.png')
-##
