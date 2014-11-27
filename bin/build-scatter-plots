@@ -41,11 +41,11 @@ def is_number(s):
     return False
 
 archiedb=MySQLdb.connect(host='localhost',user='root',passwd='bob123',db='archie')
-data_root='/data/content'
+data_root='/var/lib/archie'
 units = ()
 
 levels=archiedb.cursor()
-levels.execute("""SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`site`.`name`,`level`.`catalog_id`,`level`.`unit`,`level`.`quad` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site` WHERE `level`.`northing`>0 AND `level`.`easting`>0 ORDER BY `level`.`uid`""")
+levels.execute("""SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`site`.`name` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site` ORDER BY `level`.`uid`""")
 
 level=levels.fetchone()
 while level is not None:
