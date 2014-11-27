@@ -19,7 +19,7 @@ class content extends database_object {
   public $user; 
   public $type; // Type of object, most likely an image for now
   public $source; // Raw data of the object
-  private $valid_types = array('image','qrcode','ticket','media','3dmodel','level'); 
+  private $valid_types = array('image','qrcode','ticket','media','3dmodel','level','scatterplot'); 
 
   public function __construct($uid='',$type) {
 
@@ -139,6 +139,28 @@ class content extends database_object {
 		return true; 
 
 	} // load_qrcode_data
+
+  /**
+   * load_scatterplot_data
+   * This just fills out the filename, nothing else
+   * UID is level.uid
+   */
+  private function load_scatterplot_data($uid) {
+
+    $level = new Level($uid);
+
+    $this->filename = array();
+
+    $base = Config::get('data_root') . '/' .  $level->site->name . '/plots/Level-'  .$level->uid;
+
+    $this->filename['3D'] = $base . '-3D.png';
+    $this->filename['EstXElv'] = $base . '-EstXElv.png';
+    $this->filename['EstXNor'] = $base . '-EstXNor.png';
+    $this->filename['NorXElv'] = $base . '-NorXElv.png';
+
+    return true; 
+
+  } // load_scatterplot_data
 
 	/**
 	 * load_ticket_data
@@ -585,21 +607,39 @@ class content extends database_object {
 #    $pdf->Line('150','32','188','32');
 #    $pdf->Text('151','36',$level->unit->northing); 
 
+    # Image scale is 2.83, so primary level image needs to be
+    # 190 * 2.83 by 155 * 2.83 or 538 (width) by 439 height (aspect ratio of 1.22:1)
+    # Images will be resized to 980x803
+
     # Primary Image
-    $pdf->Image($levelimage->filename,'10','87','190','155');
+    $resized_file = Config::get('prefix') . '/' . \UI\resize($levelimage->filename,array('w'=>'980','h'=>'803'));
+    $pdf->Image($resized_file,'10','87','190','155');
 
     # Footer
     $pdf->SetFontSize('24');
     $pdf->Text('52','270','Unit ' . $level->unit . ' ' . $level->quad->name . ' - Level ' . $level->record . ' - LU ' . $level->lsg_unit->name); 
 
-/*
-    # Page 2, grids
-    $pdf->AddPage(); 
-    $pdf->SetFontSize('10');
-    $pdf->SetFont('Times');
-    $current_page++; 
-    $pdf->Text('200','295',$current_page. '/' . $total_pages); 
-*/
+    # Get the scatterplot info for this level
+    $plot = new Content($level->uid,'scatterplot');
+    
+    # Make sure we have all 4 plots
+    if (count($plot->filename) == 4) {
+
+      # Page 2, grids
+      $pdf->AddPage(); 
+      $pdf->SetFontSize('10');
+      $pdf->SetFont('Times');
+      $current_page++; 
+
+      $pdf->image($plot->filename['EstXNor'],'5','45','105','105');
+      $pdf->image($plot->filename['EstXElv'],'100','45','105','105');
+      $pdf->image($plot->filename['NorXElv'],'5','150','105','105');
+      $pdf->image($plot->filename['3D'],'100','150','105','105');
+
+      $pdf->Text('200','295',$current_page. '/' . $total_pages); 
+
+    } // end if 4 files found
+
     # Page 3, questions
     $pdf->AddPage(); 
     $pdf->SetFontSize('10');

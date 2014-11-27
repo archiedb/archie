@@ -17,8 +17,6 @@ def save_scatterplot(plottitle,plotfilename,xmin,xmax,ymin,ymax,plotx,ploty,xlab
   plt.title(plottitle)
   plt.rcParams.update({'font.size': 8})
   plt.ticklabel_format(useOffset=False)
-#  plt.ylim(float(ymin),float(ymax))
-#  plt.xlim(float(xmin),float(xmax))
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
   plt.scatter(plotx,ploty,marker='x')
@@ -43,15 +41,6 @@ def is_number(s):
 archiedb=MySQLdb.connect(host='localhost',user='root',passwd='bob123',db='archie')
 data_root='/data/content'
 units = ()
-with open('../config/units.csv','rb') as units_f:
-  reader = csv.reader(units_f,delimiter=',')
-  for row in reader:
-    units = units + tuple(row)
-quads = ()
-with open('../config/quads.csv','rb') as quads_f:
-  reader = csv.reader(quads_f)
-  for row in reader:
-    quads = quads + tuple(row)
 
 levels=archiedb.cursor()
 levels.execute("""SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`site`.`name`,`level`.`catalog_id`,`level`.`unit`,`level`.`quad` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site` WHERE `level`.`northing`>0 AND `level`.`easting`>0 ORDER BY `level`.`uid`""")
@@ -59,16 +48,7 @@ levels.execute("""SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`sit
 level=levels.fetchone()
 while level is not None:
 
-  if (is_number(level[5]) == False) or (is_number(level[6]) == False):
-    print "Unable to continue invalid Quad or Unit -- "+str(level[5])+ " -- " +str(level[6])
-    level=levels.fetchone()
-    continue
-  if (int(level[5]) > len(units)) or (int(level[6]) > len(quads)):
-    print "Unit/Quad to large, no value found U:" + level[5] + " > " + str(len(units))
-    level=levels.fetchone()
-    continue
-
-  locus_txt = str(units[int(level[5])])+'-'+str(quads[int(level[6])])+'-'+str(level[4])
+  locus_txt = str(level[0])
   cursor=archiedb.cursor()
   cursor.execute("""SELECT `northing`,`easting`,`elevation` FROM `record` WHERE `level`='%s' AND (`northing`>0 AND `easting`>0 AND `elevation`>0)""",int(level[0]))
 
@@ -92,7 +72,7 @@ while level is not None:
 
   # If we didn't find anything then just move on
   if (len(est) < 1) or (len(nor) < 1) or (len(elv) < 1):
-    print "Insufficient cordinates, skipping level"
+    print "Insufficient cordinates, skipping level UID:"+locus_txt
     # Fetch the next level
     level = levels.fetchone()
     continue
