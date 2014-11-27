@@ -153,6 +153,10 @@ class content extends database_object {
 
     $base = Config::get('data_root') . '/' .  $level->site->name . '/plots/Level-'  .$level->uid;
 
+    if (!file_exists($base . '-3D.png')) { 
+      return false;
+    }
+
     $this->filename['3D'] = $base . '-3D.png';
     $this->filename['EstXElv'] = $base . '-EstXElv.png';
     $this->filename['EstXNor'] = $base . '-EstXNor.png';
@@ -492,9 +496,7 @@ class content extends database_object {
 
     # We have to calc the length here
     $records = $level->records(); 
-    $total_pages = ceil(2 + (count($records)/55)); 
-    // Once we add the scatter plots back in 
-    //$total_pages = ceil(3 + (count($records)/55)); 
+    $total_pages = ceil(3 + (count($records)/55)); 
     $current_page = 1; 
 
     $pdf = new FPDF(); 
@@ -622,23 +624,33 @@ class content extends database_object {
     # Get the scatterplot info for this level
     $plot = new Content($level->uid,'scatterplot');
     
+      # Page 2, grids
+    $pdf->AddPage(); 
+    $pdf->SetFontSize('10');
+    $pdf->SetFont('Times');
+    $current_page++; 
+
     # Make sure we have all 4 plots
     if (count($plot->filename) == 4) {
 
-      # Page 2, grids
-      $pdf->AddPage(); 
-      $pdf->SetFontSize('10');
-      $pdf->SetFont('Times');
-      $current_page++; 
 
       $pdf->image($plot->filename['EstXNor'],'5','45','105','105');
       $pdf->image($plot->filename['EstXElv'],'100','45','105','105');
       $pdf->image($plot->filename['NorXElv'],'5','150','105','105');
       $pdf->image($plot->filename['3D'],'100','150','105','105');
 
-      $pdf->Text('200','295',$current_page. '/' . $total_pages); 
 
     } // end if 4 files found
+    // Tell em its empty
+    else {
+
+      $pdf->SetFontSize('25');
+      $pdf->Text('35','135','No scatterplots available for this level');
+      $pdf->SetFontSize('10');
+    
+    } 
+
+    $pdf->Text('200','295',$current_page. '/' . $total_pages); 
 
     # Page 3, questions
     $pdf->AddPage(); 
