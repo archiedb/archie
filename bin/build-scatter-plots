@@ -22,7 +22,7 @@ def save_scatterplot(plottitle,plotfilename,plotx,ploty,colors,xlabel,ylabel):
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
   plt.scatter(plotx,ploty,s=20,marker='o',color=colors,alpha=0.5)
-  plt.savefig(plotfilename,format='png')
+  plt.savefig(plotfilename,format='png',bbox_inches='tight')
   plt.close()
 def ensure_dir(dirname):
     """
@@ -174,12 +174,12 @@ while level is not None:
   plot_filename = full_path+'/Level-'+locus_txt+'-3D.png'
   fig = plt.figure()
   ax = fig.add_subplot(111,projection='3d')
-  ax.scatter(est,nor,elv,color=colors,marker='x')
+  ax.scatter(est,nor,elv,color=colors,marker='o')
   ax.set_xlabel('Easting (meters)')
   ax.set_ylabel('Northing (meters)')
-  ax.set_zlabel('MASL')
+  ax.set_zlabel('    MASL')
   plt.ticklabel_format(useOffset=False)
-  plt.savefig(plot_filename,format='png')
+  plt.savefig(plot_filename,format='png',bbox_inches='tight')
   plt.close()
 
 

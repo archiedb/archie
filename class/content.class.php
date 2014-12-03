@@ -614,7 +614,7 @@ class content extends database_object {
     # Images will be resized to 980x803
 
     # Primary Image
-    $resized_file = Config::get('prefix') . '/' . \UI\resize($levelimage->filename,array('w'=>'980','h'=>'803'));
+    $resized_file = Config::get('prefix') . '/' . \UI\resize($levelimage->filename,array('w'=>'980','h'=>'803','canvas-color'=>'#ffffff'));
     $pdf->Image($resized_file,'10','87','190','155');
 
     # Footer
@@ -634,10 +634,10 @@ class content extends database_object {
     if (count($plot->filename) == 4) {
 
 
-      $pdf->image($plot->filename['EstXNor'],'5','45','105','105');
-      $pdf->image($plot->filename['EstXElv'],'100','45','105','105');
-      $pdf->image($plot->filename['NorXElv'],'5','150','105','105');
-      $pdf->image($plot->filename['3D'],'100','150','105','105');
+      $pdf->image($plot->filename['EstXNor'],'2','35','104','104');
+      $pdf->image($plot->filename['EstXElv'],'105','35','104','104');
+      $pdf->image($plot->filename['NorXElv'],'2','145','104','104');
+      $pdf->image($plot->filename['3D'],'105','145','104','104');
 
 
     } // end if 4 files found
