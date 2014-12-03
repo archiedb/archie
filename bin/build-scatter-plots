@@ -174,7 +174,7 @@ while level is not None:
   plot_filename = full_path+'/Level-'+locus_txt+'-3D.png'
   fig = plt.figure()
   ax = fig.add_subplot(111,projection='3d')
-  ax.scatter(est,nor,elv,marker='x')
+  ax.scatter(est,nor,elv,color=colors,marker='x')
   ax.set_xlabel('Easting (meters)')
   ax.set_ylabel('Northing (meters)')
   ax.set_zlabel('MASL')
