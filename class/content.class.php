@@ -626,9 +626,11 @@ class content extends database_object {
     
       # Page 2, grids
     $pdf->AddPage(); 
-    $pdf->SetFontSize('10');
+    $pdf->SetFontSize('18');
     $pdf->SetFont('Times');
     $current_page++; 
+		
+    $pdf->Text('20','13','Artifact Scatter Plots');
 
     # Make sure we have all 4 plots
     if (count($plot->filename) == 4) {
