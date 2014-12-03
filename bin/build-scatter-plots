@@ -17,11 +17,11 @@ def save_scatterplot(plottitle,plotfilename,plotx,ploty,colors,xlabel,ylabel):
   print "Building:" + plottitle + " saving to " + plotfilename
   plt.figure()
   plt.title(plottitle)
-  plt.rcParams.update({'font.size': 8})
+  plt.rcParams.update({'font.size': 10})
   plt.ticklabel_format(useOffset=False)
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
-  plt.scatter(plotx,ploty,marker='x',color=colors)
+  plt.scatter(plotx,ploty,s=20,marker='o',color=colors,alpha=0.5)
   plt.savefig(plotfilename,format='png')
   plt.close()
 def ensure_dir(dirname):
