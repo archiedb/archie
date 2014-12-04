@@ -96,23 +96,24 @@ while level is not None:
         color = 'blue'
         break;
       if case('Charcoal'):
-        color = '#ffa500'
-        break;
-      if case('Other'):
         color = 'm'
         break;
-      if case('Bone'):
+      if case('Bone - Avian'):
+        color = 'c'
+      if case('Bone - Fish'):
+        color = 'c'
+      if case('Bone - Mammal'):
+        color = 'c'
+      if case('Bone - Unknown'):
         color = 'c'
         break;
-      if case('Mussel Shell'):
+      if case('Shell - River Mussel'):
         color = 'y'
         break;
       if case('Biface'):
         color = 'green'
-        # Nothin
       if case('Blade'):
         color = 'green'
-        # Nothin
       if case('Cobble Tool'):
         color = 'green'
       if case('Core'):
