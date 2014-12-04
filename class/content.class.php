@@ -631,6 +631,8 @@ class content extends database_object {
     $current_page++; 
 		
     $pdf->Text('20','13','Artifact Scatter Plots');
+    $legend_filename = Config::get('prefix') . '/images/archie_legend.png';
+    $pdf->Image($legend_filename,'10','15','100','27');
 
     # Make sure we have all 4 plots
     if (count($plot->filename) == 4) {
