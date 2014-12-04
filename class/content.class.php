@@ -654,6 +654,7 @@ class content extends database_object {
     
     } 
 
+    $pdf->SetFontSize('10');
     $pdf->Text('200','295',$current_page. '/' . $total_pages); 
 
     # Page 3, questions
