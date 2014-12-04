@@ -630,7 +630,7 @@ class content extends database_object {
     $pdf->SetFont('Times');
     $current_page++; 
 		
-    $pdf->Text('20','13','Artifact Scatter Plots');
+    $pdf->Text('18','13','Mapped Objects');
     $legend_filename = Config::get('prefix') . '/images/archie_legend.png';
     $pdf->Image($legend_filename,'10','15','100','27');
 
