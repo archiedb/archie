@@ -10,18 +10,23 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 
-def save_scatterplot(plottitle,plotfilename,plotx,ploty,colors,xlabel,ylabel):
+def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel):
   """
   Save a scatterplot to the specified filename 
   """
   print "Building:" + plottitle + " saving to " + plotfilename
-  plt.figure()
+  fig = plt.figure()
   plt.title(plottitle)
   plt.rcParams.update({'font.size': 10})
   plt.ticklabel_format(useOffset=False)
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
-  plt.scatter(plotx,ploty,s=20,marker='o',color=colors,alpha=0.5)
+  ax1 = fit.add_subplot(111)
+  if (len(plot_cords['fcr'][xcord]) > 0):
+    ax1.scatter(plot_cords['fcr'][xcord],plot_cords['fcr'][ycord],s=20,marker='7',color=plot_cords['fcr']['colors'],alpha=0.5)
+  if (len(plot_cords['debitage']['est']) > 0):
+    ax1.scatter(plot_cords['debiatage'][xcord],plot_cords['debitage'][ycord],s=20,marker='7',color=plot_cords['debitage']['colors'],alpha=0.5)
+
   plt.savefig(plotfilename,format='png',bbox_inches='tight')
   plt.close()
 def ensure_dir(dirname):
@@ -76,6 +81,19 @@ while level is not None:
   # Set the sitename
   site=level[3]
 
+  # Distinct cords per catagory, this is not sustabiable
+  # FIXME
+  plot_cords = dict()
+  plot_cords['fcr'] = {'est': (),'nor': (),'elv':(),'colors':() }
+  plot_cords['debitage'] = {'est': (),'nor': (),'elv':(),'colors':() }
+  plot_cords['charcoal'] = {'est': (),'nor': (),'elv':(),'colors':() }
+  plot_cords['bone'] = {'est': (),'nor': (),'elv':(),'colors':() }
+  plot_cords['shell'] = {'est': (),'nor': (),'elv':(),'colors':() }
+  plot_cords['tool'] = {'est': (),'nor': (),'elv':(),'colors':() }
+  plot_cords['other'] = {'est': (),'nor': (),'elv':(),'colors':() }
+
+  cord_count = 0
+
   # Easting on the XY plot
   est = ();
   # Northing on the XY plot
@@ -90,44 +108,67 @@ while level is not None:
     # Color based on classification
     for case in switch(cords[4]):
       if case('FCR'):
+        obj_type = 'fcr'
         color = 'red'
         break;
       if case('Debitage'):
+        obj_type = 'debitage'
         color = 'blue'
         break;
       if case('Charcoal'):
+        obj_type = 'charcoal'
         color = 'm'
         break;
       if case('Bone - Avian'):
+        obj_type = 'bone'
         color = 'c'
       if case('Bone - Fish'):
+        obj_type = 'bone'
         color = 'c'
       if case('Bone - Mammal'):
+        obj_type = 'bone'
         color = 'c'
       if case('Bone - Unknown'):
+        obj_type = 'bone'
         color = 'c'
         break;
       if case('Shell - River Mussel'):
+        obj_type = 'shell'
         color = 'y'
         break;
       if case('Biface'):
+        obj_type = 'tool'
         color = 'green'
       if case('Blade'):
+        obj_type = 'tool'
         color = 'green'
       if case('Cobble Tool'):
+        obj_type = 'tool'
         color = 'green'
       if case('Core'):
+        obj_type = 'tool'
         color = 'green'
       if case('Ground Stone'):
+        obj_type = 'tool'
         color = 'green'
       if case('Modified Flake'):
+        obj_type = 'tool'
         color = 'green'
       if case('Uniface'):
+        obj_type = 'tool'
         color = 'green'
         break;
       if case():
+        obj_type = 'other'
         color = 'black'
         break;
+
+    plot_cords[obj_type]['est'] = plot_cords[obj_type]['est'] + (float(cords[1]),)
+    plot_cords[obj_type]['nor'] = plot_cords[obj_type]['nor'] + (float(cords[0]),)
+    plot_cords[obj_type]['elv'] = plot_cords[obj_type]['elv'] + (float(cords[2]),)
+    plot_cords[obj_type]['colors'] = plot_cords[obj_type]['colors'] + (color,)
+
+    cord_count++ 
 
     colors = colors + (color,)
     est = est + (float(cords[1]),)
@@ -136,8 +177,10 @@ while level is not None:
   
     cords = cursor.fetchone()
 
+  print plot_cords
+
   # If we didn't find anything then just move on
-  if (len(est) < 1) or (len(nor) < 1) or (len(elv) < 1):
+  if (cord_count < 1):
     print "Insufficient cordinates, skipping level UID:"+locus_txt
     # Fetch the next level
     level = levels.fetchone()
@@ -154,7 +197,9 @@ while level is not None:
   plot_filename = full_path+'/Level-'+locus_txt+'-EstXNor.png'
   xlabel = 'Easting (meters)'
   ylabel = 'Northing (meters)'
-  save_scatterplot(plot_title,plot_filename,est,nor,colors,xlabel,ylabel)
+  xcord = 'est'
+  ycord = 'nor'
+  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)
 
   # Create the Easting / Elevation Graph
 ## Title should be SITE-UNIT-QUAD-LEVEL X BY Y
@@ -162,14 +207,18 @@ while level is not None:
   plot_filename = full_path+'/Level-'+locus_txt+'-EstXElv.png'
   xlabel = 'Easting (meters)'
   ylabel = 'MASL'
-  save_scatterplot(plot_title,plot_filename,est,elv,colors,xlabel,ylabel)
+  xcord = 'est'
+  ycord = 'elv'
+  save_scatterplot(plot_title,plot_filename,plot_cords,xlabel,ylabel)
 
   # Create the Northing / Elevation Graph
   plot_title =" North by MASL"
   plot_filename = full_path+'/Level-'+locus_txt+'-NorXElv.png'
   xlabel = 'Northing (meters)'
   ylabel = 'MASL'
-  save_scatterplot(plot_title,plot_filename,nor,elv,colors,xlabel,ylabel)  
+  xcord = 'nor'
+  ycord = 'elv'
+  save_scatterplot(plot_title,plot_filename,plot_cords,xlabel,ylabel)  
 
   # make 3d plot
   plot_filename = full_path+'/Level-'+locus_txt+'-3D.png'
