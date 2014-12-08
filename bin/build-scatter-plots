@@ -21,12 +21,23 @@ def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel
   plt.ticklabel_format(useOffset=False)
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
-  ax1 = fit.add_subplot(111)
+  ax1 = fig.add_subplot(111)
   if (len(plot_cords['fcr'][xcord]) > 0):
-    ax1.scatter(plot_cords['fcr'][xcord],plot_cords['fcr'][ycord],s=20,marker='7',color=plot_cords['fcr']['colors'],alpha=0.5)
+    ax1.scatter(plot_cords['fcr'][xcord],plot_cords['fcr'][ycord],s=20,marker=7,color=plot_cords['fcr']['colors'],alpha=0.5)
   if (len(plot_cords['debitage']['est']) > 0):
-    ax1.scatter(plot_cords['debiatage'][xcord],plot_cords['debitage'][ycord],s=20,marker='7',color=plot_cords['debitage']['colors'],alpha=0.5)
-
+    ax1.scatter(plot_cords['debitage'][xcord],plot_cords['debitage'][ycord],s=20,marker='o',color=plot_cords['debitage']['colors'],alpha=0.5)
+  if (len(plot_cords['charcoal'][xcord]) > 0):
+    ax1.scatter(plot_cords['charcoal'][xcord],plot_cords['charcoal'][ycord],s=20,marker='h',color=plot_cords['charcoal']['colors'],alpha=0.5)
+  if (len(plot_cords['bone'][xcord]) > 0):
+    ax1.scatter(plot_cords['bone'][xcord],plot_cords['bone'][ycord],s=20,marker='>',color=plot_cords['bone']['colors'],alpha=0.5)
+  if (len(plot_cords['shell'][xcord]) > 0):
+    ax1.scatter(plot_cords['shell'][xcord],plot_cords['shell'][ycord],s=20,marker='d',color=plot_cords['shell']['colors'],alpha=0.5)
+  if (len(plot_cords['tool'][xcord]) > 0):
+    ax1.scatter(plot_cords['tool'][xcord],plot_cords['tool'][ycord],s=20,marker='s',color=plot_cords['tool']['colors'],alpha=0.5)
+  if (len(plot_cords['other'][xcord]) > 0):
+    ax1.scatter(plot_cords['other'][xcord],plot_cords['other'][ycord],s=20,marker='*',color=plot_cords['other']['colors'],alpha=0.5)
+    
+    
   plt.savefig(plotfilename,format='png',bbox_inches='tight')
   plt.close()
 def ensure_dir(dirname):
@@ -168,7 +179,7 @@ while level is not None:
     plot_cords[obj_type]['elv'] = plot_cords[obj_type]['elv'] + (float(cords[2]),)
     plot_cords[obj_type]['colors'] = plot_cords[obj_type]['colors'] + (color,)
 
-    cord_count++ 
+    cord_count = cord_count + 1
 
     colors = colors + (color,)
     est = est + (float(cords[1]),)
@@ -176,8 +187,6 @@ while level is not None:
     elv = elv + (float(cords[2]),)
   
     cords = cursor.fetchone()
-
-  print plot_cords
 
   # If we didn't find anything then just move on
   if (cord_count < 1):
@@ -209,7 +218,7 @@ while level is not None:
   ylabel = 'MASL'
   xcord = 'est'
   ycord = 'elv'
-  save_scatterplot(plot_title,plot_filename,plot_cords,xlabel,ylabel)
+  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)
 
   # Create the Northing / Elevation Graph
   plot_title =" North by MASL"
@@ -218,7 +227,7 @@ while level is not None:
   ylabel = 'MASL'
   xcord = 'nor'
   ycord = 'elv'
-  save_scatterplot(plot_title,plot_filename,plot_cords,xlabel,ylabel)  
+  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)  
 
   # make 3d plot
   plot_filename = full_path+'/Level-'+locus_txt+'-3D.png'
