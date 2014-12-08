@@ -23,19 +23,19 @@ def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel
   plt.ylabel(ylabel)
   ax1 = fig.add_subplot(111)
   if (len(plot_cords['fcr'][xcord]) > 0):
-    ax1.scatter(plot_cords['fcr'][xcord],plot_cords['fcr'][ycord],s=20,marker=7,color=plot_cords['fcr']['colors'],alpha=0.5)
+    ax1.scatter(plot_cords['fcr'][xcord],plot_cords['fcr'][ycord],s=25,marker='>',color=plot_cords['fcr']['colors'],alpha=1)
   if (len(plot_cords['debitage']['est']) > 0):
-    ax1.scatter(plot_cords['debitage'][xcord],plot_cords['debitage'][ycord],s=20,marker='o',color=plot_cords['debitage']['colors'],alpha=0.5)
+    ax1.scatter(plot_cords['debitage'][xcord],plot_cords['debitage'][ycord],s=25,marker='o',color=plot_cords['debitage']['colors'],alpha=1)
   if (len(plot_cords['charcoal'][xcord]) > 0):
-    ax1.scatter(plot_cords['charcoal'][xcord],plot_cords['charcoal'][ycord],s=20,marker='h',color=plot_cords['charcoal']['colors'],alpha=0.5)
+    ax1.scatter(plot_cords['charcoal'][xcord],plot_cords['charcoal'][ycord],s=25,marker='h',color=plot_cords['charcoal']['colors'],alpha=1)
   if (len(plot_cords['bone'][xcord]) > 0):
-    ax1.scatter(plot_cords['bone'][xcord],plot_cords['bone'][ycord],s=20,marker='>',color=plot_cords['bone']['colors'],alpha=0.5)
+    ax1.scatter(plot_cords['bone'][xcord],plot_cords['bone'][ycord],s=25,marker=7,color=plot_cords['bone']['colors'],alpha=1)
   if (len(plot_cords['shell'][xcord]) > 0):
-    ax1.scatter(plot_cords['shell'][xcord],plot_cords['shell'][ycord],s=20,marker='d',color=plot_cords['shell']['colors'],alpha=0.5)
+    ax1.scatter(plot_cords['shell'][xcord],plot_cords['shell'][ycord],s=25,marker='d',color=plot_cords['shell']['colors'],alpha=1)
   if (len(plot_cords['tool'][xcord]) > 0):
-    ax1.scatter(plot_cords['tool'][xcord],plot_cords['tool'][ycord],s=20,marker='s',color=plot_cords['tool']['colors'],alpha=0.5)
+    ax1.scatter(plot_cords['tool'][xcord],plot_cords['tool'][ycord],s=25,marker='s',color=plot_cords['tool']['colors'],alpha=1)
   if (len(plot_cords['other'][xcord]) > 0):
-    ax1.scatter(plot_cords['other'][xcord],plot_cords['other'][ycord],s=20,marker='*',color=plot_cords['other']['colors'],alpha=0.5)
+    ax1.scatter(plot_cords['other'][xcord],plot_cords['other'][ycord],s=25,marker='*',color=plot_cords['other']['colors'],alpha=1)
     
     
   plt.savefig(plotfilename,format='png',bbox_inches='tight')
@@ -235,19 +235,19 @@ while level is not None:
   ax = fig.add_subplot(111,projection='3d')
   ax.scatter(est,nor,elv,color=colors,marker='o')
   if (len(plot_cords['fcr'][xcord]) > 0):
-    ax.scatter(plot_cords['fcr']['est'],plot_cords['fcr']['nor'],plot_cords['fcr']['elv'],s=20,marker=7,color=plot_cords['fcr']['colors'],alpha=0.5)
+    ax.scatter(plot_cords['fcr']['est'],plot_cords['fcr']['nor'],plot_cords['fcr']['elv'],s=25,marker='>',color=plot_cords['fcr']['colors'],alpha=1)
   if (len(plot_cords['debitage']['est']) > 0):
-    ax.scatter(plot_cords['debitage']['est'],plot_cords['debitage']['nor'],plot_cords['debitage']['elv'],s=20,marker='o',color=plot_cords['debitage']['colors'],alpha=0.5)
+    ax.scatter(plot_cords['debitage']['est'],plot_cords['debitage']['nor'],plot_cords['debitage']['elv'],s=25,marker='o',color=plot_cords['debitage']['colors'],alpha=1)
   if (len(plot_cords['charcoal'][xcord]) > 0):
-    ax.scatter(plot_cords['charcoal']['est'],plot_cords['charcoal']['nor'],plot_cords['charcoal']['elv'],s=20,marker='h',color=plot_cords['charcoal']['colors'],alpha=0.5)
+    ax.scatter(plot_cords['charcoal']['est'],plot_cords['charcoal']['nor'],plot_cords['charcoal']['elv'],s=25,marker='h',color=plot_cords['charcoal']['colors'],alpha=1)
   if (len(plot_cords['bone'][xcord]) > 0):
-    ax.scatter(plot_cords['bone']['est'],plot_cords['bone']['nor'],plot_cords['bone']['elv'],s=20,marker='>',color=plot_cords['bone']['colors'],alpha=0.5)
+    ax.scatter(plot_cords['bone']['est'],plot_cords['bone']['nor'],plot_cords['bone']['elv'],s=25,marker=7,color=plot_cords['bone']['colors'],alpha=1)
   if (len(plot_cords['shell'][xcord]) > 0):
-    ax.scatter(plot_cords['shell']['est'],plot_cords['shell']['nor'],plot_cords['shell']['elv'],s=20,marker='d',color=plot_cords['shell']['colors'],alpha=0.5)
+    ax.scatter(plot_cords['shell']['est'],plot_cords['shell']['nor'],plot_cords['shell']['elv'],s=25,marker='d',color=plot_cords['shell']['colors'],alpha=1)
   if (len(plot_cords['tool'][xcord]) > 0):
-    ax.scatter(plot_cords['tool']['est'],plot_cords['tool']['nor'],plot_cords['tool']['elv'],s=20,marker='s',color=plot_cords['tool']['colors'],alpha=0.5)
+    ax.scatter(plot_cords['tool']['est'],plot_cords['tool']['nor'],plot_cords['tool']['elv'],s=25,marker='s',color=plot_cords['tool']['colors'],alpha=1)
   if (len(plot_cords['other'][xcord]) > 0):
-    ax.scatter(plot_cords['other']['est'],plot_cords['other']['nor'],plot_cords['other']['elv'],s=20,marker='*',color=plot_cords['other']['colors'],alpha=0.5)
+    ax.scatter(plot_cords['other']['est'],plot_cords['other']['nor'],plot_cords['other']['elv'],s=25,marker='*',color=plot_cords['other']['colors'],alpha=1)
 
   ax.set_xlabel('Easting (meters)')
   ax.set_ylabel('Northing (meters)')
