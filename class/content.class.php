@@ -630,18 +630,17 @@ class content extends database_object {
     $pdf->SetFont('Times');
     $current_page++; 
 		
-    $pdf->Text('18','13','Mapped Objects');
+    $pdf->Text('80','13','Mapped Objects');
     $legend_filename = Config::get('prefix') . '/images/archie_legend.png';
-    $pdf->Image($legend_filename,'10','15','100','27');
 
     # Make sure we have all 4 plots
     if (count($plot->filename) == 4) {
 
 
-      $pdf->image($plot->filename['EstXNor'],'2','35','104','104');
-      $pdf->image($plot->filename['EstXElv'],'105','35','104','104');
-      $pdf->image($plot->filename['NorXElv'],'2','145','104','104');
-      $pdf->image($plot->filename['3D'],'105','145','104','104');
+      $pdf->image($plot->filename['EstXNor'],'2','15','104','104');
+      $pdf->image($plot->filename['EstXElv'],'105','15','104','104');
+      $pdf->image($plot->filename['NorXElv'],'2','125','104','104');
+      $pdf->image($plot->filename['3D'],'105','125','104','104');
 
 
     } // end if 4 files found
@@ -654,6 +653,7 @@ class content extends database_object {
     
     } 
 
+    $pdf->Image($legend_filename,'60','240','100','27');
     $pdf->SetFontSize('10');
     $pdf->Text('200','295',$current_page. '/' . $total_pages); 
 
