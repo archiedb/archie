@@ -142,7 +142,11 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php 
   // Current valid users
-  $excavators = User::get('enabled'); 
+  if (Access::has('admin')) { 
+    $excavators = User::get('all');
+  } else {
+    $excavators = User::get('enabled'); 
+  }
 ?>
 <div class="control-group span4<?php Error::display_class('excavator_one'); ?>">
   <label class="control-label" for="inputExcavatorone">First</label>

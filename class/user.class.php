@@ -97,6 +97,9 @@ class User extends database_object {
 			case 'disabled':
 				$constraint_sql = " AND `disabled`='1'";	
 			break; 
+      case 'all':
+        $constraint_sql = " AND 1=1";
+      break;
       case 'online': 
         $now = time(); 
         $constraint_sql = " AND `username` IN (SELECT `username` FROM `session` WHERE `expire` > '$now')"; 
