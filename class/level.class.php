@@ -410,7 +410,8 @@ class Level extends database_object {
 
         $user = new User($input[$excavator_id]); 
 
-        if (!$user->username OR $user->disabled) { 
+        // Allow administrative users to select disabled/messed up excavators
+        if ((!$user->username OR $user->disabled) AND !Access::has('admin')) { 
           Error::add($excavator_id,'Excavator unknown or disabled'); 
         }
         else {
