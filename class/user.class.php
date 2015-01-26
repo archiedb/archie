@@ -127,6 +127,11 @@ class User extends database_object {
 	 */
 	public function set_password($input) { 
 
+    if (!$this->uid) {
+      Event::error('User::uid','No UID specified');
+      return false;
+    }
+
 		if (!strlen($input)) { 
 			Event::error('User::set_password','Error no password specified'); 
 			return false; 
