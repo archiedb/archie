@@ -16,3 +16,25 @@ build-scatter-plots [--level=UID]
 build-changelog.sh
 
   Simple script to auto-generate a changelog
+ 
+[Scripts to be run from CRON]
+
+report.cron.php.inc
+
+  Creates the CVS files and other related reporting functionality that can take
+  a lot of proccessing, this should be run from cron, and is scheduled via the
+  web interface
+
+task.cron.php.inc
+
+  Regenerates QRcodes and other supplimentary data generation tasks, this 
+  should be run from cron and is scheduled via the web interface
+
+
+[Migration Scripts]
+
+import.records.php.inc / migrate.2013-2014.php.inc
+
+  These are older scripts which were used to import or translate data beteween
+  versions of ARCHIE they are not used, but are left for historical record
+  so that we can trace back what was done to the data
