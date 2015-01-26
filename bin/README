@@ -30,6 +30,11 @@ task.cron.php.inc
   Regenerates QRcodes and other supplimentary data generation tasks, this 
   should be run from cron and is scheduled via the web interface
 
+reset-password.php.inc [username] [password]
+
+  Resets the password for a web interface user, takes two arguments
+  first is username, second is password. Must be run with php
+
 
 [Migration Scripts]
 
