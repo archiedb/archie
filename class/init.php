@@ -40,7 +40,7 @@ if (defined('CLI')) {
 
 // Do a check for PHP5 because nothing will work without it
 if (floatval(phpversion()) < 5.3) {
-	echo "ERROR: Ampache requires PHP5.3";
+	echo "ERROR: Archie requires PHP5.3";
 	exit;
 }
 
@@ -56,8 +56,6 @@ require_once $prefix . '/lib/phpqrcode/qrlib.php';
 require_once $prefix . '/lib/fpdf/fpdf.php';
 require_once $prefix . '/class/ui.namespace.php'; 
 require_once $prefix . '/class/update.namespace.php'; 
-
-//require_once $prefix . '/class/vauth.class.php'; // Fixes synology bug with __autoload in certain cases
 
 // Define some base level config options
 Config::set('prefix',$prefix);
