@@ -17,7 +17,7 @@ if (INIT_LOADED != '1') { exit; }
 </p>
 <div class="page-header">
 <h4>
-  <?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)
+  Effective permissions for <?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>) @ <?php echo \UI\sess::$user->site->name; ?> 
   <small><?php echo scrub_out($user->email); ?></small>
 </h4>
 </div>
@@ -25,18 +25,28 @@ if (INIT_LOADED != '1') { exit; }
 <table class="table table-bordered table-hover">
 <tbody>
 <tr>
-  <td><strong>Total Records Entered</strong></td>
-  <td><?php echo Stats::total_records('user',$user->uid); ?></td>
+  <th><strong>Role</strong></th>
+  <th><strong>Access</strong></th>
+  <th><strong>Description</strong></th>
 </tr>
+<?php if (!count($user->roles)) { ?>
+<tr><td colspan="2">No Permissions</td></tr>
+<?php } else { ?>
+<?php foreach ($user->roles as $role=>$access) { ?>
 <tr>
-  <td><strong>Favorite Classification</strong></td>
-  <td>
-    <?php 
-      $info = Stats::classification_records('user',$user->uid); 
-      echo $info['classification'] . ' (' . $info['count'] . ')';   
-    ?>  
-  </td>
+  <td><?php echo $role; ?></td>
+  <td><?php echo $access; ?></td>
+  <td>Description of what this really means here</td>
 </tr>
+<?php } } ?>
 </tbody>
 </table>
-</fieldset>
+<div class="page-header">
+<p class="pull-right">
+  <a class="btn btn-success">Add Group</a>
+</p>
+<h4>
+  Assigned Groups 
+</h4>
+</div>
+

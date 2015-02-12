@@ -30,7 +30,7 @@ ${$active_name} = ' class="active"';
 <tr>
   <th>Name (Username)</th>
   <th>Email</th>
-  <th>Access Level</th>
+  <th>Last Online</th>
   <th>&nbsp;</th>
 </tr>
 </thead>
