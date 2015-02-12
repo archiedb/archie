@@ -42,6 +42,13 @@ class Record extends database_object {
 		foreach ($row as $key=>$value) { $this->$key = $value; } 
 
 		// Setup the Material and classification
+    $spatial = SpatialData::get_record_data($this->uid,'record','single');
+    // don't load this if it isn't there
+    if (is_object($spatial)) {
+      $this->northing = $spatial->northing;
+      $this->easting = $spatial->easting;
+      $this->elevation = $spatial->elevation;
+    }
 		$this->material = new Material($this->material); 
 		$this->classification = new Classification($this->classification); 
 		$this->lsg_unit	= new lsgunit($this->lsg_unit); 
@@ -80,7 +87,7 @@ class Record extends database_object {
     $users = array(); 
 
     while ($row = Dba::Fetch_assoc($db_results)) { 
-      parent::add_to_cache('record',$row['uid'],$row); 
+      parent::add_to_cache('record',$row['uid'],$row);
       $materials[$row['material']] = $row['material']; 
       $classifications[$row['classification']] = $row['classification']; 
       $users[$row['user']] = $row['user']; 
@@ -124,7 +131,7 @@ class Record extends database_object {
 
 		$db_results = false; 
 		$times = 0; 
-		$lock_sql = "LOCK TABLES `record` WRITE, `krotovina` READ, `feature` READ, `level` READ;"; 
+		$lock_sql = "LOCK TABLES `record` WRITE, `krotovina` READ, `feature` READ, `level` READ, `spatial_data` READ;"; 
 		$unlock_sql = "UNLOCK TABLES"; 
 
 		// Only wait 3 seconds for this, it shouldn't take that long
@@ -195,17 +202,15 @@ class Record extends database_object {
 		$quad = Dba::escape($level->quad->uid); 
 		$feature = Dba::escape($feature_uid);  
     $krotovina = Dba::escape($krotovina_uid);
-    $northing = Dba::escape($input['northing']); 
-    $easting = Dba::escape($input['easting']); 
-    $elevation = Dba::escape($input['elevation']); 
 		$user = Dba::escape(\UI\sess::$user->uid); 
 		$created = time(); 
 
-		// This can be null needs to be handled slightly differently
-		$station_index = $input['station_index'] ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
-		
-		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`station_index`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`krotovina`,`user`,`created`,`northing`,`easting`,`elevation`) " . 
-			"VALUES ('$site','$catalog_id','$unit',$level,'$lsg_unit',$station_index,'$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$quad','$feature','$krotovina','$user','$created','$northing','$easting','$elevation')"; 
+    //FIXME: Move station_index to spatial data
+    // This can be null needs to be handled slightly differently
+
+
+		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`krotovina`,`user`,`created`) " . 
+			"VALUES ('$site','$catalog_id','$unit',$level,'$lsg_unit','$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$quad','$feature','$krotovina','$user','$created')"; 
 		$db_results = Dba::write($sql); 
 
 		if (!$db_results) { 
@@ -215,6 +220,7 @@ class Record extends database_object {
 		} 
 		$insert_id = Dba::insert_id(); 
 
+    // Unlock 
 		$db_results = Dba::write($unlock_sql); 
 
     $legend_line = "Site,Catalog ID,Unit,Level,LSG Unit,RN,XRF Matrix Index, Weight (grams),Height(mm),Width(mm),Thickness(mm),Quanity,Material,Classification,Quad,Feature ID,Krotovina ID,User,Date";
@@ -222,7 +228,9 @@ class Record extends database_object {
 		$log_line = "$site,$catalog_id,$unit," . $input['level'] . ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] ."," . $input['krotovina'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('ADD',$log_line); 
 
-    // Clear any cache that might have gotten created
+   // Create the spatial data entry
+    $spatial = SpatialData::create(array('rn'=>$input['station_index'],'record'=>$insert_id,'northing'=>$input['northing'],'easting'=>$input['easting'],'elevation'=>$input['elevation'],'rn'=>$input['station_index'],'type'=>'record'));
+    //FIXME: Catch this and deal with it in a sane way
 
 		// We're sure we've got a record so lets generate our QR code. 
 		Content::write($insert_id,'qrcode'); 
@@ -277,11 +285,10 @@ class Record extends database_object {
 		$station_index = $input['station_index'] ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
 		$level = $input['level'] ? "'" . Dba::escape($level_uid) . "'" : "NULL"; 
 
-		$sql = "UPDATE `record` SET `level`=$level, `lsg_unit`='$lsg_unit', `station_index`=$station_index, " . 
-			"`xrf_matrix_index`='$xrf_matrix_index', `weight`='$weight', `height`='$height', `width`='$width', `thickness`='$thickness', " . 
-			"`quanity`='$quanity', `material`='$material', `classification`='$classification', `notes`='$notes', `xrf_artifact_index`='$xrf_artifact_index', " . 
-			"`user`='$user', `updated`='$updated', `feature`='$feature', `northing`='$northing', `easting`='$easting', `elevation`='$elevation', " . 
-      "`krotovina`='$krotovina' " .
+		$sql = "UPDATE `record` SET `level`=$level, `lsg_unit`='$lsg_unit', `xrf_matrix_index`='$xrf_matrix_index', " . 
+      "`weight`='$weight', `height`='$height', `width`='$width', `thickness`='$thickness', `quanity`='$quanity', " . 
+      "`material`='$material', `classification`='$classification', `notes`='$notes', `xrf_artifact_index`='$xrf_artifact_index', " . 
+			"`user`='$user', `updated`='$updated', `feature`='$feature', `krotovina`='$krotovina' " .
 			"WHERE `uid`='$record_uid'"; 
 		$db_results = Dba::write($sql); 
 
@@ -289,6 +296,14 @@ class Record extends database_object {
 			Error::add('general','Database Error, please try again'); 
 			return false; 
 		} 
+
+    // Update the SpatialData
+    $spatialdata = SpatialData::get_record_data($record_uid,'record','single');
+    $return = $spatialdata->update(array('rn'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
+
+    if (!$return) {
+      Error::add('general','Database Error updating Spatial Data, please try again');
+    }
 
 		// Remove this object from the cache so the update shows properly
 		$this->refresh(); 
@@ -581,6 +596,9 @@ class Record extends database_object {
 		if ($ticket->filename) { 
 			$ticket->delete(); 
 		} 
+
+    // Remove spatial data assoicated with this record
+    SpatialData::delete_by_record($uid,'record');
 
 		$uid = Dba::escape($uid); 
 		$sql = "DELETE FROM `record` WHERE `uid`='$uid' LIMIT 1"; 
