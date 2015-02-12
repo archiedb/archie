@@ -16,7 +16,7 @@ unset($auth);
 
 
 /* Check for posted username and password */
-if (($_POST['username'] && $_POST['password'])) { 
+if (isset($_POST['username']) && isset($_POST['password'])) { 
 	$username = scrub_in($_POST['username']); 
 	$password = $_POST['password']; // Don't scrub this, but we will escape it for the DB
 	
@@ -41,7 +41,7 @@ if (($_POST['username'] && $_POST['password'])) {
 
 // Little odd, but this is how I did it in ampache so, check for success and
 // actually do the work
-if ($auth['success']) { 
+if (isset($auth['success'])) { 
 
 	vauth::session_create($auth); 
 
