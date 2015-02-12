@@ -23,7 +23,7 @@ class SpatialData extends database_object {
       $this->$key = $value;
     }
 
-		return $retval; 
+		return true; 
 
 	} // constructor
 
@@ -108,13 +108,50 @@ class SpatialData extends database_object {
     $insert_id = Dba::insert_id();
 
     if (!$insert_id) { 
-      Error:add('general','Database Error - Please contact your administrator');
+      Error:add('general','Database Error inserting Spatial Data - Please contact your administrator');
+      Event::error('SpatialData',"Error inserting spatial data - UID:$record  --- Type:$type --- Station index:$station_index --- Nor:$northing --- Est:$easting --- Elv:$elevation --- Note:$note");
       return false;
     }
 
+    Event::add('SpatialData',"Added point for UID:$record of type $type RN:$station_index,Nor:$northing,Est:$easting,Elv:$elevation");
     return $insert_id;
 
   } // create
+
+  /**
+   * update
+   * Update an existing spatial record
+   */
+  public function update($input) {
+
+    $input['type'] = $this->type;
+    $input['record'] = $this->record;
+
+    if (!SpatialData::validate($input)) {
+      Error::add('general','Invalid Spatial Data fields - please check input');
+      return false;
+    }
+
+    // Escape the values
+    $uid = Dba::escape($this->uid);
+    $type = Dba::escape($this->type);
+    $record = Dba::escape($this->record);
+    $station_index = Dba::escape($input['rn']);
+    $northing = Dba::escape($input['northing']);
+    $easting = Dba::escape($input['easting']);
+    $elevation = Dba::escape($input['elevation']);
+
+    $sql = "UPDATE `spatial_data` SET `station_index`='$station_index',`northing`='$northing',`easting`='$easting',`elevation`='$elevation' " . 
+      "WHERE `uid`='$uid'";
+    $db_results = Dba::write($sql);
+
+    if (!$db_results) { 
+      return false;
+    }
+
+    return true;
+
+  } // update
 
   /**
    * validate
@@ -216,7 +253,7 @@ class SpatialData extends database_object {
    * get_record_data
    * Returns an array of the data for a specific record
    */
-  public static function get_record_data($record,$type) {
+  public static function get_record_data($record,$type,$single=false) {
 
     $results = array();
     if (!is_numeric($record) or !in_array($type,SpatialData::$valid_types)) { return array(); }
@@ -227,6 +264,7 @@ class SpatialData extends database_object {
     $db_results = Dba::read($sql); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
+      if ($single) { return new SpatialData($row['uid']); }
       parent::add_to_cache('spatial_data',$row['uid'],$row);
       $results[] = $row;
     }
