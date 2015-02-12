@@ -9,7 +9,6 @@ class Access {
 
   private static $types = array('user','record','admin','media','level','feature','krotovina','site'); 
   private static $actions = array('write','read','delete','admin','download'); 
-  private static $levels = array('0'=>'User','50'=>'Manager','100'=>'Admin'); 
 
   private function __construct() {}
   private function __clone() {}
@@ -27,7 +26,9 @@ class Access {
     }  
 
     // If they are a site admin then return true
-    if (\UI\sess::$user->access == '100') { return true; }
+    if (isset(\UI\sess::$user->roles['admin'])) {
+      if (\UI\sess::$user->roles['admin'] == 'admin') { return true; }
+    }
 
     $check_name = 'check_' . $type; 
     $class_name = 'Access';
@@ -136,25 +137,28 @@ class Access {
   } // check_site
 
   /**
-   * get_levels
-   * Returns an array of possible levels
+   * get_actions
+   * Returns an array of possible actions based on a role
    */
-  public static function get_levels() { 
+  public static function get_actions($role) { 
 
-    return self::$levels; 
 
-  } // get_levels
+  } // get_actions
 
   /**
-   * get_level_name
+   * get_action_name
    */
-  public static function get_level_name($int) { 
+  public static function get_action_name($action) {
 
-    if (!isset(self::$levels[$int])) { return false; }
 
-    return self::$levels[$int];
+  } // get_action_name
 
-  } // get_level_name
+  /**
+   * get_role_name
+   */
+  public static function get_role_name($int) { 
+
+  } // get_role_name
 
   /**
    * is_admin
@@ -162,7 +166,7 @@ class Access {
    */
   public static function is_admin() { 
 
-    if (\UI\sess::$user->access == '100') { return true; }
+    if (\UI\sess::$user->roles['admin'] == 'admin') { return true; }
 
     return false; 
 
