@@ -7,7 +7,8 @@ class User extends database_object {
 	public $username; 
 	public $name; 
 	public $email; 
-	public $access; 
+	public $access; // DEAD 
+  public $roles = array(); // Pulled from user_permission_view
 	public $disabled; 
 	public $password; // SHA2 (256)
 
@@ -22,7 +23,13 @@ class User extends database_object {
 			$this->$key = $value; 
 		} 
 		// Don't actually keep this in the object 
-		unset($this->password); 
+		if (isset($this->password)) { unset($this->password); }
+
+    // Load their roles
+    if (!is_array($this->roles)) {
+      $this->roles = User::get_roles($this->uid);
+    }
+
     if (!$this->name) { $this->name = $this->username; }
 
 		return true; 
@@ -41,17 +48,52 @@ class User extends database_object {
     // passing array(false causes this
     if ($idlist == '()') { return false; }
 
+    // Build the roles cache
+    $sql = 'SELECT * FROM `user_permission_view` WHERE `user` IN ' . $idlist;
+    $db_results = Dba::read($sql);
+
+    $roles = array();
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      if (!isset($roles[$row['user']])) {
+        $roles[$row['user']] = array();
+      }
+      $roles[$row['user']][$row['role']] = $row['action'];
+    }
+
     $sql = 'SELECT * FROM `users` WHERE `users`.`uid` IN ' . $idlist; 
     $db_results = Dba::read($sql); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
+      // If they have no role, give them an empty one so it's recongized as cached
+      if (!isset($roles[$row['uid']])) { $roles[$row['uid']] = array(); }
+      $row['roles'] = $roles[$row['uid']];
       parent::add_to_cache('users',$row['uid'],$row); 
     }
 
     return true; 
 
-
   } //build_cache
+
+  /**
+   * get_roles
+   * Get the access roles for this user
+   */
+  public static function get_roles($uid) {
+
+    $uid = Dba::escape($uid);
+    $sql = "SELECT * FROM `user_permission_view` WHERE `user`='$uid'";
+    $db_results = Dba::read($sql);
+
+    $results = array();
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[$row['role']] = $row['action'];
+    }
+    
+    return $results;
+
+  } // get_roles
 
 	/**
 	 * refresh
@@ -73,9 +115,13 @@ class User extends database_object {
 		$db_results = Dba::read($sql); 
 
 		$row = Dba::fetch_assoc($db_results); 
-    parent::add_to_cache('users',$row['uid'],$row);
-
-		$user = new User($row['uid']); 
+    if (isset($row['uid'])) { 
+      parent::add_to_cache('users',$row['uid'],$row);
+		  $user = new User($row['uid']); 
+    }
+    else {
+      $user = new User(false);
+    }
 
 		return $user; 
 
