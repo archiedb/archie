@@ -324,7 +324,7 @@ class Feature extends database_object {
    * get_user_features
    * return an array of the last 3 user features (by defualt)
   */
-  public static function get_user_features($uid,$limit=3) {
+  public static function get_user_features($uid=false,$limit=3) {
 
     if (!$uid) {
       $uid = \UI\sess::$user->uid;

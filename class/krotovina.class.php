@@ -349,7 +349,7 @@ class Krotovina extends database_object {
    * get_user_krotovina
    * Returns the krotovina assoicated with this user
   */
-  public static function get_user_krotovina($uid,$limit=3) { 
+  public static function get_user_krotovina($uid=false,$limit=3) { 
 
     if (!$uid) {
       $uid = \UI\sess::$user->uid;
