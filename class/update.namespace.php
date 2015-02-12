@@ -243,6 +243,11 @@ class Database {
     $update_string = '- Add krotovina to record table.<br />' . 
                     '- Rename level.record to level.catalog_id to match other tables.<br />';
     $versions[] = array('version'=>'0012','description'=>$update_string);
+    $update_string = '- Add role based permissions.<br />' . 
+                    '- Migrate Northing/Easting/Elevation to spatial_data table.<br />' . 
+                    '- Drop unused fields from record table.<br />' .
+                    '- Add per site user groups.<br />';
+    $versions[] = array('version'=>'0013','description'=>$update_string);
 
 
     return $versions; 
@@ -828,26 +833,206 @@ class Database {
   /**
    * update_0013
    * - Migrate existing northing/easting/elevations to spatial_data
-   * - Create Blank Levels if quad/unit specified but no level record found
-   * - Create Blank Featuers if record.feature set
-   * - Create Blank Krotovina if record.krot set
    * - Remove record.quad and record.unit, now linked directly to level
    * - Remove record.northing record.easting record.elevation, now stored in spatial_data table
    * - Switch record.level to NOT NULL
+   * - Add tables for role based permissions
+   * - Add tables for site permissions
+   * - Migrate existing permissions
    */
   public static function update_0013() { 
 
     $retval = true; 
 
+    // Move record.[spatial_data] 
+    $sql = "SELECT `northing`,`easting`,`elevation`,`station_index`,`uid` AS `record` FROM `record`";
+    $db_results = \Dba::read($sql); 
+
+    while ($row = \Dba::fetch_assoc($db_results)) { 
+
+      // If it's empty we don't give a shit
+      if ($row['northing'] == '0.000' AND $row['easting'] == '0.000' AND $row['elevation'] == '0.000') {
+        continue; 
+      }
+
+      $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`,`northing`,`easting`,`elevation`) " . 
+          "VALUES ('" . $row['record'] . "','record','" . $row['station_index'] . "','" . $row['northing'] . "','" . $row['easting'] . "','" . $row['elevation'] . "')";
+      $retval = \Dba::write($sql) ? $retval : false;
+
+    } 
+
+
     // Switch record.level to NOT NULL
     $sql = "ALTER TABLE `record` CHANGE `level` `level` INT(11) UNSIGNED NOT NULL";
-    $db_results = \Dba::write($sql) ? $retval : false;
+    $retval = \Dba::write($sql) ? $retval : false;
 
     // We've moved everything drop the extranous information
-    $sql = "ALTER TABLE `record` DROP `quad`,`unit`,`northing`,`easting`,`elevation`";
-    $db_results = \Dba::write($sql) ? $retval : false;
+    $sql = "ALTER TABLE `record` DROP `quad`";
+    $retval = \Dba::write($sql) ? $retval : false;
+    $sql = "ALTER TABLE `record` DROP `unit`";
+    $retval = \Dba::write($sql) ? $retval : false;
+    $sql = "ALTER TABLE `record` DROP `northing`";
+    $retval = \Dba::write($sql) ? $retval : false;
+    $sql = "ALTER TABLE `record` DROP `easting`";
+    $retval = \Dba::write($sql) ? $retval : false;
+    $sql = "ALTER TABLE `record` DROP `elevation`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Add role table
+    $sql = "CREATE TABLE `role` (" . 
+        "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
+        "`name` varchar(255) NOT NULL," . 
+        "`desc` varchar(512) NOT NULL," . 
+        "PRIMARY KEY (`uid`)) " .
+        "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Insert the different potential roles
+    $roles = array('user'=>'Users',
+              'record'=>'Records',
+              'feature'=>'Features',
+              'krotovina'=>'Krotovina',
+              'site'=>'Site',
+              'level'=>'Level',
+              'report'=>'Reports',
+              'admin'=>'Admin Functions');
+    // Itterate through and add them in
+    foreach ($roles as $name=>$desc) { 
+      $sql = "INSERT INTO `role` (`name`,`desc`) VALUES ('$name','$desc')";
+      $retval = \Dba::write($sql) ? $retval : false;
+    }
+
+    $sql = "CREATE TABLE `action` (" . 
+        "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
+        "`name` varchar(255) NOT NULL," . 
+        "`desc` varchar(512) NOT NULL," .
+        "PRIMARY KEY (`uid`)) " . 
+        "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+
+    $actions = array('read'=>'Read',
+                'create'=>'Create',
+                'edit'=>'Edit',
+                'close'=>'Close',
+                'delete'=>'Delete',
+                'reopen'=>'Re-open',
+                'manage'=>'Manage',
+                'admin'=>'Admin');
+    // Itterate through and add the current ones 
+    foreach ($actions as $name=>$desc) {
+      $sql = "INSERT INTO `action` (`name`,`desc`) VALUES ('$name','$desc')";
+      $retval = \Dba::write($sql) ? $retval : false;
+    }
+
+    $sql = "CREATE TABLE `role_action` (" . 
+        "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+        "`role` int(11) NOT NULL," .
+        "`action` int(11) NOT NULL," .
+        "PRIMARY KEY (`uid`)) " .
+        "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Now for the mappings Role -> Action
+    $role_action = array('user'=>'read','user'=>'create','user'=>'edit','user'=>'manage','user'=>'admin',
+        'record'=>'read','record'=>'create','record'=>'edit','record'=>'manage','record'=>'admin',
+        'feature'=>'read','feature'=>'create','feature'=>'edit','feature'=>'manage','feature'=>'admin',
+        'krotovina'=>'read','krotovina'=>'create','krotovina'=>'edit','krotovina'=>'manage','krotovina'=>'admin',
+        'level'=>'read','level'=>'create','level'=>'edit','level'=>'reopen','level'=>'manage','level'=>'admin',
+        'report'=>'read','report'=>'create','report'=>'admin',
+        'admin'=>'manage','admin'=>'admin',
+        'site'=>'read','site'=>'create','site'=>'edit','site'=>'manage','site'=>'admin');
+
+    // need to look up some UIDs for this shit
+    $sql = "SELECT `uid`,`name` FROM `role`";
+    $db_results = \Dba::read($sql);
+    while ($results = \Dba::fetch_assoc($db_results)) {
+      $roles[$results['name']] = $results['uid'];
+    }
+    $sql = "SELECT `uid`,`name` FROM `action`";
+    $db_results = \Dba::read($sql);
+    while ($results = \Dba::fetch_assoc($db_results)) {
+      $actions[$results['name']] = $results['uid'];
+    }
+
+    foreach ($role_action as $role=>$action) { 
+
+     $sql = "INSERT INTO `role_action` (`role`,`action`) VALUES ('" . $roles[$role] . "','" . $actions[$action] . "')";
+     $retval = \Dba::write($sql) ? $retval : false;
+
+    } 
+
+    $sql = "CREATE TABLE `group` (" .
+        "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+        "`name` varchar(255) NOT NULL," . 
+        "`desc` varchar(512) NOT NULL," .
+        "PRIMARY KEY (`uid`)) " .
+        "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Create initial administrators group
+    $sql = "INSERT INTO `group` (`name`,`desc`) VALUES ('Full Admin','Application Administrators')";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "CREATE TABLE `group_role` (" . 
+        "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+        "`group` int(11) NOT NULL," .
+        "`role` int(11) NOT NULL," . 
+        "`action` int(11) NOT NULL," .
+        "PRIMARY KEY (`uid`)) " . 
+        "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "CREATE TABLE `user_group` (" . 
+        "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+        "`user` int(11) NOT NULL," .
+        "`group` int(11) NOT NULL," .
+        "`site` int(11) NOT NULL," .
+        "PRIMARY KEY (`uid`)) " . 
+        "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "SELECT `uid` FROM `site` ORDER BY `uid` ASC LIMIT 1";
+    $db_results = \Dba::read($sql);
+    $row = \Dba::fetch_assoc($db_results);
+    $site = $row['uid'];
+
+    // We should add the existing "100" level users to the Full Admin group
+    // for the existing site
+    $sql = "SELECT `uid` FROM `users` WHERE `access`='100' AND disabled IS NULL";
+    $db_results = \Dba::read($sql); 
+
+    while ($row = \Dba::fetch_assoc($db_results)) { 
+
+      $sql = "INSERT INTO `user_group` (`user`,`group`,`site`) VALUES ('" . $row['uid'] . "','1','$site')";
+      $retval = \Dba::write($sql) ? $retval : false;
+
+    } 
+
+    $sql = "SELECT `uid` FROM `role` WHERE `name`='admin'";
+    $db_results = \Dba::read($sql);
+    $row = \Dba::fetch_assoc($db_results);
+    $role_admin = $row['uid'];
+  
+    $sql = "SELECT `uid` FROM `action` WHERE `name`='admin'";
+    $db_results = \Dba::read($sql);
+    $row = \Dba::fetch_assoc($db_results);
+    $action_admin = $row['uid'];
+
+    // Add the 'admin/admin' role to the admin group
+    $sql = "INSERT INTO `group_role` (`group`,`role`,`action`) VALUES ('1','$role_admin','$action_admin')";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `users` DROP `access`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "CREATE VIEW `user_permission_view` AS SELECT `user_group`.`site` AS `site`,`user_group`.`user` AS `user`,`role`.`name` AS `role`,`action`.`name` AS `action` " .
+      "FROM `group`,`role`,`action`,`user_group` JOIN `group_role` ON `user_group`.`group`=`group_role`.`group` " .
+      "WHERE `group_role`.`role`=`role`.`uid` AND `group_role`.`action`=`action`.`uid`";
+    $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval;
+
 
   } // update_0013
 
