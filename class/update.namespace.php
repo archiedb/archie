@@ -839,6 +839,7 @@ class Database {
    * - Add tables for role based permissions
    * - Add tables for site permissions
    * - Migrate existing permissions
+   * - Add additional 'info' fields to user table
    */
   public static function update_0013() { 
 
@@ -1029,6 +1030,12 @@ class Database {
     $sql = "CREATE VIEW `user_permission_view` AS SELECT `user_group`.`site` AS `site`,`user_group`.`user` AS `user`,`role`.`name` AS `role`,`action`.`name` AS `action` " .
       "FROM `group`,`role`,`action`,`user_group` JOIN `group_role` ON `user_group`.`group`=`group_role`.`group` " .
       "WHERE `group_role`.`role`=`role`.`uid` AND `group_role`.`action`=`action`.`uid`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `users` ADD `last_login` INT(11) UNSIGNED NULL AFTER `site`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `users` ADD `notes` INT(11) UNSIGNED NULL AFTER `site`";
     $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval;
