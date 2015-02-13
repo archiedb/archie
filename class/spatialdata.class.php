@@ -31,7 +31,7 @@ class SpatialData extends database_object {
   /**
    * build_cache
    */
-  public static function build_cache($objects) { 
+  public static function build_cache($objects,$type) { 
 
     if (!is_array($objects) || !count($objects)) { return false; }
 
@@ -40,7 +40,9 @@ class SpatialData extends database_object {
     // passing array(false causes this
     if ($idlist == '()') { return false; }
 
-    $sql = 'SELECT * FROM `spatial_data` WHERE `uid` IN ' . $idlist; 
+    $type = Dba::escape($type);
+
+    $sql = "SELECT * FROM `spatial_data` WHERE `type`='$type' AND `record` IN " . $idlist; 
     $db_results = Dba::read($sql); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
