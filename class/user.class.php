@@ -8,7 +8,7 @@ class User extends database_object {
 	public $name; 
 	public $email; 
 	public $access; // DEAD 
-  public $roles = array(); // Pulled from user_permission_view
+  public $roles; // Pulled from user_permission_view
 	public $disabled; 
 	public $password; // SHA2 (256)
 
