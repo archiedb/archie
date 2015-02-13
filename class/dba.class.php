@@ -1,5 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 /**
  * Dba Class
  *
@@ -22,6 +22,7 @@
  *
  * @package	Ampache
  * @copyright	2001 - 2011 Ampache.org
+ * @copyright	2011 - 2015 Karl Vollmer
  * @license	http://opensource.org/licenses/gpl-2.0 GPLv2
  * @link	http://www.ampache.org/
  */
@@ -51,6 +52,7 @@ class Dba {
 	private static $_default_db;
 	private static $_sql;
 	private static $config;
+  private static $_error;
 
 	/**
 	 * constructor
@@ -67,34 +69,42 @@ class Dba {
 	 * This is the meat of the class this does a query, it emulates
 	 * The mysql_query function
 	 */
-	public static function query($sql) {
+	public static function query($sql,$params=array()) {
 
-		// Run the query
-		$resource = mysql_query($sql,self::dbh());
-		Event::error('Query',$sql);
+    Event::error('SQL',$sql . " ::: " . json_encode($params));
+
+    $dbh = self::dbh();
+    if (!$dbh) { 
+      Event::error('Database','Error no database handle found');
+      return false;
+    }
+
+    // If it's an updated query that's using params for escaping
+    if (count($params)) { 
+      $statement = $dbh->prepare($sql);
+      $statement->execute($params);
+    }
+    else {
+      $statement = $dbh->query($sql);
+    }
 
 		// Save the query, to make debug easier
 		self::$_sql = $sql;
 		self::$stats['query']++;
 
-		// Do a little error checking here and try to recover from some forms of failure
-		if (!$resource) {
-			switch (mysql_errno(self::dbh())) {
-				case '2006':
-				case '2013':
-				case '2055':
-					Event::error('DBH','Lost connection to database server, trying to re-connect and hope nobody noticed');
-					self::disconnect();
-					// Try again
-					$resource = mysql_query($sql,self::dbh());
-					break;
-				default:
-					Event::error('DBH',mysql_error(self::dbh()) . ' ['. mysql_errno(self::dbh()) . ']');
-					break;
-			} // end switch on error #
-		} // if failed query
-
-		return $resource;
+    // Check for errors
+    if (!$statement) {
+      Event::error('Database','DB Error: ' . json_encode($dbh->errorInfo()));
+      self::disconnect();
+    }
+    elseif ($statement->errorCode() && $statement->errorCode() != '00000') {
+      Event::error('Database','Query Error: ' . json_encode($statement->errorInfo()));
+      self::finish($statement);
+      self::disconnect();
+      return false;
+    }
+    
+    return $statement;
 
 	} // query
 
@@ -103,9 +113,9 @@ class Dba {
 	 * This is a wrapper for query, it's so that in the future if we ever wanted
 	 * to split reads and writes we could
 	 */
-	public static function read($sql) {
+	public static function read($sql,$params=array()) {
 
-		return self::query($sql);
+		return self::query($sql,$params);
 
 	} // read
 
@@ -114,9 +124,9 @@ class Dba {
 	 * This is a wrapper for a write query, it is so that we can split out reads and
 	 * writes if we want to
 	 */
-	public static function write($sql) {
+	public static function write($sql,$params=array()) {
 
-		return self::query($sql);
+		return self::query($sql,$params);
 
 	} // write
 
@@ -127,9 +137,11 @@ class Dba {
 	 */
 	public static function escape($var) {
 
-		$string = mysql_real_escape_string($var,self::dbh());
-
-		return $string;
+    $string = self::dbh()->quote($var);
+    
+    // For legacy reasons we need to remove the first and last chars (the quotes)
+    // as those aren't expected by the old code
+    return substr($string,1,-1);
 
 	} // escape
 
@@ -140,10 +152,15 @@ class Dba {
 	 */
 	public static function fetch_assoc($resource) {
 
-		$result = mysql_fetch_assoc($resource);
+    // If we didn't get a valid resource quit!
+    if (!$resource) { return array(); }
+
+    $result = $resource->fetch(PDO::FETCH_ASSOC);
+
+    return $result;
 
 		if (!$result) {
-			return array();
+			$result = array();
 		}
 
 		return $result;
@@ -157,7 +174,10 @@ class Dba {
 	 */
 	public static function fetch_row($resource) {
 
-		$result = mysql_fetch_row($resource);
+    // Quit while we're ahead
+    if (!$resource) { return array(); }
+
+		$result = $resource->fetch(PDO::FETCH_NUM);
 
 		if (!$result) {
 			return array();
@@ -175,13 +195,17 @@ class Dba {
 	 */
 	public static function num_rows($resource) {
 
-		$result = mysql_num_rows($resource);
+    if ($resource) {
+      $result = $resource->rowCount();
+    }
 
-		if (!$result) {
-			return '0';
-		}
+    // Force it to 0 not false
+    if (!$result) {
+      $result = 0;
+    }
 
 		return $result;
+
 	} // num_rows
 
 	/**
@@ -190,8 +214,7 @@ class Dba {
 	 */
 	public static function finish($resource) {
 
-		// Clear the result memory
-		mysql_free_result($resource);
+    if ($resource) { $resource->closeCursor(); }
 
 	} // finish
 
@@ -201,13 +224,8 @@ class Dba {
 	 */
 	public static function affected_rows($resource) {
 
-		$result = mysql_affected_rows($resource);
-
-		if (!$result) {
-			return '0';
-		}
-
-		return $result;
+    $result = self::num_rows($resource);
+    return $result;
 
 	} // affected_rows
 
@@ -215,48 +233,79 @@ class Dba {
 	 * _connect
 	 * This connects to the database, used by the DBH function
 	 */
-	private static function _connect($db_name) {
+	private static function _connect() {
 
-		if (self::$_default_db == $db_name) {
+		if (self::$_default_db) {
 			$username = Config::get('database_username');
 			$hostname = Config::get('database_hostname');
 			$password = Config::get('database_password');
 			$database = Config::get('database_name');
+      $port     = Config::get('database_port');
 		}
 		else {
 			// Do this later
 		}
 
+    $dsn = '';
 
-		$dbh = mysql_connect($hostname,$username,$password);
-		if (!$dbh) { Event::error('Database','Error unable to connect to database' . mysql_error()); }
+		// We're going to use PDO so we need to create the datasource name here
+		if (strpos($hostname,'/') === 0) {
+      $dsn = 'mysql:unix_socket=' . $hostname;
+    }
+    else {
+      $dsn = 'mysql:host=' . $hostname ?: 'localhost';
+    }
+    if ($port) {
+      $dsn .= ';port=' . intval($port);
+    }
 
-		$data = self::translate_to_mysqlcharset(Config::get('site_charset'));
+    // Try and catch this
+    try {
+      $dbh = new PDO($dsn,$username,$password);
+    }
+    catch (PDOException $e) {
+      self::$_error = $e->getMessage();
+      Event::error('Database','Connection failed:' . $e->getMessage());
+      return null;
+    }
 
-		if (function_exists('mysql_set_charset')) {
-			if (!$charset = mysql_set_charset($data['charset'],$dbh)) {
-				Event::error('Database','Error unable to set MySQL Connection charset to ' . $data['charset'] . ' this may cause issues...');
-			}
-		}
-		else {
-			$sql = "SET NAMES " . mysql_real_escape_string($data['charset']);
-			$charset = mysql_query($sql,$dbh);
-			if (mysql_error($dbh)) { Event::error('Database','Error unable to set MySQL Connection charset to ' . $data['charset'] . ' using SET NAMES, you may have issues'); }
-
-		}
-		if (!$charset) { Event::error('Database','Error unable to set connection charset, function missing or set failed'); }
-
-		$select_db = mysql_select_db($database,$dbh);
-		if (!$select_db) { Event::error('Database','Error unable to select ' . $database . ' error ' . mysql_error()); }
-
+    return $dbh;
+/**
 		if (Config::get('sql_profiling')) {
 			mysql_query('set profiling=1', $dbh);
 			mysql_query('set profiling_history_size=50', $dbh);
 			mysql_query('set query_cache_type=0', $dbh);
 		}
 		return $dbh;
-
+**/
 	} // _connect
+
+  /**
+   * _config_dbh
+   * configure the charset, database and profiling for SQL
+   */
+  private static function _config_dbh($dbh,$database) {
+
+    if (!$dbh) { return false; }
+
+    // Set the charset
+    $charset = self::translate_to_mysqlcharset('UTF-8');
+    $charset = $charset['charset'];
+    if ($dbh->exec('SET NAMES ' . $charset) === false) {
+      Event::error('Database','Unable to set connection charset to ' . $charset);
+    }
+
+    if ($dbh->exec('USE `' . $database . '`') === false) {
+      Event::error('Database','Unable to select database ' . $database . ' ::: ' . print_r($dbh->errorInfo(),1));
+    }
+
+    if (Config::get('sql_profiling')) { 
+      $dbh->exec('SET profiling=1');
+      $dbh->exec('SET profiling_history_size=50');
+      $dbh->exec('SET query_cache_type=0');
+    }
+
+  } // _config_dbh
 
 	/**
 	 * show_profile
@@ -287,9 +336,10 @@ class Dba {
 		// Assign the Handle name that we are going to store
 		$handle = 'dbh_' . $database;
 
-		if (!is_resource(Config::get($handle))) {
-			$dbh = self::_connect($database);
-			Config::set($handle,$dbh,1);
+		if (!is_object(Config::get($handle))) {
+			$dbh = self::_connect();
+			self::_config_dbh($dbh,$database);
+			Config::set($handle,$dbh,true);
 			return $dbh;
 		}
 		else {
@@ -309,11 +359,8 @@ class Dba {
 
 		$handle = 'dbh_' . $database;
 
-		// Try to close it correctly
-		mysql_close(Config::get($handle));
-
 		// Nuke it
-		Config::set($handle,false,1);
+		Config::set($handle,null,true);
 
 		return true;
 
@@ -326,8 +373,8 @@ class Dba {
 	 */
 	public static function insert_id() {
 
-		$id = mysql_insert_id(self::dbh());
-		return $id;
+		$dbh = self::dbh();
+    if ($dbh) { return $dbh->lastInsertId(); }
 
 	} // insert_id
 
@@ -337,7 +384,7 @@ class Dba {
 	 */
 	public static function error() {
 
-		return mysql_error();
+    return self::$_error;
 
 	} // error
 
