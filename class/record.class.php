@@ -85,13 +85,18 @@ class Record extends database_object {
     $materials = array(); 
     $classifications = array(); 
     $users = array(); 
+    $records = array();
 
     while ($row = Dba::Fetch_assoc($db_results)) { 
       parent::add_to_cache('record',$row['uid'],$row);
       $materials[$row['material']] = $row['material']; 
       $classifications[$row['classification']] = $row['classification']; 
       $users[$row['user']] = $row['user']; 
+      $records[] = $row['uid'];
     } 
+
+    // Cache the spatial data
+    SpatialData::build_cache($records,'record');
     
     Material::build_cache($materials); 
     User::build_cache($users); 
