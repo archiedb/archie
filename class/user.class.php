@@ -18,10 +18,11 @@ class User extends database_object {
 		if (!is_numeric($uid)) { return false; } 
 
 		$row = $this->get_info($uid,'users'); 
-
-		foreach ($row as $key=>$value) { 
-			$this->$key = $value; 
-		} 
+    if (is_array($row)) {
+  		foreach ($row as $key=>$value) { 
+  			$this->$key = $value; 
+  		} 
+    } // is array
 		// Don't actually keep this in the object 
 		if (isset($this->password)) { unset($this->password); }
 
@@ -94,6 +95,34 @@ class User extends database_object {
     return $results;
 
   } // get_roles
+
+  /**
+   * add_group
+   * Add this user to the specified access group
+   */
+  public function add_group($groupuid) {
+
+    // Make sure they aren't already in the group
+    $sql = "SELECT * FROM `user_group` WHERE `user`=? AND `group`=? AND `site`=?";
+    $db_results = Dba::read($sql,array($this->uid,$groupuid,\UI\sess::$user->site->uid));
+    if ($row = Dba::fetch_assoc($db_results)) {
+      Error::add('general','User already in group');
+      return false;
+    }
+
+    $group = new Group($groupuid);
+    if (!$group->name) {
+      Error::add('general','Invalid Group specified');
+      return false;
+    }
+
+
+    $sql = "INSERT INTO `user_group` (`user`,`group`,`site`) VALUES (?,?,?)";
+    $db_results = Dba::write($sql,array($this->uid,$groupuid,\UI\sess::$user->site->uid));
+
+    return $db_results;
+
+  } // add_group
 
 	/**
 	 * refresh
@@ -219,9 +248,8 @@ class User extends database_object {
 		$uid = Dba::escape($this->uid); 
 		$name = Dba::escape($input['name']); 
 		$email = Dba::escape($input['email']); 
-    $access = (Access::has('user','admin') === true) ? Dba::escape($input['access']) : Dba::escape($this->access); 
 
-		$sql = "UPDATE `users` SET `access`='$access', `name`='$name', `email`='$email' WHERE `uid`='$uid' LIMIT 1"; 
+		$sql = "UPDATE `users` SET `name`='$name', `email`='$email' WHERE `uid`='$uid' LIMIT 1"; 
 		$db_results = Dba::write($sql); 
 
 		// If this is the current logged in user, refresh them

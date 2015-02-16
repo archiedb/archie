@@ -34,22 +34,6 @@ if (INIT_LOADED != '1') { exit; }
       <span class="help-inline"><?php echo Error::get('password'); ?></span>
     </div>
   </div>
-  <?php if (Access::has('user','admin')) { ?>
-  <div class="control-group<?php Error::display_class('access'); ?>">
-    <label class="control-label" for="inputAccessSelect">Access Level</label>
-    <div class="controls">
-      <select name="access">
-        <?php 
-          foreach (Access::get_levels() as $value=>$name) { 
-            $selected = ''; 
-            if ($user->access == $value) { $selected = ' selected="selected"'; }  
-        ?>
-        <option value="<?php echo $value; ?>"<?php echo $selected; ?>><?php echo $name; ?></option>
-        <?php } ?>
-      </select>
-    </div>
-  </div>
-  <?php } ?>
   <div class="control-group">
     <div class="controls">
       <input type="hidden" name="uid" value="<?php echo scrub_out($user->uid); ?>">

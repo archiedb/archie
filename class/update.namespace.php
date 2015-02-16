@@ -883,7 +883,7 @@ class Database {
     $sql = "CREATE TABLE `role` (" . 
         "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
         "`name` varchar(255) NOT NULL," . 
-        "`desc` varchar(512) NOT NULL," . 
+        "`description` varchar(512) NOT NULL," . 
         "PRIMARY KEY (`uid`)) " .
         "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval : false;
@@ -906,7 +906,7 @@ class Database {
     $sql = "CREATE TABLE `action` (" . 
         "`uid` int(11) NOT NULL AUTO_INCREMENT," . 
         "`name` varchar(255) NOT NULL," . 
-        "`desc` varchar(512) NOT NULL," .
+        "`description` varchar(512) NOT NULL," .
         "PRIMARY KEY (`uid`)) " . 
         "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval : false;

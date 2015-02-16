@@ -72,6 +72,21 @@ switch (\UI\sess::location('action')) {
     $user = new User($uid); 
     require_once \UI\template('/users/view'); 
   break; 
+  case 'permissions':
+    switch (\UI\sess::location('2')) {
+      case 'addgroup':
+        $user = new User($_POST['uid']);
+        $user->add_group($_POST['group']);
+        $user->refresh();
+        require_once \UI\template('/users/permissions/view');
+      break;
+      case 'view':
+      default:
+        $user = new User(\UI\sess::location('3'));
+        require_once \UI\template('/users/permissions/view');
+      break;
+    } // end switch on 2nd options
+  break;
 } // end action switch 
 
 require_once 'template/footer.inc.php'; 

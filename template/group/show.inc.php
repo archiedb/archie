@@ -6,7 +6,7 @@ if (INIT_LOADED != '1') { exit; }
 <h4>User Groups</h4>
 </div>
 <p class="pull-right text-right">
-  <a class="btn btn-success" href="<?php echo Config::get('web_path'); ?>/manage/group/showcreate">Create New Group</a>
+  <a class="btn btn-success" href="<?php echo Config::get('web_path'); ?>/manage/group/new">Create New Group</a>
 </p>
 <table class="table table-bordered table-hover">
 <thead>

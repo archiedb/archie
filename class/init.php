@@ -141,7 +141,12 @@ elseif (!defined('CLI') AND !defined('NO_SESSION')) {
 
 	// Start the session and pull in the user we've got in it
 	vauth::check_session();
-	\UI\sess::set_user(User::get_from_username($_SESSION['sess_data']['username'])); 
+  if (!isset($_SESSION)) {
+    \UI\sess::set_user(User::get_from_username(false));
+  }
+  else {
+  	\UI\sess::set_user(User::get_from_username($_SESSION['sess_data']['username'])); 
+  }
 
 	// If nothing comes back kick-em-out
 	if (!\UI\sess::$user->uid) { vauth::logout(session_id()); exit; }

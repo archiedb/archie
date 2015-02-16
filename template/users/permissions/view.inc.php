@@ -30,7 +30,7 @@ if (INIT_LOADED != '1') { exit; }
   <th><strong>Description</strong></th>
 </tr>
 <?php if (!count($user->roles)) { ?>
-<tr><td colspan="2">No Permissions</td></tr>
+<tr><td colspan="3">No Permissions</td></tr>
 <?php } else { ?>
 <?php foreach ($user->roles as $role=>$access) { ?>
 <tr>
@@ -43,10 +43,10 @@ if (INIT_LOADED != '1') { exit; }
 </table>
 <div class="page-header">
 <p class="pull-right">
-  <a class="btn btn-success">Add Group</a>
+  <a href="#add_group" role="button" data-toggle="modal" class="btn btn-success">Add Group</a>
 </p>
 <h4>
   Assigned Groups 
 </h4>
 </div>
-
+<?php include \UI\template('/users/permissions/modal_add_group'); ?>

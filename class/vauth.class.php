@@ -57,7 +57,7 @@ class vauth {
 	 */
 	public static function open($save_path, $session_name) {
 
-		if (!is_resource(Dba::dbh())) {
+		if (!is_object(Dba::dbh())) {
 			Event::error('SESSION', 'Error: no database connection session failed');
 			return false;
 		}

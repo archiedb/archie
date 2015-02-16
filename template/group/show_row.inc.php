@@ -6,10 +6,10 @@ if (INIT_LOADED != '1') { exit; }
   <td>
     <?php echo scrub_out($group->name); ?>
   </td>
-	<td><?php echo scrub_out($group->desc); ?></td>
+	<td><?php echo scrub_out($group->description); ?></td>
   <td>
 		<div class="btn-group">
-      <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/group/addroles/<?php echo scrub_out($group->uid); ?>">Add Roles</a>
+      <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/group/roles/<?php echo scrub_out($group->uid); ?>">Modify Roles</a>
       <a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
       <ul class="dropdown-menu">
         <li><a href="<?php echo Config::get('web_path'); ?>/manage/group/edit/<?php echo scrub_out($group->uid); ?>">Edit</a></li>

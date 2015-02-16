@@ -1,7 +1,7 @@
 <?php
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 require_once 'class/init.php'; 
-if (\UI\sess::$user->access < 100) { exit; } 
+if (!Access::is_admin()) { exit; } 
 
 require_once 'template/header.inc.php'; 
 require_once 'template/menu.inc.php'; 
@@ -141,6 +141,60 @@ switch (\UI\sess::location('action')) {
       break;
     }
   break; 
+  case 'group':
+    switch (\UI\sess::location('2')) { 
+      case 'roles':
+        $group = new Group(\UI\sess::location('3'));
+        require_once \UI\template('/group/role');
+      break;
+      case 'addrole':
+        $group = new Group($_POST['uid']);
+        if (!$group->add_role($_POST)) {
+          require_once \UI\template('/group/role');
+        }
+        else {
+          header("Location:" . Config::get('web_path') . "/manage/group/roles/" . $group->uid);
+          exit;
+        }
+      break;
+      case 'deleterole':
+        $group = new Group(\UI\sess::location('4'));
+        $group->delete_role(\UI\sess::location('3'));
+        header("Location:" . Config::get('web_path') . "/manage/group/roles/" . $group->uid);
+        exit;
+      case 'new':
+        require_once \UI\template('/group/new'); 
+      break;
+      case 'create':
+        if (!Group::create($_POST)) { 
+          require_once \UI\template('/group/new');
+        }
+        else {
+          header("Location:" . Config::get('web_path') . "/manage/group");
+          exit;
+        }
+      break;
+      case 'edit':
+        $group = new Group(\UI\sess::location('3'));
+        require_once \UI\template('/group/edit');
+      break;
+      case 'update':
+        $group = new Group($_POST['group']);
+        if (!$group->update($_POST)) {
+          require_once \UI\template('/group/edit'); 
+        }
+        else {
+          header("Location:" . Config::get('web_path') . '/manage/group');
+          exit;
+        }
+      break;
+      case 'view':
+      default:
+        $groups = Group::get_all();
+        require_once \UI\template('/group/show');
+      break;
+    }
+  break;
   default: 
   case 'status':
     // Include debug tools 
