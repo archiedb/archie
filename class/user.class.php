@@ -89,7 +89,7 @@ class User extends database_object {
     $results = array();
 
     while ($row = Dba::fetch_assoc($db_results)) { 
-      $results[$row['role']] = $row['action'];
+      $results[$row['role']][$row['action']] = true;
     }
     
     return $results;

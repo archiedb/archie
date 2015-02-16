@@ -54,11 +54,15 @@ if (INIT_LOADED != '1') { exit; }
 <div class="page-header">
   <h4>Hello <?php echo \UI\sess::$user->name; ?>, you are currently working on <?php echo scrub_out(\UI\sess::$user->site->name); ?></h4>
 </div>
+<!-- Records -->
+<?php if (Access::has('record','read')) { ?>
 <div class="row">
   <div>
+  <?php if (Access::has('record','create')) { ?>
     <p class="pull-right">
         <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/records/new">Open New Record</a>
     </p>
+  <?php } ?>
     <strong>Your last five records</strong>
   </div>
 </div>
@@ -101,11 +105,16 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php } ?>
 </div>
+<?php } ?>
+<!-- Levels -->
+<?php if (Access::has('level','read')) { ?>
 <div class="row">
   <div>
+    <?php if (Access::has('level','create')) { ?>
     <p class="pull-right">
         <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/level/new">Open New Level</a>
     </p>
+    <?php } ?>
     <strong>Your Open Levels</strong>
   </div>
 </div>
@@ -141,11 +150,16 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php } ?>
 </div>
+<?php } ?>
+<!-- Krotovina --> 
+<?php if (Access::has('krotovina','read')) { ?>
 <div class="row">
   <div>
+    <?php if (Access::has('krotovina','create')) { ?>
     <p class="pull-right">
        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/krotovina/new">Open New Krotovina</a>
     </p>
+    <?php } ?>
     <strong>Your last three Krotovina</strong>
   </div>
 </div>
@@ -169,11 +183,16 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 <?php } ?>
 </div>
+<?php } ?>
+<!-- Features -->
+<?php if (Access::has('feature','read')) { ?>
 <div class="row">
   <div>
+    <?php if (Access::has('feature','create')) { ?>
     <p class="pull-right">
        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/feature/new">Open New Feature</a>
     </p>
+    <?php } ?>
     <strong>Your last three Features</strong>
   </div>
 </div>
@@ -193,4 +212,4 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 <?php } ?>
 </div>
-
+<?php } ?>
