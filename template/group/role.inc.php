@@ -13,7 +13,7 @@ $group->set_roles();
   Effective Access for <em><?php echo scrub_out($group->name); ?></em> group
 </h4>
 </div>
-<?php Event::display(); ?>
+<?php Event::display('errors'); ?>
 <table class="table table-bordered table-hover">
 <tbody>
 <tr>

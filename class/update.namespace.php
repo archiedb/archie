@@ -893,13 +893,14 @@ class Database {
               'record'=>'Records',
               'feature'=>'Features',
               'krotovina'=>'Krotovina',
+              'media'=>'Media',
               'site'=>'Site',
               'level'=>'Level',
               'report'=>'Reports',
               'admin'=>'Admin Functions');
     // Itterate through and add them in
     foreach ($roles as $name=>$desc) { 
-      $sql = "INSERT INTO `role` (`name`,`desc`) VALUES ('$name','$desc')";
+      $sql = "INSERT INTO `role` (`name`,`description`) VALUES ('$name','$desc')";
       $retval = \Dba::write($sql) ? $retval : false;
     }
 
@@ -922,7 +923,7 @@ class Database {
                 'admin'=>'Admin');
     // Itterate through and add the current ones 
     foreach ($actions as $name=>$desc) {
-      $sql = "INSERT INTO `action` (`name`,`desc`) VALUES ('$name','$desc')";
+      $sql = "INSERT INTO `action` (`name`,`description`) VALUES ('$name','$desc')";
       $retval = \Dba::write($sql) ? $retval : false;
     }
 
@@ -941,6 +942,7 @@ class Database {
         'krotovina'=>'read','krotovina'=>'create','krotovina'=>'edit','krotovina'=>'manage','krotovina'=>'admin',
         'level'=>'read','level'=>'create','level'=>'edit','level'=>'reopen','level'=>'manage','level'=>'admin',
         'report'=>'read','report'=>'create','report'=>'admin',
+        'media'=>'read','media'=>'create','media'=>'delete','media'=>'admin',
         'admin'=>'manage','admin'=>'admin',
         'site'=>'read','site'=>'create','site'=>'edit','site'=>'manage','site'=>'admin');
 
@@ -972,7 +974,7 @@ class Database {
     $retval = \Dba::write($sql) ? $retval : false;
 
     // Create initial administrators group
-    $sql = "INSERT INTO `group` (`name`,`desc`) VALUES ('Full Admin','Application Administrators')";
+    $sql = "INSERT INTO `group` (`name`,`description`) VALUES ('Full Admin','Application Administrators')";
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "CREATE TABLE `group_role` (" . 
@@ -1027,7 +1029,7 @@ class Database {
     $sql = "ALTER TABLE `users` DROP `access`";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    $sql = "CREATE VIEW `user_permission_view` AS SELECT `user_group`.`site` AS `site`,`user_group`.`user` AS `user`,`role`.`name` AS `role`,`action`.`name` AS `action` " .
+    $sql = "CREATE VIEW `user_permission_view` AS SELECT DISTINCT `user_group`.`site` AS `site`,`user_group`.`user` AS `user`,`role`.`name` AS `role`,`action`.`name` AS `action` " .
       "FROM `group`,`role`,`action`,`user_group` JOIN `group_role` ON `user_group`.`group`=`group_role`.`group` " .
       "WHERE `group_role`.`role`=`role`.`uid` AND `group_role`.`action`=`action`.`uid`";
     $retval = \Dba::write($sql) ? $retval : false;

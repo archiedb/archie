@@ -104,9 +104,10 @@ class Stats {
     $row = Dba::fetch_assoc($db_results); 
     
     // Nothing!?!@
-    if (!count($row)) { return false; }
+    if (!count($row)) { return array('count'=>0); }
     $classification = new classification($row['classification']); 
     $row['classification'] = $classification->name ? $classification->name : 'UNDEF'; 
+    $row['count'] = isset($row['count']) ? $row['count'] : '0';
 
     return $row; 
 

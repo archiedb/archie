@@ -198,7 +198,6 @@ class Group extends database_object {
    */
   public function add_role($input) { 
 
-
     // Make sure it doesn't already exist
     $checksql = 'SELECT * FROM `group_role` WHERE `group`=? AND `role`=? AND `action`=?';
     $db_results = Dba::read($checksql,array($input['uid'],$input['role'],$input['action']));
@@ -217,6 +216,14 @@ class Group extends database_object {
     $role = new Role($input['role']);
     if (!$role->name) {
       Error::add('general','Invalid Role specified');
+      return false;
+    }
+
+    // Make sure that this role/action combination is allowed
+    $sql = "SELECT * FROM `role_action` WHERE `role`=? AND `action`=?";
+    $db_results = Dba::read($sql,array($input['role'],$input['action']));
+    if (!$row = Dba::fetch_assoc($db_results)) { 
+      Error::add('general','Invalid Role/Action specified');
       return false;
     }
 

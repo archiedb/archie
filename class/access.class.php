@@ -7,7 +7,7 @@
  */
 class Access { 
 
-  private static $types = array('user','record','admin','reports','level','feature','krotovina','site'); 
+  private static $types = array('user','media','record','admin','reports','level','feature','krotovina','site'); 
   private static $actions = array('create','read','delete','admin','manage','reopen','edit'); 
 
   private function __construct() {}
@@ -27,7 +27,7 @@ class Access {
 
     // If they are a site admin then return true
     if (isset(\UI\sess::$user->roles['admin'])) {
-      if (\UI\sess::$user->roles['admin'] == 'admin') { return true; }
+      if (\UI\sess::$user->roles['admin']['admin'] === true) { return true; }
     }
 
     // If no action specified then any access is sufficient
