@@ -40,13 +40,22 @@ class SpatialData extends database_object {
     // passing array(false causes this
     if ($idlist == '()') { return false; }
 
-    $type = Dba::escape($type);
+    // Build empty array so that we cache negative responses
+    foreach ($objects as $uid) {
+      $results[$uid] = array();
+    }
 
-    $sql = "SELECT * FROM `spatial_data` WHERE `type`='$type' AND `record` IN " . $idlist; 
+    $type = Dba::escape($type);
+    $sql = "SELECT * FROM `spatial_data` WHERE `record_type`='$type' AND `record` IN " . $idlist; 
     $db_results = Dba::read($sql); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
-      parent::add_to_cache('spatial_data',$row['uid'],$row); 
+      $results[$row['record']][] = $row;
+    }
+
+    foreach ($results as $record=>$row) {
+      $cacheid = $type . '_' . $record;
+      parent::add_to_cache('spatial_data',$cacheid,$row); 
     }
 
     return true; 
@@ -58,9 +67,7 @@ class SpatialData extends database_object {
 	 */
 	public function refresh() { 
 
-		// Remove cache
-    parent::remove_from_cache($this->type,$this->record);
-		$this->__construct($this->record,$this->type); 
+    // Doesn't make sense for this type of record
 
 	} // refresh
 
@@ -260,16 +267,23 @@ class SpatialData extends database_object {
     $results = array();
     if (!is_numeric($record) or !in_array($type,SpatialData::$valid_types)) { return array(); }
 
-    $type = Dba::escape($type);
-    $record = Dba::escape($record); 
-    $sql = "SELECT * FROM `spatial_data` WHERE `record_type`='$type' AND `record`='$record' ORDER BY `station_index` DESC";
-    $db_results = Dba::read($sql); 
+    // See if it's cached
+    $cacheid = $type . '_' . $record;
+    if (parent::is_cached('spatial_data',$cacheid)) {
+      $row = parent::get_from_cache('spatial_data',$cacheid);
+      if ($single AND count($row)) { return new SpatialData($row['0']['uid']); }
+      return $row;
+    }
+
+    $sql = "SELECT * FROM `spatial_data` WHERE `record_type`=? AND `record`=? ORDER BY `station_index` DESC";
+    $db_results = Dba::read($sql,array($type,$record)); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
       if ($single) { return new SpatialData($row['uid']); }
-      parent::add_to_cache('spatial_data',$row['uid'],$row);
       $results[] = $row;
     }
+    
+    parent::add_to_cache('spatial_data',$cacheid,$results);
 
     return $results;
 

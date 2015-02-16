@@ -17,6 +17,7 @@ class Material extends database_object {
 
 		$row = $this->get_info($uid); 
 
+    if (!is_array($row)) { return false; }
 		foreach ($row as $key=>$value) { $this->$key = $value; } 
 
 		return true;  

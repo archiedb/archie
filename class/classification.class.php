@@ -13,15 +13,14 @@ class Classification extends database_object {
 	 */
 	public function __construct($uid='') { 
 
-                if (!is_numeric($uid)) { return false; }
+    if (!is_numeric($uid)) { return false; }
 
 		$row = $this->get_info($uid); 
 		
-		if (!count($row)) { return false; }
+		if (!is_array($row)) { return false; }
+    foreach ($row as $key=>$value) { $this->$key = $value; }
 
-                foreach ($row as $key=>$value) { $this->$key = $value; }
-
-                return true;
+    return true;
 
 	} // constructor
 
