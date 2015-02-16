@@ -52,6 +52,23 @@ function return_url($input) {
 } // return url
 
 /**
+ * access_denied
+ * Throw up "DO NOT PASS GO" and exit
+ */
+function access_denied() {
+
+  require_once template('/menu');
+  $header = '<h4>Error: Insufficient Access</h4>';
+  $size = ' alert-block';
+  $css_class = ' alert-error';
+  $message = 'Unable to continue you do not have sufficient access to perform this action';
+  require template('/event');
+  require_once template('/footer');
+  exit;
+
+} // access_denied
+
+/**
  * build a view link based on the uid and type
  * if there's no uid passed (0/null) then return
  * just ''
