@@ -48,7 +48,7 @@ class Access {
   public static function is_admin() { 
 
     if (isset(\UI\sess::$user->roles['admin'])) {
-      if (\UI\sess::$user->roles['admin'] == 'admin') { return true; }
+      if (\UI\sess::$user->roles['admin']['admin'] === true) { return true; }
     }
 
     return false; 

@@ -170,6 +170,8 @@ class Database {
     $sql = 'SHOW TABLES';
     $db_results = \Dba::read($sql); 
 
+    $tables = null;
+
     while ($table = \Dba::fetch_row($db_results)) {
       $tables .= "`" . $table['0']. "`,";
     }
@@ -177,7 +179,7 @@ class Database {
     $tables = rtrim($tables,","); 
 
     $sql = "OPTIMIZE TABLE $tables";
-    $db_results = \Dba::write(); 
+    $db_results = \Dba::write($sql); 
 
     return true; 
 
@@ -936,15 +938,15 @@ class Database {
     $retval = \Dba::write($sql) ? $retval : false;
 
     // Now for the mappings Role -> Action
-    $role_action = array('user'=>'read','user'=>'create','user'=>'edit','user'=>'manage','user'=>'admin',
-        'record'=>'read','record'=>'create','record'=>'edit','record'=>'manage','record'=>'admin',
-        'feature'=>'read','feature'=>'create','feature'=>'edit','feature'=>'manage','feature'=>'admin',
-        'krotovina'=>'read','krotovina'=>'create','krotovina'=>'edit','krotovina'=>'manage','krotovina'=>'admin',
-        'level'=>'read','level'=>'create','level'=>'edit','level'=>'reopen','level'=>'manage','level'=>'admin',
-        'report'=>'read','report'=>'create','report'=>'admin',
-        'media'=>'read','media'=>'create','media'=>'delete','media'=>'admin',
-        'admin'=>'manage','admin'=>'admin',
-        'site'=>'read','site'=>'create','site'=>'edit','site'=>'manage','site'=>'admin');
+    $role_action = array('user'=>array('read','create','edit','manage','admin'),
+        'record'=>array('read','create','edit','manage','admin'),
+        'feature'=>array('read','create','edit','manage','admin'),
+        'krotovina'=>array('read','create','edit','manage','admin'),
+        'level'=>array('read','create','edit','reopen','manage','admin'),
+        'report'=>array('read','create','admin'),
+        'media'=>array('read','create','delete','admin'),
+        'admin'=>array('manage','admin'),
+        'site'=>array('read','create','edit','manage','admin'));
 
     // need to look up some UIDs for this shit
     $sql = "SELECT `uid`,`name` FROM `role`";
@@ -958,11 +960,11 @@ class Database {
       $actions[$results['name']] = $results['uid'];
     }
 
-    foreach ($role_action as $role=>$action) { 
-
-     $sql = "INSERT INTO `role_action` (`role`,`action`) VALUES ('" . $roles[$role] . "','" . $actions[$action] . "')";
-     $retval = \Dba::write($sql) ? $retval : false;
-
+    foreach ($role_action as $role=>$actionlist) { 
+      foreach ($actionlist as $action) {
+       $sql = "INSERT INTO `role_action` (`role`,`action`) VALUES (?,?)";
+       $retval = \Dba::write($sql,array($roles[$role],$actions[$action])) ? $retval : false;
+      } 
     } 
 
     $sql = "CREATE TABLE `group` (" .

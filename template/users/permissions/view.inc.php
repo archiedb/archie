@@ -35,7 +35,15 @@ if (INIT_LOADED != '1') { exit; }
 <?php foreach ($user->roles as $role=>$access) { ?>
 <tr>
   <td><?php echo $role; ?></td>
-  <td><?php echo $access; ?></td>
+  <td>
+    <?php 
+    $output = null;
+    foreach ($access as $action=>$true) { 
+      $output .= $action . ',';
+    }
+    echo rtrim($output,',');
+    ?>
+  </td>
   <td>Description of what this really means here</td>
 </tr>
 <?php } } ?>

@@ -77,8 +77,8 @@ switch (\UI\sess::location('action')) {
       case 'addgroup':
         $user = new User($_POST['uid']);
         $user->add_group($_POST['group']);
-        $user->refresh();
-        require_once \UI\template('/users/permissions/view');
+        header("Location:" . Config::get('web_path') . "/users/permissions/view/" . $user->uid);
+        exit;
       break;
       case 'view':
       default:
