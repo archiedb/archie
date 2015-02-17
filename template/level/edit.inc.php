@@ -142,7 +142,7 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php 
   // Current valid users
-  if (Access::has('admin')) { 
+  if (Access::has('user','manage')) { 
     $excavators = User::get('all');
   } else {
     $excavators = User::get('enabled'); 

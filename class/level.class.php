@@ -304,7 +304,7 @@ class Level extends database_object {
    */
   public static function validate($input) { 
 
-    if ($input['closed'] == 1 AND !Access::has('admin','admin',$input['uid'])) {
+    if ($input['closed'] == 1 AND !Access::is_admin()) {
       Error::add('closed','Level is closed, unable to updated'); 
     }
 
@@ -328,11 +328,6 @@ class Level extends database_object {
 
     if (!is_numeric($input['catalog_id'])) { 
       Error::add('level','Level must be numeric');
-    }
-
-    // User must have access to this site
-    if (!Access::has('site','write',$input['site'])) {
-      Error::add('site','Insufficient access to this site');
     }
 
 		// Unit A-Z
@@ -412,7 +407,7 @@ class Level extends database_object {
         $user = new User($input[$excavator_id]); 
 
         // Allow administrative users to select disabled/messed up excavators
-        if ((!$user->username OR $user->disabled) AND !Access::has('admin')) { 
+        if ((!$user->username OR $user->disabled) AND !Access::is_admin()) { 
           Error::add($excavator_id,'Excavator unknown or disabled'); 
         }
         else {

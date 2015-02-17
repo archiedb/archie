@@ -28,20 +28,12 @@ function return_url($input) {
                     '/level/view/',
                     '/krotovina/edit/',
                     '/krotovina/view/',
-                    '/feature/edit/',
-                    '/feature/view/'); 
-
-  if (in_array($check,$allowed_urls)) { 
-    return $input;
-  }
-
-  if (!\Access::has('admin','admin')) { return '/'; }
-
-  // If they are an administrator there are a few more urls they can redirect to
-  $allowed_urls = array('/users/manage',
-                  '/users/manage/disabled',
+                   '/users/manage/disabled',
                   '/users/manage/online',
-                  '/users/manage/all'); 
+                  '/users/manage',
+                  '/users/manage/all',
+                   '/feature/edit/',
+                    '/feature/view/'); 
 
   if (in_array($check,$allowed_urls)) { 
     return $input;

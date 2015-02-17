@@ -5,10 +5,10 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="pull-right">
   <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/record/search/level/<?php echo scrub_out($level->uid); ?>">View Records</a>
-  <?php if (Access::is_admin() AND $level->closed) { ?>
+  <?php if (Access::has('level','reopen') AND $level->closed) { ?>
   <a href="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" role="button" data-toggle="modal">Re-Open Level</a>
   <?php } ?>
-  <?php if (Access::has('level','write',$level->uid)) { ?>
+  <?php if (Access::has('level','edit')) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn">Edit Level</a>
   <?php } ?>
   <?php if (!$level->closed) { ?>
@@ -17,7 +17,7 @@ if (INIT_LOADED != '1') { exit; }
   <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
   <?php } ?>
 </p>
-<?php if (Access::is_admin() AND $level->closed) { ?>
+<?php if (Access::has('level','reopen') AND $level->closed) { ?>
   <?php include \UI\template('/level/modal_open_confirm'); ?>
 <?php } ?>
 <h3>Level: <?php echo scrub_out($level->site->name); ?><?php echo scrub_out($level->record); ?>

@@ -336,11 +336,6 @@ class Record extends database_object {
     // If we were given the record for which these values are assoicated
     if ($record_id) { $record = new Record($record_id); }
 		
-    // Make sure this user is allowed to create records in this site (write)
-    if (!Access::has('site','write',$input['site'])) { 
-      Error::add('site','Insufficient site permission, unable to create record');
-    }
-
 		// lsg_unit, numeric less then 50
 		if ((!in_array($input['lsg_unit'],array_keys(lsgunit::$values)) OR $input['lsg_unit'] > 50) AND strlen($input['lsg_unit'])) { 
 			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 

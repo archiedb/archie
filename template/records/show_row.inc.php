@@ -22,13 +22,13 @@ if (INIT_LOADED != '1') { exit; }
     <ul class="dropdown-menu">
       <li><a target="_blank" href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket">Print Ticket</a></li>
       <li><a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>">Edit</a></li>
-      <?php if (Access::has('record','delete',$record->uid)) { ?>
+      <?php if (Access::has('record','delete')) { ?>
       <li><a href="#confirmdel_<?php echo scrub_out($record->uid); ?>" role="button" data-toggle="modal">Delete</a></li>
       <?php } ?>
     </ul>
     </div>
     <?php 
-      if (Access::has('record','delete',$record->uid)) { 
+      if (Access::has('record','delete')) { 
         include \UI\template('/records/modal_delete_record'); 
       }
     ?>

@@ -22,17 +22,17 @@ foreach ($images as $uid) {
       <hr />
       <p class="text-center">
       <?php if (\UI\sess::location('action') != 'view') { ?>
-      <?php if (Access::has('media','write',$image->uid)) { ?>
+      <?php if (Access::has('media','edit')) { ?>
         <a class="btn btn-small" href="#confirm_edit_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Edit</a>
       <?php } ?>
-      <?php if (Access::has('media','delete',$image->uid)) { ?>
+      <?php if (Access::has('media','delete')) { ?>
         <a class="btn btn-danger btn-small" href="#confirm_delete_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Delete</a>
       <?php } ?>
       <?php 
-      if (Access::has('media','delete',$image->uid)) { 
+      if (Access::has('media','delete')) { 
         require \UI\template('/records/modal_delete_image'); 
       } 
-      if (Access::has('media','write',$image->uid)) { 
+      if (Access::has('media','edit')) { 
         require \UI\template('/records/modal_edit_image'); 
       } 
       ?>

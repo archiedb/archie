@@ -32,8 +32,10 @@ if (INIT_LOADED != '1') { exit; }
               <li><a href="<?php echo Config::get('web_path'); ?>/level">Level</a></li>
             </ul>
           <li class="divider-vertical"></li>
-<?php if (Access::has('admin','read')) { ?>
+<?php if (Access::has('report')) { ?>
           <li><a href="<?php echo Config::get('web_path'); ?>/reports">Report</a></li>
+<?php } ?>
+<?php if (Access::has('manage') OR Access::has('user')) { ?>
           <li class="divider-vertical"></li>
           <li class="dropdown">
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
