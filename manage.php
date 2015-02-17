@@ -1,12 +1,12 @@
 <?php
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 require_once 'class/init.php'; 
-if (!Access::is_admin()) { exit; } 
 
 require_once 'template/header.inc.php'; 
 require_once 'template/menu.inc.php'; 
 switch (\UI\sess::location('action')) {
   case 'regenerate':
+  if (!Access::is_admin()) { \UI\access_denied(); } 
     // Regenerate what!?
     switch (\UI\sess::location('2')) {
       case 'qrcode':
@@ -28,9 +28,11 @@ switch (\UI\sess::location('action')) {
   case 'site':
     switch (\UI\sess::location('2')) {
       case 'add':
+        if (!Access::has('site','create')) { \UI\access_denied(); }
         require_once \UI\template('/site/new');
       break;
       case 'create':
+        if (!Access::has('site','create')) { \UI\access_denied(); }
         if (!Site::create($_POST)) {
           require_once \UI\template('/site/new');
         }
@@ -39,10 +41,12 @@ switch (\UI\sess::location('action')) {
         }
       break;
       case 'edit':
+        if (!Access::has('site','edit')) { \UI\access_denied(); }
         $site = new Site(\UI\sess::location('3'));
         require_once \UI\template('/site/edit');
       break;
       case 'update':
+        if (!Access::has('site','edit')) { \UI\access_denied(); }
         $site = new Site($_POST['site_uid']);
         if (!$site->update($_POST)) {
           require_once \UI\template('/site/edit');
@@ -53,20 +57,24 @@ switch (\UI\sess::location('action')) {
       break;
       case 'view':
       default:
+        if (!Access::has('site','read')) { \UI\access_denied(); }
         $sites = Site::get_all();
         require_once \UI\template('/site/view');
       break;
     }
   break;
   case 'import': 
+    if (!Access::is_admin()) { \UI\access_denied(); }
     $import = new Import($_POST['type']);   
     $import->run($_FILES['import']['tmp_name']);
     header("Location:" . Config::get('web_path') . '/manage/tools'); 
   break;
   case 'tools':
+    if (!Access::is_admin()) { \UI\access_denied(); }
     require_once \UI\template('/manage/tools'); 
   break; 
   case 'material':
+    if (!Access::is_admin()) { \UI\access_denied(); }
     // Do what with material?
     switch (\UI\sess::location('2')) {
       case 'edit':
@@ -111,6 +119,7 @@ switch (\UI\sess::location('action')) {
     }
   break;
   case 'classification':
+    if (!Access::is_admin()) { \UI\access_denied(); }
     // Do what?
     switch (\UI\sess::location('2')) { 
       case 'add':
@@ -142,6 +151,7 @@ switch (\UI\sess::location('action')) {
     }
   break; 
   case 'group':
+    if (!Access::is_admin()) { \UI\access_denied(); }
     switch (\UI\sess::location('2')) { 
       case 'roles':
         $group = new Group(\UI\sess::location('3'));
@@ -197,6 +207,7 @@ switch (\UI\sess::location('action')) {
   break;
   default: 
   case 'status':
+    if (!Access::is_admin()) { \UI\access_denied(); }
     // Include debug tools 
     require_once 'class/debug.namespace.php';
     require_once \UI\template('/manage/status'); 
