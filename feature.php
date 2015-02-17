@@ -6,9 +6,11 @@ require_once 'template/header.inc.php';
 require_once 'template/menu.inc.php'; 
 switch (\UI\sess::location('action')) {
   case 'new':
+    if (!Access::has('feature','create')) { \UI\access_denied(); }
     require_once \UI\template('/feature/new'); 
   break;
   case 'create':
+    if (!Access::has('feature','create')) { \UI\access_denied(); }
     $feature_id = Feature::create($_POST);
     if ($feature_id) {
       $feature = new Feature($feature_id);
@@ -19,32 +21,40 @@ switch (\UI\sess::location('action')) {
     }
   break;
   case 'delete':
+    if (!Access::has('feature','delete')) { \UI\access_denied(); }
     $feature = new Feature($_POST['feature_id']);
-    if (!$feature->uid OR $feature->has_records() OR !Access::has('feature','delete',\UI\sess::$user->uid)) {
+    if (!$feature->uid OR $feature->has_records()) {
+      Event::error('Feature still has records');
+      require_once \UI\template('/feature/view');
       break;
     }
     $feature->delete();
     header('Location:' . Config::get('web_path') . '/feature');
   break;
   case 'delpoint':
+    if (!Access::has('feature','edit')) { \UI\access_denied(); }
     $feature = new Feature($_POST['feature_id']);
     $feature->del_point($_POST['uid']);
     require_once \UI\template('/feature/view');
   break;
   case 'addpoint':
+    if (!Access::has('feature','edit')) { \UI\access_denied(); }
     $feature = new Feature($_POST['feature_id']);
     $feature->add_point($_POST);
     require_once \UI\template('/feature/view');
   break;
   case 'view':
+    if (!Access::has('feature','read')) { \UI\access_denied(); }
     $feature = new Feature(\UI\sess::location('2'));
     require_once \UI\template('/feature/view');
   break;
   case 'edit':
+    if (!Access::has('feature','edit')) { \UI\access_denied(); }
     $feature = new Feature(\UI\sess::location('2'));
     require_once \UI\template('/feature/edit');
   break;
   case 'update':
+    if (!Access::has('feature','edit')) { \UI\access_denied(); }
     $feature = new Feature($_POST['feature_id']);
     if ($feature->update($_POST)) {
       Event::add('success','Feature has been updated','small');
@@ -55,6 +65,7 @@ switch (\UI\sess::location('action')) {
     }
   break;
   case 'offset':
+    if (!Access::has('feature','read')) { \UI\access_denied(); }
     $view = new View();
     $view->set_type('feature');
     $view->set_start(\UI\sess::location('objectid'));
@@ -62,6 +73,7 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/feature/show');
   break;
   case 'sort':
+    if (!Access::has('feature','read')) { \UI\access_denied(); }
     $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'created';
     $order = \UI\sess::location('3') ? strtoupper(\UI\sess::location('3')) : '';
     $view = new View();
@@ -72,6 +84,7 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/feature/show');
   break;
   default: 
+    if (!Access::has('feature','read')) { \UI\access_denied(); }
     $view = new View();
     $view->reset();
     $view->set_type('feature');

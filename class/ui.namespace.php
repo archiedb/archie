@@ -57,13 +57,14 @@ function return_url($input) {
  */
 function access_denied() {
 
-  require_once template('/menu');
+  include_once template('/header');
+  include_once template('/menu');
   $header = '<h4>Error: Insufficient Access</h4>';
   $size = ' alert-block';
   $css_class = ' alert-error';
   $message = 'Unable to continue you do not have sufficient access to perform this action';
   require template('/event');
-  require_once template('/footer');
+  include_once template('/footer');
   exit;
 
 } // access_denied

@@ -6,9 +6,8 @@ require_once 'class/init.php';
 switch (\UI\sess::location('page')) { 
   case 'record':
   case 'records':
-    if (Access::has('record')) {
-      require_once 'records.php';
-    }
+    if (!Access::has('record')) { \UI\access_denied(); }
+    require_once 'records.php';
   break;
   case 'media':
     require_once 'image.php';
@@ -20,33 +19,29 @@ switch (\UI\sess::location('page')) {
     require_once 'manage.php';
   break; 
   case 'level':
-    if (Access::has('level')) { 
-      require_once 'level.php';
-    }
+    if (!Access::has('level')) { \UI\access_denied(); }
+    require_once 'level.php';
   break;
   case 'feature':
-    if (Access::has('feature')) {
-      require_once 'feature.php';
-    }
+    if (!Access::has('feature')) { \UI\access_denied(); }
+    require_once 'feature.php';
+
   break;
   case 'krotovina':
-    if (Access::has('krotovina')) {
-      require_once 'krotovina.php';
-    }
+    if (!Access::has('krotovina')) { \UI\access_denied(); }
+    require_once 'krotovina.php';
   break;
   default:
     require_once \UI\template('/header'); 
     require_once \UI\template('/index');
   break; 
   case 'reports':
-    if (Access::has('reports')) {
-      require_once 'reports.php';
-    }
+    if (!Access::has('reports')) { \UI\access_denied(); }
+    require_once 'reports.php';
   break; 
   case 'users':
-    if (Access::has('user')) {
-      require_once 'users.php';
-    }
+    if (!Access::has('user')) { \UI\access_denied(); }
+    require_once 'users.php';
   break;
   case 'logout':
     vauth::logout(); 
