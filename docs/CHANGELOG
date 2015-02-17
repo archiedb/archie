@@ -1,3 +1,56 @@
+ UPDATE - Role/Action support
+ UPDATE - Access checkes to use new role/actions
+ ADD - Access denied function
+ FIX - caching of spatial data and user roles where user is not pre-cached
+ FIX - permissions db update and display of multiple actions per role
+ ADD - Media role type, and correct is_admin check
+ FIX Permission checks to account for new role/action structure
+ ADD management of users and groups and their permissions
+ ADD - last_login and notes to users table
+ ADD - Re-implement dba class using PHP::PDO, still works for all legacy calls
+ ADD - caching of spatialdata
+ CHANGE - spatialdata::cache to be type/recorduid
+ CHANGE - group.desc to group.description
+ FIX - user role cached detection
+ ADD - new db update (prelim)
+ UPDATE - spatialdata class to handle record spatial data
+ UPDATE - Account for user roles, and cache them properly
+ FIX - php warning
+ UPDATE - to taken into account spatial data move
+ ADD templates for User->Group permissions and additional links that relate
+ FIX - php warnings
+ FIX - php warnings
+ REMOVE - Reference to old code
+ ADD validate-records.php.inc which is looking for consistancy issues in the records, for now just does levels
+ FIX Attempting to reset a password on an invalid/system user
+ ADD Command line password reset utility
+ FIX - Level::validate() prevented disabled users even to admins
+ CHANGE - Admins now see all excavators on level edit
+ Update documentation about what the scripts in the bin dir do
+ FIX legend
+ CHANGE - colors not 50% alpha'd but solid
+ UPDATE - archie_legend image, and move it to thebottom of page 2 on reports
+ FIX 3d plots to use different shapes
+ ADD type based markers for 2d plots, 3d plot still single marker
+ ADD intitial work on the different type of markers for scatter plots
+ CHANGE font size of scatter plot title
+ FIX page numbers on plot page were wrong size
+ ADD legend for reports
+ CHANGE - Adjust the color -> classification mappings
+ ADD title to the scatterplot report page
+ CHANGE - Adjust the size and placement of labels on scatterplots, adjust their placement on the reports as well
+ CHANGE - Switch to circles, and make them alpha 0.5
+ FIX lack of color in 3d scatterplots
+ ADD - colors to the scatter plots based on classification
+ FIX - page numbering, and detect missing files from scatter plots and display error instead
+ FIX - path, set it to default for now since we don't read the settings.php
+ UPDATE - add imagemagick to prereq list for build-scatter-plots
+ FIX - Tell matplotlib to not use X
+ UPDATE build-scatter-plots, remove useless code and use level-UID-TYPE.png for name ADD resize function by Wed Edling http://joedesigns.com to UI namespace ADD Scatterplots and test-resized images for report generation
+ Add 3d plot and correct several bugs
+ UPDATE - Make limits ints and correct title
+ * Add query of levels * Comment out plot creation for now
+ ADD - build-scatter-plots script for making scatter plots of artifcats in levels
  CHANGE - Always rebuild ticket on record update, time drift issues could cause updates that don't update the ticket based solely on filemtime()
  ADD - Northing/Easting to level report
  FIX - ticket lack of quad on new records FIX - top being cut off on level reports
