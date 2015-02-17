@@ -23,5 +23,5 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/reports/view'); 
   break;
 }
-\UI\template('/footer');
+require_once \UI\template('/footer');
 ?>

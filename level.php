@@ -6,9 +6,11 @@ require_once 'template/header.inc.php';
 require_once 'template/menu.inc.php'; 
 switch (\UI\sess::location('action')) {
   case 'new':
+    if (!Access::has('level','create')) { \UI\access_denied(); }
     require_once \UI\template('/level/new'); 
   break;
   case 'create':
+    if (!Access::has('level','create')) { \UI\access_denied(); }
     // Attempt to create it
     $level_id = Level::create($_POST);
     if ($level_id) {
@@ -20,27 +22,26 @@ switch (\UI\sess::location('action')) {
     }
   break;
   case 'delete':
+    if (!Access::has('level','delete')) { \UI\access_denied(); }
     $level = new Level($_POST['level_id']);
-    if (!$level->uid OR !Access::has('level','delete',\UI\sess::$user->uid) OR $level->has_records()) {
+    if (!$level->uid OR $level->has_records()) {
       break;
     }
     $level->delete();
     header('Location:' . Config::get('web_path') . '/level');
   break;
   case 'view':
+    if (!Access::has('level','read')) { \UI\access_denied(); }
     $level = new Level(\UI\sess::location('objectid'));
     require_once \UI\template('/level/view'); 
   break;
   case 'edit':
+    if (!Access::has('level','edit')) { \UI\access_denied(); }
     $level = new Level(\UI\sess::location('objectid'));
-    if (!Access::has('level','write',$level->uid)) {
-      require_once \UI\template('/level/view');
-    }
-    else {
-      require_once \UI\template('/level/edit');
-    }
+    require_once \UI\template('/level/edit');
   break;
   case 'update':
+    if (!Access::has('level','edit')) { \UI\access_denied(); }
     $level = new Level($_POST['uid']);
     $_POST['user'] = \UI\sess::$user->uid;
     if (!$level->update($_POST)) { 
@@ -53,15 +54,14 @@ switch (\UI\sess::location('action')) {
     }
   break;
   case 'report':
+    if (!Access::has('level','read')) { \UI\access_denied(); }
     $level = new Level(\UI\sess::location('objectid'));
     $report = new Content(\UI\sess::location('objectid'),'level'); 
     Content::write(\UI\sess::location('objectid'),'level','','','','level'); 
   break;
   case 'image_primary':
+    if (!Access::has('level','edit')) { \UI\access_denied(); }
     $level = new Level($_POST['uid']); 
-    if (!Access::has('level','write',$level->uid)) { 
-      require_once \UI\template('/level/view'); 
-    }
     if ($level->set_primary_image($_POST['image'])) { 
       Event::add('success','Level Image Selected','small'); 
     }
@@ -71,12 +71,12 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/level/edit'); 
   break;
   case 'image_edit': 
-    if (!Access::has('media','write',$_POST['uid'])) { break; }
+    if (!Access::has('media','edit')) { \UI\access_denied(); }
     Content::update('image',$_POST['uid'],$_POST); 
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break;
   case 'image_delete':
-    if (!Access::has('media','delete',$_POST['uid'])) {  break; }
+    if (!Access::has('media','delete')) { \UI\access_denied(); }
     $image = new Content($_POST['uid'],'image'); 
     if (!$image->delete()) { 
       Error::add('delete','Unable to perform image deletion request, please contact administrator'); 
@@ -88,14 +88,17 @@ switch (\UI\sess::location('action')) {
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break;
   case 'upload':
+    if (!Access::has('media','create')) { \UI\access_denied(); }
     Content::upload($_POST['uid'],$_POST,$_FILES,'level'); 
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
   break;
   case 'checkclose':
+    if (!Access::has('level','edit')) { \UI\access_denied(); }
     $level = new Level(\UI\sess::location('objectid'));
     require_once \UI\template('/level/close');
   break;
   case 'close':
+    if (!Access::has('level','edit')) { \UI\access_denied(); }
     $level = new Level($_POST['uid']); 
     if ($level->close($_POST)) { 
       Event::add('success','Level Closed'); 
@@ -107,12 +110,13 @@ switch (\UI\sess::location('action')) {
     }
   break;
   case 'reopen_level':
-    if (!Access::is_admin()) { break; }
+    if (!Access::has('level','reopen')) { \UI\access_denied(); }
     $level = new Level($_POST['uid']);
     $level->open();
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
   break;
   case 'offset':
+    if (!Access::has('level','read')) { \UI\access_denied(); }
     $view = new View();
     $view->set_type('level');
     $view->set_start(\UI\sess::location('objectid'));
@@ -120,6 +124,7 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/level/show');
   break;
   case 'sort':
+    if (!Access::has('level','read')) { \UI\access_denied(); }
     $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'record';
     $order = \UI\sess::location('3') ? strtoupper(\UI\sess::location('3')) : '';
     $view = new View(); 
@@ -130,6 +135,7 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/level/show'); 
   break;
   default: 
+    if (!Access::has('level','read')) { \UI\access_denied(); }
     $view = new View(); 
     $view->reset(); 
     $view->set_type('level'); 
@@ -139,6 +145,6 @@ switch (\UI\sess::location('action')) {
   break; 
 } // end action switch 
 
-require_once 'template/footer.inc.php'; 
+require_once \UI\template('/footer');
 
 ?>
