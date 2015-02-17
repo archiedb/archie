@@ -36,7 +36,7 @@ switch (\UI\sess::location('page')) {
     require_once \UI\template('/index');
   break; 
   case 'reports':
-    if (!Access::has('reports')) { \UI\access_denied(); }
+    if (!Access::has('report')) { \UI\access_denied(); }
     require_once 'reports.php';
   break; 
   case 'users':

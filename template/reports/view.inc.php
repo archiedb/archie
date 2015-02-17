@@ -58,6 +58,8 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+<!--
 <fieldset>
 <legend>Graphs</legend>
 </fieldset>
+-->
