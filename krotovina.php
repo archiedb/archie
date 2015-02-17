@@ -6,9 +6,11 @@ require_once 'template/header.inc.php';
 require_once 'template/menu.inc.php'; 
 switch (\UI\sess::location('action')) {
   case 'new':
+    if (!Access::has('krotovina','create')) { \UI\access_denied(); } 
     require_once \UI\template('/krotovina/new'); 
   break;
   case 'create':
+    if (!Access::has('krotovina','create')) { \UI\access_denied(); } 
     $krotovina_id = Krotovina::create($_POST);
     if ($krotovina_id) {
       header('Location:' . Config::get('web_path') . '/krotovina/view/' . scrub_out($krotovina_id));
@@ -19,6 +21,7 @@ switch (\UI\sess::location('action')) {
     }
   break;
   case 'delete':
+    if (!Access::has('krotovina','delete')) { \UI\access_denied(); }
     $krotovina = new Krotovina($_POST['krotovina_id']);
     if (!$krotovina->uid OR $krotovina->has_records() OR !Access::has('krotovina','delete',\UI\sess::$user->uid)) {
       break;
@@ -27,24 +30,29 @@ switch (\UI\sess::location('action')) {
     header('Location:' . Config::get('web_path') . '/krotovina');
   break;
   case 'delpoint':
+    if (!Access::has('krotovina','edit')) { \UI\access_denied(); }
     $krotovina = new Krotovina($_POST['krotovina_id']);
     $krotovina->del_point($_POST['uid']);
     require_once \UI\template('/krotovina/view');
   break;
   case 'addpoint':
+    if (!Access::has('krotovina','edit')) { \UI\access_denied(); }
     $krotovina = new Krotovina($_POST['krotovina_id']);
     $krotovina->add_point($_POST);
     require_once \UI\template('/krotovina/view');
   break;
   case 'view':
+    if (!Access::has('krotovina','read')) { \UI\access_denied(); }
     $krotovina = new Krotovina(\UI\sess::location('2'));
     require_once \UI\template('/krotovina/view');
   break;
   case 'edit':
+    if (!Access::has('krotovina','edit')) { \UI\access_denied(); }
     $krotovina = new Krotovina(\UI\sess::location('2'));
     require_once \UI\template('/krotovina/edit');
   break;
   case 'update':
+    if (!Access::has('krotovina','edit')) { \UI\access_denied(); }
     $krotovina = new Krotovina($_POST['krotovina_id']);
     if ($krotovina->update($_POST)) {
       Event::add('success','Krotovina has been updated','small');
@@ -56,6 +64,7 @@ switch (\UI\sess::location('action')) {
     }
   break;
   case 'offset':
+    if (!Access::has('krotovina','read')) { \UI\access_denied(); }
     $view = new View();
     $view->set_type('krotovina');
     $view->set_start(\UI\sess::location('objectid'));
@@ -63,6 +72,7 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/krotovina/show');
   break;
   case 'sort':
+    if (!Access::has('krotovina','read')) { \UI\access_denied(); }
     $field = \UI\sess::location('objectid') ? \UI\sess::location('objectid') : 'created';
     $order = \UI\sess::location('3') ? strtoupper(\UI\sess::location('3')) : '';
     $view = new View();
@@ -72,8 +82,8 @@ switch (\UI\sess::location('action')) {
     $krotovinas = $view->run();
     require_once \UI\template('/krotovina/show');
   break;
-
   default: 
+    if (!Access::has('krotovina','read')) { \UI\access_denied(); }
     $view = new View();
     $view->reset();
     $view->set_type('krotovina');
