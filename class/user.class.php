@@ -124,6 +124,36 @@ class User extends database_object {
 
   } // add_group
 
+  /**
+   * delete_group
+   */
+  public function delete_group($group) { 
+
+    $sql = "DELETE FROM `user_group` WHERE `user`=? AND `group`=? AND `site`=?";
+    $db_results = Dba::write($sql,array($this->uid,$group,\UI\sess::$user->site->uid));
+
+    return $db_results;
+    
+  } // delete_group
+
+  /**
+   * get_groups
+   * Returns all groups this user is in
+   */
+  public function get_groups() { 
+
+    $sql = "SELECT `group` FROM `user_group` WHERE `user`=? AND `site`=?";
+    $db_results = Dba::read($sql,array($this->uid,\UI\sess::$user->site->uid));
+
+    $results = array();
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = new Group($row['group']);
+    }
+
+    return $results; 
+  } // get_groups
+
 	/**
 	 * refresh
 	 */

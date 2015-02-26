@@ -44,7 +44,7 @@ if (INIT_LOADED != '1') { exit; }
     echo rtrim($output,',');
     ?>
   </td>
-  <td>Description of what this really means here</td>
+  <td>&nbsp;</td>
 </tr>
 <?php } } ?>
 </tbody>
@@ -56,5 +56,26 @@ if (INIT_LOADED != '1') { exit; }
 <h4>
   Assigned Groups 
 </h4>
+<table class="table table-bordered table-hover">
+<tbody>
+<tr>
+  <th><strong>Name</strong></th>
+  <th><strong>Description</strong></th>
+  <th><strong>&nbsp;</strong></th>
+</tr>
+<?php
+  $groups = $user->get_groups();
+  foreach ($groups as $group) { 
+?>
+<tr>
+  <td><?php echo scrub_out($group->name); ?></td>
+  <td><?php echo scrub_out($group->description); ?></td>
+  <td><a href="#del_group<?php echo scrub_out($group->uid); ?>" role="button" data-toggle="modal" class="btn btn-danger">Remove</a>
+  <?php include \UI\template('/users/permissions/modal_del_group'); ?>
+  </td>
+</tr>
+<?php } ?>
+</tbody>
+</table>
 </div>
 <?php include \UI\template('/users/permissions/modal_add_group'); ?>

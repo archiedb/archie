@@ -141,6 +141,25 @@ function field_name($field) {
 } // field_name
 
 /**
+ * array_to_csv
+ * Convert an array of arrays of values to a CSV in string format
+ * Uses memory so this could be expensive
+ */
+function array_to_csv($input) {
+
+    $tempfh = fopen('php://memory','w');
+    foreach ($input as $line) {
+      fputcsv($tempfs,$line,',');
+    }
+
+    fseek($tempfh,0);
+
+
+
+
+} // array_to_csv
+
+/**
  * boolean_word
  * Take a T/F value and return a pretty response
  */

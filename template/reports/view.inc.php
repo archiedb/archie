@@ -58,6 +58,54 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+<div class="row">
+  <?php $report = new Report('csv','sitefeature'); ?>
+  <div class="span2">Site Features</div>
+  <div class="span3"><?php echo $report->state(); ?></div>
+  <div class="span4 offset3">
+    <p class="text-right">
+      <a class="btn btn-info btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/sitefeature/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
+      <a class="btn btn-success btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/sitefeature/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <?php $report = new Report('csv','allfeature'); ?>
+  <div class="span2">All Site(s) Features</div>
+  <div class="span3"><?php echo $report->state(); ?></div>
+  <div class="span4 offset3">
+    <p class="text-right">
+      <a class="btn btn-info btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/allfeature/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
+      <a class="btn btn-success btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/allfeature/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <?php $report = new Report('csv','sitekrotovina'); ?>
+  <div class="span2">Site Krotovina</div>
+  <div class="span3"><?php echo $report->state(); ?></div>
+  <div class="span4 offset3">
+    <p class="text-right">
+      <a class="btn btn-info btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/sitekrotovina/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
+      <a class="btn btn-success btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/sitekrotovina/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <?php $report = new Report('csv','allkrotovina'); ?>
+  <div class="span2">All Site(s) Krotovina</div>
+  <div class="span3"><?php echo $report->state(); ?></div>
+  <div class="span4 offset3">
+    <p class="text-right">
+      <a class="btn btn-info btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/allkrotovina/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
+      <a class="btn btn-success btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/allkrotovina/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
+    </p>
+  </div>
+</div>
+
 <!--
 <fieldset>
 <legend>Graphs</legend>

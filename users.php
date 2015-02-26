@@ -80,6 +80,12 @@ switch (\UI\sess::location('action')) {
         header("Location:" . Config::get('web_path') . "/users/permissions/view/" . $user->uid);
         exit;
       break;
+      case 'delgroup':
+        $user = new User($_POST['uid']); 
+        $user->delete_group($_POST['group']);
+        header("Location:" . Config::get('web_path') . "/users/permissions/view/" . $user->uid);
+        exit;
+      break;
       case 'view':
       default:
         $user = new User(\UI\sess::location('3'));

@@ -338,13 +338,39 @@ class Report {
 
     return $data; 
 
-  } // csv_site
+  } // csv_siterecord
 
   /**
-   * csv_all
-   * does nothing
+   * csv_sitefeature
+   * CSV of features of specified site
    */
-  private function csv_all() { }
+  public function csv_sitefeature($site) { 
+
+    // If they passed the UID
+    if (is_numeric($site)) { $site = new site($site); }
+    // Else assume they must have passed the name
+    else { 
+      $site_uid = Site::get_from_name($site);
+      $site = new Site($site_uid); 
+    }
+
+    // If we still can't find the site, run away
+    if (!$site->uid) { return false; }
+    
+    $sql = "SELECT `uid` FROM `feature` WHERE `site`=?";
+    $db_results = Dba::read($sql,array($side->uid));
+
+    while ($row = Dba::fetch_assoc($db_results)) {
+      $results[] = $row['uid']; 
+    }
+
+    // Build a cache of the features
+    Feature::build_cache($results);
+
+
+
+  } // csv_sitefeature
+
 
 }
 ?>
