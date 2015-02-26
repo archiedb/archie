@@ -90,7 +90,7 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo scrub_out($level->description); ?></td>
 </tr>
 <tr>
-  <th>Describe the differences and similaraities compared to the last level.</th>
+  <th>Describe the differences and similarities compared to the last level.</th>
 </tr>
 <tr>
   <td><?php echo scrub_out($level->difference); ?></td>

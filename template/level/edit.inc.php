@@ -218,7 +218,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('difference'); ?>">
-  <label class="control-label" for="inputDifference">Describe the differences and similaraities compared to the last level</label>
+  <label class="control-label" for="inputDifference">Describe the differences and similarities compared to the last level</label>
   <div class="controls">
   	<textarea id="inputDifference" name="difference" class="textbox" rows="5"><?php echo scrub_out($level->difference); ?></textarea>
   </div>
