@@ -680,7 +680,7 @@ class content extends database_object {
 
     $pdf->SetFontSize('13');
     $pdf->SetFont('Times','B');
-    $pdf->Text('5',$start_y+12,'Describe the differences and similaraities compared to the last level');
+    $pdf->Text('5',$start_y+12,'Describe the differences and similarities compared to the last level');
     $pdf->Line('2',$start_y+13,'205',$start_y+13);
     $pdf->SetFontSize('12');
     $pdf->SetFont('Times');
