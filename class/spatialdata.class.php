@@ -182,6 +182,11 @@ class SpatialData extends database_object {
       }
     }
 
+    // 0.000 doesn't count
+    $input['easting'] = $input['easting'] == '0.000' ? '' : $input['easting'];
+    $input['northing'] = $input['northing'] == '0.000' ? '' : $input['northing'];
+    $input['elevation'] = $input['elevation'] == '0.000' ? '' : $input['elevation'];
+
     if (strlen($input['rn']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
       Event::error('SpatialData',$input['rn'] . ' was specified in addition to easting/northing or elevation');
       Error::add('Total Station Index','RN and Elevation/Northing/Easting specified, only one may be set');

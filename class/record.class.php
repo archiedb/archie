@@ -48,6 +48,7 @@ class Record extends database_object {
       $this->northing = $spatial->northing;
       $this->easting = $spatial->easting;
       $this->elevation = $spatial->elevation;
+      $this->station_index = $spatial->station_index;
     }
 		$this->material = new Material($this->material); 
 		$this->classification = new Classification($this->classification); 
@@ -214,8 +215,8 @@ class Record extends database_object {
     // This can be null needs to be handled slightly differently
 
 
-		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`unit`,`level`,`lsg_unit`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`quad`,`feature`,`krotovina`,`user`,`created`) " . 
-			"VALUES ('$site','$catalog_id','$unit',$level,'$lsg_unit','$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$quad','$feature','$krotovina','$user','$created')"; 
+		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`level`,`lsg_unit`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`feature`,`krotovina`,`user`,`created`) " . 
+			"VALUES ('$site','$catalog_id',$level,'$lsg_unit','$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$feature','$krotovina','$user','$created')"; 
 		$db_results = Dba::write($sql); 
 
 		if (!$db_results) { 
@@ -287,7 +288,7 @@ class Record extends database_object {
 		$record_uid = Dba::escape($this->uid); 
 
 		// Allow this to be null
-		$station_index = $input['station_index'] ? "'" . Dba::escape($input['station_index']) . "'" : "NULL"; 
+		$station_index = $input['station_index'];
 		$level = $input['level'] ? "'" . Dba::escape($level_uid) . "'" : "NULL"; 
 
 		$sql = "UPDATE `record` SET `level`=$level, `lsg_unit`='$lsg_unit', `xrf_matrix_index`='$xrf_matrix_index', " . 
@@ -347,16 +348,18 @@ class Record extends database_object {
 		} 
 
 		// Make sure the station index is unique within this site, but only if specified
-		if (strlen($input['station_index'])) { 
-			$sql = "SELECT * FROM `record` WHERE `station_index`='" . Dba::escape($input['station_index']) . "' AND `site`='" . Dba::escape($input['site']) . "'"; 
+    //FIXME: BROKEN
+/*		if (strlen($input['station_index'])) { 
+      $uid_sql = isset($input['record_id']) ? " AND `record`='" . $input['record_id'] . "'" : '';
+			$sql = "SELECT * FROM `spatial_data` WHERE `station_index`='" . Dba::escape($input['station_index']) . "' AND `record_type`='record'" . $uid_sql
 			$db_results = Dba::read($sql); 
 			$row = Dba::fetch_assoc($db_results); 
 
-			if ($row['uid'] AND $row['uid'] != $input['record_id']) { 
+			if ($row['record'] != $input['record_id']) { 
 				Error::add('station_index','Duplicate - Station Index must be unique'); 
 			} 
 		} // end if station index is specified
-
+*/
     // If they've set a RN then we need to make sure they didn't set northing,easting,elevation
     if (strlen($input['station_index'])) { 
     
