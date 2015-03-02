@@ -71,10 +71,7 @@ class View {
       'material',
       'media',
       'notes',
-      'unit',
-      'quad',
       'quanity',
-      'station_index',
       'thickness',
       'user',
       'weight',
@@ -661,8 +658,11 @@ class View {
         $this->set_join('left','`media`','`media`.`record`','`record`.`uid`',100); 
         $filter_sql = " (`media`.`type`='media' AND `media`.`uid` IS NOT NULL $value_check) AND ";
       break;
-      case 'item':
       case 'station_index':
+        $this->set_join('left','`spatial_data`','`spatial_data`.`record`','`record`.`uid`',100);
+        $filter_sql = " (`spatial_data`.`record_type`='record' AND `spatial_data`.`station_index`='" . Dba::escape($value) . "') AND ";
+      break;
+      case 'item':
       case 'level':
       case 'height':
       case 'width':
@@ -707,8 +707,11 @@ class View {
           case 'catalog_id':
           case 'xrf_matrix_index':
           case 'xrf_artifact_index':
-          case 'station_index':
             $sql = "`record`.`$field`";
+          break;
+          case 'station_index':
+            $this->set_join('left','`spatial_data`','`spatial_data`.`record`','`record`.`uid`',100);
+            $sql = "`spatial_data`.`station_index`";
           break;
           case 'media':
           case '3dmodel':

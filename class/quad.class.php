@@ -10,6 +10,8 @@ class quad {
 	// Constructor
 	public function __construct($uid) { 
 
+    if (!isset($uid) OR !$uid) { return false; }
+
 		$this->uid = intval($uid); 
 		$this->name = isset(quad::$values[$uid]) ? quad::$values[$uid] : null;
 

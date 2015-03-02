@@ -328,7 +328,7 @@ class Record extends database_object {
 
     $site = $this->site->name; 
 
-		$log_line = "$site,$catalog_id,$unit," . $input['level']. ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
+		$log_line = "$site,".$level->unit->name."," . $input['level']. ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification," . $input['feature'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$updated) . "\"";
 		Event::record('UPDATE',$log_line); 
 		return true; 
 

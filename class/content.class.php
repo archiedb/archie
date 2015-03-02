@@ -458,7 +458,7 @@ class content extends database_object {
 		$pdf->SetFont('Times','B'); 
 		$pdf->SetFontSize('8'); 
 		$pdf->Text('25','4','SITE:' . $record->site->name);
-		$pdf->Text('52','4','UNIT:' . $record->unit); 
+		$pdf->Text('52','4','UNIT:' . $record->level->unit); 
 		$pdf->Text('25','8','LVL:' . $record->level->record);
 		$pdf->Text('52','8','QUAD:' . $record->level->quad->name); 
 		$pdf->Text('25','12','MAT:' . $record->material->name);
