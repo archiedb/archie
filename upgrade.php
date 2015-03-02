@@ -14,7 +14,8 @@ switch ($_POST['action']) {
 		$auth = vauth::authenticate($username,$password); 
 		if ($auth['success']) {
 			$user = User::get_from_username($username); 
-			if ($user->access < '100') { 
+      \UI\sess::$user = $user; 
+      if (!Access::is_admin()) {
         Error::add('general','Invalid Username/Password or insufficient access level'); 
 			}
 			else { 

@@ -322,7 +322,6 @@ class Record extends database_object {
 
 		$log_line = "$site,$catalog_id,$unit," . $input['level']. ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('UPDATE',$log_line); 
-
 		return true; 
 
 	} // update
@@ -346,20 +345,11 @@ class Record extends database_object {
 		if ((!is_numeric($input['station_index']) OR $input['station_index'] <= 0) AND strlen($input['station_index'])) { 
 			Error::add('station_index','Station Index must be numeric'); 
 		} 
+    // Unique Spatial Record check
+    if (!SpatialData::is_site_unique($input)) {
+      Error::add('general','Duplicate RN or Northing/Easting/Elevation');
+    }
 
-		// Make sure the station index is unique within this site, but only if specified
-    //FIXME: BROKEN
-/*		if (strlen($input['station_index'])) { 
-      $uid_sql = isset($input['record_id']) ? " AND `record`='" . $input['record_id'] . "'" : '';
-			$sql = "SELECT * FROM `spatial_data` WHERE `station_index`='" . Dba::escape($input['station_index']) . "' AND `record_type`='record'" . $uid_sql
-			$db_results = Dba::read($sql); 
-			$row = Dba::fetch_assoc($db_results); 
-
-			if ($row['record'] != $input['record_id']) { 
-				Error::add('station_index','Duplicate - Station Index must be unique'); 
-			} 
-		} // end if station index is specified
-*/
     // If they've set a RN then we need to make sure they didn't set northing,easting,elevation
     if (strlen($input['station_index'])) { 
     
@@ -512,8 +502,8 @@ class Record extends database_object {
 		}
 		
 		if (Error::occurred()) { return false; } 
-
-		return true; 
+		
+    return true; 
 
 	} // validate
 

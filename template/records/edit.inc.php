@@ -14,6 +14,7 @@ if (INIT_LOADED != '1') { exit; }
       $user_levels = Level::get_open_user_levels();
       if (!count($user_levels)) { $default_level_value = 'No Open Levels'; }
       else { $default_level_value = '&nbsp;'; }
+    if (in_array($record->level->uid,$user_levels)) {
     ?>
     <select id="inputLevel" name="level">
       <option value=""><?php echo $default_level_value; ?></option>
@@ -26,6 +27,10 @@ if (INIT_LOADED != '1') { exit; }
       <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($level->name); ?></option>
     <?php } ?>
     </select>
+    <?php } else { ?>
+     <input id="levelText" type="text" name="textvalue" value="<?php echo scrub_out($record->level->name); ?>" disabled="disabled">
+     <input id="inputLevel" name="level" type="hidden" value="<?php echo $record->level->uid; ?>" />
+    <?php } ?>
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('feature'); ?>">

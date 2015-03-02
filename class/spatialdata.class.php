@@ -246,6 +246,53 @@ class SpatialData extends database_object {
   } // validate
 
   /**
+   * is_site_unique
+   * Return true if the point is unique for the specified site
+   */
+  public static function is_site_unique($input) { 
+
+    $sql = "SELECT * FROM `spatial_data` WHERE `station_index`=? OR (`northing`=? AND `easting`=? AND `elevation`=?)";
+    $db_results = Dba::read($sql,$input['rn'],$input['northing'],$input['easting'],$input['elevation']);
+
+    $results = array();
+
+    while ($row = Dba::fetch_assoc($db_results)) {
+      $results[] = $row;
+    }
+
+    // If we haven't found a row then s'all good
+    if (count($results) == 0) { return true; }
+
+    // If we found something we need to see if it's the same time
+    foreach ($results as $row) { 
+
+      switch ($row['record_type']) {
+        case 'record':
+          $sql = "SELECT * FROM `record` WHERE `uid`=? AND `site`=?";
+        break;
+        case 'feature':
+          $sql = "SELECT * FROM `feature` WHERE `uid`=? AND `site`=?";
+        break;
+        case 'krotovina':
+          $sql = "SELECT * FROM `krotovina` WHERE `uid`=? AND `site`=?";
+        break;
+        case 'level':
+          $sql = "SELECT * FROM `level` WHERE `uid`=? AND `site`=?";
+        break;
+      }
+
+      $db_results = Dba::read($sql,array($row['record'],\UI\sess::$user->site->uid));
+      $row = Dba::fetch_assoc($db_results);
+
+      if (isset($row['uid'])) { return false; }
+
+    } 
+    
+    return true;
+
+  } // is_site_unqiue
+
+  /**
    * delete_by_record
    * Delete all spatial points related to the specified record
    */

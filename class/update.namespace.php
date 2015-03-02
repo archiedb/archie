@@ -197,7 +197,7 @@ class Database {
 
     return true; 
 
-  } 
+  } // set_version 
 
   /**
    * define_versions
@@ -250,6 +250,8 @@ class Database {
                     '- Drop unused fields from record table.<br />' .
                     '- Add per site user groups.<br />';
     $versions[] = array('version'=>'0013','description'=>$update_string);
+    $update_string = "- Remove RN from record table.";
+    $versions[] = array('version'=>'0014','description'=>$update_string);
 
 
     return $versions; 
@@ -1044,8 +1046,33 @@ class Database {
 
     return $retval;
 
-
   } // update_0013
+
+  /**
+   * update_0014
+   * - Remove station_index from record table
+   * - Migration RN only info to spatial_data
+   */
+  public static function update_0014() { 
+
+    $retval = true; 
+
+    $sql = "SELECT `uid`,`station_index` FROM `record` WHERE `station_index` IS NOT NULL";
+    $db_results = \Dba::read($sql);
+
+    while ($row = \Dba::fetch_assoc($db_results)) { 
+
+      $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`) VALUES (?,?,?)";
+      $retval = \Dba::write($sql,array($row['uid'],'record',$row['station_index'])) ? $retval : false;
+
+    } // end while station_index
+
+    $sql = "ALTER TABLE `record` DROP `station_index`"; 
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } // update_0014
 
 } // \Update\Database class
 
