@@ -19,6 +19,9 @@ class SpatialData extends database_object {
 	public function __construct($uid='') { 
 
     $row = $this->get_info($uid,'spatial_data');
+    //FIXME: DB needs to allow null station_index
+    if ($row['station_index'] == '0') { $row['station_index'] = ''; }
+    if (!count($row)) { return true; }
     foreach ($row as $key=>$value) {
       $this->$key = $value;
     }
@@ -98,6 +101,10 @@ class SpatialData extends database_object {
    */
    public static function create($input) { 
 
+    if (!isset($input['rn']) AND isset($input['station_index'])) {
+      $input['rn'] = $input['station_index'];
+    }
+
     if (!SpatialData::validate($input)) { 
       Error::add('general','Invalid Spatial Data fields - please check input');
       return false;
@@ -105,13 +112,13 @@ class SpatialData extends database_object {
 
     $record = Dba::escape($input['record']);
     $type = Dba::escape($input['type']);
-    $station_index = Dba::escape($input['rn']); 
+    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
     $elevation = Dba::escape($input['elevation']);
     $note = Dba::escape($input['note']);
     $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`,`northing`,`easting`,`elevation`,`note`) " . 
-        "VALUES ('$record','$type','$station_index','$northing','$easting','$elevation','$note')";
+        "VALUES ('$record','$type',$station_index,'$northing','$easting','$elevation','$note')";
     $db_results = Dba::write($sql); 
 
     $insert_id = Dba::insert_id();
@@ -133,9 +140,11 @@ class SpatialData extends database_object {
    */
   public function update($input) {
 
-    $input['type'] = $this->type;
+    $input['type'] = $this->record_type;
     $input['record'] = $this->record;
+    $input['update'] = true; 
 
+//FIXME: BAD BAD BAD BAD BAD
     if (!SpatialData::validate($input)) {
       Error::add('general','Invalid Spatial Data fields - please check input');
       return false;
@@ -143,14 +152,14 @@ class SpatialData extends database_object {
 
     // Escape the values
     $uid = Dba::escape($this->uid);
-    $type = Dba::escape($this->type);
+    $type = Dba::escape($this->record_type);
     $record = Dba::escape($this->record);
-    $station_index = Dba::escape($input['rn']);
+    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
     $elevation = Dba::escape($input['elevation']);
 
-    $sql = "UPDATE `spatial_data` SET `station_index`='$station_index',`northing`='$northing',`easting`='$easting',`elevation`='$elevation' " . 
+    $sql = "UPDATE `spatial_data` SET `station_index`=$station_index,`northing`='$northing',`easting`='$easting',`elevation`='$elevation' " . 
       "WHERE `uid`='$uid'";
     $db_results = Dba::write($sql);
 
@@ -202,7 +211,7 @@ class SpatialData extends database_object {
       $db_results = Dba::read($sql);
 
       $row = Dba::fetch_assoc($db_results); 
-      if (isset($row['uid'])) { 
+      if (isset($row['uid']) AND !$input['update']) { 
         Event::error('SpatialData','Attempted to add duplicate record - ' . $input['rn'] . ' -> ' . $input['type'] . ' - ' . $input['record']); 
         Error::add('Total Station Index','RN Already assoicated with this record');
         $retval = false; 
@@ -219,7 +228,7 @@ class SpatialData extends database_object {
       $db_results = Dba::read($sql); 
 
       $row = Dba::fetch_assoc($db_results);
-      if (isset($row['uid'])) {
+      if (isset($row['uid']) AND !$input['update']) {
         Event::error('SpatialData','Attempted to add duplicate record - ' . $input['northing'] . ' / ' . $input['easting'], ' / ' . $input['elevation'] . ' -> ' . $input['type'] . ' / ' . $input['record']);
         Error::add('Northing / Easting / Elevation','Point already assoicated with this record');
         $retval = false;
@@ -352,6 +361,9 @@ class SpatialData extends database_object {
       if ($single) { return new SpatialData($row['uid']); }
       $results[] = $row;
     }
+    
+    // If nothing found return empty
+    if ($single AND !count($results)) { return new SpatialData(0); }
     
     parent::add_to_cache('spatial_data',$cacheid,$results);
 

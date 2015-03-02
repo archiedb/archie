@@ -23,8 +23,8 @@ class Field {
       case 'northing':
       case 'easting':
       case 'elevation':
-        // Must be int and rounded to 3 places
-        if (!is_numeric($value) OR round($value,3) != $value) {
+        // Must be int and rounded to 3 places and something entered
+        if ((!is_numeric($value) OR round($value,3) != $value) AND strlen($field) ) {
           $retval = false;
         }
       break;

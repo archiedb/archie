@@ -235,7 +235,7 @@ class Record extends database_object {
 		Event::record('ADD',$log_line); 
 
    // Create the spatial data entry
-    $spatial = SpatialData::create(array('rn'=>$input['station_index'],'record'=>$insert_id,'northing'=>$input['northing'],'easting'=>$input['easting'],'elevation'=>$input['elevation'],'rn'=>$input['station_index'],'type'=>'record'));
+    $spatial = SpatialData::create(array('station_index'=>$input['station_index'],'record'=>$insert_id,'northing'=>$input['northing'],'easting'=>$input['easting'],'elevation'=>$input['elevation'],'type'=>'record'));
     //FIXME: Catch this and deal with it in a sane way
 
 		// We're sure we've got a record so lets generate our QR code. 
@@ -305,10 +305,18 @@ class Record extends database_object {
 
     // Update the SpatialData
     $spatialdata = SpatialData::get_record_data($record_uid,'record','single');
-    $return = $spatialdata->update(array('rn'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
+    if ($spatialdata->uid) { 
+      $return = $spatialdata->update(array('rn'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
+    }
+    elseif ($station_index OR $northing OR $easting OR $elevation) { 
+      $return = Spatialdata::Create(array('record'=>$record_uid,'station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation,'type'=>'record'));
+    }
+    else {
+      $return = true;
+    }
 
     if (!$return) {
-      Error::add('general','Database Error updating Spatial Data, please try again');
+      Error::add('spatial_data','Error updating Spatial Data, please try again');
     }
 
 		// Remove this object from the cache so the update shows properly

@@ -40,7 +40,7 @@ class Event {
    * Display the requested event,reset it after we're done
    */
   public static function display($type='events') { 
-
+    $message = '';
     switch ($type) { 
       case 'errors':
         if (!Error::occurred()) { return false; }
