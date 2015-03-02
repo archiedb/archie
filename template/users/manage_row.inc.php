@@ -18,6 +18,7 @@ if (INIT_LOADED != '1') { exit; }
         <?php } else { ?>
 				<li><a href="#confirm_disable_user_<?php echo scrub_out($user->uid); ?>" role="button" data-toggle="modal">Disable</a></li>
         <?php } ?>
+        <li><a href="<?php echo Config::get('web_path'); ?>/users/permissions/view/<?php echo $user->uid; ?>">Permissions</a></li>
 			</ul>
 		</div>
       <?php 
