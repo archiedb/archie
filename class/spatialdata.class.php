@@ -249,17 +249,35 @@ class SpatialData extends database_object {
    * is_site_unique
    * Return true if the point is unique for the specified site
    */
-  public static function is_site_unique($input) { 
+  public static function is_site_unique($input,$record=0) { 
 
-    $sql = "SELECT * FROM `spatial_data` WHERE `station_index`=? OR (`northing`=? AND `easting`=? AND `elevation`=?)";
-    $db_results = Dba::read($sql,$input['rn'],$input['northing'],$input['easting'],$input['elevation']);
+    $input['rn'] = isset($input['rn']) ? $input['rn'] : '';
 
-    $results = array();
+    $input['northing'] = isset($input['northing']) ? $input['northing'] : '';
+    $input['easting'] = isset($input['easting']) ? $input['easting'] : '';
+    $input['elevation'] = isset($input['elevation']) ? $input['elevation'] : '';
+
+    $query = array();
+
+    if (strlen($input['northing']) AND strlen($input['easting']) AND strlen($input['elevation'])) { 
+      $cord_sql = "(`northing`=? AND `easting`=? AND `elevation`=?) OR";
+      $query[] = $input['northing'];
+      $query[] = $input['easting'];
+      $query[] = $input['elevation'];
+    }
+    if (strlen($input['rn'])) { 
+      $rn_sql = "`station_index`=?";
+      $query[] = $input['rn'];
+    }
+
+
+    $sql = "SELECT * FROM `spatial_data` WHERE $cord_sql $rn_sql";
+    $sql = rtrim($sql,'OR');
+    $db_results = Dba::read($sql,$query);
 
     while ($row = Dba::fetch_assoc($db_results)) {
       $results[] = $row;
     }
-
     // If we haven't found a row then s'all good
     if (count($results) == 0) { return true; }
 
@@ -284,7 +302,7 @@ class SpatialData extends database_object {
       $db_results = Dba::read($sql,array($row['record'],\UI\sess::$user->site->uid));
       $row = Dba::fetch_assoc($db_results);
 
-      if (isset($row['uid'])) { return false; }
+      if (isset($row['uid']) AND $row['uid'] != $record) { return false; }
 
     } 
     

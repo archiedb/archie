@@ -345,9 +345,11 @@ class Record extends database_object {
 		if ((!is_numeric($input['station_index']) OR $input['station_index'] <= 0) AND strlen($input['station_index'])) { 
 			Error::add('station_index','Station Index must be numeric'); 
 		} 
+    //FIXME: This should be standardize on the table name
+    $input['rn'] = $input['station_index'];
     // Unique Spatial Record check
-    if (!SpatialData::is_site_unique($input)) {
-      Error::add('general','Duplicate RN or Northing/Easting/Elevation');
+    if (!SpatialData::is_site_unique($input,$record_id)) {
+      Error::add('RN','Duplicate RN or Northing/Easting/Elevation');
     }
 
     // If they've set a RN then we need to make sure they didn't set northing,easting,elevation
