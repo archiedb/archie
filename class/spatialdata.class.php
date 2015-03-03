@@ -20,8 +20,8 @@ class SpatialData extends database_object {
 
     $row = $this->get_info($uid,'spatial_data');
     //FIXME: DB needs to allow null station_index
-    if ($row['station_index'] == '0') { $row['station_index'] = ''; }
     if (!count($row)) { return true; }
+    if ($row['station_index'] == '0') { $row['station_index'] = ''; }
     foreach ($row as $key=>$value) {
       $this->$key = $value;
     }
