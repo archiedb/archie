@@ -82,10 +82,14 @@ if (INIT_LOADED != '1') { exit; }
     <dd>0-9, may contain decimal</dd>
   <dt>STRING</dt>
     <dd>Any character</dd>
+  <dt>ENUM</dt>
+    <dd>Pre-defined list of values</dd>
   <dt>INDEX</dt>
     <dd>Must match a record of specified name</dd>
   <dt>DATE</dt>
     <dd>Allowed formats mm/dd/yy dd-mm-yy yy.mm.dd pay special attention to seperating character</dd>
+  <dt>UNIQUE</dt>
+    <dd>Must be unique to the site</dd>
   <dt>**</dt>
     <dd>Denotes an optional field - see included documentation for more information on importing methods</dd>
 </dl>
@@ -97,7 +101,7 @@ if (INIT_LOADED != '1') { exit; }
 <!-- XYZ Station Import -->
 <div class="row">
   <div class="span2">XYZ Station</div>
-  <div class="span10">INDEX('RN'),DECIMAL('Northing'),DECIMAL('Easting'),DECIMAL('Elevation'),STRING('Notes')</div>
+  <div class="span10">UNIQUE('RN'),DECIMAL('Northing'),DECIMAL('Easting'),DECIMAL('Elevation'),STRING('Notes')</div>
 </div>
 <div class="row">
   <div class="span2">Feature Info</div>
