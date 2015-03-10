@@ -571,10 +571,8 @@ class Level extends database_object {
   public function validate_close($input) { 
 
     // Make sure it's an admin or an excavator 
-    if (\UI\sess::$user->access < 100) { 
-//      if (!$this->is_excavator(\UI\sess::$user->uid)) { 
+    if (!$this->is_excavator(\UI\sess::$user->uid) OR Access::has('level','manage')) { 
         Error::add('excavator','Unable to close, you are not a site manager');
-//      }
     }
 
     if (!$this->has_photo()) {
