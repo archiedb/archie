@@ -15,7 +15,11 @@ switch ($_POST['action']) {
 		if ($auth['success']) {
 			$user = User::get_from_username($username); 
       \UI\sess::$user = $user; 
-      if (!Access::is_admin()) {
+      $is_admin = false; 
+      // Check the old admin way
+      if (isset($user->access)) { if ($user->access == 100) { $is_admin = true; } }
+
+      if (!Access::is_admin() OR $is_admin == false) {
         Error::add('general','Invalid Username/Password or insufficient access level'); 
 			}
 			else { 
