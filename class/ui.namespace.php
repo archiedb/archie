@@ -430,6 +430,6 @@ function resize($imagePath,$opts=null){
 		}
 	endif;
 	# return cache file path
-	return str_replace($_SERVER['DOCUMENT_ROOT'],'',$newPath);
+	return str_replace(\Config::get('prefix'),'',$newPath);
 	
 }

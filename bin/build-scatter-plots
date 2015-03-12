@@ -87,7 +87,7 @@ while level is not None:
 
   locus_txt = str(level[0])
   cursor=archiedb.cursor()
-  cursor.execute("""SELECT `northing`,`easting`,`elevation`,`material`.`name`,`classification`.`name` FROM `record` JOIN `material` ON `material`.`uid`=`record`.`material` JOIN `classification` ON `classification`.`uid`=`record`.`classification` WHERE `level`='%s' AND (`northing`>0 AND `easting`>0 AND `elevation`>0)""",int(level[0]))
+  cursor.execute("""SELECT `northing`,`easting`,`elevation`,`material`.`name`,`classification`.`name` FROM `record` JOIN `material` ON `material`.`uid`=`record`.`material` JOIN `classification` ON `classification`.`uid`=`record`.`classification` JOIN `spatial_data` ON `spatial_data`.`record`=`record`.`uid` AND `spatial_data`.`record_type`='record' WHERE `level`='%s' AND (`northing`>0 AND `easting`>0 AND `elevation`>0)""",int(level[0]))
 
   # Set the sitename
   site=level[3]
