@@ -11,7 +11,7 @@ $groups = Group::get_all();
     <form method="post" action="<?php echo Config::get('web_path'); ?>/users/permissions/addgroup">
     <div class="modal-body">
       <select name="group">
-        <? foreach ($groups as $group) { ?>
+        <?php foreach ($groups as $group) { ?>
         <option value="<?php echo $group->uid; ?>"><?php echo scrub_out($group->name); ?> (<?php echo scrub_out($group->description); ?>)</option>
         <?php } ?>
       </select>
