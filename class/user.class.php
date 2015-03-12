@@ -316,10 +316,9 @@ class User extends database_object {
     $name = Dba::escape($input['name']); 
     $email = Dba::escape($input['email']); 
     $password = Dba::escape(hash('sha256',$input['password'])); 
-    $access = Dba::escape($input['access']); 
 
-    $sql = "INSERT INTO `users` (`name`,`username`,`email`,`password`,`access`) VALUES ('$name','$username','$email','$password','$access')"; 
-    $db_results = Dba::write($sql); 
+    $sql = "INSERT INTO `users` (`name`,`username`,`email`,`password`) VALUES (?,?,?,?)"; 
+    $db_results = Dba::write($sql,array($input['name'],$input['username'],$input['email'],$password)); 
 
     if (!$db_results) { 
       Event::error('DATABASE','Error unable to insert user into database'); 
@@ -341,10 +340,6 @@ class User extends database_object {
     if ($input['password'] != $input['confirmpassword']) {
       Error::add('password','Passwords do not match'); 
     } 
-
-    if (intval($input['access']) != $input['access']) { 
-      Error::add('access','Invalid Access Level'); 
-    }
 
     if (!strlen($input['name'])) { 
       Error::add('name','Display Name is a required field'); 

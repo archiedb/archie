@@ -42,17 +42,6 @@ if (INIT_LOADED != '1') { exit; }
       <span class="help-inline"><?php echo Error::get('password'); ?></span>
     </div>
   </div>
-  <div class="control-group<?php Error::display_class('access','required'); ?>">
-    <label class="control-label" for="inputAccess">Access Level</label>
-    <div class="controls">
-      <select name="access">
-        <option value="0">User</option>
-        <option value="50">Manager</option>
-        <option value="100">Admin</option>
-      </select>
-      <span class="help-inline"><?php echo Error::get('access'); ?></span>
-    </div>
-  </div>
   <div class="control-group">
     <div class="controls">
       <button type="submit" class="btn btn-success">Add New User</button>
