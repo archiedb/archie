@@ -112,7 +112,9 @@ class SpatialData extends database_object {
 
     $record = Dba::escape($input['record']);
     $type = Dba::escape($input['type']);
-    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
+//FIXME: NULL not allowed yet
+//    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
+    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : "'0'";
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
     $elevation = Dba::escape($input['elevation']);
@@ -154,7 +156,9 @@ class SpatialData extends database_object {
     $uid = Dba::escape($this->uid);
     $type = Dba::escape($this->record_type);
     $record = Dba::escape($this->record);
-    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
+//    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
+//FIXME: This is broken
+    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : "'0'";
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
     $elevation = Dba::escape($input['elevation']);
