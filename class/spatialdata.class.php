@@ -285,7 +285,7 @@ class SpatialData extends database_object {
 
 
     $sql = "SELECT * FROM `spatial_data` WHERE $cord_sql $rn_sql";
-    $sql = rtrim($sql,'OR');
+    $sql = rtrim($sql,'OR ');
     $db_results = Dba::read($sql,$query);
 
     while ($row = Dba::fetch_assoc($db_results)) {

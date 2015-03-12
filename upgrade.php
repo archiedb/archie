@@ -18,8 +18,7 @@ switch ($_POST['action']) {
       $is_admin = false; 
       // Check the old admin way
       if (isset($user->access)) { if ($user->access == 100) { $is_admin = true; } }
-
-      if (!Access::is_admin() OR $is_admin == false) {
+      if (!Access::is_admin() AND $is_admin === false) {
         Error::add('general','Invalid Username/Password or insufficient access level'); 
 			}
 			else { 

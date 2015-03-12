@@ -252,6 +252,10 @@ class Database {
     $versions[] = array('version'=>'0013','description'=>$update_string);
     $update_string = "- Remove RN from record table.";
     $versions[] = array('version'=>'0014','description'=>$update_string);
+    $update_string = '- Remove unused indexes from record table.<br />' . 
+                    '- Set Station Index to Allowed NULL.';
+    $versions[] = array('version'=>'0015','description'=>$update_string);
+
 
 
     return $versions; 
@@ -1073,6 +1077,24 @@ class Database {
     return $retval;
 
   } // update_0014
+
+  /**
+   * update_0015
+   * - Adjust spatial_data allow station_index to be NULL
+   */
+  public static function update_0015() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `spatial_data` CHANGE `station_index` `station_index` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "UPDATE `spatial_data` SET `station_index` = NULL WHERE `station_index`='0'";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } // update_0015
 
 } // \Update\Database class
 
