@@ -151,7 +151,7 @@ class Import {
         else {
           if (isset($found[$station_index])) { 
             $error_lines++;
-            $invalid .= ', ' . $line;
+            $invalid .= ', ' . $station_index;
             Event::record('import','FAIL: RN ' . $station_index . ' is on more than one record -- ' . json_encode($indexes));
           }
           $found[$station_index] = true;
@@ -169,7 +169,8 @@ class Import {
         // Else the data isn't valid
         else { 
           $error_lines++; 
-          $invalid .= ', ' . $line; 
+          Event::add('import','Datum Invalid for RN:' . $station_index . ' N:' . $data['1'] . ' E:' . $data['2'] . ' Ev:' . $data['3']);
+          $invalid .= ', ' . $station_index; 
         }
 
       } // foreach spatialdata records
@@ -181,12 +182,12 @@ class Import {
 
     if ($warning_lines > 0) { 
       Error::warning('general',$warning_lines . ' invalid lines found'); 
-      Error::warning('station_index','Lines:' . ltrim($missing,',')); 
+      Error::warning('station_index','Station Indexes:' . ltrim($missing,',')); 
     } 
 
     if ($error_lines > 0) { 
       Error::add('general',$error_lines . ' invalid lines found. Aborting, nothing imported'); 
-      if (strlen($invalid)) { Error::add('Coordinate Value','Lines:' . ltrim($invalid,',')); }
+      if (strlen($invalid)) { Error::add('Coordinate Value','Station Indexes:' . ltrim($invalid,',')); }
       return false; 
     }
 
