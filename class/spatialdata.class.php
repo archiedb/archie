@@ -18,9 +18,11 @@ class SpatialData extends database_object {
 	// Constructor takes a uid
 	public function __construct($uid='') { 
 
+    if (!$uid OR !is_numeric($uid)) { return true; }
+
     $row = $this->get_info($uid,'spatial_data');
-    //FIXME: DB needs to allow null station_index
-    if (!count($row)) { return true; }
+
+    if (!is_array($row)) { return true; }
     foreach ($row as $key=>$value) {
       if ($value == 0) { $value = '';}
       $this->$key = $value;
