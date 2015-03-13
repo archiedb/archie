@@ -1120,7 +1120,7 @@ class Database {
     $sql = "ALTER TABLE `spatial_data` ADD INDEX(`record`)";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    $sql = "SELECT * FROM `spatial_data`";
+    $sql = "SELECT * FROM `spatial_data` WHERE `record_type`='record'";
     $db_results = \Dba::read($sql);
 
     $found = array();
@@ -1131,13 +1131,13 @@ class Database {
       if (isset($found[$row['record_type']][$row['record']])) { 
         $prev = $found[$row['record_type']][$row['record']];
         // Try to figure out which one should be updated, and which should be deleted
-        if ($row['northing'] == 0 AND $row['easting'] == 0 AND $row['elevation'] == 0 AND $row['station_index'] != 0) {
+        if ($row['northing'] == 0 AND $row['easting'] == 0 AND $row['elevation'] == 0 AND $row['station_index']) {
           $sql = "UPDATE `spatial_data` SET `station_index`=? WHERE `uid`=?";
           $retval = \Dba::write($sql,array($row['station_index'],$prev['uid'])) ? $retval : false;
           $sql = "DELETE FROM `spatial_data` WHERE `uid`=?";
           $retval = \Dba::write($sql,array($row['uid'])) ? $retval : false;
         } // if this is the junk
-        if ($prev['northing'] == 0 AND $prev['easting'] == 0 AND $prev['elevation'] == 0 AND $prev['station_index'] != 0) {
+        if ($prev['northing'] == 0 AND $prev['easting'] == 0 AND $prev['elevation'] == 0 AND $prev['station_index']) {
           $sql = "UPDATE `spatial_data` SET `station_index`=? WHERE `uid`=?";
           $retval = \Dba::write($sql,array($prev['station_index'],$row['uid'])) ? $retval : false;
           $sql = "DELETE FROM `spatial_data` WHERE `uid`=?";
