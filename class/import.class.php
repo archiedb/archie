@@ -90,6 +90,9 @@ class Import {
    */
   private function run_xyz_station($csv_file) { 
 
+    // These values only apply to the current site
+    $site = \UI\sess::$user->site->uid;
+  
     if (($handle = fopen($csv_file, "r")) === false) {
         Error::add('general','Unable to open uploaded file'); 
         return false;
@@ -102,6 +105,7 @@ class Import {
     $warning_lines=0; 
     $missing = '';
     $invalid = ''; 
+    $found = array();
     while (($data = fgetcsv($handle)) !== false) { 
       if (count($data) != 5) { 
         Error::add('import','Invalid CSV format on line:' . $line); 
@@ -109,39 +113,71 @@ class Import {
       }
 
       // Look for this line 
-      $station_index = Dba::escape($data['0']); 
-      $sql = "SELECT `uid`,`northing`,`easting`,`elevation` FROM `record` WHERE `station_index`='$station_index'";
-      $db_results = Dba::read($sql); 
+      $station_index = $data['0']; 
+      $sql = "SELECT * FROM `spatial_data` WHERE `station_index`=?";
+      $db_results = Dba::read($sql,array($station_index));
 
-      if (!$row = Dba::fetch_assoc($db_results)) { 
+      $indexes = array();
+
+      while ($row = Dba::fetch_assoc($db_results)) {
+        $indexes[] = $row;
+      }
+
+      if (count($indexes) == 0) { 
         $warning_lines++; 
         $missing .= ', ' .  $station_index; 
         Event::record('import','FAIL: unable to find RN:' . $station_index . ' northing,easting and elevation not imported'); 
+        continue;
       }
-      else { 
-        // Check to make sure we've got floatvals
-        $is_valid = true; 
-        $is_valid = (settype($data['1'],'float') == $data['1']) ? $is_valid : false;
-        $is_valid = (settype($data['2'],'float') == $data['2']) ? $is_valid : false; 
-        $is_valid = (settype($data['3'],'float') == $data['3']) ? $is_valid : false; 
+
+      // Check to make sure we've got floatvals
+      $is_valid = true; 
+      $is_valid = (settype($data['1'],'float') == $data['1']) ? $is_valid : false;
+      $is_valid = (settype($data['2'],'float') == $data['2']) ? $is_valid : false; 
+      $is_valid = (settype($data['3'],'float') == $data['3']) ? $is_valid : false; 
+        
+      // Run through the records found and see if any are in this site, if not BAD 
+      foreach ($indexes as $key=>$row) {
+
+        $sql = "SELECT * FROM `" . $row['record_type'] . "` WHERE `uid`=? AND `site`=?";
+        $db_results = Dba::read($sql,array($row['record'],$site));
+        $record = Dba::fetch_assoc($db_results);
+
+        if (!isset($record['uid'])) { 
+          $warning_lines++;
+          $missing .= ', ' . $station_index;
+          Event::record('import','Warning: ' . $station_index . ' not found on a record');
+        }
+        else {
+          if (isset($found[$station_index])) { 
+            $error_lines++;
+            $invalid .= ', ' . $line;
+            Event::record('import','FAIL: RN ' . $station_index . ' is on more than one record -- ' . json_encode($indexes));
+          }
+          $found[$station_index] = true;
+        }
+
         if ($is_valid) { 
-          // Check to see if xyz are set already - don't add if so
+          // This is only valid if the northing/easting/elevation are not set
           if ($row['northing'] == 0 AND $row['easting'] == 0 AND $row['elevation'] == 0) {
-            $valid[] = $data;
+            $valid[$row['uid']] = $data;
           }
           else {
             $existing_lines++; 
           }
         }
+        // Else the data isn't valid
         else { 
           $error_lines++; 
           $invalid .= ', ' . $line; 
         }
-      }
-      $line++; 
-    }
 
-    fclose($handle); 
+      } // foreach spatialdata records
+
+    $line++; 
+  } // end while check
+
+  fclose($handle); 
 
     if ($warning_lines > 0) { 
       Error::warning('general',$warning_lines . ' invalid lines found'); 
@@ -155,18 +191,14 @@ class Import {
     }
 
     // We made it this far update!
-    foreach ($valid as $row) { 
+    foreach ($valid as $uid=>$row) { 
       
-      $station_index = Dba::escape($row['0']); 
-      $northing = Dba::escape($row['1']); 
-      $easting = Dba::escape($row['2']); 
-      $elevation = Dba::escape($row['3']); 
       $notes = Dba::escape("\n--Station Import--\n" . $row['4'] . "\n--End Station Import--\n"); 
 
-      $sql = "UPDATE `record` SET `northing`='$northing', `easting`='$easting', `elevation`='$elevation', `notes`=IFNULL(CONCAT(`notes`,'$notes'),'$notes') WHERE `station_index`='$station_index' LIMIT 1";
-      $db_results = Dba::write($sql); 
+      $sql = "UPDATE `spatial_data` SET `northing`=?, `easting`=?, `elevation`=?, `note`=IFNULL(CONCAT(`note`,'$notes'),'$notes') WHERE `uid`=? LIMIT 1";
+      $db_results = Dba::write($sql,array($row['1'],$row['2'],$row['3'],$uid)); 
 
-      Event::record('Import',"Northing:$northing Easting:$easting Elevation:$elevation Notes:$notes set on RN:$station_index"); 
+      Event::record('Import',"Northing:" . $row['1'] . " Easting:" . $row['2'] . " Elevation:" . $row['3'] . " Notes:$notes set on RN:" . $row['0']); 
 
     }
 
