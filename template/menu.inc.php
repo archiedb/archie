@@ -75,7 +75,7 @@ if (INIT_LOADED != '1') { exit; }
               <?php } ?>
               </select>
               <?php $search_value = isset($_POST['value']) ? scrub_out($_POST['value']) : ''; ?>
-              <input name="value" class="span2" type="text" placeholder="Value..." value="<?php echo $search_value; ?>">
+              <input name="value" class="span2" type="text" placeholder="Record Value..." value="<?php echo $search_value; ?>">
               <button type="submit" class="btn btn-inverse"><i class="icon-search icon-white"></i></button>
             </form>
           </div><!--/.nav-collapse -->
