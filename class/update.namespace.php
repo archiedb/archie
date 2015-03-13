@@ -255,6 +255,8 @@ class Database {
     $update_string = '- Remove unused indexes from record table.<br />' . 
                     '- Set Station Index to Allowed NULL.';
     $versions[] = array('version'=>'0015','description'=>$update_string);
+    $update_string = "- Add Spatial Data Index to fix performance issues with Record view.";
+    $versions[] = array('version'=>'0016','description'=>$update_string);
 
 
 
@@ -1095,6 +1097,21 @@ class Database {
     return $retval;
 
   } // update_0015
+
+  /**
+   * update_0016
+   * - Add spaital_data.record Index to fix performance issues with single record view
+   */
+  public static function update_0016() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `spatial_data` ADD INDEX(`record`)";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } // update_0016
 
 } // \Update\Database class
 

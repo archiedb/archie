@@ -77,6 +77,7 @@ class View {
       'weight',
       'updated',
       'width',
+      'station_index',
       'xrf_matrix_index',
       'xrf_artifact_index',
       '3dmodel'); 
