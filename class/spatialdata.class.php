@@ -21,8 +21,8 @@ class SpatialData extends database_object {
     $row = $this->get_info($uid,'spatial_data');
     //FIXME: DB needs to allow null station_index
     if (!count($row)) { return true; }
-    if ($row['station_index'] == '0') { $row['station_index'] = ''; }
     foreach ($row as $key=>$value) {
+      if ($value == 0) { $value = '';}
       $this->$key = $value;
     }
 
@@ -112,9 +112,7 @@ class SpatialData extends database_object {
 
     $record = Dba::escape($input['record']);
     $type = Dba::escape($input['type']);
-//FIXME: NULL not allowed yet
-//    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
-    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : "'0'";
+    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
     $elevation = Dba::escape($input['elevation']);
@@ -144,9 +142,9 @@ class SpatialData extends database_object {
 
     $input['type'] = $this->record_type;
     $input['record'] = $this->record;
+//FIXME: BAD BAD BAD BAD BAD
     $input['update'] = true; 
 
-//FIXME: BAD BAD BAD BAD BAD
     if (!SpatialData::validate($input)) {
       Error::add('general','Invalid Spatial Data fields - please check input');
       return false;
@@ -156,9 +154,7 @@ class SpatialData extends database_object {
     $uid = Dba::escape($this->uid);
     $type = Dba::escape($this->record_type);
     $record = Dba::escape($this->record);
-//    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
-//FIXME: This is broken
-    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : "'0'";
+    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
     $elevation = Dba::escape($input['elevation']);
@@ -186,6 +182,11 @@ class SpatialData extends database_object {
     // just fails
     $retval = true;
 
+    // If they've entered nothing then we're good!
+    if (!strlen($input['rn']) AND !strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation'])) {
+      return $retval;
+    }
+
     // If specified
     if (strlen($input['rn'])) { 
       if (!Field::validate('rn',$input['rn'])) { 
@@ -194,11 +195,6 @@ class SpatialData extends database_object {
         $retval = false;
       }
     }
-
-    // 0.000 doesn't count
-    $input['easting'] = $input['easting'] == '0.000' ? '' : $input['easting'];
-    $input['northing'] = $input['northing'] == '0.000' ? '' : $input['northing'];
-    $input['elevation'] = $input['elevation'] == '0.000' ? '' : $input['elevation'];
 
     if (strlen($input['rn']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
       Event::error('SpatialData',$input['rn'] . ' was specified in addition to easting/northing or elevation');
@@ -269,6 +265,11 @@ class SpatialData extends database_object {
     $input['northing'] = isset($input['northing']) ? $input['northing'] : '';
     $input['easting'] = isset($input['easting']) ? $input['easting'] : '';
     $input['elevation'] = isset($input['elevation']) ? $input['elevation'] : '';
+
+    // If they've passed nothing then yes it's unique
+    if (!strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation']) AND !strlen($input['rn'])) {
+      return true;
+    }
 
     $query = array();
 
