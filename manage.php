@@ -22,6 +22,10 @@ switch (\UI\sess::location('action')) {
         $cron = new Cron('3dmodel_thumb'); 
         $cron->request('all'); 
       break;
+      case 'scatterplots':
+        $cron = new Cron('scatterplots');
+        $cron->request('all');
+      break;
     }
     header("Location:" . Config::get('web_path')  . '/manage/tools'); 
   break;

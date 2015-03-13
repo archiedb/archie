@@ -44,6 +44,16 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+<div class="row">
+  <?php $cron = new Cron('scatterplots'); ?>
+  <div class="span2">Level Report Plots</div>
+  <div class="span3"><?php echo $cron->state(); ?></div>
+  <div class="span4 offset3">
+    <p class="text-right">
+      <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/manage/regenerate/scatterplots">Regenerate</a>
+    </p>
+  </div>
+</div>
 
 <div class="page-header">
   <h3>Data Imports</h3>

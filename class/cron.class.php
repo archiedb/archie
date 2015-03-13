@@ -240,6 +240,26 @@ class Cron {
   
   } // run_3dmodel_thumb
 
+  /** 
+   * run_scatterplots
+   * Runs the python scatterplot generator
+   */
+  public function run_scatterplots($options) { 
+
+      // This is a system call (sketch?)
+      $command = Config::get('prefix') . '/bin/build-scatter-plots';
+      $handle = popen($command,"r");
+      while ($read = fread($handle,2096)) { 
+        echo $read;
+        ob_flush();
+        flush();
+      }
+      pclose($handle);
+
+      return true; 
+
+  } // run_scatterplots
+
 } // cron class 
 
 ?>
