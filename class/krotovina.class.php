@@ -12,6 +12,7 @@ class Krotovina extends database_object {
   public $created;
   public $updated;
   public $closed;
+  public $record;
   public $closed_date;
   public $closed_user; // FK User
 

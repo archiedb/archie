@@ -13,6 +13,7 @@ class Feature extends database_object {
   public $updated;
   public $closed;
   public $closed_date;
+  public $record;
   public $closed_user; // FK User
 
 	// Constructor takes a uid
