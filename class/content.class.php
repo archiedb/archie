@@ -135,7 +135,7 @@ class content extends database_object {
 		$this->uid	= $row['uid'];
 		$this->parentuid = $row['record']; 
 		$this->mime	= 'image/png'; 
-		
+
 		return true; 
 
 	} // load_qrcode_data
@@ -454,6 +454,12 @@ class content extends database_object {
 
 		// We need the QRcode filename here
 		$qrcode = new Content($record->uid,'qrcode'); 
+
+    // There are some edge cases where the QRCode might not exist, check and re-gen if needed
+    if (!is_file($qrcode->filename)) {
+     self::write_qrcode($record->uid,$qrcode->filename,true);
+    }
+
 		$pdf->Image($qrcode->filename,'0','0','25.4','25.4'); 
 		$pdf->SetFont('Times','B'); 
 		$pdf->SetFontSize('8'); 
