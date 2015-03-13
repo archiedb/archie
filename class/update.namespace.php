@@ -1067,9 +1067,19 @@ class Database {
     $db_results = \Dba::read($sql);
 
     while ($row = \Dba::fetch_assoc($db_results)) { 
+    
+      // Make sure there's not already a spatial_data record
+      $sql = "SELECT * FROM `spatial_data` WHERE `record_type`='record' AND `record`=?";
+      $exists = \Dba::read($sql,array($row['uid']));
 
-      $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`) VALUES (?,?,?)";
-      $retval = \Dba::write($sql,array($row['uid'],'record',$row['station_index'])) ? $retval : false;
+      if ($point = \Dba::fetch_assoc($db_results)) {
+        $sql = "UPDATE `spatial_data` SET `station_index`=? WHERE `uid`=?";
+        $retval = \Dba::write($sql,array($row['station_index'],$point['uid']));
+      }
+      else {
+        $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`) VALUES (?,?,?)";
+        $retval = \Dba::write($sql,array($row['uid'],'record',$row['station_index'])) ? $retval : false;
+      }
 
     } // end while station_index
 
@@ -1101,6 +1111,7 @@ class Database {
   /**
    * update_0016
    * - Add spaital_data.record Index to fix performance issues with single record view
+   * - Fix potential duplicate spatial_data records
    */
   public static function update_0016() { 
 
@@ -1108,6 +1119,37 @@ class Database {
 
     $sql = "ALTER TABLE `spatial_data` ADD INDEX(`record`)";
     $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "SELECT * FROM `spatial_data`";
+    $db_results = \Dba::read($sql);
+
+    $found = array();
+
+    // Itterate over all of them and fix duplicates
+    while ($row = \Dba::fetch_assoc($db_results)) { 
+
+      if (isset($found[$row['record_type']][$row['record']])) { 
+        $prev = $found[$row['record_type']][$row['record']];
+        // Try to figure out which one should be updated, and which should be deleted
+        if ($row['northing'] == 0 AND $row['easting'] == 0 AND $row['elevation'] == 0 AND $row['station_index'] != 0) {
+          $sql = "UPDATE `spatial_data` SET `station_index`=? WHERE `uid`=?";
+          $retval = \Dba::write($sql,array($row['station_index'],$prev['uid'])) ? $retval : false;
+          $sql = "DELETE FROM `spatial_data` WHERE `uid`=?";
+          $retval = \Dba::write($sql,array($row['uid'])) ? $retval : false;
+        } // if this is the junk
+        if ($prev['northing'] == 0 AND $prev['easting'] == 0 AND $prev['elevation'] == 0 AND $prev['station_index'] != 0) {
+          $sql = "UPDATE `spatial_data` SET `station_index`=? WHERE `uid`=?";
+          $retval = \Dba::write($sql,array($prev['station_index'],$row['uid'])) ? $retval : false;
+          $sql = "DELETE FROM `spatial_data` WHERE `uid`=?";
+          $retval = \Dba::write($sql,array($prev['uid'])) ? $retval : false;
+          $found[$row['record_type']][$row['record']] = $row;
+        } // if prev is the junk one
+      }
+      else { 
+        $found[$row['record_type']][$row['record']] = $row;
+      }
+
+    } // end while spatial_data
 
     return $retval;
 
