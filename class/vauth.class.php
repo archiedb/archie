@@ -113,11 +113,11 @@ class vauth {
 
 		$sql = "UPDATE `session` SET `value`='$value', " .
 			"`expire`='$expire' WHERE `id`='$key'";
-		$db_results = Dba::read($sql);
+		$db_results = Dba::write($sql);
 
 		Event::error('SESSION', 'Writing to ' . $key . ' with expire ' . $expire . ' ' . Dba::error());
 
-		return $db_results;
+		return Dba::error();
 
 	} // write
 
