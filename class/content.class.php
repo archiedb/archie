@@ -500,6 +500,8 @@ class content extends database_object {
    */
   private static function write_level(&$level,$filename,$update_record) { 
 
+    Error::clear();
+
     # We have to calc the length here
     $records = $level->records(); 
     $total_pages = ceil(3 + (count($records)/55)); 
@@ -606,14 +608,14 @@ class content extends database_object {
     $pdf->Text('104','74','EASTING');
     $pdf->Text('129','74',$level->easting);
 
-    # Unit Northing/Easting/Elevation
-#    $pdf->SetFontSize('12');
-#    $pdf->Text('150','26','Unit');
-#    $pdf->SetFontSize('10');
-#    $pdf->Rect('150','27','38','31');
-#    $pdf->Text('152','31','Northing');
-#    $pdf->Line('150','32','188','32');
-#    $pdf->Text('151','36',$level->unit->northing); 
+    # Make sure the levelimage is readable, throw nasty error if not
+    if (!is_readable($levelimage->filename)) { 
+      Event::error('Level-PDF','Level Image ' . $levelimage->filename . ' is not readbale');
+      Error::add('level_image','Level Image is not readable or not found');
+      Error::display('level_image');
+      require \UI\template('/footer');
+      exit;
+    }
 
     # Image scale is 2.83, so primary level image needs to be
     # 190 * 2.83 by 155 * 2.83 or 538 (width) by 439 height (aspect ratio of 1.22:1)
