@@ -60,6 +60,11 @@
 	<input name="password" type="password" class="input-block-level" placeholder="Password">
         <button class="btn btn-large btn-primary" type="submit">Login</button>
       </form>
+    <?php if (is_readable(Config::get('prefix') . '/config/login.motd')) { ?>
+    <div class="form-signin">
+    	<?php include Config::get('prefix') . '/config/login.motd'; ?>
+    </div>
+    <?php } ?>
     </div> <!-- /container -->
 </body>
 </html>
