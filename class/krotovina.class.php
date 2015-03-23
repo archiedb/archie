@@ -52,7 +52,10 @@ class Krotovina extends database_object {
 
     while ($row = Dba::fetch_assoc($db_results)) { 
       parent::add_to_cache('krotovina',$row['uid'],$row); 
+      $users[$row['user']] = $row['user'];
     }
+
+    User::build_cache($users);
 
     return true; 
 
