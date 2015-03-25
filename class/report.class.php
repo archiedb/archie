@@ -235,7 +235,7 @@ class Report {
   } // is_stale
 
   /**
-   * csv_site_stale
+   * csv_siterecord_stale
    */
   public function csv_siterecord_stale() { 
 
@@ -251,6 +251,38 @@ class Report {
     return $rows; 
 
   } // csv_site_stale
+
+  /**
+   * csv_sitefeature_stale
+   */
+  public function csv_sitefeature_stale() {
+
+    $date = $this->last_report();
+
+    $sql = "SELECT `feature`.`uid` FROM `feature` WHERE `created`>=? OR `update`>=?";
+    $db_results = Dba::read($sql,array($date,$date));
+
+    $rows = Dba::num_rows($db_results);
+
+    return $rows;
+
+  } // csv_sitefeature_stale
+
+  /**
+   * csv_sitekrotovina_stale
+   */
+  public function csv_sitekrotovina_stale() {
+
+    $date = $this->last_report();
+
+    $sql = "SELECT `krotovina`.`uid` FROM `krotovina` WHERE `created`>=? OR `update`>=?";
+    $db_results = Dba::read($sql,array($date,$date));
+
+    $rows = Dba::num_rows($db_results);
+
+    return $rows;
+
+  } // csv_sitekrotovina_stale
 
   /**
    * generate
@@ -277,6 +309,12 @@ class Report {
   private function csv($option='') { 
 
     switch ($this->type) { 
+      case 'sitefeature':
+        $data = $this->csv_sitefeature($option);
+      break;
+      case 'sitekrotovina':
+        $data = $this->csv_sitekrotovina($option);
+      break;
       case 'siterecord':
       case 'site': 
         $data = $this->csv_siterecord($option); 
@@ -285,7 +323,14 @@ class Report {
 
     $filename = $this->data_filename(); 
 
-    $retval = (file_put_contents($filename,$data) === false) ? false : true; 
+    // Open a new filehandle
+    $handle = fopen($filename,'w');
+
+    foreach ($data as $row) {
+      $retval = fputcsv($handle,$row) ? $retval : false;
+    }
+
+    fclose($handle);
 
     return $retval; 
 
@@ -296,8 +341,6 @@ class Report {
    * Create a csv for the specified site's records
    */
   private function csv_siterecord($site) { 
-
-    $data = ''; 
 
     // If they passed the UID
     if (is_numeric($site)) { $site = new site($site); }
@@ -321,19 +364,19 @@ class Report {
     // Cache it!
     Record::build_cache($results); 
 
+    $data = array();
+
     // The header
-    $data = "site,catalog id,unit,level,litho unit,station index,xrf matrix index,weight,height,width,thickness,quantity,material,classification,quad,feature,krotovina,notes,created,northing,easting,elevation,user\n";
+    $data[] = array('site','catalog id','unit','level','litho unit','station index','xrf matrix index','weight','height','width','thickness','quantity','material','classification','quad','feature','krotovina','notes','created','northing','easting','elevation','user');
 
     foreach ($results as $record_uid) {
       $record = new Record($record_uid); 
       $record->notes = str_replace(array("\r\n", "\n", "\r"),' ',$record->notes);
 
-      $data .= $site->name . "," . $record->catalog_id . "," . $record->level->unit . "," . $record->level->record . "," . $record->lsg_unit->name . "," .
-        $record->station_index . "," . $record->xrf_matrix_index . "," . $record->weight . "," . $record->height . "," .
-        $record->width . "," . $record->thickness . "," . $record->quanity . "," . $record->material->name . "," .
-        trim($record->classification->name) . "," . $record->level->quad->name . "," . $record->feature->record . "," . $record->krotovina->record . ",\"" .
-        addslashes($record->notes) . "\"," . date("m-d-Y h:i:s",$record->created) . "," . $record->northing . "," . $record->easting . "," . 
-        $record->elevation . ",\"" . $record->user->username . "\"\n";
+      $data[] = array($site->name,$record->catalog_id,$record->level->unit,$record->level->record,$record->lsg_unit->name,
+        $record->station_index,$record->xrf_matrix_index,$record->weight,$record->height,$record->width,$record->thickness,$record->quanity,
+        $record->material->name,trim($record->classification->name),$record->level->quad->name,$record->feature->record,$record->krotovina->record,
+        $record->notes,date("m-d-Y h:i:s",$record->created),$record->northing,$record->easting,$record->elevation,$record->user->username);
      } // end foreach 
 
     return $data; 
@@ -358,19 +401,78 @@ class Report {
     if (!$site->uid) { return false; }
     
     $sql = "SELECT `uid` FROM `feature` WHERE `site`=?";
-    $db_results = Dba::read($sql,array($side->uid));
+    $db_results = Dba::read($sql,array($site->uid));
+
+    $data = array();
+
+    $data[] = array('site','catalog id','keywords','description','created','user');
 
     while ($row = Dba::fetch_assoc($db_results)) {
-      $results[] = $row['uid']; 
+      $feature = new Feature($row['uid']);
+      $data[] = array($site->name,$feature->catalog_id,$feature->keywords,$feature->description,date("m-d-Y h:i:s",$feature->created),$feature->user->name);
     }
 
-    // Build a cache of the features
-    Feature::build_cache($results);
-
-
+    return $data;
 
   } // csv_sitefeature
 
+  /**
+   * csv_sitekrotovina
+   * CSV of krotovina of specified site
+   */
+  public function csv_sitekrotovina($site) { 
+
+    // If they passed the UID
+    if (is_numeric($site)) { $site = new site($site); }
+    // Else assume they must have passed the name
+    else { 
+      $site_uid = Site::get_from_name($site);
+      $site = new Site($site_uid); 
+    }
+
+    // If we still can't find the site, run away
+    if (!$site->uid) { return false; }
+
+    $sql = "SELECT `uid` FROM `krotovina` WHERE `site`=?";
+    $db_results = Dba::read($sql,array($site->uid));
+
+    $data = array();
+
+    $data[] = array('site','catalog id','keywords','description','created','user');
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $krotovina = new Krotovina($row['uid']);
+      $data[] = array($site->name,$krotovina->catalog_id,$krotovina->keywords,$krotovina->description,date("m-d-Y h:i:s",$krotovina->created),$krotovina->user->name);
+    } // end krotos
+
+    return $data;
+
+  } // csv_sitekrotovina
+
+  /**
+   * csv_sitelevel
+   */
+  public function csv_sitelevel($site) { 
+
+    // If they passed the UID
+    if (is_numeric($site)) { $site = new site($site); }
+    // Else assume they must have passed the name
+    else { 
+      $site_uid = Site::get_from_name($site);
+      $site = new Site($site_uid); 
+    }
+
+    // If we still can't find the site, run away
+    if (!$site->uid) { return false; }
+
+    $data = array();
+
+    $data[] = array('site','catalog id','record','unit','quad','lsg unit','northing','easting','elv nw start','elv nw finish','elv ne start','elv ne finish','elv sw start','elv se finish','elv sw start','elv sw finish','elv center start','elv center finish','excavator one','excavator two','excavator three','excavator four','description','difference','notes','created','user','closed','closed date','closed user');
+
+
+    return $data;
+
+  } // csv_sitelevel
 
 }
 ?>

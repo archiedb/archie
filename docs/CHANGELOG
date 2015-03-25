@@ -1,3 +1,45 @@
+ ADD ability to put a motd on the login page
+ ADD - Caching of users for krots and features
+ FIX - extranious sql queries for spatial data records that are empty
+ FIX PHP errors if the record had no feature or krotovina
+ FIX - Return Dba::error() rather then a handle (caused a php warning)
+ FIX #49 Add delete button for admins to single record view
+ CHANGE - make it clearer that the topbar search is for records
+ CHANGE - output from import to be station indexes
+ FIX #48 Tools interface allows regeneration of scatter plots
+ FIX - don't do this on non-records;
+ FIX #44 XYZ station import works again should work for all record types
+ FIX remove duplicates
+ FIX #43 Clear 0.000 / 0 values and don't check validaity if they don't input anything
+ FIX #45 add an index and re-enable RN search and ordering
+ FIX #42 - On Ticket creation check for QRCode and re-generate if needed
+ FIX - isuses found on demo site FIX #47
+ FIX - duplicate RN check
+ FIX - lack of null being allowed
+ FIX - lack of long tag
+ FIX - user creation
+ FIX - upgrade to account for old access method
+ FIX - Commit the right version
+ UPDATE - fix comments
+ FIX - Adjust access required to close a level is now manager if you aren't an excavator
+ FIX bad order
+ FIX tickets without units
+ FIX - no spatialdata entered on create
+ CHANGE - Record admins can update the Record->level even if Level is closed
+ FIX - station_index check on records
+ MIGRATE spatial_index from record table
+ ADD - Permission link on main page
+ FIX record stuff
+ FIX missing ability to delete groups
+ FIX -typo
+ FIX spelling error
+ FIX #40
+ UPDATE - for new access controls
+ UPDATE - for new access control
+ UPDATE - reports for new access method
+ FIX - reports instead of report in allowed types
+ ADD - New Access controls
+ UPDATE - changelog
  UPDATE - Role/Action support
  UPDATE - Access checkes to use new role/actions
  ADD - Access denied function

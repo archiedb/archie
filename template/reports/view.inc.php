@@ -27,7 +27,7 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <div class="row">
   <?php $report = new Report('csv','allrecord'); ?>
-  <div class="span2">All Site(s) Records</div>
+  <div class="span2">All Sites Records</div>
   <div class="span3"><?php echo $report->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
@@ -49,7 +49,7 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <div class="row">
   <?php $report = new Report('csv','alllevel'); ?>
-  <div class="span2">All Site(s) Levels</div>
+  <div class="span2">All Sites Levels</div>
   <div class="span3"><?php echo $report->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
@@ -64,15 +64,15 @@ if (INIT_LOADED != '1') { exit; }
   <div class="span3"><?php echo $report->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
-      <a class="btn btn-info btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/sitefeature/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
-      <a class="btn btn-success btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/sitefeature/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
+      <a class="btn btn-info btn-small" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/sitefeature/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
+      <a class="btn btn-success btn-small" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/sitefeature/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
     </p>
   </div>
 </div>
 
 <div class="row">
   <?php $report = new Report('csv','allfeature'); ?>
-  <div class="span2">All Site(s) Features</div>
+  <div class="span2">All Sites Features</div>
   <div class="span3"><?php echo $report->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
@@ -81,22 +81,20 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
-
 <div class="row">
   <?php $report = new Report('csv','sitekrotovina'); ?>
   <div class="span2">Site Krotovina</div>
   <div class="span3"><?php echo $report->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
-      <a class="btn btn-info btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/sitekrotovina/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
-      <a class="btn btn-success btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/sitekrotovina/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
+      <a class="btn btn-info btn-small" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/sitekrotovina/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
+      <a class="btn btn-success btn-small" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/sitekrotovina/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
     </p>
   </div>
 </div>
-
 <div class="row">
   <?php $report = new Report('csv','allkrotovina'); ?>
-  <div class="span2">All Site(s) Krotovina</div>
+  <div class="span2">All Sites Krotovina</div>
   <div class="span3"><?php echo $report->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
@@ -105,9 +103,25 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
-
-<!--
-<fieldset>
-<legend>Graphs</legend>
-</fieldset>
--->
+<div class="row">
+  <?php $report = new Report('csv','sitespatialdata'); ?>
+  <div class="span2">Site Spatial Data</div>
+  <div class="span3"><?php echo $report->state(); ?></div>
+  <div class="span4 offset3">
+    <p class="text-right">
+      <a class="btn btn-info btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/sitespatialdata/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
+      <a class="btn btn-success btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/sitespatialdata/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
+    </p>
+  </div>
+</div>
+<div class="row">
+  <?php $report = new Report('csv','allspatialdata'); ?>
+  <div class="span2">All Sites Spatial Data</div>
+  <div class="span3"><?php echo $report->state(); ?></div>
+  <div class="span4 offset3">
+    <p class="text-right">
+      <a class="btn btn-info btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/allspatialdata/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
+      <a class="btn btn-success btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/allspatialdata/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
+    </p>
+  </div>
+</div>
