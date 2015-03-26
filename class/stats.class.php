@@ -144,9 +144,10 @@ class Stats {
 
     $row = Dba::fetch_assoc($db_results); 
 
-    if (!count($row)) { return false; }
+    if (!count($row)) { return array('count'=>0); }
     $material = new material($row['material']); 
     $row['material'] = $material->name ? $material->name : 'UNDEF';
+    $row['count'] = isset($row['count']) ? $row['count'] : '0';
 
     return $row; 
 

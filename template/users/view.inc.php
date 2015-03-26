@@ -37,6 +37,15 @@ if (INIT_LOADED != '1') { exit; }
     ?>  
   </td>
 </tr>
+<tr>
+  <td><strong>Favorite Material</strong></td>
+  <td>
+    <?php
+      $info = Stats::material_records('user',$user->uid);
+      echo $info['material'] . ' (' . $info['count'] . ')';
+    ?>
+  </td>
+</tr>
 </tbody>
 </table>
 </fieldset>
