@@ -285,6 +285,21 @@ class Report {
   } // csv_sitekrotovina_stale
 
   /**
+   * csv_sitespatialdata_stale
+   */
+  public function csv_sitespatialdata_stale() { 
+      
+      $retval = false; 
+
+      $retval = $this->csv_siterecord_stale() ? 'true' : $retval;
+      $retval = $this->csv_sitefeature_stale() ? 'true' : $retval;
+      $retval = $this->csv_sitekrotovina_stale() ? 'true' : $retval;
+
+      return $retval;
+
+  } // csv_sitespatialdata_stale
+
+  /**
    * generate
    * This generates a report of the type and format specified
    */
@@ -308,6 +323,8 @@ class Report {
    */  
   private function csv($option='') { 
 
+    $retval = true; 
+
     switch ($this->type) { 
       case 'sitefeature':
         $data = $this->csv_sitefeature($option);
@@ -315,8 +332,10 @@ class Report {
       case 'sitekrotovina':
         $data = $this->csv_sitekrotovina($option);
       break;
+      case 'sitespatialdata':
+        $data = $this->csv_sitespatialdata($option);
+      break;
       case 'siterecord':
-      case 'site': 
         $data = $this->csv_siterecord($option); 
       break;
     }
@@ -473,6 +492,66 @@ class Report {
     return $data;
 
   } // csv_sitelevel
+
+  /**
+   * csv_sitespatialdata
+   */
+  public function csv_sitespatialdata($site) { 
+
+    // If they passed the UID
+    if (is_numeric($site)) { $site = new site($site); }
+    // Else assume they must have passed the name
+    else { 
+      $site_uid = Site::get_from_name($site);
+      $site = new Site($site_uid); 
+    }
+
+    // If we still can't find the site, run away
+    if (!$site->uid) { return false; }
+
+    // Little more complicated, pull records first
+    $sql = "SELECT `spatial_data`.`uid`,`spatial_data`.`record` FROM `spatial_data` " . 
+      "LEFT JOIN `record` ON `record`.`uid`=`spatial_data`.`record` AND `record_type`='record' AND `record`.`site`=? " . 
+      "WHERE `record`.`uid` IS NOT NULL";
+    $db_results = Dba::read($sql,array($site->uid));
+
+    $data = array();
+
+    $data[] = array('Type','Station Index','Northing','Easting','Elevation','Spatial Data Note','Record');
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $spatial = new SpatialData($row['uid']);
+      $record = new Record($row['record']);
+      $data[] = array('Record',$spatial->station_index,$spatial->northing,$spatial->easting,$spatial->elevation,$spatial->note,$record->catalog_id);
+    }
+
+    // Now do features
+    $sql = "SELECT `spatial_data`.`uid`,`spatial_data`.`record` FROM `spatial_data` " .
+      "LEFT JOIN `feature` ON `feature`.`uid`=`spatial_data`.`record` AND `record_type`='feature' AND `feature`.`site`=? " . 
+      "WHERE `feature`.`uid` IS NOT NULL";
+    $db_results = Dba::read($sql,array($site->uid));
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $spatial = new SpatialData($row['uid']);
+      $feature = new Feature($row['record']);
+      $data[] = array('Feature',$spatial->station_index,$spatial->northing,$spatial->easting,$spatial->elevation,$spatial->note,$feature->catalog_id);
+    }
+
+    // Now do features
+    $sql = "SELECT `spatial_data`.`uid`,`spatial_data`.`record` FROM `spatial_data` " .
+      "LEFT JOIN `krotovina` ON `krotovina`.`uid`=`spatial_data`.`record` AND `record_type`='krotovina' AND `krotovina`.`site`=? " . 
+      "WHERE `krotovina`.`uid` IS NOT NULL";
+    $db_results = Dba::read($sql,array($site->uid));
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $spatial = new SpatialData($row['uid']);
+      $krotovina = new Krotovina($row['record']);
+      $data[] = array('Krotovina',$spatial->station_index,$spatial->northing,$spatial->easting,$spatial->elevation,$spatial->note,$krotovina->catalog_id);
+    }
+
+    return $data;
+
+  } // csv_sitespatialdata
 
 }
 ?>

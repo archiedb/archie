@@ -109,8 +109,8 @@ if (INIT_LOADED != '1') { exit; }
   <div class="span3"><?php echo $report->state(); ?></div>
   <div class="span4 offset3">
     <p class="text-right">
-      <a class="btn btn-info btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/sitespatialdata/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
-      <a class="btn btn-success btn-small disabled" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/sitespatialdata/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
+      <a class="btn btn-info btn-small" href="<?php echo Config::get('web_path'); ?>/reports/request/csv/sitespatialdata/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Rebuild</a>
+      <a class="btn btn-success btn-small" href="<?php echo Config::get('web_path'); ?>/reports/download/csv/sitespatialdata/<?php echo scrub_out(\UI\sess::$user->site->uid); ?>">Download</a>
     </p>
   </div>
 </div>
