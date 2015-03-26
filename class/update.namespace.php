@@ -1155,6 +1155,21 @@ class Database {
 
   } // update_0016
 
+ /**
+   * update_0017
+   * - Drop site_users table, it's not needed!
+   */
+  public static function update_0017() { 
+
+    $retval = true; 
+
+    $sql = "DROP TABLE `site_users`";
+    $db_results = \Dba::write($sql);
+
+    return $retval;
+
+  } // update_0017
+
 } // \Update\Database class
 
 ?>
