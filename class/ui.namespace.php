@@ -203,8 +203,13 @@ class sess {
 
     self::$user = $user; 
 
-    // Hardcode the site FIXME
-    self::$user->site = new \site(1); 
+    // Hardcode the site FIX WITH DB CHANGE
+    if (!self::$user->site) {
+      self::$user->site = new \Site(1); 
+    }
+    else {
+      self::$user->site = new \Site($user->site);
+    }
 
     return true; 
 

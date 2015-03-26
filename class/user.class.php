@@ -9,6 +9,8 @@ class User extends database_object {
 	public $email; 
 	public $access; // DEAD 
   public $roles; // Pulled from user_permission_view
+  public $site; // UID of their current site
+  public $last_login;
 	public $disabled; 
 	public $password; // SHA2 (256)
 
@@ -32,6 +34,8 @@ class User extends database_object {
       $row['roles'] = $this->roles;
       parent::add_to_cache('users',$uid,$row);
     }
+
+    if ($this->site) { $this->site = new Site($this->site); }
 
     if (!$this->name) { $this->name = $this->username; }
 
@@ -116,7 +120,6 @@ class User extends database_object {
       return false;
     }
 
-
     $sql = "INSERT INTO `user_group` (`user`,`group`,`site`) VALUES (?,?,?)";
     $db_results = Dba::write($sql,array($this->uid,$groupuid,\UI\sess::$user->site->uid));
 
@@ -153,6 +156,31 @@ class User extends database_object {
 
     return $results; 
   } // get_groups
+
+  /**
+   * get_sites
+   * Returns all sites this user has permission to
+   */
+  public function get_sites() { 
+
+      // If they have admin/admin they can have them all
+      if (Access::has('admin','admin')) { 
+        $sql = "SELECT `uid` AS `site` FROM `site`";
+      }
+      else { 
+        $uid = Dba::escape($this->uid);
+        $sql = "SELECT `site` FROM `user_group` WHERE `user`='$uid'";
+      }
+      $db_results = Dba::read($sql); 
+      $sites = array(); 
+
+      while ($row = Dba::fetch_assoc($db_results)) { 
+        $sites[] = new Site($row['site']);
+      }
+
+      return $sites; 
+
+  } // get_sites
 
 	/**
 	 * refresh
@@ -290,6 +318,24 @@ class User extends database_object {
     return true; 
 
 	} // update
+
+  /**
+   * update_site
+   * Sets the users current site
+   */
+  public function update_site($site) {
+
+    $sql = "UPDATE `users` SET `site`=? WHERE `uid`=? LIMIT 1";
+    $db_results = Dba::write($sql,array($site,$this->uid));
+
+ 		// If this is the current logged in user, refresh them
+		if (\UI\sess::$user->uid == $this->uid) { 
+      \UI\sess::$user->refresh(); 
+		} 
+
+    return true; 
+
+  } // update_site
 
 	/**
 	 * create

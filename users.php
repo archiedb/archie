@@ -35,6 +35,18 @@ switch (\UI\sess::location('action')) {
     $user->refresh();  
     require_once \UI\template('/users/view'); 
   break;
+  case 'site':
+    if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','edit')) { \UI\access_denied(); }
+    $user = \UI\sess::$user;
+    require_once \UI\template('/users/view_site');
+  break;
+  case 'siteupdate':
+    if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','edit')) { \UI\access_denied(); }
+    //FIXME: make sure they already have access to this site
+    \UI\sess::$user->update_site(\UI\sess::location('objectid'));
+    $user = \UI\sess::$user;
+    require_once \UI\template('/users/view_site');
+  break;
   case 'disable':
     if (!Access::has('user','manage')) { \UI\access_denied(); }
     // You aren't allowed to disable yourself - sorry!

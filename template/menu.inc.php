@@ -57,7 +57,7 @@ if (INIT_LOADED != '1') { exit; }
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Profile <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="<?php echo Config::get('web_path'); ?>/users/view/<?php echo scrub_out(\UI\sess::$user->uid); ?>">My Account</a></li>
-              <li><a href="<?php echo Config::get('web_path'); ?>/site/change">Change Site</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/users/site">Change Site</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/logout">Logout</a></li>
             </ul>
           </li>
