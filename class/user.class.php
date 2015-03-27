@@ -197,9 +197,8 @@ class User extends database_object {
 	// Return the user based on the username
 	public static function get_from_username($username) { 
 
-		$username = Dba::escape($username); 
-		$sql = "SELECT * FROM `users` WHERE `username`='$username'"; 
-		$db_results = Dba::read($sql); 
+		$sql = "SELECT * FROM `users` WHERE `username`=?"; 
+		$db_results = Dba::read($sql,array($username)); 
 
 		$row = Dba::fetch_assoc($db_results); 
     if (isset($row['uid'])) { 

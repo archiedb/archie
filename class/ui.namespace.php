@@ -197,18 +197,14 @@ class sess {
   private function __clone() { }
 
   public static function set_user($user) { 
-
     // Only users here!
     if (get_class($user) != 'User') { return false; }
 
     self::$user = $user; 
 
     // Hardcode the site FIX WITH DB CHANGE
-    if (!self::$user->site) {
+    if (!self::$user->site->uid) {
       self::$user->site = new \Site(1); 
-    }
-    else {
-      self::$user->site = new \Site($user->site);
     }
 
     return true; 
