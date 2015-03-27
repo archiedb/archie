@@ -259,6 +259,12 @@ class Feature extends database_object {
       }
     } // if No RUN specified
 
+    // Make sure the RN isn't duplicated for this site. 
+    $input['rn'] = $input['initial_rn'];
+    if (!SpatialData::is_site_unique($input,$input['feature_id'])) {
+      Error::add('initial_rn','Duplicate RN in this site');
+    }
+
     if (Error::occurred()) { return false; }
 
     return true; 

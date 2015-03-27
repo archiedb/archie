@@ -252,6 +252,12 @@ class SpatialData extends database_object {
         
     } // if northing/easting/elevation
 
+    // Make sure it's unique to the site
+    if (!SpatialData::is_site_unique($input,$input['record'])) {
+      Error::add('Spatialdata','Attempted to add duplicate record');
+      $retval = false;
+    }
+
     return $retval; 
 
   } // validate
@@ -285,7 +291,6 @@ class SpatialData extends database_object {
       $rn_sql = "`station_index`=?";
       $query[] = $input['rn'];
     }
-
 
     $sql = "SELECT * FROM `spatial_data` WHERE $cord_sql $rn_sql";
     $sql = rtrim($sql,'OR ');

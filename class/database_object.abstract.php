@@ -68,7 +68,6 @@ abstract class database_object {
 		$sql = "SELECT * FROM `$table_name` WHERE `uid`='$uid'";
 		$db_results = Dba::read($sql);
 
-
 		if (!$db_results) { return array(); }
 
 		$row = Dba::fetch_assoc($db_results);
