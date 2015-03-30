@@ -20,11 +20,17 @@ foreach ($requests as $request) {
 
   $options = explode("\n",$content); 
 
+  // Set the current site
+  $user = new User(0);
+  $user->site = new Site($file_info['2']);
+  \UI\sess::set_user($user);
+
+  // Load up the report
   $report = new Report($file_info['0'],$file_info['1']); 
   $report->generate($options['0']); 
   // Send an e-mail?
   if (strlen($options['1'])) { 
-    mail($options['1'],'Archie Report Finished','Your report is done!');
+    mail($options['1'],'Archie ' . $user->site->name . ' ' . ucfirst($file_info['0']) . ' ' . ucfirst($file_info['0']) . ' Report Finished','Your report is done!');
   }
 } 
 

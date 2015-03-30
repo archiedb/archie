@@ -80,12 +80,15 @@ class Report {
     header("Cache-control: public"); 
 
     $filename = $this->data_filename(); 
-    $date = date("dmY-hms",filemtime($filename));
+    $date = date("Ymd-hms",filemtime($filename));
+
+    // Use the files name
+    $basename = basename($filename,'.data');
 
     switch ($this->format) { 
       case 'csv': 
         header('Content-Type: application/vnd.ms-excel'); 
-        header("Content-Disposition: attachment; filename=\"archie-export-$date.csv\""); 
+        header("Content-Disposition: attachment; filename=\"archie-export-$date-$basename.csv\""); 
         header('Content-Length: ' . filesize($filename)); 
       break; 
     }
@@ -145,7 +148,7 @@ class Report {
    */
   private function request_filename() { 
 
-    $filename = self::$data_dir . '/' . $this->format . '_' . $this->type . '.request'; 
+    $filename = self::$data_dir . '/' . $this->format . '_' . $this->type . '_' . \UI\sess::$user->site->uid . '.request'; 
 
     return $filename; 
 
@@ -157,7 +160,7 @@ class Report {
    */
   private function data_filename() { 
 
-    $filename = self::$data_dir . '/' . $this->format . '_' . $this->type . '.data'; 
+    $filename = self::$data_dir . '/' . $this->format . '_' . $this->type . '_' . \UI\sess::$user->site->uid .'.data'; 
 
     return $filename; 
 
@@ -169,7 +172,7 @@ class Report {
    */
   private function last_filename() { 
 
-    $filename = self::$data_dir . '/' . $this->format . '_' . $this->type . '.last'; 
+    $filename = self::$data_dir . '/' . $this->format . '_' . $this->type . '_' . \UI\sess::$user->site->uid . '.last'; 
 
     return $filename; 
 
@@ -298,6 +301,16 @@ class Report {
       return $retval;
 
   } // csv_sitespatialdata_stale
+
+  /**
+   * csv_sitelevel_stale
+   */
+  public function csv_sitelevel_stale() {
+
+
+    return $retval;
+
+  } // csv_sitelevel_stale
 
   /**
    * generate
