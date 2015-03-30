@@ -501,6 +501,14 @@ class Report {
 
     $data[] = array('site','catalog id','record','unit','quad','lsg unit','northing','easting','elv nw start','elv nw finish','elv ne start','elv ne finish','elv sw start','elv se finish','elv sw start','elv sw finish','elv center start','elv center finish','excavator one','excavator two','excavator three','excavator four','description','difference','notes','created','user','closed','closed date','closed user');
 
+    $sql = "SELECT `uid` FROM `level` WHERE `site`=?";
+    $db_results = Dba::read($sql,array($site->uid));
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+    
+
+    } // while levels
+
 
     return $data;
 
