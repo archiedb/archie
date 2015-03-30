@@ -18,7 +18,7 @@ a level is closed, it cannot be reopened.
   </div>
 </div>
 <div class="control-group span4 offset3">
-  <label class="control-label">Questions answered</label>
+  <label class="control-label">Level notes completed</label>
   <div class="controls">
     <?php echo \UI\boolean_word($level->questions_answered()); ?>
   </div>
