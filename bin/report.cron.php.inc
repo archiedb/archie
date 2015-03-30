@@ -30,7 +30,7 @@ foreach ($requests as $request) {
   $report->generate($options['0']); 
   // Send an e-mail?
   if (strlen($options['1'])) { 
-    mail($options['1'],'Archie ' . $user->site->name . ' ' . ucfirst($file_info['0']) . ' ' . ucfirst($file_info['0']) . ' Report Finished','Your report is done!');
+    mail($options['1'],'Archie ' . $user->site->name . ' ' . $file_info['0'] . ' ' . ucfirst($file_info['1']) . ' Report Finished','Your report is done!');
   }
 } 
 
