@@ -677,8 +677,8 @@ class Record extends database_object {
     $uid = Dba::escape($uid);
     $count = abs(floor($count));
 
-    $sql = "SELECT * FROM `record` WHERE `user`='$uid' ORDER BY `created` DESC LIMIT $count";
-    $db_results = Dba::read($sql);
+    $sql = "SELECT * FROM `record` WHERE `user`='$uid' AND `site`=? ORDER BY `created` DESC LIMIT $count";
+    $db_results = Dba::read($sql,array(\UI\sess::$user->site->uid));
 
     while ($row = Dba::fetch_assoc($db_results)) { 
       $results[] = $row['uid'];

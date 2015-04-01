@@ -369,8 +369,8 @@ class Krotovina extends database_object {
 
     $uid = Dba::escape($uid);
     $limit = abs(floor($limit));
-    $sql = "SELECT * FROM `krotovina` WHERE `user`='$uid' ORDER BY `created` DESC LIMIT $limit";
-    $db_results = Dba::read($sql);
+    $sql = "SELECT * FROM `krotovina` WHERE `user`='$uid' AND `site`=? ORDER BY `created` DESC LIMIT $limit";
+    $db_results = Dba::read($sql,array(\UI\sess::$user->site->uid));
 
     while ($row = Dba::fetch_assoc($db_results)) {
       $results[] = $row['uid'];
