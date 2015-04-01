@@ -2,12 +2,14 @@
 # vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 import MySQLdb
-import os, errno, csv
+import os, errno, csv, sys
 import numpy as np
 import matplotlib
+import ConfigParser
 matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+
 
 
 def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel):
@@ -75,12 +77,23 @@ class switch(object):
         else:
             return False
 
-archiedb=MySQLdb.connect(host='localhost',user='root',passwd='bob123',db='archie')
-data_root='/var/lib/archie'
+# Load in the config from ../config/settings.php
+# And then use those to connect to the database and set the data_root
+Config = ConfigParser.ConfigParser()
+Config.read(os.path.dirname(os.path.abspath(__file__)) + '/../config/settings.php')
+
+archiedb=MySQLdb.connect(host=Config.get('main','database_hostname'),user=Config.get('main','database_username'),passwd=Config.get('main','database_password'),db=Config.get('main','database_name'))
+data_root=Config.get('main','data_root')
 units = ()
 
+# Look for an ARGV, if not Level.UID is passed then just get everything
+sqlwhere = ''
+if len(sys.argv) > 1:
+  sqlwhere = ' WHERE `level`.`uid`=\'' + sys.argv[1] + '\''
+
 levels=archiedb.cursor()
-levels.execute("""SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`site`.`name` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site` ORDER BY `level`.`uid`""")
+levelquery = "SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`site`.`name` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site`" + sqlwhere + " ORDER BY `level`.`uid`"
+levels.execute(levelquery)
 
 level=levels.fetchone()
 while level is not None:
@@ -229,8 +242,9 @@ while level is not None:
   ycord = 'elv'
   save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)  
 
-  # make 3d plot
+  # make 3d plot, different from a normal one so it's not using save_scatterplot
   plot_filename = full_path+'/Level-'+locus_txt+'-3D.png'
+  print "Building: Level-" + locus_txt + "-3D saving to " + plot_filename
   fig = plt.figure()
   ax = fig.add_subplot(111,projection='3d')
   ax.scatter(est,nor,elv,color=colors,marker='o')
