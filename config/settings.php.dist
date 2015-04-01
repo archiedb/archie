@@ -1,12 +1,12 @@
 ;<?php exit; ?>
 [main]
-web_path=""
-log_path="/var/log/archie"
+web_path=
+log_path=/var/log/archie
 
 ; Site you are currently at
 site=SITE
 ; This is the root of the attached/fs data
-data_root="/var/www/content"
+data_root=/var/www/content
 
 ; Operational stuff
 ;; This is the number of records per page
@@ -15,15 +15,15 @@ page_limit = 250
 ; Use RAM to avoid MySQL queries
 ; It is recommended to turn this on, only turn it off if
 ; you are getting out of memeory errors
-memory_cache = "true"
+memory_cache = true 
 
 ; STL2POV command
 ; This is required for the 3d model to png
-stl2pov_cmd = "/usr/local/bin/stl2pov"
+stl2pov_cmd = /usr/local/bin/stl2pov
 
 ; Megapov command
 ; This is required for the 3d model to png
-megapov_cmd = "/usr/local/megapov/megapov"
+megapov_cmd = /usr/local/megapov/megapov
 
 ; Database Related Settings
 database_username=username
