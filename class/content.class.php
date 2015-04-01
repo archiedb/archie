@@ -502,6 +502,11 @@ class content extends database_object {
 
     Error::clear();
 
+    # This might kersplode, but try to build the scatterplots for this level
+    # On the fly
+    $plotcmd = Config::get('prefix') . '/bin/build-scatter-plots ' . escapeshellarg($level->uid);
+    $output = exec($plotcmd);
+
     # We have to calc the length here
     $records = $level->records(); 
     $total_pages = ceil(3 + (count($records)/55)); 
