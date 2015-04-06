@@ -25,6 +25,7 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+<!--
 <div class="row">
   <?php $report = new Report('csv','allrecord'); ?>
   <div class="span2">All Sites Records</div>
@@ -58,6 +59,7 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+-->
 <div class="row">
   <?php $report = new Report('csv','sitefeature'); ?>
   <div class="span2">Site Features</div>
@@ -69,7 +71,7 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
-
+<!--
 <div class="row">
   <?php $report = new Report('csv','allfeature'); ?>
   <div class="span2">All Sites Features</div>
@@ -81,6 +83,7 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+-->
 <div class="row">
   <?php $report = new Report('csv','sitekrotovina'); ?>
   <div class="span2">Site Krotovina</div>
@@ -92,6 +95,7 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+<!--
 <div class="row">
   <?php $report = new Report('csv','allkrotovina'); ?>
   <div class="span2">All Sites Krotovina</div>
@@ -103,6 +107,7 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+-->
 <div class="row">
   <?php $report = new Report('csv','sitespatialdata'); ?>
   <div class="span2">Site Spatial Data</div>
@@ -114,6 +119,7 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+<!-- 
 <div class="row">
   <?php $report = new Report('csv','allspatialdata'); ?>
   <div class="span2">All Sites Spatial Data</div>
@@ -125,3 +131,4 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+-->

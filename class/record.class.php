@@ -7,8 +7,6 @@ class Record extends database_object {
   public $site; // Site UID  
   public $catalog_id; // # of item unique to site
   public $inventory_id; // this is the built ID of the thingy from site + year + catalog id
-  public $unit; 
-  public $quad; 
   public $feature; 
   public $krotovina;
   public $level; 
@@ -53,7 +51,6 @@ class Record extends database_object {
 		$this->material = new Material($this->material); 
 		$this->classification = new Classification($this->classification); 
 		$this->lsg_unit	= new lsgunit($this->lsg_unit); 
-		$this->quad = new quad($this->quad); 
     $this->site = new site($this->site);
 		$this->inventory_id = $this->site->name . '.' . date('Y',$this->created) . '-' . $this->catalog_id;
     $this->record = $this->site->name . '-' . $this->catalog_id;
@@ -516,39 +513,6 @@ class Record extends database_object {
     return true; 
 
 	} // validate
-
-	/** 
-	 * Export
-	 * This exports all of the records
-	 */
-	public static function export($type,$site) { 
-
-		$site = Dba::escape($site); 
-		$sql = "SELECT * FROM `record` WHERE `site`='$site'"; 
-		$db_results = Dba::read($sql); 	
-
-		while ($row = Dba::fetch_assoc($db_results)) { 
-			$results[] = new Record($row['uid']); 
-		} 
-
-		switch ($type) { 
-			default: 
-			case 'csv': 
-				echo "site,catalog id,unit,level,litho unit,station index,xrf matrix index,weight,height,width,thickness,quantity,material,classification,quad,feature,notes,created\n"; 
-				foreach ($results as $record) { 
-					$site = $record->site->name; 
-					$record->notes = str_replace(array("\r\n", "\n", "\r"),' ',$record->notes); 
-					echo "$site," . $record->catalog_id . "," . $record->unit . "," . $record->level->record . "," . lsgunit::$values[$record->lsg_unit] . "," . 
-						$record->station_index . "," . $record->xrf_matrix_index . "," . $record->weight . "," . $record->height . "," . 
-						$record->width . "," . $record->thickness . "," . $record->quanity . "," . $record->material->name . "," . 
-						trim($record->classification->name) . "," . quad::$values[$record->quad] . "," . $record->feature->record . ",\"" . 
-						addslashes($record->notes) . "\"," . date("m-d-Y h:i:s",$record->created) . "\n"; 
-				} // end foreach 
-
-			break; 
-		} 
-
-	} // export
 
 	/** 
 	 * last_created
