@@ -91,11 +91,11 @@ function return_upload_size() {
  * check_qrcode_cache_writeable
  * Make sure that the qrcode cache is writeable
  */
-function check_qrcode_cache_writeable() {
+function check_cache_writeable() {
 
   $dir = dirname(__FILE__); 
   $prefix = realpath($dir . "/../"); 
-  $filename = $prefix . '/lib/phpqrcode/cache';
+  $filename = $prefix . '/lib/cache';
 
   if (!is_writeable($filename)) { return false; }
 

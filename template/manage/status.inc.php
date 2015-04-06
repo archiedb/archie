@@ -63,8 +63,8 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo \UI\boolean_word(\debug\check_upload_size(),\debug\return_upload_size()); ?></td>
 </tr>
 <tr>
-  <td>QRCode Cache Directory Writeable</td>
-  <td><?php echo \UI\boolean_word(\debug\check_qrcode_cache_writeable()); ?></td>
+  <td>Cache Directory Writeable</td>
+  <td><?php echo \UI\boolean_word(\debug\check_cache_writeable(),Config::get('prefix') . '/lib/cache'); ?></td>
 </tr>
 </tbody>
 </table>
