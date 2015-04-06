@@ -502,10 +502,6 @@ class content extends database_object {
 
     Error::clear();
 
-    # This might kersplode, but try to build the scatterplots for this level
-    # On the fly
-    $plotcmd = Config::get('prefix') . '/bin/build-scatter-plots ' . escapeshellarg($level->uid);
-    $output = exec($plotcmd);
 
     # We have to calc the length here
     $records = $level->records(); 
@@ -520,6 +516,23 @@ class content extends database_object {
 
     // Return the primary image
     $levelimage = new Content($level->image,'image'); 
+
+    # Make sure the levelimage is readable, throw nasty error if not
+    if (!is_readable($levelimage->filename)) { 
+      Event::error('Level-PDF','Level Image ' . $levelimage->filename . ' is not readbale');
+      Error::add('level_image','Level Image is not readable or not found');
+    }
+    if (!is_writeable(Config::get('prefix') . '/lib/cache') OR !is_readable(Config::get('prefix') . '/lib/cache')) {
+      Event::error('Level-PDF','Cache directory unwriteable, unable to resize image');
+      Error::add('level_image','Cache directory unwriteable, unable to resize level image');
+    }
+
+    if (Error::occurred()) { 
+      Error::display('level_image');
+      require \UI\template('/footer');
+      exit;
+    }
+
 
     $ex_one = new User($level->excavator_one);
     $ex_two = new User($level->excavator_two);
@@ -613,14 +626,6 @@ class content extends database_object {
     $pdf->Text('104','74','EASTING');
     $pdf->Text('129','74',$level->easting);
 
-    # Make sure the levelimage is readable, throw nasty error if not
-    if (!is_readable($levelimage->filename)) { 
-      Event::error('Level-PDF','Level Image ' . $levelimage->filename . ' is not readbale');
-      Error::add('level_image','Level Image is not readable or not found');
-      Error::display('level_image');
-      require \UI\template('/footer');
-      exit;
-    }
 
     # Image scale is 2.83, so primary level image needs to be
     # 190 * 2.83 by 155 * 2.83 or 538 (width) by 439 height (aspect ratio of 1.22:1)
@@ -633,6 +638,11 @@ class content extends database_object {
     # Footer
     $pdf->SetFontSize('24');
     $pdf->Text('52','270','Unit ' . $level->unit . ' ' . $level->quad->name . ' - Level ' . $level->record . ' - LU ' . $level->lsg_unit->name); 
+
+    # This might kersplode, but try to build the scatterplots for this level
+    # On the fly
+    $plotcmd = Config::get('prefix') . '/bin/build-scatter-plots ' . escapeshellarg($level->uid);
+    $output = exec($plotcmd);
 
     # Get the scatterplot info for this level
     $plot = new Content($level->uid,'scatterplot');

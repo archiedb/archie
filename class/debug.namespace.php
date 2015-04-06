@@ -116,4 +116,35 @@ function model_to_png() {
 
 } // 3dmodel_to_png
 
+/**
+ * python_scatterplots
+ * Checks that python and the needed modules are installed
+ */
+function check_python_scatterplots() { 
+
+    $retval = true; 
+
+    if (!is_executable('/usr/bin/python')) { 
+      Event::add('Python','Unable to find python at /usr/bin/python');
+      return false; 
+    }
+
+    $modules = array('MySQLdb','os','errno','csv','sys','numpy','matplotlib','ConfigParser');
+
+    foreach ($modules as $module) { 
+
+      $cmd = "/usr/bin/python -c 'import $module'";
+      exec($cmd,$out,$return);
+      if ($return !== 0) { 
+        Event::add('Python',"Python missing $module module");
+        $retval = false;
+      }
+
+    } // foreach python modules
+
+    return $retval;
+
+
+} // check_python_scatterplots
+
 ?>
