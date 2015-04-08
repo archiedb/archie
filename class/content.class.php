@@ -502,7 +502,6 @@ class content extends database_object {
 
     Error::clear();
 
-
     # We have to calc the length here
     $records = $level->records(); 
     $total_pages = ceil(3 + (count($records)/55)); 
@@ -513,6 +512,7 @@ class content extends database_object {
     $pdf->SetFont('Times');
     $pdf->SetFontSize('10'); 
     $pdf->Text('200','295',$current_page. '/' . $total_pages); 
+    $pdf->Text('140','295'," Generated " . date("Y-M-d H:i",time()));
 
     // Return the primary image
     $levelimage = new Content($level->image,'image'); 
