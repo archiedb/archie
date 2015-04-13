@@ -1,6 +1,7 @@
 #!/bin/bash
 # Settings
-ABS_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)/`basename "${BASH_SOURCE[0]}"`
+ABS_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
+#ABS_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)/`basename "${BASH_SOURCE[0]}"`
 CONTENT=$ARGV[0]
 DATE=`date +%F`
 
