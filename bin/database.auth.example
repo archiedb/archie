@@ -2,3 +2,8 @@
 user=USERNAME
 password=PASSWORD
 host=HOSTNAME
+
+[mysql]
+user=USERNAME
+password=PASSWORD
+host=HOSTNAME

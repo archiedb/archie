@@ -1,3 +1,15 @@
+install.sh
+
+  Requires the database.auth file to exist, but will insert a blank Archie database
+  and copy the settings.php in place. WARNING WARNING WARNING. This script will
+  overwrite existing data in your database, althought it does check for a settings.php
+  it should _NEVER_ be run on an existing install as it will wipe out data. 
+
+  It creates a default web interface user called admin with the password admin. Depending
+  on when the ../config/database.sql file was created you might be required to update
+  the database immeditely upon installation. The ../config/database.sql is only updated
+  during a point release and is often out of date in relation to the GIT version. 
+
 backup-site.sh [CONTENT DIR]
 
   Shell script for backing up the database and content in Archie, you must manually
