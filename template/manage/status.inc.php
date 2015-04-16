@@ -33,7 +33,7 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 <tr>
   <td>3D Model to PNG</td>
-  <td><?php echo \UI\boolean_word(\debug\model_to_png()); ?></td>
+  <td><?php echo \UI\boolean_word(\debug\model_to_png(Config::get('stl2pov_cmd'),Config::get('megapov_cmd'))); ?></td>
 </tr>
 </tbody>
 </table>

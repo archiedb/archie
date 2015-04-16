@@ -15,11 +15,9 @@ function check_gd_support() {
 
   // Make sure we have JPEG and PNG support
   if (!$info['PNG Support']) {
-    Event::error('PNG Support','PHP-GD Does not support creation of PNGs'); 
     return false; 
   }
   if (!$info['JPEG Support']) {
-    Event::error('JPEG Support','PHP-GD does not support creation of JPEGs'); 
     return false;
   }
 
@@ -107,10 +105,10 @@ function check_cache_writeable() {
  * 3dmodel_to_png
  * Checks that we've got the required commands to convert stl -> png
  */
-function model_to_png() { 
+function model_to_png($stl2pov,$megapov) { 
 
-  if (!is_executable(\Config::get('stl2pov_cmd'))) { return false; }
-  if (!is_executable(\Config::get('megapov_cmd'))) { return false; }
+  if (!is_executable($stl2pov)) { return false; }
+  if (!is_executable($megapov_cmd)) { return false; }
 
   return true; 
 
@@ -125,7 +123,6 @@ function check_python_scatterplots() {
     $retval = true; 
 
     if (!is_executable('/usr/bin/python')) { 
-      Event::add('Python','Unable to find python at /usr/bin/python');
       return false; 
     }
 
@@ -136,7 +133,6 @@ function check_python_scatterplots() {
       $cmd = "/usr/bin/python -c 'import $module'";
       exec($cmd,$out,$return);
       if ($return !== 0) { 
-        Event::add('Python',"Python missing $module module");
         $retval = false;
       }
 
@@ -146,5 +142,25 @@ function check_python_scatterplots() {
 
 
 } // check_python_scatterplots
+
+/** 
+ * check_php_pdo
+ * make sure that php-pdo is enabled
+ */
+function check_php_pdo() { 
+
+  return extension_loaded('PDO');
+
+} // check_php_pdo
+
+/**
+ * check_php_pdomysql
+ * Check and make sure that the mysql part of pdo is loaded
+ */
+function check_php_pdomysql() { 
+
+  return extension_loaded('pdo_mysql');
+
+} // check_php_pdomysql
 
 ?>
