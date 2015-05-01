@@ -75,18 +75,38 @@ require_once 'class/ui.namespace.php';
         <td>MySQL Extensions for PHP PDO are enabled</td>
       </tr>
       <tr>
-        <td>Archie Config</td>
-        <td> </td>
-        <td>Archie config is readable and contains minimal settings required</td>
+        <td>Archie Config Readable</td>
+        <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_archie_config_readable()); ?></p></td>
+        <td>Archie config is readable by webserver</td>
+      </tr>
+      <tr>
+        <td>Archie Config Valid</td>
+        <?php 
+          $config_valid = true;
+          $fields = \Debug\check_archie_config();
+          if (strlen($fields)) { $config_valid = false; }
+        ?>
+        <td><p align="center"><?php echo \UI\boolean_word($config_valid,$fields); ?></p></td>
+        <td>Archie config has the minimum required settings</td>
       </tr>
       <tr>
         <td>MySQL Connection</td>
-        <td> </td>
+        <?php
+          $db_valid = true; 
+          $msg = \Debug\check_mysql_config();
+          if (strlen($msg)) { $db_valid = false; }
+        ?>
+        <td><p align="center"><?php echo \UI\boolean_word($db_valid,$msg); ?></p></td>
         <td>MySQL Connection information in the Archie config is correct</td>
       </tr>
       <tr>
         <td>Database Inserted</td>
-        <td> </td>
+        <?php 
+          $db_inserted = true;
+          $msg = \Debug\check_mysql_db();
+          if (strlen($msg)) { $db_inserted = false; }
+        ?>
+        <td><p align="center"><?php echo \UI\boolean_word($db_inserted,$msg); ?></td>
         <td>Basic Database tables exist and are readable with at least one active user</td>
       </tr>
     </tbody>
