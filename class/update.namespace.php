@@ -1158,6 +1158,7 @@ class Database {
  /**
    * update_0017
    * - Drop site_users table, it's not needed!
+   * - Add "Project" to site
    */
   public static function update_0017() { 
 
@@ -1165,10 +1166,15 @@ class Database {
 
     $sql = "DROP TABLE `site_users`";
     $db_results = \Dba::write($sql);
+  
+    $sql = "ALTER TABLE `site` ADD `project` varchar(128) AFTER `project`";
+    $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval;
 
   } // update_0017
+
+
 
 } // \Update\Database class
 

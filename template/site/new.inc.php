@@ -11,13 +11,12 @@ if (INIT_LOADED != '1') { exit; }
     <input id="inputName" name="name" type="text" value="<?php echo scrub_out($_POST['name']); ?>" />
   </div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
-    <label class="control-label" for="inputPI">Principal Investigator</label>
-    <div class="controls">
-      <input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($_POST['pi']); ?>" />
-    </div>
+<div class="control-group span4 offset1<?php Error::display_class('project'); ?>">
+  <label class="control-label" for="inputProj">Project</label>
+  <div class="controls">
+    <input id="inputProj" name="project" type="text" value="<?php echo scrub_out($_POST['project']); ?>" />
+  </div>
 </div>
-
 <div class="control-group span4<?php Error::display_class('description'); ?>">
    <label class="control-label" for="inputDescription">Description</label>
    <div class="controls">
@@ -58,6 +57,12 @@ if (INIT_LOADED != '1') { exit; }
     <label class="control-label" for="inputEasting">Easting</label>
     <div class="controls">
       <input id="inputEasting" name="easting" type="text" value="<?php echo scrub_out($_POST['easting']); ?>" />
+    </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
+    <label class="control-label" for="inputPI">Principal Investigator</label>
+    <div class="controls">
+      <input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($_POST['pi']); ?>" />
     </div>
 </div>
 <div class="control-group span8"> 

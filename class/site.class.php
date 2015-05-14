@@ -11,6 +11,7 @@ class Site extends database_object {
   public $elevation;
   public $principal_investigator; // site.principal_investigator
   public $partners; // text field
+  public $project; // Short description of project 
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
   public $enabled; 
@@ -102,9 +103,10 @@ class Site extends database_object {
     $elevation = Dba::escape($input['elevation']);
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
+    $project = Dba::escape($input['project']); 
     $partners = Dba::escape($input['partners']);
-    $sql = "INSERT INTO `site` (`name`,`description`,`principal_investigator`,`excavation_start`,`excavation_end`,`partners`,`northing`,`easting`,`elevation`,`enabled`) " . 
-      "VALUES ('$name','$desc','$pi','$exc_start','$exc_end','$partners','$northing','$easting','$elevation','1')";
+    $sql = "INSERT INTO `site` (`name`,`description`,`project`,`principal_investigator`,`excavation_start`,`excavation_end`,`partners`,`northing`,`easting`,`elevation`,`enabled`) " . 
+      "VALUES ('$name','$desc','$project','$pi','$exc_start','$exc_end','$partners','$northing','$easting','$elevation','1')";
     $results = Dba::write($sql); 
 
     $insert_id = Dba::insert_id();
@@ -141,8 +143,9 @@ class Site extends database_object {
     $exc_end = Dba::escape($input['excavation-end']);
     $elevation = Dba::escape($input['elevation']);
     $northing = Dba::escape($input['northing']);
+    $project = Dba::escape($input['project']); 
     $easting = Dba::escape($input['easting']);
-    $sql = "UPDATE `site` SET `name`='$name',`principal_investigator`='$pi',`description`='$description'," . 
+    $sql = "UPDATE `site` SET `name`='$name',`project`='$project', `principal_investigator`='$pi',`description`='$description'," . 
       "`partners`='$partners',`excavation_start`='$exc_start',`excavation_end`='$exc_end',`elevation`='$elevation'," . 
       "`northing`='$northing',`easting`='$easting' WHERE `uid`='$uid'";
     $db_results = Dba::write($sql);
@@ -191,17 +194,6 @@ class Site extends database_object {
     return true; 
 
   } // validate
-
-  /**
-   * user_level
-   * returns the access level for the specified user
-   */
-  public static function user_level($site_uid,$user_uid) { 
-
-    //FIXME: We need a database to do anything meaninful here
-    return true; 
-
-  } // user_level
 
   /**
    * get_all

@@ -10,12 +10,12 @@ if (INIT_LOADED != '1') { exit; }
   <label class="control-label" for="inputName">Name</label>
   <div class="controls"><input id="inputName" name="name" type="text" value="<?php echo scrub_out($site->name); ?>" /></div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
-  <label class="control-label" for="inputPI">Principal Investigator</label>
+<div class="control-group span4 offset1<?php Error::display_class('project'); ?>">
+  <label class="control-label" for="inputProj">Project</label>
   <div class="controls">
-  	<input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($site->principal_investigator); ?>" />
+    <input id="inputProj" name="project" value="<?php echo scrub_out($site->project); ?>" />
   </div>
-</div> 
+</div>
 <div class="control-group span4<?php Error::display_class('description'); ?>">
   <label class="control-label" for="inputDescription">Description</label>
   <div class="controls">
@@ -52,12 +52,18 @@ if (INIT_LOADED != '1') { exit; }
     <input id="inputNorthing" name="northing" type="text" value="<?php echo scrub_out($site->northing); ?>" />
   </div>
 </div>
-<div class="control-group span8<?php Error::display_class('easting'); ?>">
+<div class="control-group span4<?php Error::display_class('easting'); ?>">
   <label class="control-label" for="inputEasting">Easting</label>
   <div class="controls">
     <input id="inputEasting" name="easting" type="text" value="<?php echo scrub_out($site->easting); ?>" />
   </div>
 </div>
+<div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
+  <label class="control-label" for="inputPI">Principal Investigator</label>
+  <div class="controls">
+  	<input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($site->principal_investigator); ?>" />
+  </div>
+</div> 
 <div class="control-group span8">
   <div class="controls">
     <input type="hidden" name="site_uid" value="<?php echo scrub_out($site->uid); ?>" />
