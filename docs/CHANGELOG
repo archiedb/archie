@@ -1,3 +1,38 @@
+ ADD - Config regeneration, and config version check
+ ADD - project field to site
+ ADD - Additional tests to /test.php for troubleshooting installs
+ ADD - test.php page that attempts to help people troubleshoot why they can't get archie up at all, it's a duplicate of the Manage -> Status page without any sensitive details about the server (beyond some "supported" info...)
+ FIX - backup script so it works as intended
+ FIX - spelling
+ ADD install.sh script
+ FIX - backup script and fix-permissions script to use abs path correctly
+ FIX #56 front page of report has generation date/time stamp by page number
+ FIX #46 dropbox isn't really able to be automated easily, but we provide documentation and suggestions now
+ REMOVE - reports that haven't been created yet
+ FIX - display of unit and quad in record view
+ ADD Check for python scatterplot modules
+ ADD Cache dir permissions fix and status check
+ FIX - Not sure if this is going to do anything?
+ UPDATE - Build #
+ FIX - main page last X records didn't filter on site
+ CHANGE - generate the scatterplots when the level report is run, this adds 2-3seconds to level generation
+ FIX - path detection
+ FIX - errant quotes that threw off pythons config reader
+ ADD - [main] section so that python can parse it
+ FIX - missing file :S
+ FIX #28 #29
+ FIX #53 - Repors now relate to site
+ FIX #51 re-worded close form to Level notes completed?
+ FIX - Typo on e-mail sent to users when a report is finished
+ FIX - Reports are now site specific, downloaded files now use YearMonthDay date formate and include the type in the filename
+ FIX - Issue where krotovina/features would allow duplicate RNs in some cases
+ FIX - issues with switching sites
+ ADD - prelim site changing functionality, UNTESTED
+ FIX - remove unused site_users table from DB
+ ADD - Spatial Data report, prelim work
+ FIX - Material Stats not showing 0 if no records entered
+ Working on #27 #28 #29
+ FIX #52 - throw a human readable error if level image isn't there or readable
  ADD ability to put a motd on the login page
  ADD - Caching of users for krots and features
  FIX - extranious sql queries for spatial data records that are empty
