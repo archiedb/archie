@@ -108,7 +108,7 @@ function check_cache_writeable() {
 function model_to_png($stl2pov,$megapov) { 
 
   if (!is_executable($stl2pov)) { return false; }
-  if (!is_executable($megapov_cmd)) { return false; }
+  if (!is_executable($megapov)) { return false; }
 
   return true; 
 
