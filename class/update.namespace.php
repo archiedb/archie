@@ -16,6 +16,15 @@ class Code {
   private function __clone() {}
 
   /**
+   * return the config file 'version' from the .dist file
+   */
+  public static function config_version() { 
+
+    return \Config::get('config_version') ? \Config::get('config_version') : '0.00';
+
+  } // config_version
+
+  /**
    * return version of the code
    */
   public static function version() { 
@@ -53,6 +62,63 @@ class Code {
     return true; 
 
   } // check
+
+  /**
+   * config_check
+   * Check this config version vs dist
+   */
+  public static function config_check() { 
+
+    $dist_results = parse_ini_file(\Config::get('prefix') . '/config/settings.php.dist');
+    $live_results = parse_ini_file(\Config::get('prefix') . '/config/settings.php');
+
+    if ($dist_results['config_version'] != $live_results['config_version']) {
+      return false;
+    }
+
+    if (count($dist_results) != count($live_results)) {
+      return false; 
+    }
+
+    return true;
+
+  } // config_check
+
+  /**
+   * config_update
+   * Returns a string of the updated config
+   */
+  public static function config_update() {
+
+    // Read new, set new to old where they overlap
+    $dist_results = parse_ini_file(\Config::get('prefix') . '/config/settings.php.dist');
+    $live_results = parse_ini_file(\Config::get('prefix') . '/config/settings.php');
+
+    $config_new = ";<?php exit; ?>\n[main]\n";
+    // Drr don't carry config version forward
+    unset($live_results['config_version']);
+
+    foreach ($dist_results as $key=>$value) { 
+      $new_value = isset($live_results[$key]) ? $live_results[$key] : $dist_results[$key];
+      $config_new .= $key . "=" . $new_value . "\n"; 
+    }
+    if (is_writeable(\Config::get('prefix') . '/config/settings.php')) {
+      // If it works return
+      if (($result = file_put_contents(\Config::get('prefix') . '/config/settings.php',$config_new)) !== false) {
+         return true; 
+      }
+    }
+
+    // If the config file is not writeable by the webserver (likely a good thing!)
+    // Whipe anything that's been output
+    ob_clean();
+    // Send the headers and output the image, expires one day later (filenames should be unique)
+    header("Expires: " . gmdate("D, d M Y H:i:s",time()+86400));
+    header("Last-Modified: " . gmdate("D, d M Y H:i:s",filemtime('settings.php')) . " GMT");
+    header("Content-Disposition: attachment; filename=" . scrub_out(basename('settings.php')));
+    echo $config_new;
+    exit;
+  } // config_update
 
 } // \Update\code
 
@@ -1167,7 +1233,15 @@ class Database {
     $sql = "DROP TABLE `site_users`";
     $db_results = \Dba::write($sql);
   
-    $sql = "ALTER TABLE `site` ADD `project` varchar(128) AFTER `project`";
+    $sql = "CREATE TABLE `site_data` (" . 
+        "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+        "`site` int(11) NOT NULL," .
+        "`key` varchar(256) NOT NULL," .
+        "`value` varchar(256) NOT NULL," .
+        "`created` int(11) UNSIGNED NOT NULL," .
+        "`closed` int(11) UNSIGNED NOT NULL," .
+        "PRIMARY KEY (`uid`)) " . 
+        "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval;

@@ -20,6 +20,10 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo \UI\boolean_word(\update\Database::check(),'Current Version:' . \update\Database::version()); ?></td>
 </tr>
 <tr>
+  <td>Archie Config Version</td>
+  <td><?php echo \UI\boolean_word(\update\Code::config_check(),'Current Version:' . \update\Code::config_version()); ?></td>
+</tr>
+<tr>
   <td>Log Path:</td>
   <td><?php echo \UI\boolean_word(is_writeable(Config::get('log_path')),Config::get('log_path')); ?></td>
 </tr>

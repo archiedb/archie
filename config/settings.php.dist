@@ -1,11 +1,15 @@
 ;<?php exit; ?>
 [main]
 ; Current Config version, used internally to determine if config file needs to be updated
-config_version=0.01
+config_version=0.02
 
 ; The path to your Archie install, if Archie is installed in a sub-directory (http://localhost/archie) then 
 ;; The value of this should be /archie. If it's installed in the root then leave it blank
 web_path=
+
+; Ticket size for Catalog item tags
+;; Current options 88x25mm and 57x32mm
+ticket_size=88x25mm
 
 ; Path where Archie will try to log events, must be writeable by the webserver
 ;; This can contain sensitive information, and should not be inside the web space

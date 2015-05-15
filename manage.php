@@ -29,6 +29,11 @@ switch (\UI\sess::location('action')) {
     }
     header("Location:" . Config::get('web_path')  . '/manage/tools'); 
   break;
+  case 'rebuildconfig':
+    if (!Access::is_admin()) { \UI\access_denied(); }
+    \update\Code::config_update(); 
+    header("Location:" . Config::get('web_path') . '/manage/tools');
+  break;
   case 'site':
     switch (\UI\sess::location('2')) {
       case 'add':
@@ -67,11 +72,15 @@ switch (\UI\sess::location('action')) {
       break;
     }
   break;
-  case 'import': 
+  case 'import':
+    if (!Access::is_admin()) { \UI\access_denied(); }
+    require_once \UI\template('/manage/import');
+  break;
+  case 'run_import': 
     if (!Access::is_admin()) { \UI\access_denied(); }
     $import = new Import($_POST['type']);   
     $import->run($_FILES['import']['tmp_name']);
-    header("Location:" . Config::get('web_path') . '/manage/tools'); 
+    header("Location:" . Config::get('web_path') . '/manage/import'); 
   break;
   case 'tools':
     if (!Access::is_admin()) { \UI\access_denied(); }

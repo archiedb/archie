@@ -44,11 +44,12 @@ if (INIT_LOADED != '1') { exit; }
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/group">Groups</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/material">Materials</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/classification">Classifications</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/site">Sites</a>
               <li class="divider"></li>
               <li class="nav-header">System</li>
-              <li><a href="<?php echo Config::get('web_path'); ?>/manage/status">Status</a>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/import">Import</a>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/tools">Tools</a>
-              <li><a href="<?php echo Config::get('web_path'); ?>/manage/site">Sites</a>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/status">Status</a>
             </ul>
           </li>
           <li class="divider-vertical"></li>
