@@ -252,5 +252,15 @@ function check_mysql_db() {
 
 } // check_msyql_inserted
 
+/**
+ * check_imagemagick
+ * make sure convert exists
+ */
+function check_imagemagick() {
+
+    return is_executable('/usr/bin/convert');
+
+} // check_imagemagick
+
 
 ?>

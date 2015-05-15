@@ -71,6 +71,10 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo \UI\boolean_word(\debug\check_cache_writeable(),Config::get('prefix') . '/lib/cache'); ?></td>
 </tr>
 <tr>
+  <td>ImageMagick Installed</td>
+  <td><?php echo \UI\boolean_word(\debug\check_imagemagick(),'/usr/bin/convert'); ?></td>
+</tr>
+<tr>
   <td>Python Modules for Scatterplots</td>
   <td><?php echo \UI\boolean_word(\debug\check_python_scatterplots()); ?></td>
 </tr>
