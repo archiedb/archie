@@ -103,9 +103,9 @@ switch (\UI\sess::location('action')) {
     // For now its just tickets
     $ticket = new Content(\UI\sess::location('objectid'),'ticket'); 
     $record = new Record(\UI\sess::location('objectid')); 
-    if (!$ticket->filename OR filemtime($ticket->filename) < $record->updated) { 
+//    if (!$ticket->filename OR filemtime($ticket->filename) < $record->updated) { 
       Content::write(\UI\sess::location('objectid'),'ticket',$ticket->filename); 
-    } 
+//    } 
     header("Location:" . Config::get('web_path') . '/media/ticket/' . \UI\sess::location('objectid'));
   break; 
   case 'search':

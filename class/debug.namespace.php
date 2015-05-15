@@ -132,7 +132,8 @@ function check_python_scatterplots() {
 
       $cmd = "/usr/bin/python -c 'import $module'";
       exec($cmd,$out,$return);
-      if ($return !== 0) { 
+      // Just 0 check doesn't work matplotlib returns 1 sometimes even though its ok... :(
+      if ($return !== 0 AND !empty($out)) { 
         $retval = false;
       }
 

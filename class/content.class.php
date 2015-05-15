@@ -411,7 +411,7 @@ class content extends database_object {
 	 * write_qrcode
 	 * Generate and save a qrcode
 	 */
-	private static function write_qrcode($uid,$filename,$update_record) { 
+	public static function write_qrcode($uid,$filename,$update_record) { 
 
 		$qrcode_data = Config::get('web_path') . '/records/view/' . $uid;
 		QRcode::png($qrcode_data,$filename,'H','2',2); 
@@ -447,43 +447,16 @@ class content extends database_object {
 	 */
 	private static function write_ticket(&$record,$filename,$update_record) {
 
-		$pdf = new FPDF();
-		$pdf->AddPage('L',array('88.9','25.4'));
+    $type = Config::get('ticket_size');
 
-    $feat_krot = $record->feature->uid ? $record->feature->record : $record->krotovina->record;
-
-		// We need the QRcode filename here
-		$qrcode = new Content($record->uid,'qrcode'); 
-
-    // There are some edge cases where the QRCode might not exist, check and re-gen if needed
-    if (!is_file($qrcode->filename)) {
-     self::write_qrcode($record->uid,$qrcode->filename,true);
-    }
-
-		$pdf->Image($qrcode->filename,'0','0','25.4','25.4'); 
-		$pdf->SetFont('Times','B'); 
-		$pdf->SetFontSize('8'); 
-		$pdf->Text('25','4','SITE:' . $record->site->name);
-		$pdf->Text('52','4','UNIT:' . $record->level->unit); 
-		$pdf->Text('25','8','LVL:' . $record->level->record);
-		$pdf->Text('52','8','QUAD:' . $record->level->quad->name); 
-		$pdf->Text('25','12','MAT:' . $record->material->name);
-		$pdf->Text('52','12','CLASS:' . $record->classification->name); 	
-		$pdf->Text('25','16','L.U.:' . $record->lsg_unit->name);
-		$pdf->Text('52','16','FEAT/KROT:' . $feat_krot); 
-		$pdf->Text('25','20','CAT#:' . $record->catalog_id);
-		$pdf->Text('52','20','RN:' . $record->station_index); 
-		$pdf->Text('25','24',date('d-M-Y',$record->created));
-		$pdf->Text('52','24','USER:' . $record->user->username); 
-		$pdf->Output($filename);
+    Genpdf::{"ticket_$type"}($record,$filename);
 
 		if (!$update_record) { 
-			$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
-			$uid = Dba::escape($record->uid); 
-			$type = 'ticket'; 
+			$filename = ltrim($filename,Config::get('data_root')); 
+			$uid = $record->uid; 
 
-			$sql = "INSERT INTO `media` (`filename`,`type`,`record`) VALUES ('$filename','$type','$uid')";
-			$db_results = Dba::write($sql); 
+			$sql = "INSERT INTO `media` (`filename`,`type`,`record`) VALUES (?,?,?)";
+			$db_results = Dba::write($sql,array($filename,'ticket',$uid)); 
 
 			if (!$db_results) { 
 				Event::error('Database','Unknown Database error inserting ticket'); 
