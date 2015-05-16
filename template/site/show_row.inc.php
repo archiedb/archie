@@ -3,7 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <tr>
-  <td><?php echo scrub_out($site->name); ?></td>
+  <td><a href="<?php echo Config::get('web_path'); ?>/manage/site/view/<?php echo scrub_out($site->uid); ?>"><?php echo scrub_out($site->name); ?></a></td>
   <td><?php echo scrub_out($site->description); ?></td>
   <td><?php echo scrub_out($site->principal_investigator); ?></td>
   <td>&nbsp;</td>

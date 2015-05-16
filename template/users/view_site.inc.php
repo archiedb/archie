@@ -27,9 +27,9 @@ $sites = $user->get_sites();
   <td><?php echo scrub_out($site->principal_investigator); ?></td>
   <td>
     <?php if ($user->site->uid != $site->uid) { ?>
-    <a class="btn btn-success" href="<?php echo Config::get('web_path'); ?>/users/siteupdate/<?php echo $site->uid; ?>">Activate</a>
+    <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/users/siteupdate/<?php echo $site->uid; ?>">Activate</a>
     <?php } else { ?>
-    <a class="btn btn-danger disabled" href="#">Active Site</a>
+    <a class="btn btn-success disabled" href="#">Active Site</a>
     <?php } ?>
   </td>
 </tr>

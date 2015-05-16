@@ -10,12 +10,12 @@ if (INIT_LOADED != '1') { exit; }
   <label class="control-label" for="inputName">Name</label>
   <div class="controls"><input id="inputName" name="name" type="text" value="<?php echo scrub_out($site->name); ?>" /></div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('project'); ?>">
-  <label class="control-label" for="inputProj">Project</label>
+<div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
+  <label class="control-label" for="inputPI">Principal Investigator</label>
   <div class="controls">
-    <input id="inputProj" name="project" value="<?php echo scrub_out($site->project); ?>" />
+  	<input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($site->principal_investigator); ?>" />
   </div>
-</div>
+</div> 
 <div class="control-group span4<?php Error::display_class('description'); ?>">
   <label class="control-label" for="inputDescription">Description</label>
   <div class="controls">
@@ -26,18 +26,6 @@ if (INIT_LOADED != '1') { exit; }
   <label class="control-label" for="inputPartners">Partners</label>
   <div class="controls">
   	<textarea id="inputPartners" name="partners" class="textbox" rows="5"><?php echo scrub_out($site->partners); ?></textarea>
-  </div>
-</div>
-<div class="control-group span4<?php Error::display_class('excavation_start'); ?>">
-  <label class="control-label" for="inputExcavationStart">Excavation Start</label>
-  <div class="controls">
-    <input id="inputExcavationStart" name="excavation_start" type="text" placeholder="DD-MON-YY" />
-  </div>
-</div>
-<div class="control-group span4 offset1<?php Error::display_class('excavation_end'); ?>">
-  <label class="control-label" for="inputExcavationEnd">Excavation End</label>
-  <div class="controls">
-    <input id="inputExcavationEnd" name="excavation_end" type="text" placeholder="DD-MON-YY" />
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('elevation'); ?>">
@@ -58,12 +46,6 @@ if (INIT_LOADED != '1') { exit; }
     <input id="inputEasting" name="easting" type="text" value="<?php echo scrub_out($site->easting); ?>" />
   </div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
-  <label class="control-label" for="inputPI">Principal Investigator</label>
-  <div class="controls">
-  	<input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($site->principal_investigator); ?>" />
-  </div>
-</div> 
 <div class="control-group span8">
   <div class="controls">
     <input type="hidden" name="site_uid" value="<?php echo scrub_out($site->uid); ?>" />

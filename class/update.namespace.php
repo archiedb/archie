@@ -1244,6 +1244,14 @@ class Database {
         "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    // We need to move the start/end excavation times into the site_data table
+    $sql = "SELECT `uid`,`excavation_start`,`excavation_end` FROM `site`";
+    $db_results = \Dba::read($sql);
+
+    while ($row = \Dba::fetch_row($db_results)) { 
+
+    } 
+
     return $retval;
 
   } // update_0017

@@ -11,11 +11,11 @@ if (INIT_LOADED != '1') { exit; }
     <input id="inputName" name="name" type="text" value="<?php echo scrub_out($_POST['name']); ?>" />
   </div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('project'); ?>">
-  <label class="control-label" for="inputProj">Project</label>
-  <div class="controls">
-    <input id="inputProj" name="project" type="text" value="<?php echo scrub_out($_POST['project']); ?>" />
-  </div>
+<div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
+    <label class="control-label" for="inputPI">Principal Investigator</label>
+    <div class="controls">
+      <input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($_POST['pi']); ?>" />
+    </div>
 </div>
 <div class="control-group span4<?php Error::display_class('description'); ?>">
    <label class="control-label" for="inputDescription">Description</label>
@@ -28,18 +28,6 @@ if (INIT_LOADED != '1') { exit; }
     <div class="controls">
       <textarea id="inputPartners" name="partners" class="textbox" rows="5"><?php echo scrub_out($_POST['partners']); ?></textarea>
    </div>
-</div>
-<div class="control-group span4<?php Error::display_class('excavation_start'); ?>">
-    <label class="control-label" for="inputExcstart">Excavation Start</label>
-    <div class="controls">
-      <input placeholder="DD-MON-YY" id="inputExcstart" name="excavation_start" type="text" value="<?php echo scrub_out($_POST['excavation_start']); ?>" />
-    </div>
-</div>
-<div class="control-group span4 offset1<?php Error::display_class('excavation_end'); ?>">
-    <label class="control-label" for="inputExcend">Excavation End</label>
-    <div class="controls">
-      <input placeholder="DD-MON-YY" id="inputExcend" name="excavation_end" type="text" value="<?php echo scrub_out($_POST['excavation_end']); ?>" />
-    </div>
 </div>
 <div class="control-group span4<?php Error::display_class('elevation'); ?>">
     <label class="control-label" for="inputElevation">Elevation</label>
@@ -57,12 +45,6 @@ if (INIT_LOADED != '1') { exit; }
     <label class="control-label" for="inputEasting">Easting</label>
     <div class="controls">
       <input id="inputEasting" name="easting" type="text" value="<?php echo scrub_out($_POST['easting']); ?>" />
-    </div>
-</div>
-<div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
-    <label class="control-label" for="inputPI">Principal Investigator</label>
-    <div class="controls">
-      <input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($_POST['pi']); ?>" />
     </div>
 </div>
 <div class="control-group span8"> 

@@ -65,10 +65,15 @@ switch (\UI\sess::location('action')) {
         }
       break;
       case 'view':
+        if (!Access::has('site','read')) { \UI\access_denied(); }
+        $site = new Site(\UI\sess::location('3'));
+        require_once \UI\template('/site/view');
+      break;
+      case 'show':
       default:
         if (!Access::has('site','read')) { \UI\access_denied(); }
         $sites = Site::get_all();
-        require_once \UI\template('/site/view');
+        require_once \UI\template('/site/show');
       break;
     }
   break;
