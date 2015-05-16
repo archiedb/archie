@@ -374,7 +374,9 @@ class View {
       return ''; 
     } 
 
-    $sql = "WHERE 1=1 AND "; 
+    $site = \UI\sess::$user->site->uid;
+
+    $sql = "WHERE `site`='$site' AND "; 
 
     foreach ($this->_state['filter'] as $key=>$value) { 
       $sql .= $this->sql_filter($key,$value); 
