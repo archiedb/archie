@@ -36,6 +36,13 @@ switch (\UI\sess::location('action')) {
   break;
   case 'site':
     switch (\UI\sess::location('2')) {
+      case 'setproject':
+
+      break;
+      case 'setaccession':
+
+        header("Location:" . Config::get('web_path') . '/manage/site/view/' . $site->uid);
+      break;
       case 'add':
         if (!Access::has('site','create')) { \UI\access_denied(); }
         require_once \UI\template('/site/new');
@@ -46,7 +53,7 @@ switch (\UI\sess::location('action')) {
           require_once \UI\template('/site/new');
         }
         else {
-          header("Location:" . Config::get('web_path') . '/manage/site/view');
+          header("Location:" . Config::get('web_path') . '/manage/site/show');
         }
       break;
       case 'edit':
@@ -61,7 +68,7 @@ switch (\UI\sess::location('action')) {
           require_once \UI\template('/site/edit');
         }
         else {
-          header("Location:" . Config::get('web_path') . '/manage/site/view');
+          header("Location:" . Config::get('web_path') . '/manage/site/view/' . $site->uid);
         }
       break;
       case 'view':

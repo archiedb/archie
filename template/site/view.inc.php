@@ -7,8 +7,8 @@ if (INIT_LOADED != '1') { exit; }
   <h4><?php echo scrub_out($site->name); ?> Site</h4>
 </div>
 <p class="pull-right text-right">
-  <a class="btn btn-primary disabled" href="#addproject">Set Project</a>
-  <a class="btn btn-primary disabled" href="#addaccession">Set Accession</a>
+  <a class="btn btn-primary " role="button" data-toggle="modal" href="#set_project">Set Project</a>
+  <a class="btn btn-primary " role="button" data-toggle="modal" href="#set_accession">Set Accession</a>
 </p>
 <table class="table table-hover table-bordered table-white">
 <tr>
@@ -66,3 +66,7 @@ if (INIT_LOADED != '1') { exit; }
   </td>
 </tr>
 </table>
+<?php 
+  include \UI\template('/site/modal_set_project');
+  include \UI\template('/site/modal_set_accession');
+?>
