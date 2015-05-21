@@ -17,6 +17,16 @@ class Genpdf {
 
   public function ticket_57x32mm ($record,$filename,$update_record) { 
 
+    // Figure out what to do about MASL, order is
+    // Level Closed -> [use start/stop]
+    // Level Open, [use start/NO DATA]
+    if ($record->level->closed) {
+      $masl = $record->level->elv_center_start . '-' . $record->level->elv_center_finish;
+    }
+    else {
+      $masl = $record->level->elv_center_start . '-NO DATA';
+    }
+
     $pdf = new FPDF();
     $pdf->AddPage('L',array(57,32));
 
@@ -24,8 +34,8 @@ class Genpdf {
     $pdf->SetFontSize('8');
     $pdf->Text('1','4','Catalog #:' . $record->catalog_id);
     $pdf->Text('33','4','Site:'. $record->site->name);
-    $pdf->Text('1','8','Proj: The Big Dig');
-    $pdf->Text('33','8','Acc#:99999');
+    $pdf->Text('1','8','Proj:' . $record->site->project);
+    $pdf->Text('33','8','Acc#:' . $record->accession);
     $pdf->Text('1','12','Date:'.date('m/d/Y',$record->created));
     $pdf->Text('33','12','Unit:'. $record->level->unit);
     $pdf->Text('1','16','Name:' . $record->user->name); 
@@ -33,7 +43,7 @@ class Genpdf {
     $pdf->Text('1','20','Item(s):' . $record->material->name);
     $pdf->Text('33','20','N = '. $record->quanity);
     $pdf->Text('3','24',' ('. $record->classification->name . ')');
-    $pdf->Text('1','28','MASL:1234.567-NO DATA');
+    $pdf->Text('1','28','MASL:' . $masl);
 
     $pdf->Output($filename);
 
