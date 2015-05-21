@@ -16,8 +16,6 @@ if (INIT_LOADED != '1') { exit; }
   <td>
     <?php echo scrub_out($site->name); ?>
   </td>
-</tr>
-<tr>
   <td>
     Principal Investigator
   </td>
@@ -32,8 +30,6 @@ if (INIT_LOADED != '1') { exit; }
   <td>
       <?php echo scrub_out($site->description); ?>
   </td>
-</tr>
-<tr>
   <td>
     Partners
   </td>
@@ -48,8 +44,6 @@ if (INIT_LOADED != '1') { exit; }
   <td>
       <?php echo scrub_out($site->elevation); ?>
   </td>
-</tr>
-<tr>
   <td>
     Northing
   </td>
@@ -61,7 +55,7 @@ if (INIT_LOADED != '1') { exit; }
   <td>
     Easting
   </td>
-  <td>
+  <td colspan="3">
     <?php echo scrub_out($site->easting); ?>
   </td>
 </tr>
@@ -70,3 +64,5 @@ if (INIT_LOADED != '1') { exit; }
   include \UI\template('/site/modal_set_project');
   include \UI\template('/site/modal_set_accession');
 ?>
+<h5>Current Accession: <span class="btn disabled"><?php echo $site->accession; ?></span></h5>
+<h5>Current Project: <span class="btn disabled"><?php echo $site->project; ?></span></h5>

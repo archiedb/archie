@@ -13,6 +13,8 @@ class Site extends database_object {
   public $partners; // text field
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
+  public $project; // current (many on a single site) 
+  public $accession; // current (many on a single site)
   public $enabled; 
 
 	// Constructor takes a uid
@@ -21,6 +23,14 @@ class Site extends database_object {
 		if (!is_numeric($uid)) { return false; } 
 
 		$row = $this->get_info($uid,'site'); 
+
+    // Get the project and accession - may be cached
+    if (!isset($this->project)) { 
+      $this->project = Site::get_data($uid,'project');
+    }
+    if (!isset($this->accession)) { 
+      $this->accession = Site::get_data($uid,'accession');
+    }
 
 		foreach ($row as $key=>$value) { 
 			$this->$key = $value; 
@@ -46,6 +56,8 @@ class Site extends database_object {
     $db_results = Dba::read($sql); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
+      $row['project'] = Site::get_data($row['uid'],'project');
+      $row['accession'] = Site::get_data($row['uid'],'accession');
       parent::add_to_cache('site',$row['uid'],$row); 
     }
 
@@ -81,6 +93,49 @@ class Site extends database_object {
 
 	} // refresh
 
+  /**
+   * get_data
+   */
+  public static function get_data($site,$field) {
+
+    $allowed_fields = array('project','accession');
+
+    if (!in_array($field,$allowed_fields)) {
+      return false;
+    }
+
+    $sql = "SELECT `value` FROM `site_data` WHERE `site`=? AND `key`=? AND `closed` IS NULL";
+    $db_results = Dba::read($sql,array($site,$field));
+
+    $row = Dba::fetch_assoc($db_results);
+
+    return $row['value'];
+
+  } // get_data
+
+  /**
+   * set_data
+   */
+  public static function set_data($site,$field,$value) { 
+
+    $allowed_fields = array('project','accession');
+
+    if (!in_array($field,$allowed_fields)) {
+      return false;
+    }
+
+    // Set Closed date on any existing
+    $sql = "UPDATE `site_data` SET `closed`=? WHERE `site`=? AND `key`=? AND `closed` IS NULL";
+    $db_results = Dba::write($sql,array(time(),$site,$field));
+
+    // Set New value
+    $sql = "INSERT INTO `site_data` (`site`,`key`,`value`,`created`) VALUES (?,?,?,?)";
+    $db_results = Dba::write($sql,array($site,$field,$value,time()));
+
+    return $db_results;
+
+  } // set_data
+  
   /**
    * create
    */

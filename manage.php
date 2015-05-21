@@ -37,10 +37,13 @@ switch (\UI\sess::location('action')) {
   case 'site':
     switch (\UI\sess::location('2')) {
       case 'setproject':
-
+        $site = new Site($_POST['uid']);
+        $site->set_data($_POST['uid'],'project',$_POST['project']);
+        header("Location:" . Config::get('web_path') . '/manage/site/view/' . $site->uid);
       break;
       case 'setaccession':
-
+        $site = new Site($_POST['uid']);
+        $site->set_data($_POST['uid'],'accession',$_POST['accession']);
         header("Location:" . Config::get('web_path') . '/manage/site/view/' . $site->uid);
       break;
       case 'add':

@@ -4,7 +4,12 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<fieldset><legend>Edit Site - <?php echo scrub_out($site->name); ?></legend>
+<p class="pull-right text-right">
+  <a class="btn btn-primary " role="button" data-toggle="modal" href="#set_project">Set Project</a>
+  <a class="btn btn-primary " role="button" data-toggle="modal" href="#set_accession">Set Accession</a>
+</p>
+
+<fieldset class="pull-left"><legend>Edit Site - <?php echo scrub_out($site->name); ?></legend>
 <form class="form-horizontal" id="update_site" method="post" action="<?php echo Config::get('web_path'); ?>/manage/site/update">
 <div class="control-group span4<?php Error::display_class('name'); ?>">
   <label class="control-label" for="inputName">Name</label>
@@ -54,3 +59,7 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 </form>
 </fieldset>
+<?php
+  include \UI\template('/site/modal_set_project');
+  include \UI\template('/site/modal_set_accession');
+?>

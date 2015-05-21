@@ -323,6 +323,11 @@ class Database {
     $versions[] = array('version'=>'0015','description'=>$update_string);
     $update_string = "- Add Spatial Data Index to fix performance issues with Record view.";
     $versions[] = array('version'=>'0016','description'=>$update_string);
+    $update_string = '- Add Site Data table with indexes.<br />' . 
+                    ' - Allow NULL values for record fields that are not required.<br />' . 
+                    ' - Set record.feature and record.krotovina to NULL if their value is currently "0".<br />' . 
+                    ' - Add Accession to Records.<br />';
+    $versions[] = array('version'=>'0017','description'=>$update_string);
 
 
 
@@ -1239,18 +1244,52 @@ class Database {
         "`key` varchar(256) NOT NULL," .
         "`value` varchar(256) NOT NULL," .
         "`created` int(11) UNSIGNED NOT NULL," .
-        "`closed` int(11) UNSIGNED NOT NULL," .
+        "`closed` int(11) UNSIGNED NULL," .
         "PRIMARY KEY (`uid`)) " . 
         "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    // We need to move the start/end excavation times into the site_data table
-    $sql = "SELECT `uid`,`excavation_start`,`excavation_end` FROM `site`";
-    $db_results = \Dba::read($sql);
+    $sql = "ALTER TABLE `site_data` ADD INDEX (`site` )";
+    $retval = \Dba::write($sql) ? $retval : false; 
 
-    while ($row = \Dba::fetch_row($db_results)) { 
+    $sql = "ALTER TABLE `site_data` ADD INDEX (`key` )"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
 
-    } 
+    // Add accession to records
+    $sql = "ALTER TABLE `record` ADD `accession` VARCHAR(1024) NULL AFTER `xrf_artifact_index`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Allow some extra fields to be null
+    $sql = "ALTER TABLE `record` CHANGE `xrf_matrix_index` `xrf_matrix_index` INT(11) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `record` CHANGE `notes` `notes` VARCHAR(1024) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `weight` `weight` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `height` `height` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `width` `width` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `thickness` `thickness` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `xrf_artifact_index` `xrf_artifact_index` INT(11) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `feature` `feature` int(11) UNSIGNED NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // record.feature =0 should be record.feature NULL
+    $sql = "UPDATE `record` SET `feature` = NULL WHERE `feature` = '0'";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "UPDATE `record` SET `krotovina` = NULL WHERE `krotovina` = '0'";
+    $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval;
 

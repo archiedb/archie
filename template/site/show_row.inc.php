@@ -6,7 +6,8 @@ if (INIT_LOADED != '1') { exit; }
   <td><a href="<?php echo Config::get('web_path'); ?>/manage/site/view/<?php echo scrub_out($site->uid); ?>"><?php echo scrub_out($site->name); ?></a></td>
   <td><?php echo scrub_out($site->description); ?></td>
   <td><?php echo scrub_out($site->principal_investigator); ?></td>
-  <td>&nbsp;</td>
+  <td><?php echo scrub_out($site->accession); ?></td>
+  <td><?php echo scrub_out($site->project); ?></td>
 	<td><?php echo \UI\boolean_word($site->enabled); ?></td>
   <td>
 		<div class="btn-group">

@@ -21,6 +21,7 @@ class Record extends database_object {
   public $material; // FK
   public $classification; // FK
   public $xrf_artifact_index; 
+  public $accession;
   public $notes; 
   public $user_id; // The ID
   public $northing; // Northing from station info
@@ -134,14 +135,15 @@ class Record extends database_object {
 
 		$db_results = false; 
 		$times = 0; 
-		$lock_sql = "LOCK TABLES `record` WRITE, `krotovina` READ, `feature` READ, `level` READ, `spatial_data` READ;"; 
+		$lock_sql = "LOCK TABLES `record` READ, `krotovina` READ, `feature` READ, `level` READ, `spatial_data` READ;"; 
 		$unlock_sql = "UNLOCK TABLES"; 
 
 		// Only wait 3 seconds for this, it shouldn't take that long
 		while (!$db_results && $times < 3) { 
 
+      $db_results = true; 
 			// If we make it this far we're good to go, we need to figure out the next station ID
-			$db_results = Dba::write($lock_sql); 
+//			$db_results = Dba::write($lock_sql); 
 		
 			if (!$db_results) { sleep(1); $times++; } 
 
@@ -176,7 +178,7 @@ class Record extends database_object {
 			Dba::finish($db_results); 
 			if ($row['catalog_id']) { 
 				Error::add('general','Database Failure - Duplicate CatalogID - ' . $catalog_id); 
-				$db_results = Dba::write($unlock_sql); 
+		//		$db_results = Dba::write($unlock_sql); 
 				return false; 
 			} 
 
@@ -188,33 +190,30 @@ class Record extends database_object {
     $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
 
 		// Insert the new record
-    $site = Dba::escape(\UI\sess::$user->site->uid);
-		$unit = Dba::escape($level->unit); 
-		$level = Dba::escape($level->uid); 
-		$lsg_unit = Dba::escape($input['lsg_unit']); 
-		$xrf_matrix_index = Dba::escape($input['xrf_matrix_index']); 
-		$weight = Dba::escape($input['weight']); 
-		$height = Dba::escape($input['height']); 
-		$width = Dba::Escape($input['width']); 
-		$thickness = Dba::escape($input['thickness']); 
-		$quanity = ($input['quanity'] == 0) ? '1' : Dba::escape($input['quanity']); // Default to Quanity 1 
-		$material = Dba::escape($input['material']); 
-		$classification = Dba::escape($input['classification']); 
-		$notes = Dba::escape($input['notes']); 
-		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
-		$quad = Dba::escape($level->quad->uid); 
-		$feature = Dba::escape($feature_uid);  
-    $krotovina = Dba::escape($krotovina_uid);
-		$user = Dba::escape(\UI\sess::$user->uid); 
+    $site = \UI\sess::$user->site->uid;
+		$unit = $level->unit; 
+		$level = $level->uid; 
+		$lsg_unit = $input['lsg_unit']; 
+		$xrf_matrix_index = $input['xrf_matrix_index']; 
+		$weight = $input['weight']; 
+		$height = $input['height']; 
+		$width = $input['width']; 
+		$thickness = $input['thickness']; 
+		$quanity = ($input['quanity'] == 0) ? '1' : $input['quanity']; // Default to Quanity 1 
+		$material = $input['material']; 
+		$classification = $input['classification']; 
+		$notes = $input['notes']; 
+		$xrf_artifact_index = $input['xrf_artifact_index']; 
+    $accession = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
+		$quad = $level->quad->uid; 
+		$feature = $feature_uid;  
+    $krotovina = $krotovina_uid;
+		$user = \UI\sess::$user->uid; 
 		$created = time(); 
 
-    //FIXME: Move station_index to spatial data
-    // This can be null needs to be handled slightly differently
-
-
-		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`level`,`lsg_unit`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`feature`,`krotovina`,`user`,`created`) " . 
-			"VALUES ('$site','$catalog_id',$level,'$lsg_unit','$xrf_matrix_index','$weight','$height','$width','$thickness','$quanity','$material','$classification','$notes','$xrf_artifact_index','$feature','$krotovina','$user','$created')"; 
-		$db_results = Dba::write($sql); 
+		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`level`,`lsg_unit`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`accession`,`feature`,`krotovina`,`user`,`created`) " . 
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+		$db_results = Dba::write($sql,array($site,$catalog_id,$level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$accession,$feature,$krotovina,$user,$created)); 
 
 		if (!$db_results) { 
 			Error::add('general','Unknown Error inserting record into database'); 
@@ -224,7 +223,7 @@ class Record extends database_object {
 		$insert_id = Dba::insert_id(); 
 
     // Unlock 
-		$db_results = Dba::write($unlock_sql); 
+//		$db_results = Dba::write($unlock_sql); 
 
     $legend_line = "Site,Catalog ID,Unit,Level,LSG Unit,RN,XRF Matrix Index, Weight (grams),Height(mm),Width(mm),Thickness(mm),Quanity,Material,Classification,Quad,Feature ID,Krotovina ID,User,Date";
     Event::record('ADD-LEGEND',$legend_line);
