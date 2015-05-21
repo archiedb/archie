@@ -1,3 +1,15 @@
+ ADD accession and project to site, includes db adjustments to record table
+ UPDATE - square ticket, add MASL string rules
+ ADD - initial project and accession work
+ ADD /lib/cache/* to ignore list
+ ADD - single site view, initial work for accession #s and projects
+ FIX - fiter on site switch
+ FIX - view between sites
+ FIX - megapov_cmd check
+ FIX - check for python modules
+ ADD - checks for ImageMagick
+ BUMP - Version to 20150515
+ REVERT - site.project aspirations, will be implement with alternative method
  ADD - Config regeneration, and config version check
  ADD - project field to site
  ADD - Additional tests to /test.php for troubleshooting installs
