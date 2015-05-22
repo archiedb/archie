@@ -94,6 +94,30 @@ class Site extends database_object {
 	} // refresh
 
   /**
+   * get_all_data
+   */
+  public function get_all_data($field) {
+
+    $allowed_fields = array('project','accession');
+
+    if (!in_array($field,$allowed_fields)) { 
+      return false;
+    }
+
+    $sql = "SELECT `value` AS ?,`created`,`closed` FROM `site_data` WHERE `site`=? AND `key`=? ORDER BY `created` DESC";
+    $db_results = Dba::read($sql,array($field,$this->uid,$field));
+
+    $results = array();
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      $results[] = $row;
+    }
+
+    return $results; 
+
+  } // get_all_data
+
+  /**
    * get_data
    */
   public static function get_data($site,$field) {
