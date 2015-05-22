@@ -20,12 +20,10 @@ class Genpdf {
     // Figure out what to do about MASL, order is
     // Level Closed -> [use start/stop]
     // Level Open, [use start/NO DATA]
-    if ($record->level->closed) {
-      $masl = $record->level->elv_center_start . '-' . $record->level->elv_center_finish;
-    }
-    else {
-      $masl = $record->level->elv_center_start . '-NO DATA';
-    }
+    $elv_finish = ($record->level->elv_center_finish > 0) ? $record->level->elv_center_finish : 'NO DATA';
+    $elv_start = ($record->level->elv_center_start > 0) ? $record->level->elv_center_start : 'NO DATA';
+    $masl = $elv_start.'-'.$elv_finish;
+  
 
     $pdf = new FPDF();
     $pdf->AddPage('L',array(57,32));
