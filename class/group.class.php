@@ -247,4 +247,26 @@ class Group extends database_object {
 
   } //delete_role
 
+  /**
+   * delete
+   * Attempts to delete a group
+   */
+  public static function delete($uid) { 
+
+      // Remove the group roles
+      $sql = "DELETE FROM `group_role` WHERE `group`=?";
+      $db_results = Dba::write($sql,array($uid));
+
+      // Remove from users
+      $sql = "DELETE FROM `user_group` WHERE `group`=?";
+      $db_results = Dba::write($sql,array($uid));
+
+      // Remove group
+      $sql = "DELETE FROM `group` WHERE `uid`=?";
+      $db_results = Dba::write($sql,array($uid));
+
+      return true;
+
+  } // delete
+
 } // group 

@@ -212,6 +212,12 @@ switch (\UI\sess::location('action')) {
           exit;
         }
       break;
+      case 'delete':
+        // Just go ahead and delete it
+        Group::delete($_POST['uid']);
+        header("Location:" . Config::get('web_path') . "/manage/group");
+        exit;
+      break;
       case 'edit':
         $group = new Group(\UI\sess::location('3'));
         require_once \UI\template('/group/edit');

@@ -13,8 +13,9 @@ if (INIT_LOADED != '1') { exit; }
       <a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
       <ul class="dropdown-menu">
         <li><a href="<?php echo Config::get('web_path'); ?>/manage/group/edit/<?php echo scrub_out($group->uid); ?>">Edit</a></li>
-        <li><a href="<?php echo Config::get('web_path'); ?>/manage/group/confirmdelete/<?php echo scrub_out($group->uid); ?>">Delete</a></li>
+        <li><a href="#delete_group_<?php echo scrub_out($group->uid); ?>" role="button" data-toggle="modal">Delete</a></li>
       </ul>
 		</div>
+    <?php include \UI\template('/group/modal_delete_group'); ?>
   </td>
 </tr>
