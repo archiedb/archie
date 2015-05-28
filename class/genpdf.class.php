@@ -23,13 +23,14 @@ class Genpdf {
     $elv_finish = ($record->level->elv_center_finish > 0) ? $record->level->elv_center_finish : 'NO DATA';
     $elv_start = ($record->level->elv_center_start > 0) ? $record->level->elv_center_start : 'NO DATA';
     $masl = $elv_start.'-'.$elv_finish;
-  
+
+    $site_abv = preg_replace('/\b(\w)\w*\W*/', '\1', $record->site->description);
 
     $pdf = new FPDF();
     $pdf->AddPage('L',array(57,32));
 
     $pdf->SetFont('Times','B');
-    $pdf->SetFontSize('8');
+    $pdf->SetFontSize('8.5');
     $pdf->Text('1','4','Catalog #:' . $record->catalog_id);
     $pdf->Text('33','4','Site:'. $record->site->name);
     $pdf->Text('1','8','Proj:' . $record->site->project);
@@ -40,8 +41,11 @@ class Genpdf {
     $pdf->Text('33','16','Level:'. $record->level->catalog_id);
     $pdf->Text('1','20','Item(s):' . $record->material->name);
     $pdf->Text('33','20','N = '. $record->quanity);
-    $pdf->Text('3','24',' ('. $record->classification->name . ')');
-    $pdf->Text('1','28','MASL:' . $masl);
+    $pdf->Text('3','23',' ('. $record->classification->name . ')');
+    $pdf->Text('1','27','MASL:' . $masl);
+    $pdf->SetFont('Times');
+    $pdf->Text('9','31',$record->accession . ' - ' . $site_abv . ' - ' . $record->level->unit . '/' . $record->level->quad->name . ' - ' . $record->level->catalog_id . ' - ' . $record->catalog_id);
+  
 
     $pdf->Output($filename);
 
