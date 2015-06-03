@@ -17,12 +17,12 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
   <td>
     <?php echo scrub_out($site->name); ?>
   </td>
-  <th>Project</th>
+  <th>Current Project</th>
   <td>
     <?php echo $site->_print('project'); ?>
   </td>
 </tr><tr>
-  <th>Accession</th>
+  <th>Current Accession</th>
   <td>
     <?php echo $site->_print('accession'); ?>
   </td>
