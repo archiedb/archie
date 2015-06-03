@@ -15,7 +15,7 @@ class Genpdf {
 
 	} // constructor
 
-  public function ticket_57x32mm ($record,$filename,$update_record) { 
+  public function ticket_57x32mm ($record,$filename) { 
 
     // Figure out what to do about MASL, order is
     // Level Closed -> [use start/stop]
@@ -24,7 +24,7 @@ class Genpdf {
     $elv_start = ($record->level->elv_center_start > 0) ? $record->level->elv_center_start : 'NO DATA';
     $masl = $elv_start.'-'.$elv_finish;
 
-    $site_abv = preg_replace('/\b(\w)\w*\W*/', '\1', $record->site->description);
+    $site_abv = substr(preg_replace('/\b(\w)\w*\W*/', '\1', $record->site->description),0,3);
 
     $pdf = new FPDF();
     $pdf->AddPage('L',array(57,32));

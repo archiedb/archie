@@ -203,7 +203,7 @@ class sess {
     self::$user = $user; 
 
     // Hardcode the site FIX WITH DB CHANGE
-    if (!self::$user->site->uid) {
+    if (!is_object(self::$user->site)) {
       self::$user->site = new \Site(1); 
     }
 
