@@ -27,8 +27,17 @@ while ($row = Dba::fetch_assoc($db_results)) {
   $return = $level->validate_close($input); 
   if (!$return) {
     echo $level->name . " is a junk level - reopening\n";
-    $level->open();
+//    $level->open();
   }
 } // end levels
 
+$sql = "SELECT `uid` FROM `record`";
+$db_results = Dba::read($sql);
+
+while ($row = Dba::fetch_assoc($db_results)) {
+  $record = new Record($row['uid']);
+  if (is_object($record->level)) { 
+    echo "Catalog #" . $record->catalog_id . " [" . $record->site->name . "] has no Level\n";
+  }
+}
 ?>
