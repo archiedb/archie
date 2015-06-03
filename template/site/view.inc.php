@@ -5,7 +5,7 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
 ?>
 <?php Event::display('errors'); ?>
 <div class="pull-left">
-  <h4><?php echo scrub_out($site->name); ?> Site <?php echo $accession; ?></h4>
+  <h4><?php echo scrub_out($site->name); ?> Site</h4>
 </div>
 <p class="pull-right text-right">
   <a class="btn btn-primary " role="button" data-toggle="modal" href="#set_project_<?php echo $site->uid; ?>">Set Project</a>
@@ -13,61 +13,56 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
 </p>
 <table class="table table-hover table-bordered table-white">
 <tr>
-  <td>Name</td>
+  <th>Name</th>
   <td>
     <?php echo scrub_out($site->name); ?>
   </td>
+  <th>Project</th>
   <td>
-    Principal Investigator
+    <?php echo $site->_print('project'); ?>
   </td>
+</tr><tr>
+  <th>Accession</th>
   <td>
-      <?php echo scrub_out($site->principal_investigator); ?>
+    <?php echo $site->_print('accession'); ?>
   </td>
-</tr>
-<tr>
-  <td>
-   Description
-  </td>
+  <th>Description</th>
   <td>
       <?php echo scrub_out($site->description); ?>
   </td>
+</tr><tr>
+  <th>Principal Investigator</th>
   <td>
-    Partners
+      <?php echo scrub_out($site->principal_investigator); ?>
   </td>
+  <th>Partners</th>
   <td>
       <?php echo scrub_out($site->partners); ?>
   </td>
 </tr>
 <tr>
-  <td>
-    Elevation
-  </td>
+  <th>Elevation</th>
   <td>
       <?php echo scrub_out($site->elevation); ?>
   </td>
-  <td>
-    Northing
-  </td>
+  <th>Northing</th>
   <td>
     <?php echo scrub_out($site->northing); ?>
   </td>
 </tr>
 <tr>
-  <td>
-    Easting
-  </td>
+  <th>Easting</th>
   <td>
     <?php echo scrub_out($site->easting); ?>
   </td>
-  <td>
-    Project
-  </td>
+  <th>Project</th>
   <td>
     <?php echo scrub_out($site->project); ?>
   </td>
 </tr>
 </table>
 <?php $accessions = $site->get_all_data('accession'); ?>
+<?php array_shift($accessions); ?>
 <h4>Accession #'s</h4>
 <table class="table table-hover table-striped">
 <tbody>
@@ -86,6 +81,7 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
 </tbody>
 </table>
 <?php $projects = $site->get_all_data('project'); ?>
+<?php array_shift($projects); ?>
 <h4>Projects</h4>
 <table class="table table-hover table-striped">
 <tbody>

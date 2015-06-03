@@ -4,11 +4,6 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<p class="pull-right text-right">
-  <a class="btn btn-primary " role="button" data-toggle="modal" href="#set_project">Set Project</a>
-  <a class="btn btn-primary " role="button" data-toggle="modal" href="#set_accession">Set Accession</a>
-</p>
-
 <fieldset class="pull-left"><legend>Edit Site - <?php echo scrub_out($site->name); ?></legend>
 <form class="form-horizontal" id="update_site" method="post" action="<?php echo Config::get('web_path'); ?>/manage/site/update">
 <div class="control-group span4<?php Error::display_class('name'); ?>">
