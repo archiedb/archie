@@ -55,10 +55,7 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
   <td>
     <?php echo scrub_out($site->easting); ?>
   </td>
-  <th>Project</th>
-  <td>
-    <?php echo scrub_out($site->project); ?>
-  </td>
+  <td colspan="2"></td>
 </tr>
 </table>
 <?php $accessions = $site->get_all_data('accession'); ?>
