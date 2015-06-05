@@ -18,45 +18,46 @@ if (INIT_LOADED != '1') { exit; }
 <?php Event::display('errors'); ?>
 <table class="table table-hover table-bordered table-white">
 <tr>
-  <th>UNIT</th><td><?php echo scrub_out($record->level->unit); ?></em></td>
-  <th>CATALOG ID</th><td><?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></td>
+  <th>Unit</th><td><?php echo scrub_out($record->level->unit); ?></em></td>
+  <th>Catalog ID</th><td><?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></td>
 </tr>
 <tr>
-  <th>LEVEL</th><td><?php echo \UI\record_link($record->level->uid,'level',$record->level->catalog_id); ?></td>
+  <th>Level</th><td><?php echo \UI\record_link($record->level->uid,'level',$record->level->catalog_id); ?></td>
   <th><abbr title="Lithostratoigraphic Unit">L. U.</abbr></th><td><?php echo scrub_out($record->lsg_unit->name); ?></td>
 </tr>
 <tr>
-  <th>FEATURE</th><td><?php echo \UI\record_link($record->feature->uid,'feature',$record->feature->record); ?></td>
-  <th>KROTOVINA</th><td><?php echo \UI\record_link($record->krotovina->uid,'krotovina',$record->krotovina->record); ?></td>
+  <th>Feature</th><td><?php echo \UI\record_link($record->feature->uid,'feature',$record->feature->record); ?></td>
+  <th>Krotovina</th><td><?php echo \UI\record_link($record->krotovina->uid,'krotovina',$record->krotovina->record); ?></td>
 </tr>
 <tr>
-  <th>QUAD</th><td><?php echo scrub_out($record->level->quad->name); ?></td>
+  <th>Quad</th><td><?php echo scrub_out($record->level->quad->name); ?></td>
   <th>RN</th><td><?php echo scrub_out($record->station_index); ?></td>
 </tr>
 <tr>
-  <th>WEIGHT</th><td><?php echo scrub_out($record->weight); ?> grams</td>
-  <th>THICKNESS</th><td><?php echo scrub_out($record->thickness); ?> mm</td>
+  <th>Weight</th><td><?php echo scrub_out($record->weight); ?> grams</td>
+  <th>Thickness</th><td><?php echo scrub_out($record->thickness); ?> mm</td>
 </tr>
 <tr>
-  <th>LENGTH</th><td><?php echo scrub_out($record->height); ?> mm</td>
-  <th>WIDTH</th><td><?php echo scrub_out($record->width); ?> mm</td>
+  <th>Length</th><td><?php echo scrub_out($record->height); ?> mm</td>
+  <th>Width</th><td><?php echo scrub_out($record->width); ?> mm</td>
 <tr>
-  <th>MATERIAL</th><td><?php echo scrub_out($record->material->name); ?></td>
-  <th>CLASSIFICATION</th><td><?php echo scrub_out($record->classification->name); ?></td>
+  <th>Material</th><td><?php echo scrub_out($record->material->name); ?></td>
+  <th>Classification</th><td><?php echo scrub_out($record->classification->name); ?></td>
 </tr>
 <tr>
-  <th>MATRIX XRF #</th><td><?php echo scrub_out($record->xrf_matrix_index); ?></td>
-  <th>ARTIFACT XRF #</th><td><?php echo scrub_out($record->xrf_artifact_index); ?></td>
+  <th>Matrix XRF #</th><td><?php echo scrub_out($record->xrf_matrix_index); ?></td>
+  <th>Artifact XRF #</th><td><?php echo scrub_out($record->xrf_artifact_index); ?></td>
 </tr>
 <tr>
-  <th>NORTHING</th><td><?php echo scrub_out($record->northing); ?></td>
-  <th>EASTING</th><td><?php echo scrub_out($record->easting); ?></td>
+  <th>Northing</th><td><?php echo scrub_out($record->northing); ?></td>
+  <th>Easting</th><td><?php echo scrub_out($record->easting); ?></td>
 <tr>
-  <th>ELEVATION</th><td><?php echo scrub_out($record->elevation); ?></td>
-  <th>QUANTITY</th><td><?php echo scrub_out($record->quanity); ?></td>
+  <th>Elevation</th><td><?php echo scrub_out($record->elevation); ?></td>
+  <th>Quanity</th><td><?php echo scrub_out($record->quanity); ?></td>
 </tr>
 <tr>
-  <th>NOTES</th><td colspan="3"><?php echo scrub_out($record->notes); ?></td>
+  <th>Accession</th><td><?php echo $record->_print('accession'); ?></td>
+  <th>Notes</th><td><?php echo scrub_out($record->notes); ?></td>
 </tr>
   
 </table>
