@@ -332,7 +332,7 @@ class Level extends database_object {
 
 		// Unit A-Z
 		if (!Unit::is_valid($input['unit'])) { 
-			Error::add('unit','UNIT must be A-Z'); 
+			Error::add('unit','UNIT specified not valid'); 
 		}
 
 		// lsg_unit, numeric less then 50

@@ -242,8 +242,13 @@ class Site extends database_object {
   public static function validate($input,$uid=0) { 
 
     // Make sure there's a name and it's unique
-    if (!strlen($input['name'])) { 
+    if (!Field::notempty($input['name'])) { 
       Error::add('name','Required Field');
+    }
+
+    // Site must be Alphanumeric
+    if (!Field::validforfilename($input['name'])) {
+      Error::add('name','Name must contain only [-,_,A-Z,a-z,0-9]');
     }
 
     $site_uid = Site::get_from_name($input['name']);
@@ -253,7 +258,7 @@ class Site extends database_object {
     }
 
     // Require a start a PI
-    if (!strlen($input['pi'])) {
+    if (!Field::notempty($input['pi'])) {
       Error::add('pi','Required Field');
     } 
 

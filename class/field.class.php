@@ -43,5 +43,35 @@ class Field {
 
   } // validate
 
+  /**
+   * validforfilename
+   * A-Z,a-z,0-9,-,_
+   * This may end up on the FS, so restrict it
+   */
+  public static function validforfilename($input) { 
+
+    if (preg_match('/[^a-z_\-0-9]/i',$input)) {
+      return false;
+    }
+
+    return true; 
+
+  } // validforfilename
+
+  /**
+   * notempty
+   * Make sure the field is not empty
+   * Whitespace doesn't count
+   */
+  public static function notempty($input) { 
+
+    if (!strlen(trim($input))) { 
+      return false; 
+    }
+
+    return true; 
+
+  } // notempty
+
 } // end class field
 ?>
