@@ -34,13 +34,13 @@ tar -C ${ABS_PATH}/backup -cjf ${ABS_PATH}/backup/${DATE}.archie.mysql.bz2 ${DAT
 BCK_SIZE=`stat -c%s ${ABS_PATH}/backup/${DATE}.archie.mysql.bz2`
 echo "MySQL Database backed up to ${ABS_PATH}/backup/${DATE}.archie.mysql.bz2 ${BCK_SIZE} bytes backed up"
 rm -f ${ABS_PATH}/backup/${DATE}.archie.mysql
-echo "Backing up Archie Contact..."
+echo "Backing up Archie Content..."
 tar -C ${CONTENT} -cjf ${ABS_PATH}/backup/${DATE}.archie.img.bz2 ${CONTENT}/*
 BCK_SIZE=`stat -c%s ${ABS_PATH}/backup/${DATE}.archie.img.bz2`
 echo "Content backed up to ${ABS_PATH}/backup/${DATE}.archie.img.bz2 ${BCK_SIZE} bytes backed up"
 echo "Clearing Backups older than ${SAVECOUNT} days"
 /usr/bin/find ${ABS_PATH}/backup/ -type f -mtime +${SAVECOUNT} -exec /bin/rm -rvf {} \;
-if [ -n "$RSYNCTARGET"]; then
+if [ -n "$RSYNCTARGET" ]; then
   echo "RSYNC Target ${RSYNCTARGET} found, starting RSYNC"
   rsync -avz --delete-delay ${ABS_PATH}/backup/ ${RSYNCTARGET}
 else
