@@ -1,4 +1,6 @@
 settings.php
+config/units.csv
+config/quads.csv
 .htaccess
 *~
 *.swp
