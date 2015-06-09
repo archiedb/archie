@@ -20,9 +20,14 @@ class Genpdf {
     // Figure out what to do about MASL, order is
     // Level Closed -> [use start/stop]
     // Level Open, [use start/NO DATA]
-    $elv_finish = ($record->level->elv_center_finish > 0) ? $record->level->elv_center_finish : 'NO DATA';
-    $elv_start = ($record->level->elv_center_start > 0) ? $record->level->elv_center_start : 'NO DATA';
-    $masl = $elv_start.'-'.$elv_finish;
+    if ($record->elevation > 0) { 
+      $masl = $record->elevation;
+    }
+    else { 
+      $elv_finish = ($record->level->elv_center_finish > 0) ? $record->level->elv_center_finish : 'NO DATA';
+      $elv_start = ($record->level->elv_center_start > 0) ? $record->level->elv_center_start : 'NO DATA';
+      $masl = $elv_start.'-'.$elv_finish;
+    }
 
     $site_abv = substr(preg_replace('/\b(\w)\w*\W*/', '\1', $record->site->description),0,3);
 
