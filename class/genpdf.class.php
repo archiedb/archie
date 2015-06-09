@@ -43,7 +43,7 @@ class Genpdf {
     $pdf->Text('33','20','N = '. $record->quanity);
     $pdf->Text('3','23',' ('. $record->classification->name . ')');
     $pdf->Text('1','27','MASL:' . $masl);
-    $pdf->SetFont('Times');
+    $pdf->SetFont('Times','B');
     $pdf->Text('9','31',$record->accession . ' - ' . $site_abv . ' - ' . $record->level->unit . '/' . $record->level->quad->name . ' - ' . $record->level->catalog_id . ' - ' . $record->catalog_id);
   
 
