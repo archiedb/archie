@@ -1,3 +1,27 @@
+ VERSION - Bump to Field2015 version
+ FIX - build-changelog.sh so that it can be run from any dir
+ FIX - remove debug
+ ADD - bin/update-archie script for updating archie, backs up configs first
+ FIX - masl uses record elevation first if it exists
+ CHANGE - move quads and units csv files to .dist and add gitignore for .csv versions
+ CHANGE - switch final line to bold in square tickets
+ Fix typo
+ Update backup script to include rsyncing and clearing of old files
+ FIX - string check on site name, only allow A-Z,0-9,-,_
+ ADD - Accession to view and edit pages (read only on edit page)
+ FIX - redundent fields on site view
+ FIX - PHP notices on genpdf, and on user set if no site is set for the user
+ ADD - rewrite-tickets script that will re-build all of the tickets in your system this is dangerous and thus disabled by default
+ ADD - Record -> Level set check to validate-records script
+ ADD - Current to title
+ CHANGE layout of single view for site
+ ADD - Project / Accession set option to multi-site view
+ Adjust font size and add extra line to the bottom
+ FIX #58 can now delete groups, can break your install by deleting all groups... we'll see if someone does this...
+ FIX - MASL for new ticket
+ ADD - Improved single site view, includes current and historical projects and accession
+ ADD - accession to record report
+ VERSION - update changelog and bump version to May 21st, 2015
  ADD accession and project to site, includes db adjustments to record table
  UPDATE - square ticket, add MASL string rules
  ADD - initial project and accession work
