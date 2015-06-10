@@ -1,0 +1,53 @@
+#!/bin/bash
+# vim: set softtabstop=2 ts=2 sw=2 expandtab: 
+# Settings
+ABS_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
+#CONTENT=$ARGV[0]
+#DATE=`date +%F`
+
+echo "Backing up Existing Configuration"
+if [ ! -d ${ABS_PATH}/../config.bak ] 
+then
+  mkdir ${ABS_PATH}/../config.bak
+fi
+cp -rf ${ABS_PATH}/../config/* ${ABS_PATH}/../config.bak/
+
+echo "Updating to Latest Archie version"
+cd ${ABS_PATH}/../
+git pull
+
+if [ ! -f ${ABS_PATH}/../config/settings.php ]
+then
+ echo "ERROR: No settings file found, it appears as though archie isn't installed."
+fi
+
+if [ ! -f ${ABS_PATH}/../config/units.csv ]
+then
+ if [ -f ${ABS_PATH}/../config.bak/units.csv ]
+ then
+   echo "WARNING: Restoring previous Units file, may differ from stock units file provided by Archie"
+   cp ${ABS_PATH}/../config.bak/units.csv ${ABS_PATH}/../config/units.csv
+ else
+   echo "WARNING: Units config not found, copying dist into place."
+   cp ${ABS_PATH}/../config/units.csv.dist ${ABS_PATH}/../config/units.csv
+ fi
+fi
+
+if [ ! -f ${ABS_PATH}/../config/quads.csv ]
+then
+  if [ -f ${ABS_PATH}/../config.bak/quads.csv ]
+  then
+    echo "WARNING: Restoring Previous Quads file, may differ from stock units file provided by Archie"
+    cp ${ABS_PATH}/../config.bak/quads.csv ${ABS_PATH}/../config/quads.csv
+  else
+    echo "WARNING: Quads config not found, copying dist into place."
+    cp ${ABS_PATH}/../config/quads.csv.dist ${ABS_PATH}/../config/quads.csv
+  fi
+fi
+
+if id -u "www-data" > /dev/null 2>&1; then
+  echo "Resetting file ownership to web user"
+  chown -R www-data.www-data ${ABS_PATH}/../ 2>/dev/null
+fi
+
+exit 0
