@@ -26,8 +26,7 @@ then
  echo "ERROR: Unable to find content directory ${CONTENT}"
  exit 1
 fi
-echo $1
-exit 1
+
 echo "Dumping MySQL Database..."
 mysqldump --defaults-extra-file=${ABS_PATH}/database.auth --add-drop-table --allow-keywords archie > ${ABS_PATH}/backup/${DATE}.archie.mysql
 tar -C ${ABS_PATH}/backup -cjf ${ABS_PATH}/backup/${DATE}.archie.mysql.bz2 ${DATE}.archie.mysql
