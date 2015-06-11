@@ -1295,7 +1295,38 @@ class Database {
 
   } // update_0017
 
+  /**
+   * update_0018
+   * Add site.configuration as JSON encoded string of settings
+   * Switch to Innodb Tables
+   * Add FK constraints to the following
+   ** record.site -> site.uid
+   ** record.level -> level.uid
+  **/
+  public static function update_0018() {
 
+    $retval = true; 
+
+    $sql = "ALTER TABLE `site` ADD `settings` TEXT NULL AFTER `excavation_end`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `spatial_data` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+
+  } // update_0018
 
 } // \Update\Database class
 
