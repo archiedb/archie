@@ -3,4 +3,8 @@ php:
   - "5.5"
   - "5.4"
   - "5.3"
-script: php test/run_tests.php
+before_script:
+  - chmod +x test/syntax-check
+ 
+script:
+  - test/syntax-check

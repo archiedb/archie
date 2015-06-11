@@ -1,0 +1,10 @@
+#!/bin/bash
+# Check PHP files for syntax errors
+
+syntax_check=$(find . -name '*.php' -exec php --syntax-check {} \; | grep -v 'No syntax errors detected in')
+if [[ $syntax_check ]] then
+	echo "PHP Syntax Error Found - Please Verify code"
+	exit 1
+else
+	echo "Syntax is OK"
+fi
