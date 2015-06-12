@@ -205,7 +205,7 @@ class Record extends database_object {
 		$notes = $input['notes']; 
 		$xrf_artifact_index = $input['xrf_artifact_index']; 
     $accession = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
-		$quad = $level->quad->uid; 
+		$quad = isset($level->quad->uid) ? $level->quad->uid : '0'; 
 		$feature = $feature_uid;  
     $krotovina = $krotovina_uid;
 		$user = \UI\sess::$user->uid; 
