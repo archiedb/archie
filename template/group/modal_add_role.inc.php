@@ -11,7 +11,7 @@ if (INIT_LOADED != '1') { exit; }
     <div class="modal-body">
       <?php $roles = Role::get_all(); ?>
       <select name="role">
-        <? foreach ($roles as $role) { ?>
+        <?php foreach ($roles as $role) { ?>
         <option value="<?php echo $role->uid; ?>"><?php echo $role->description; ?></option>
         <?php } ?>
       </select>
