@@ -1,6 +1,7 @@
 language: php
 services: mysql
 php:
+  - "5.5"
   - "5.4"
   - "5.3"
 before_install:
@@ -11,3 +12,4 @@ before_script:
  
 script:
   - test/syntax-check
+  - php test/run_tests.php

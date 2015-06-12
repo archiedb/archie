@@ -17,7 +17,7 @@ if (INIT_LOADED != '1') { exit; }
       </select>
       <?php $actions = Action::get_all(); ?>
       <select name="action">
-        <? foreach ($actions as $action) { ?>
+        <?php foreach ($actions as $action) { ?>
         <option value="<?php echo $action->uid; ?>"><?php echo $action->description; ?></option>
         <?php } ?>
       </select>
