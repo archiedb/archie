@@ -7,6 +7,8 @@ require_once $prefix . '/class/init.php';
 require_once $prefix . '/test/data.php';
 require_once $prefix . '/lib/enhancetest/EnhanceTestFramework.php';
 
+$_SERVER['HTTP_USER_AGENT'] = 'EnhanceTestFramework';
+
 // We need to make it look like a real session
 \UI\sess::set_user(new User(1)); 
 

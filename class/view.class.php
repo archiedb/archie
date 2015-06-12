@@ -434,9 +434,11 @@ class View {
 
     $sql = 'ORDER BY '; 
 
-    foreach ($this->_state['sort'] as $key=>$value) { 
-      $sql .= $this->sql_sort($key,$value); 
-    } 
+    if (isset($this->_state['sort'])) {
+      foreach ($this->_state['sort'] as $key=>$value) { 
+        $sql .= $this->sql_sort($key,$value); 
+      } 
+    }
 
     $sql = rtrim($sql,'ORDER BY '); 
     $sql = rtrim($sql,','); 
@@ -788,6 +790,8 @@ class View {
     // We want an sql statement, with LIMIT intact
     $sql = $this->get_sql(true); 
     $db_results = Dba::read($sql); 
+
+    $results = array();
 
     while ($row = Dba::fetch_assoc($db_results)) { 
       $results[$row['uid']] = $row['uid']; 
