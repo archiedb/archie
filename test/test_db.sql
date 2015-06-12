@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.33, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.38, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: archie
 -- ------------------------------------------------------
--- Server version	5.5.35-2
+-- Server version	5.5.38-0+wheezy1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,31 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `action`
+--
+
+DROP TABLE IF EXISTS `action`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `action` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `action`
+--
+
+LOCK TABLES `action` WRITE;
+/*!40000 ALTER TABLE `action` DISABLE KEYS */;
+INSERT INTO `action` VALUES (1,'read','Read'),(2,'create','Create'),(3,'edit','Edit'),(4,'close','Close'),(5,'delete','Delete'),(6,'reopen','Re-open'),(7,'manage','Manage'),(8,'admin','Admin');
+/*!40000 ALTER TABLE `action` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `app_info`
@@ -35,7 +60,7 @@ CREATE TABLE `app_info` (
 
 LOCK TABLES `app_info` WRITE;
 /*!40000 ALTER TABLE `app_info` DISABLE KEYS */;
-INSERT INTO `app_info` VALUES ('db_version','0009');
+INSERT INTO `app_info` VALUES ('db_version','0017');
 /*!40000 ALTER TABLE `app_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -68,35 +93,6 @@ INSERT INTO `classification` VALUES (1,'Bone - Avian',1,''),(2,'Bone - Fish',1,'
 UNLOCK TABLES;
 
 --
--- Table structure for table `datum_location`
---
-
-DROP TABLE IF EXISTS `datum_location`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `datum_location` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
-  `record` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `record_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `station_index` int(10) unsigned NOT NULL,
-  `northing` decimal(8,3) NOT NULL,
-  `easting` decimal(8,3) NOT NULL,
-  `elevation` decimal(8,3) NOT NULL,
-  `note` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `datum_location`
---
-
-LOCK TABLES `datum_location` WRITE;
-/*!40000 ALTER TABLE `datum_location` DISABLE KEYS */;
-/*!40000 ALTER TABLE `datum_location` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `feature`
 --
 
@@ -105,18 +101,19 @@ DROP TABLE IF EXISTS `feature`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature` (
   `uid` int(11) NOT NULL AUTO_INCREMENT,
-  `site` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `record` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `site` int(11) unsigned DEFAULT NULL,
+  `catalog_id` int(11) unsigned DEFAULT NULL,
   `keywords` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `user` int(11) unsigned NOT NULL,
   `created` int(10) unsigned NOT NULL,
   `updated` int(10) unsigned NOT NULL,
-  `image` int(11) unsigned NOT NULL,
   `closed` int(1) unsigned NOT NULL,
   `closed_date` int(10) unsigned DEFAULT NULL,
   `closed_user` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`uid`)
+  PRIMARY KEY (`uid`),
+  KEY `site` (`site`),
+  KEY `record` (`catalog_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -127,6 +124,57 @@ CREATE TABLE `feature` (
 LOCK TABLES `feature` WRITE;
 /*!40000 ALTER TABLE `feature` DISABLE KEYS */;
 /*!40000 ALTER TABLE `feature` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `group`
+--
+
+DROP TABLE IF EXISTS `group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `group` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `group`
+--
+
+LOCK TABLES `group` WRITE;
+/*!40000 ALTER TABLE `group` DISABLE KEYS */;
+INSERT INTO `group` VALUES (1,'Full Admin','Application Administrators');
+/*!40000 ALTER TABLE `group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `group_role`
+--
+
+DROP TABLE IF EXISTS `group_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `group_role` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `group` int(11) NOT NULL,
+  `role` int(11) NOT NULL,
+  `action` int(11) NOT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `group_role`
+--
+
+LOCK TABLES `group_role` WRITE;
+/*!40000 ALTER TABLE `group_role` DISABLE KEYS */;
+INSERT INTO `group_role` VALUES (1,1,9,8);
+/*!40000 ALTER TABLE `group_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -168,18 +216,19 @@ DROP TABLE IF EXISTS `krotovina`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `krotovina` (
   `uid` int(11) NOT NULL AUTO_INCREMENT,
-  `site` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `record` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `site` int(11) unsigned DEFAULT NULL,
+  `catalog_id` int(11) unsigned DEFAULT NULL,
   `keywords` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `user` int(11) unsigned NOT NULL,
   `created` int(10) unsigned NOT NULL,
   `updated` int(10) unsigned NOT NULL,
-  `image` int(11) unsigned NOT NULL,
   `closed` int(1) unsigned NOT NULL,
   `closed_date` int(10) unsigned DEFAULT NULL,
   `closed_user` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`uid`)
+  PRIMARY KEY (`uid`),
+  KEY `record` (`catalog_id`),
+  KEY `site` (`site`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -202,7 +251,7 @@ DROP TABLE IF EXISTS `level`;
 CREATE TABLE `level` (
   `uid` int(11) NOT NULL AUTO_INCREMENT,
   `site` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `record` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `catalog_id` int(11) unsigned NOT NULL,
   `unit` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `quad` varchar(255) CHARACTER SET utf8 NOT NULL,
   `lsg_unit` int(10) unsigned NOT NULL,
@@ -234,7 +283,7 @@ CREATE TABLE `level` (
   `closed_user` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`uid`),
   KEY `site` (`site`),
-  KEY `record_id` (`record`)
+  KEY `record_id` (`catalog_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -339,39 +388,35 @@ DROP TABLE IF EXISTS `record`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `record` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `site` varchar(255) NOT NULL,
+  `site` int(11) unsigned DEFAULT NULL,
   `catalog_id` int(10) unsigned NOT NULL,
-  `unit` varchar(128) NOT NULL,
-  `level` int(11) DEFAULT NULL,
-  `quad` varchar(255) NOT NULL,
-  `feature` varchar(255) NOT NULL,
+  `level` int(11) unsigned NOT NULL,
+  `feature` int(11) unsigned DEFAULT NULL,
+  `krotovina` int(11) unsigned DEFAULT NULL,
   `lsg_unit` int(10) unsigned NOT NULL,
-  `station_index` int(10) unsigned DEFAULT NULL,
-  `xrf_matrix_index` int(10) unsigned NOT NULL,
-  `weight` decimal(8,3) NOT NULL,
-  `height` decimal(8,3) NOT NULL,
-  `width` decimal(8,3) NOT NULL,
-  `thickness` decimal(8,3) NOT NULL,
+  `xrf_matrix_index` int(11) unsigned DEFAULT NULL,
+  `weight` decimal(8,3) DEFAULT NULL,
+  `height` decimal(8,3) DEFAULT NULL,
+  `width` decimal(8,3) DEFAULT NULL,
+  `thickness` decimal(8,3) DEFAULT NULL,
   `quanity` int(10) unsigned NOT NULL,
   `material` int(10) unsigned NOT NULL,
   `classification` int(10) unsigned NOT NULL,
-  `notes` varchar(1024) NOT NULL,
-  `xrf_artifact_index` int(10) unsigned NOT NULL,
-  `northing` decimal(8,3) NOT NULL,
-  `easting` decimal(8,3) NOT NULL,
-  `elevation` decimal(8,3) NOT NULL,
+  `notes` varchar(1024) DEFAULT NULL,
+  `xrf_artifact_index` int(11) unsigned DEFAULT NULL,
+  `accession` varchar(1024) DEFAULT NULL,
   `user` int(11) NOT NULL,
   `created` int(10) unsigned NOT NULL,
   `updated` int(10) unsigned NOT NULL,
   PRIMARY KEY (`uid`),
   UNIQUE KEY `catalog_id` (`catalog_id`),
-  KEY `station_index` (`station_index`),
   KEY `user` (`user`),
   KEY `lsg_unit` (`lsg_unit`),
   KEY `feature` (`feature`),
   KEY `level` (`level`),
   KEY `classification` (`classification`),
-  KEY `material` (`material`)
+  KEY `material` (`material`),
+  KEY `site` (`site`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -382,6 +427,56 @@ CREATE TABLE `record` (
 LOCK TABLES `record` WRITE;
 /*!40000 ALTER TABLE `record` DISABLE KEYS */;
 /*!40000 ALTER TABLE `record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `role`
+--
+
+DROP TABLE IF EXISTS `role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `role` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `role`
+--
+
+LOCK TABLES `role` WRITE;
+/*!40000 ALTER TABLE `role` DISABLE KEYS */;
+INSERT INTO `role` VALUES (1,'user','Users'),(2,'record','Records'),(3,'feature','Features'),(4,'krotovina','Krotovina'),(5,'media','Media'),(6,'site','Site'),(7,'level','Level'),(8,'report','Reports'),(9,'admin','Admin Functions');
+/*!40000 ALTER TABLE `role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `role_action`
+--
+
+DROP TABLE IF EXISTS `role_action`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `role_action` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `role` int(11) NOT NULL,
+  `action` int(11) NOT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `role_action`
+--
+
+LOCK TABLES `role_action` WRITE;
+/*!40000 ALTER TABLE `role_action` DISABLE KEYS */;
+INSERT INTO `role_action` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,7),(5,1,8),(6,2,1),(7,2,2),(8,2,3),(9,2,7),(10,2,8),(11,3,1),(12,3,2),(13,3,3),(14,3,7),(15,3,8),(16,4,1),(17,4,2),(18,4,3),(19,4,7),(20,4,8),(21,7,1),(22,7,2),(23,7,3),(24,7,6),(25,7,7),(26,7,8),(27,8,1),(28,8,2),(29,8,8),(30,5,1),(31,5,2),(32,5,5),(33,5,8),(34,9,7),(35,9,8),(36,6,1),(37,6,2),(38,6,3),(39,6,7),(40,6,8);
+/*!40000 ALTER TABLE `role_action` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -427,7 +522,7 @@ CREATE TABLE `site` (
   `northing` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
   `easting` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
   `elevation` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `principal_investigator` int(11) unsigned NOT NULL,
+  `principal_investigator` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `partners` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `excavation_start` int(11) unsigned NOT NULL,
   `excavation_end` int(11) unsigned NOT NULL,
@@ -443,6 +538,66 @@ CREATE TABLE `site` (
 LOCK TABLES `site` WRITE;
 /*!40000 ALTER TABLE `site` DISABLE KEYS */;
 /*!40000 ALTER TABLE `site` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `site_data`
+--
+
+DROP TABLE IF EXISTS `site_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `site_data` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `site` int(11) NOT NULL,
+  `key` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `value` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `created` int(11) unsigned NOT NULL,
+  `closed` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`uid`),
+  KEY `site` (`site`),
+  KEY `key` (`key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `site_data`
+--
+
+LOCK TABLES `site_data` WRITE;
+/*!40000 ALTER TABLE `site_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `site_data` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `spatial_data`
+--
+
+DROP TABLE IF EXISTS `spatial_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `spatial_data` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `record` int(11) unsigned DEFAULT NULL,
+  `record_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `station_index` int(11) unsigned DEFAULT NULL,
+  `northing` decimal(8,3) NOT NULL,
+  `easting` decimal(8,3) NOT NULL,
+  `elevation` decimal(8,3) NOT NULL,
+  `note` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`uid`),
+  KEY `record_type` (`record_type`),
+  KEY `record` (`record`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `spatial_data`
+--
+
+LOCK TABLES `spatial_data` WRITE;
+/*!40000 ALTER TABLE `spatial_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `spatial_data` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -471,6 +626,48 @@ LOCK TABLES `temp_data` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `user_group`
+--
+
+DROP TABLE IF EXISTS `user_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_group` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `user` int(11) NOT NULL,
+  `group` int(11) NOT NULL,
+  `site` int(11) NOT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_group`
+--
+
+LOCK TABLES `user_group` WRITE;
+/*!40000 ALTER TABLE `user_group` DISABLE KEYS */;
+INSERT INTO `user_group` VALUES (1,1,1,0);
+/*!40000 ALTER TABLE `user_group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Temporary table structure for view `user_permission_view`
+--
+
+DROP TABLE IF EXISTS `user_permission_view`;
+/*!50001 DROP VIEW IF EXISTS `user_permission_view`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `user_permission_view` (
+  `site` tinyint NOT NULL,
+  `user` tinyint NOT NULL,
+  `role` tinyint NOT NULL,
+  `action` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `users`
 --
 
@@ -482,8 +679,10 @@ CREATE TABLE `users` (
   `username` varchar(128) NOT NULL,
   `name` varchar(128) NOT NULL,
   `email` varchar(384) NOT NULL,
-  `access` int(10) unsigned NOT NULL,
   `password` varchar(64) NOT NULL,
+  `site` int(11) unsigned DEFAULT NULL,
+  `notes` int(11) unsigned DEFAULT NULL,
+  `last_login` int(11) unsigned DEFAULT NULL,
   `disabled` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -497,6 +696,25 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `user_permission_view`
+--
+
+/*!50001 DROP TABLE IF EXISTS `user_permission_view`*/;
+/*!50001 DROP VIEW IF EXISTS `user_permission_view`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `user_permission_view` AS select distinct `user_group`.`site` AS `site`,`user_group`.`user` AS `user`,`role`.`name` AS `role`,`action`.`name` AS `action` from (((`group` join `role`) join `action`) join (`user_group` join `group_role` on((`user_group`.`group` = `group_role`.`group`)))) where ((`group_role`.`role` = `role`.`uid`) and (`group_role`.`action` = `action`.`uid`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -507,4 +725,11 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-04-21 21:59:00
+-- Dump completed on 2015-06-11 23:53:05
+LOCK TABLES `users` WRITE;
+INSERT INTO `users` VALUES (1,'admin','admin','root@localhost','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',1,NULL,NULL,NULL);
+UNLOCK TABLES;
+
+LOCK TABLES `site` WRITE;
+INSERT INTO `site` VALUES (1,'Test-Site','Test-Site','1.000','1.000','1.000','Tester','Co-Testers',2415122,4902122,1);
+UNLOCK TABLES;
