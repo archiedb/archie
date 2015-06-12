@@ -1,6 +1,8 @@
+database.auth
 settings.php
 config/units.csv
 config/quads.csv
+config.bak
 .htaccess
 *~
 *.swp
