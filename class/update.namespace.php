@@ -1297,6 +1297,7 @@ class Database {
 
   /**
    * update_0018
+   * Remove UNIQUE on record.catalog_id
    * Add site.configuration as JSON encoded string of settings
    * Switch to Innodb Tables
    * Add FK constraints to the following
@@ -1308,6 +1309,9 @@ class Database {
     $retval = true; 
 
     $sql = "ALTER TABLE `site` ADD `settings` TEXT NULL AFTER `excavation_end`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` DROP INDEX `catalog_id`";
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `record` ENGINE=InnoDB";
