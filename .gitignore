@@ -3,7 +3,7 @@ settings.php
 config/units.csv
 config/quads.csv
 config.bak
-.htaccess
+/.htaccess
 *~
 *.swp
 lib/cache/*
