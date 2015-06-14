@@ -1299,10 +1299,17 @@ class Database {
    * update_0018
    * Remove UNIQUE on record.catalog_id
    * Add site.configuration as JSON encoded string of settings
+   * Drop record.quad and record.unit
    * Switch to Innodb Tables
    * Add FK constraints to the following
-   ** record.site -> site.uid
-   ** record.level -> level.uid
+   ** level,krotovina,feature,site.uid change to int(11) UNSIGNED
+   ** record.site -> site.uid ON U CASCADE, ON D RESTRICT
+   ** record.level -> level.uid ON U CASCADE, ON D RESTRICT
+   ** record.feature -> feature.uid ON U CASCADE, ON D RESTRICT
+   ** record.krotovina -> krotovina.uid ON U CASCADE, ON D RESTRICT
+   ** group_role -> group.uid,role.uid,action.uid ON U CASCADE, ON D CASCADE
+   ** user_group -> group.uid ON U CASCADE, ON D CASCADE
+   ** user_group -> site.uid ON U CASCADE, ON D CASCADE
   **/
   public static function update_0018() {
 
@@ -1311,10 +1318,57 @@ class Database {
     $sql = "ALTER TABLE `site` ADD `settings` TEXT NULL AFTER `excavation_end`";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    $sql = "ALTER TABLE `record` DROP INDEX `catalog_id`";
+    // We need to check if this index exists because some sites
+    // have had this fixed manually
+    $sql = "SELECT COUNT(1) IndexIsThere FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema=DATABASE() AND table_name='record' AND index_name='catalog_id'";
+    $db_results = \Dba::read($sql);
+
+    $value = \Dba::fetch_assoc($db_results);
+
+    if ($value['IndexIsThere'] != 0) {
+
+      $sql = "ALTER TABLE `record` DROP INDEX `catalog_id`";
+      $retval = \Dba::write($sql) ? $retval : false;
+    
+    }
+
+    // Drop Record.Unit Record.Quad not in Level
+    $sql = "ALTER TABLE `record` DROP `unit`";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `record` DROP `quad`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Bring record.? into sync with the table fields it relates to
+
+    $sql = "ALTER TABLE `site` CHANGE `uid` `uid` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `uid` `uid` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` CHANGE `uid` `uid` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `uid` `uid` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Set UIDs to UNSIGNED for permissions tables
+    $sql = "ALTER TABLE `action` CHANGE `uid` `uid` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `group` CHANGE `uid` `uid` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `role` CHANGE `uid` `uid` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Switch Tables to InnoDB
+
     $sql = "ALTER TABLE `record` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `site` ENGINE=InnoDB";
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `krotovina` ENGINE=InnoDB";
@@ -1326,8 +1380,41 @@ class Database {
     $sql = "ALTER TABLE `level` ENGINE=InnoDB";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    $sql = "ALTER TABLE `spatial_data` ENGINE=InnoDB";
+    $sql = "ALTER TABLE `action` ENGINE=InnoDB";
     $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `group` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `group_role` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `user_group` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+
+    // Add FK constraints
+    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_level FOREIGN KEY (level) REFERENCES level(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_krotovina FOREIGN KEY (krotovina) REFERENCES krotovina(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_feature FOREIGN KEY (feature) REFERENCES feature(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` ADD CONSTRAINT fk_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $retval = \Dba::write($sql) ? $retval : false;
+    
+    $sql = "ALTER TABLE `feature` ADD CONSTRAINT fk_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` ADD CONSTRAINT fk_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
 
 
   } // update_0018
