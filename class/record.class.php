@@ -347,10 +347,12 @@ class Record extends database_object {
 			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
 		}
 
+    if (!isset($input['station_index'])) { $input['station_index'] = null; }
+
 		// Station Index must be numeric
     if (!Field::validate('station_index',$input['station_index']) AND strlen($input['station_index'])) {
 			Error::add('station_index','Station Index must be numeric'); 
-		} 
+    } 
 
     //FIXME: This should be standardize on the table name
     $input['rn'] = $input['station_index'];

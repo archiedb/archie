@@ -280,6 +280,8 @@ class SpatialData extends database_object {
     }
 
     $query = array();
+    $rn_sql = '';
+    $cord_sql = '';
 
     if (strlen($input['northing']) AND strlen($input['easting']) AND strlen($input['elevation'])) { 
       $cord_sql = "(`northing`=? AND `easting`=? AND `elevation`=?) OR";
