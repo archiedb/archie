@@ -1,5 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab:
 /**
  * Error Class
  *
@@ -95,6 +95,10 @@ class Error {
 	public static function add($name,$message,$clobber=0) {
 	
 		Error::$error_count++; 
+
+    if (defined('CLI')) {
+      Event::record('UI-Error',json_encode(array('name'=>$name,'msg'=>$message)),'error');
+    }
 
 		// Make sure its set first
 		if (!isset(Error::$errors[$name])) {
