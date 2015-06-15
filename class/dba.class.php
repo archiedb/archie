@@ -71,7 +71,7 @@ class Dba {
 	 */
 	public static function query($sql,$params=array()) {
 
-    Event::error('SQL',$sql . " ::: " . json_encode($params));
+    Event::record('SQL',$sql . " ::: " . json_encode($params),'query');
 
     $dbh = self::dbh();
     if (!$dbh) { 

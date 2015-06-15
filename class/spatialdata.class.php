@@ -296,6 +296,8 @@ class SpatialData extends database_object {
     $sql = rtrim($sql,'OR ');
     $db_results = Dba::read($sql,$query);
 
+    $results = array();
+
     while ($row = Dba::fetch_assoc($db_results)) {
       $results[] = $row;
     }

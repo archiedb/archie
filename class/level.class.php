@@ -304,8 +304,11 @@ class Level extends database_object {
    */
   public static function validate($input) { 
 
-    if ($input['closed'] == 1 AND !Access::is_admin()) {
-      Error::add('closed','Level is closed, unable to updated'); 
+    // If closed is specified
+    if (isset($input['closed'])) {
+      if ($input['closed'] == 1 AND !Access::is_admin()) {
+        Error::add('closed','Level is closed, unable to updated'); 
+      }
     }
 
     if (!$input['catalog_id']) { 

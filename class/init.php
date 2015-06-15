@@ -36,6 +36,7 @@ if (defined('CLI')) {
   $_SERVER['SERVER_PORT'] = false;
   $_SERVER['SERVER_NAME'] = false;
   $_SERVER['REQUEST_URI'] = false;
+  $_SERVER['HTTP_USER_AGENT'] = false;
 }
 
 // Do a check for PHP5 because nothing will work without it

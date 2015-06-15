@@ -363,7 +363,7 @@ class Record extends database_object {
     if (strlen($input['station_index'])) { 
     
       // If we are comparing it to an existing record
-      if ($record->uid) {   
+      if (isset($record->uid)) {   
 		    if (strlen($input['northing']) AND $input['northing'] != $record->northing) {
           Error::add('northing','Northing can not be changed if the record has an RN'); 
         }
@@ -466,7 +466,7 @@ class Record extends database_object {
 		} // end if material 
 
     // Feature must exist first
-    if (strlen($input['feature'])) { 
+    if (isset($input['feature'])) { 
       $feature_uid = Feature::get_uid_from_record($input['feature']); 
       if (!$feature_uid) {
   			Error::add('Feature','Feature not found, please create feature record first'); 
@@ -474,7 +474,7 @@ class Record extends database_object {
     } // if feature specified
 
     // Krotovina must exist first
-    if (strlen($input['krotovina'])) {
+    if (isset($input['krotovina'])) {
       $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
       if (!$krotovina_uid) {
         Error::add('Krotovina','Krotovina not found, please create Krotovina record first');

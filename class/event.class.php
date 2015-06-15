@@ -20,6 +20,10 @@ class Event {
     
     self::$_events[] = array('severity'=>$severity,'message'=>$message,'size'=>$size); 
     $_SESSION['events'] = self::$_events; 
+    
+    if (defined('CLI')) {
+      self::record('UI-Error',json_encode(array('severity'=>$severity,'message'=>$message,'size'=>$size)));
+    }
 
     return true; 
 
@@ -100,24 +104,22 @@ class Event {
 	 */
 	public static function error($topic,$content) { 
 
-		$username = 'SYSTEM'; 
-    if (is_object(\UI\sess::$user)) {
-			$username = \UI\sess::$user->username;
-		} 
-
     if (defined('NO_LOG')) { return true; }
+    $username = is_object(\UI\sess::$user) ? \UI\sess::$user->username : 'SYSTEM';
 		log_event($username,$topic,$content,'error'); 
+
 	} // error 
 
   /**
    * record
    * keep a written record of events
    */
-	public static function record($topic,$content) { 
+	public static function record($topic,$content,$logname='record') { 
 
-    if (!defined('NO_LOG')) {
-  		log_event(\UI\sess::$user->username,$topic,$content,'record'); 
-    }
+    if (defined('NO_LOG')) { return true; }
+    $username = is_object(\UI\sess::$user) ? \UI\sess::$user->username : 'SYSTEM';
+  	log_event($username,$topic,$content,$logname); 
+
 	} // record 
 
 } // end class event

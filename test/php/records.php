@@ -2,12 +2,6 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 $file_path = dirname(__FILE__);
 $prefix = realpath($file_path . "/../../");
-if (!defined('NO_LOG')) {
-  define('NO_LOG',1); 
-}
-if (!defined('CLI')) {
-  define('CLI',1); 
-}
 require_once $prefix . '/class/init.php'; 
 require_once $prefix . '/lib/enhancetest/EnhanceTestFramework.php';
 
@@ -19,23 +13,24 @@ class RecordClassTests extends \Enhance\TestFixture {
   } 
 
   /* Test Invalid Values */
-  public function invalidLevel()      { $this->runFalseCreate('level'); } // invalid level
-  public function invalidLU()         { $this->runFalseCreate('lsg_unit'); } // invalid lsg_unit
-  public function invalidRN()         { $this->runFalseCreate('station_index'); } // invalid RN
-  public function invalidWeight()     { $this->runFalseCreate('weight'); } // invalid weight
-  public function invalidHeight()     { $this->runFalseCreate('height'); } // invalid height
-  public function invalidWidth()      { $this->runFalseCreate('width'); } // invalid width
-  public function invalidEasting()    { $this->runFalseCreate('easting'); } // invalid easting
-  public function invalidElevation()  { $this->runFalseCreate('elevation'); } // invalid elevation
-  public function invalidNorthing()   { $this->runFalseCreate('northing'); } // invalid northing
-  public function invalidXRF()        { $this->runFalseCreate('xrf_matrix_index'); } // invalid xrf
-  public function invalidQuanity()    { $this->runFalseCreate('quanity'); } // invalid quanity
+  public function Record_invalidLevel()      { $this->runFalseCreate('level'); } // invalid level
+  public function Record_invalidLU()         { $this->runFalseCreate('lsg_unit'); } // invalid lsg_unit
+  public function Record_invalidRN()         { $this->runFalseCreate('station_index'); } // invalid RN
+  public function Record_invalidWeight()     { $this->runFalseCreate('weight'); } // invalid weight
+  public function Record_invalidHeight()     { $this->runFalseCreate('height'); } // invalid height
+  public function Record_invalidWidth()      { $this->runFalseCreate('width'); } // invalid width
+  public function Record_invalidEasting()    { $this->runFalseCreate('easting'); } // invalid easting
+  public function Record_invalidElevation()  { $this->runFalseCreate('elevation'); } // invalid elevation
+  public function Record_invalidNorthing()   { $this->runFalseCreate('northing'); } // invalid northing
+  public function Record_invalidXRF()        { $this->runFalseCreate('xrf_matrix_index'); } // invalid xrf
+  public function Record_invalidQuanity()    { $this->runFalseCreate('quanity'); } // invalid quanity
 
   /* Test Valid Record Creation */
   public function validCreate() {
     
     $input = $this->fillInput(); 
-    \Enhance\Assert::isTrue(Record::create($input)); 
+    $results = Record::create($input);
+    \Enhance\Assert::isTrue($results); 
 
   }
 
@@ -84,6 +79,7 @@ class RecordClassTests extends \Enhance\TestFixture {
     $input['material'] = '1';
     $input['classification'] = '1';
     $input['notes'] = '1';
+    $input['user'] = '1';
 
     return $input;
 
