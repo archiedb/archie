@@ -23,7 +23,9 @@ class LevelClassTests extends \Enhance\TestFixture {
   public function validCreate() {
     
     $input = $this->fillInput(); 
-    \Enhance\Assert::isTrue(Level::create($input)); 
+    $results = Level::create($input);
+    if ($results) { $results = true; }
+    \Enhance\Assert::isTrue($results); 
 
   }
 
@@ -59,7 +61,7 @@ class LevelClassTests extends \Enhance\TestFixture {
     $input['unit'] = 'A';
     $input['level'] = '1';
     $input['quad'] = '1';
-    $input['lsg_unit'] = '1';
+    $input['lsg_unit'] = '2';
     $input['catalog_id'] = '1';
     $input['northing'] = '111.111';
     $input['easting'] = '111.111';
@@ -68,15 +70,15 @@ class LevelClassTests extends \Enhance\TestFixture {
     $input['excavator_three'] = '3';
     $input['excavator_four'] = '4';
     $input['elv_nw_start'] = '111.111';
-    $input['elv_nw_finish'] = '111.112';
+    $input['elv_nw_finish'] = '111.110';
     $input['elv_ne_start'] = '111.111';
-    $input['elv_ne_finish'] = '111.112';
+    $input['elv_ne_finish'] = '111.110';
     $input['elv_sw_start'] = '111.111';
-    $input['elv_sw_finish'] = '111.112';
+    $input['elv_sw_finish'] = '111.110';
     $input['elv_se_start'] = '111.111';
-    $input['elv_se_finish'] = '111.112';
+    $input['elv_se_finish'] = '111.110';
     $input['elv_center_start'] = '111.111';
-    $input['elv_center_finish'] = '111.112';
+    $input['elv_center_finish'] = '111.110';
     $input['user'] = '1';
     $input['uid'] = '1';
 

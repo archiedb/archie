@@ -7,6 +7,8 @@ require_once $prefix . '/lib/enhancetest/EnhanceTestFramework.php';
 
 class RecordClassTests extends \Enhance\TestFixture {
 
+  private static $rn = 0;
+
   public function setUp() { 
 
 
@@ -30,6 +32,7 @@ class RecordClassTests extends \Enhance\TestFixture {
     
     $input = $this->fillInput(); 
     $results = Record::create($input);
+    if ($results) { $results = true; }
     \Enhance\Assert::isTrue($results); 
 
   }
@@ -63,9 +66,8 @@ class RecordClassTests extends \Enhance\TestFixture {
     // Create a record
     $input = array(); 
 
-    $input['level'] = '-11';
+    $input['level'] = '1';
     $input['lsg_unit'] = '1';
-    $input['station_index'] = '111';
     $input['northing'] = '111.111';
     $input['easting'] = '111.111';
     $input['elevation'] = '111.111';

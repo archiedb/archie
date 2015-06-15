@@ -28,7 +28,11 @@ class Field {
       case 'easting':
       case 'thickness':
       case 'elevation':
-        if ((!is_numeric($value) OR round($value,3) != $value) AND strlen($field) ) {
+        if (!strlen($value)) { 
+          $retval = true;
+          break;
+        }
+        if (!is_numeric($value) OR round($value,3) != $value OR $value <= 0) {
           $retval = false;
         }
       break;

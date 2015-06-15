@@ -30,12 +30,12 @@ class TestData {
       case 'weight':
       case 'height':
       case 'width':
-        $value = $valid ? array(null,111.111) : array('ZZZ',-111); 
+        $value = $valid ? array(null,111.111) : array(-1.23411,-111); 
       break;
       case 'easting':
       case 'elevation':
       case 'northing':
-        $value = $valid ? array(null,111.111) : array('ZZZ'); 
+        $value = $valid ? array(null,111.111) : array('-1203.123'); 
       break;
       case 'xrf_matrix_index':
         $value = $valid ? array(null,111) : array('ZZZ'); 
