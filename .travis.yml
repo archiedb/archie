@@ -7,6 +7,8 @@ before_install:
 before_script:
   - chmod +x test/syntax-check
   - mysql -u root archie < test/test_db.sql
+  - cp config/units.csv.dist config/units.csv
+  - cp config/quads.csv.dist config/quads.csv
   - cp test/test_settings.php config/settings.php
  
 script:
