@@ -399,7 +399,7 @@ class Record extends database_object {
         }
     }
 		// XRF Matrix Index numeric
-		if (!Field::validate('xrf_matrix_index'],$input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
+		if (!Field::validate('xrf_matrix_index',$input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
 			Error::add('xrf_matrix_index','XRF Matrix Index must be numeric'); 
 		}
 
@@ -409,17 +409,17 @@ class Record extends database_object {
 		} 
 
 		// Height, numeric
-		if (!Field::validate('height',($input['height'])) { 
+		if (!Field::validate('height',$input['height'])) { 
 			Error::add('height','Height must be numeric to a thousandth of an mm'); 
 		} 
 
 		// Width, numeric
-		if (!Field::validate('widht',$input['width'])) { 
+		if (!Field::validate('width',$input['width'])) { 
 			Error::add('width','Length must be numeric to a thousandth of an mm'); 
 		} 
 
 		// Thickness
-		if (!Field::validate('thickness',($input['thickness'])) { 
+		if (!Field::validate('thickness',$input['thickness'])) { 
 			Error::add('thickness','Thickness must be numeric'); 
 		} 
 		

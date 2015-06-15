@@ -1,9 +1,13 @@
 <?php 
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 $file_path = dirname(__FILE__);
-$prefix = realpath($file_path . "/../");
-define('NO_LOG',1); 
-define('CLI',1); 
+$prefix = realpath($file_path . "/../../");
+if (!defined('NO_LOG')) {
+  define('NO_LOG',1); 
+}
+if (!defined('CLI')) {
+  define('CLI',1); 
+}
 require_once $prefix . '/class/init.php'; 
 require_once $prefix . '/lib/enhancetest/EnhanceTestFramework.php';
 
@@ -15,7 +19,6 @@ class RecordClassTests extends \Enhance\TestFixture {
   } 
 
   /* Test Invalid Values */
-  public function invalidUnit()       { $this->runFalseCreate('unit');  } // invalid unit
   public function invalidLevel()      { $this->runFalseCreate('level'); } // invalid level
   public function invalidLU()         { $this->runFalseCreate('lsg_unit'); } // invalid lsg_unit
   public function invalidRN()         { $this->runFalseCreate('station_index'); } // invalid RN
@@ -65,9 +68,7 @@ class RecordClassTests extends \Enhance\TestFixture {
     // Create a record
     $input = array(); 
 
-    $input['unit'] = 'A';
-    $input['level'] = '1';
-    $input['quad'] = '1';
+    $input['level'] = '-11';
     $input['lsg_unit'] = '1';
     $input['station_index'] = '111';
     $input['northing'] = '111.111';
