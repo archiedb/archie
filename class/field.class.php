@@ -20,17 +20,25 @@ class Field {
     $retval = true;
 
     switch ($field) {
+      // INT, rounded to 3 places or blank
+      case 'weight':
+      case 'height':
+      case 'width':
       case 'northing':
       case 'easting':
+      case 'thickness':
       case 'elevation':
-        // Must be int and rounded to 3 places and something entered
         if ((!is_numeric($value) OR round($value,3) != $value) AND strlen($field) ) {
           $retval = false;
         }
       break;
-      case 'rn':
-        // Must be Int
-        if (!is_numeric($value) ) {
+      // INT, greater than 0
+      case 'xrf_artifact_index':
+      case 'quanity':
+      case 'xrf_matrix_index':
+      case 'station_index':
+      case 'rn': //FIXME: Should always be station_index
+        if (!is_numeric($value) OR $value <= 0) {
           $retval = false;
         }
       break;

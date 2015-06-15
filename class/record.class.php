@@ -191,7 +191,6 @@ class Record extends database_object {
 
 		// Insert the new record
     $site = \UI\sess::$user->site->uid;
-		$unit = $level->unit; 
 		$level = $level->uid; 
 		$lsg_unit = $input['lsg_unit']; 
 		$xrf_matrix_index = $input['xrf_matrix_index']; 
@@ -205,7 +204,6 @@ class Record extends database_object {
 		$notes = $input['notes']; 
 		$xrf_artifact_index = $input['xrf_artifact_index']; 
     $accession = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
-		$quad = isset($level->quad->uid) ? $level->quad->uid : '0'; 
 		$feature = $feature_uid;  
     $krotovina = $krotovina_uid;
 		$user = \UI\sess::$user->uid; 
@@ -225,14 +223,18 @@ class Record extends database_object {
     // Unlock 
 //		$db_results = Dba::write($unlock_sql); 
 
-    $legend_line = "Site,Catalog ID,Unit,Level,LSG Unit,RN,XRF Matrix Index, Weight (grams),Height(mm),Width(mm),Thickness(mm),Quanity,Material,Classification,Quad,Feature ID,Krotovina ID,User,Date";
+    $legend_line = "Site,Catalog ID,Level,LSG Unit,RN,XRF Matrix Index, Weight (grams),Height(mm),Width(mm),Thickness(mm),Quanity,Material,Classification,Feature ID,Krotovina ID,User,Date";
     Event::record('ADD-LEGEND',$legend_line);
-		$log_line = "$site,$catalog_id,$unit," . $input['level'] . ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] ."," . $input['krotovina'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
+		$log_line = "$site,$catalog_id," . $input['level'] . ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification," . $input['feature'] ."," . $input['krotovina'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('ADD',$log_line); 
 
    // Create the spatial data entry
-    $spatial = SpatialData::create(array('station_index'=>$input['station_index'],'record'=>$insert_id,'northing'=>$input['northing'],'easting'=>$input['easting'],'elevation'=>$input['elevation'],'type'=>'record'));
-    //FIXME: Catch this and deal with it in a sane way
+    $spatial = SpatialData::create(array('station_index'=>$input['station_index'],
+                                        'record'=>$insert_id,
+                                        'northing'=>$input['northing'],
+                                        'easting'=>$input['easting'],
+                                        'elevation'=>$input['elevation'],
+                                        'type'=>'record'));
 
 		// We're sure we've got a record so lets generate our QR code. 
 		Content::write($insert_id,'qrcode'); 
@@ -346,9 +348,10 @@ class Record extends database_object {
 		}
 
 		// Station Index must be numeric
-		if ((!is_numeric($input['station_index']) OR $input['station_index'] <= 0) AND strlen($input['station_index'])) { 
+    if (!Field::validate('station_index',$input['station_index']) AND strlen($input['station_index'])) {
 			Error::add('station_index','Station Index must be numeric'); 
 		} 
+
     //FIXME: This should be standardize on the table name
     $input['rn'] = $input['station_index'];
     // Unique Spatial Record check
@@ -396,37 +399,37 @@ class Record extends database_object {
         }
     }
 		// XRF Matrix Index numeric
-		if (!is_numeric($input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
+		if (!Field::validate('xrf_matrix_index'],$input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
 			Error::add('xrf_matrix_index','XRF Matrix Index must be numeric'); 
 		}
 
 		// Weight, numeric floating point
-		if (round($input['weight'],3) != $input['weight'] AND strlen($input['weight'])) { 
+		if (!Field::validate('weight',$input['weight'])) { 
 			Error::add('weight','Weight must be numeric to a thousandth of a gram'); 
 		} 
 
 		// Height, numeric
-		if (round($input['height'],3) != $input['height'] AND strlen($input['height'])) { 
+		if (!Field::validate('height',($input['height'])) { 
 			Error::add('height','Height must be numeric to a thousandth of an mm'); 
 		} 
 
 		// Width, numeric
-		if (round($input['width'],3) != $input['width'] AND strlen($input['width'])) { 
+		if (!Field::validate('widht',$input['width'])) { 
 			Error::add('width','Length must be numeric to a thousandth of an mm'); 
 		} 
 
 		// Thickness
-		if (round($input['thickness'],3) != $input['thickness'] AND strlen($input['thickness'])) { 
+		if (!Field::validate('thickness',($input['thickness'])) { 
 			Error::add('thickness','Thickness must be numeric'); 
 		} 
 		
 		// Quanity, numeric
-		if (!is_numeric($input['quanity']) AND strlen($input['quanity'])) { 
+		if (!Field::validate('quanity',$input['quanity']) AND strlen($input['quanity'])) { 
 			Error::add('quanity','Quanity must be numeric'); 
 		}
  
 		// XRF Artifact Index, numeric
-		if (!is_numeric($input['xrf_artifact_index']) AND strlen($input['xrf_artifact_index'])) { 
+		if (!Field::validate('xrf_artifact_index',$input['xrf_artifact_index']) AND strlen($input['xrf_artifact_index'])) { 
 			Error::add('xrf_artifact_index','XRF Artifact Index must be numeric'); 
 		} 
 
