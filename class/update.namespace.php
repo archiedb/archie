@@ -91,17 +91,32 @@ class Code {
   public static function config_update() {
 
     // Read new, set new to old where they overlap
-    $dist_results = parse_ini_file(\Config::get('prefix') . '/config/settings.php.dist');
+    $dist = file_get_contents(\Config::get('prefix') . '/config/settings.php.dist');
     $live_results = parse_ini_file(\Config::get('prefix') . '/config/settings.php');
 
-    $config_new = ";<?php exit; ?>\n[main]\n";
-    // Drr don't carry config version forward
-    unset($live_results['config_version']);
+    $data = explode("\n",$dist);
 
-    foreach ($dist_results as $key=>$value) { 
-      $new_value = isset($live_results[$key]) ? $live_results[$key] : $dist_results[$key];
-      $config_new .= $key . "=" . $new_value . "\n"; 
-    }
+    $config_new = "";
+    foreach ($data as $row) {
+      if (preg_match("/^;?([\w\d]+)\s*=\s*[\"]{1}(.*?)[\"]{1}$/",$row,$matches)
+        || preg_match("/^;?([\w\d]+)\s*=\s*[\']{1}(.*?)[\']{1}$/", $row, $matches)
+        || preg_match("/^;?([\w\d]+)\s*=\s*[\'\"]{0}(.*)[\'\"]{0}$/",$row,$matches)) {
+        
+        $key = $matches[1];
+        $value = $matches[2];
+
+        if ($key == 'config_version') {
+          $row = $key . '='. $value;
+        } 
+        elseif (isset($live_results[$key])) {
+          $row = $key . '='. $live_results[$key];
+        }
+      } // end if config-value
+
+      $config_new .= $row . "\n";
+
+    } // end foreach rows
+echo $config_new;exit;
     if (is_writeable(\Config::get('prefix') . '/config/settings.php')) {
       // If it works return
       if (($result = file_put_contents(\Config::get('prefix') . '/config/settings.php',$config_new)) !== false) {
