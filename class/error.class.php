@@ -97,7 +97,7 @@ class Error {
 		Error::$error_count++; 
 
     if (defined('CLI')) {
-      Event::record('UI-Error',json_encode(array('name'=>$name,'msg'=>$message)),'error');
+      echo "\t$name => $message\n";
     }
 
 		// Make sure its set first
