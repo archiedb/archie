@@ -4,8 +4,10 @@ ARCHIE
 An open source digitial inventory system designed for field and lab use by
 archelogists.  
 
-Build Status: MASTER 
-![Master Branch](https://travis-ci.org/archiedb/archie.svg?branch=master "Master Branch")
+Branch | Build Status
+------ | ------------
+**Master** | ![Master Branch](https://travis-ci.org/archiedb/archie.svg?branch=master "Master Branch")
+**Development** | ![Development Branch](https://travis-ci.org/archiedb/archie.svg?branch=development "Development Branch")
 
 Contents
 --------
