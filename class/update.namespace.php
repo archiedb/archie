@@ -116,7 +116,7 @@ class Code {
       $config_new .= $row . "\n";
 
     } // end foreach rows
-echo $config_new;exit;
+
     if (is_writeable(\Config::get('prefix') . '/config/settings.php')) {
       // If it works return
       if (($result = file_put_contents(\Config::get('prefix') . '/config/settings.php',$config_new)) !== false) {
