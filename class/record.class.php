@@ -159,7 +159,7 @@ class Record extends database_object {
 		$row = array(); 
 
 		// If no catalog ID is defined then we need to auto-inc it
-		if (!$input['catalog_id']) { 
+		if (!isset($input['catalog_id'])) { 
 			$site = Dba::escape($input['site']); 
 			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`='$site' ORDER BY `catalog_id` DESC LIMIT 1"; 
 			$db_results = Dba::read($catalog_sql); 
@@ -186,8 +186,8 @@ class Record extends database_object {
 
     // We need the real UID of the following objects
     $level = new Level($input['level']);
-    $feature_uid  = Feature::get_uid_from_record($input['feature']);
-    $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
+    $feature_uid  = isset($input['feature']) ? Feature::get_uid_from_record($input['feature']) : null;
+    $krotovina_uid = isset($input['krotovina']) ? Krotovina::get_uid_from_record($input['krotovina']) : null;
 
 		// Insert the new record
     $site = \UI\sess::$user->site->uid;
@@ -225,7 +225,7 @@ class Record extends database_object {
 
     $legend_line = "Site,Catalog ID,Level,LSG Unit,RN,XRF Matrix Index, Weight (grams),Height(mm),Width(mm),Thickness(mm),Quanity,Material,Classification,Feature ID,Krotovina ID,User,Date";
     Event::record('ADD-LEGEND',$legend_line);
-		$log_line = "$site,$catalog_id," . $input['level'] . ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification," . $input['feature'] ."," . $input['krotovina'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
+		$log_line = "$site,$catalog_id," . $input['level'] . ",$lsg_unit,$input['station_index'],$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification," . $input['feature'] ."," . $input['krotovina'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
 		Event::record('ADD',$log_line); 
 
    // Create the spatial data entry
