@@ -34,22 +34,21 @@ class Genpdf {
     $pdf = new FPDF();
     $pdf->AddPage('L',array(57,32));
 
-    $pdf->SetFont('Times','B');
     $pdf->SetFontSize('8.5');
-    $pdf->Text('1','4','Catalog #:' . $record->catalog_id);
-    $pdf->Text('33','4','Site:'. $record->site->name);
-    $pdf->Text('1','8','Proj:' . $record->site->project);
-    $pdf->Text('33','8','Acc#:' . $record->accession);
-    $pdf->Text('1','12','Date:'.date('m/d/Y',$record->created));
-    $pdf->Text('33','12','Unit:'. $record->level->unit);
-    $pdf->Text('1','16','Name:' . $record->user->name); 
-    $pdf->Text('33','16','Level:'. $record->level->catalog_id);
-    $pdf->Text('1','20','Item(s):' . $record->material->name);
-    $pdf->Text('33','20','N = '. $record->quanity);
-    $pdf->Text('3','23',' ('. $record->classification->name . ')');
-    $pdf->Text('1','27','MASL:' . $masl);
     $pdf->SetFont('Times','B');
-    $pdf->Text('9','31',$record->accession . ' - ' . $site_abv . ' - ' . $record->level->unit . '/' . $record->level->quad->name . ' - ' . $record->level->catalog_id . ' - ' . $record->catalog_id);
+    $pdf->Text('9','4',$record->accession . ' - ' . $site_abv . ' - ' . $record->level->unit . '/' . $record->level->quad->name . ' - ' . $record->level->catalog_id . ' - ' . $record->catalog_id);
+    $pdf->Text('1','8','Catalog #:' . $record->catalog_id);
+    $pdf->Text('33','8','Site:'. $record->site->name);
+    $pdf->Text('1','12','Proj:' . $record->site->project);
+    $pdf->Text('33','12','Acc#:' . $record->accession);
+    $pdf->Text('1','16','Date:'.date('m/d/Y',$record->created));
+    $pdf->Text('33','16','Unit:'. $record->level->unit);
+    $pdf->Text('1','20','Name:' . $record->user->name); 
+    $pdf->Text('33','20','Level:'. $record->level->catalog_id);
+    $pdf->Text('1','23','Item(s):' . $record->material->name);
+    $pdf->Text('33','23','N = '. $record->quanity);
+    $pdf->Text('3','27',' ('. $record->classification->name . ')');
+    $pdf->Text('1','31','MASL:' . $masl);
   
 
     $pdf->Output($filename);
