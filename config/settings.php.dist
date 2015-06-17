@@ -16,7 +16,7 @@ ticket_size=88x25mm
 log_path=/var/log/archie
 
 ; This is the root of the attached/fs data
-data_root=/var/www/content
+data_root=/var/lib/archie
 
 ; Operational stuff
 ;; This is the number of records per page
