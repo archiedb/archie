@@ -10,9 +10,9 @@ if (INIT_LOADED != '1') { exit; }
   </div>
   <div class="modal-body">
     <div class="control-group span4">
-      <label class="control-label" for="inputRN">Total Station Index (RN)</label>
+      <label class="control-label" for="inputStationIndex">Total Station Index (RN)</label>
       <div class="controls">
-        <input id="inputRN" name="rn" type="text" value="" placeholder="Numeric Total Station Index" />
+        <input id="inputStationIndex" name="station_index" type="text" value="" placeholder="Numeric Total Station Index" />
       </div>
     </div>
     <div class="control-group span4">
