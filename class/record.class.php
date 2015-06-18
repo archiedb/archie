@@ -189,25 +189,29 @@ class Record extends database_object {
     $feature_uid  = isset($input['feature']) ? Feature::get_uid_from_record($input['feature']) : null;
     $krotovina_uid = isset($input['krotovina']) ? Krotovina::get_uid_from_record($input['krotovina']) : null;
 
-		// Insert the new record
-    $site = \UI\sess::$user->site->uid;
-		$level = $level->uid; 
-		$lsg_unit = $input['lsg_unit']; 
-		$xrf_matrix_index = $input['xrf_matrix_index']; 
-		$weight = $input['weight']; 
-		$height = $input['height']; 
-		$width = $input['width']; 
-		$thickness = $input['thickness']; 
-		$quanity = ($input['quanity'] == 0) ? '1' : $input['quanity']; // Default to Quanity 1 
-		$material = $input['material']; 
-		$classification = $input['classification']; 
-		$notes = $input['notes']; 
+		// Normalize the input, set unset variables to NULL
+    $site               = \UI\sess::$user->site->uid;
+		$level              = $level->uid; 
+		$lsg_unit           = $input['lsg_unit']; 
+		$xrf_matrix_index   = $input['xrf_matrix_index']; 
+		$weight             = $input['weight']; 
+		$height             = $input['height']; 
+		$width              = $input['width']; 
+		$thickness          = $input['thickness']; 
+		$quanity            = ($input['quanity'] == 0) ? '1' : $input['quanity']; // Default to Quanity 1 
+		$material           = $input['material']; 
+		$classification     = $input['classification']; 
+		$notes              = $input['notes']; 
 		$xrf_artifact_index = $input['xrf_artifact_index']; 
-    $accession = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
-		$feature = $feature_uid;  
-    $krotovina = $krotovina_uid;
-		$user = \UI\sess::$user->uid; 
-		$created = time(); 
+    $accession          = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
+    $station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing           = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting            = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation          = isset($input['elevation']) ? $input['elevation'] : NULL;
+		$feature            = $feature_uid;  
+    $krotovina          = $krotovina_uid;
+		$user               = \UI\sess::$user->uid; 
+		$created            = time(); 
 
 		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`level`,`lsg_unit`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`accession`,`feature`,`krotovina`,`user`,`created`) " . 
 			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
@@ -223,17 +227,19 @@ class Record extends database_object {
     // Unlock 
 //		$db_results = Dba::write($unlock_sql); 
 
-    $legend_line = "Site,Catalog ID,Level,LSG Unit,RN,XRF Matrix Index, Weight (grams),Height(mm),Width(mm),Thickness(mm),Quanity,Material,Classification,Feature ID,Krotovina ID,User,Date";
-    Event::record('ADD-LEGEND',$legend_line);
-		$log_line = "$site,$catalog_id," . $input['level'] . ",$lsg_unit,$input['station_index'],$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification," . $input['feature'] ."," . $input['krotovina'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
-		Event::record('ADD',$log_line); 
+    $log_json = json_encode(array('Site'=>$site,'Catalog ID'=>$catalog_id,'Level'=>$input['level'],'LSG Unit'=>$lsg_unit,
+                  'StationIndex'=>$station_index,'XRFMatrixIndex'=>$xrf_matrix_index,'Weight'=>$weight,
+                  'Height'=>$height,'Thickness'=>$thickness,'Quanity',$quanity,'Material'=>$material,
+                  'Classification'=>$classification,'Feature ID'=>$input['feature'],'Krotovina ID'=>$input['krotovina'],
+                  'Notes'=>$notes,'Accession'=>$accession,'User'=>\UI\sess::$user->username,'Date'=>date("r",$created)));
+		Event::record('RECORDADD',$log_json); 
 
-   // Create the spatial data entry
-    $spatial = SpatialData::create(array('station_index'=>$input['station_index'],
+    // Create the spatial data entry
+    $spatial = SpatialData::create(array('station_index'=>$station_index,
                                         'record'=>$insert_id,
-                                        'northing'=>$input['northing'],
-                                        'easting'=>$input['easting'],
-                                        'elevation'=>$input['elevation'],
+                                        'northing'=>$northing,
+                                        'easting'=>$easting,
+                                        'elevation'=>$elevation,
                                         'type'=>'record'));
 
 		// We're sure we've got a record so lets generate our QR code. 
