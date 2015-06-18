@@ -104,11 +104,6 @@ class SpatialData extends database_object {
    */
    public static function create($input) { 
 
-    //FIXME: Remove references to RN
-    if (isset($input['rn']) AND !isset($input['station_index'])) {
-      $input['station_index'] = $input['rn'];
-    }
-
     if (!SpatialData::validate($input)) { 
       Error::add('general','Invalid Spatial Data fields - please check input');
       return false;
@@ -194,9 +189,10 @@ class SpatialData extends database_object {
     // just fails
     $retval = true;
 
-    // If they've entered nothing then we're good!
+    // They have to enter something
     if (!strlen($input['station_index']) AND !strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation'])) {
-      return $retval;
+      Error::add('general','Must specify Station Index (RN) or Northing, Easting & Elevation');
+      $retval = false;
     }
 
     // If specified

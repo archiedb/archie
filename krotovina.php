@@ -33,13 +33,15 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('krotovina','edit')) { \UI\access_denied(); }
     $krotovina = new Krotovina($_POST['krotovina_id']);
     $krotovina->del_point($_POST['uid']);
-    require_once \UI\template('/krotovina/view');
+    header('Location:'  . Config::get('web_path') . '/krotovina/view/' . $krotovina->uid);
+    exit;
   break;
   case 'addpoint':
     if (!Access::has('krotovina','edit')) { \UI\access_denied(); }
     $krotovina = new Krotovina($_POST['krotovina_id']);
     $krotovina->add_point($_POST);
-    require_once \UI\template('/krotovina/view');
+    header('Location:'  . Config::get('web_path') . '/krotovina/view/' . $krotovina->uid);
+    exit;
   break;
   case 'view':
     if (!Access::has('krotovina','read')) { \UI\access_denied(); }

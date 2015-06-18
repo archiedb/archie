@@ -262,16 +262,22 @@ class Krotovina extends database_object {
 
     Error::clear();
 
+    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
+    $note           = isset($input['note']) ? $input['note'] : NULL;
+
     // Really we're just going to be using the spatialdata class for this, but
     // we want to set the data and type correctly so here we are
     $retval = SpatialData::create(array(
       'record'=>$this->uid,
       'type'=>'krotovina',
-      'rn'=>$input['rn'],
-      'northing'=>$input['northing'],
-      'easting'=>$input['easting'],
-      'elevation'=>$input['elevation'],
-      'note'=>$input['note']));
+      'station_index'=>$station_index,
+      'northing'=>$northing,
+      'easting'=>$easting,
+      'elevation'=>$elevation,
+      'note'=>$note));
 
     return $retval;
 
