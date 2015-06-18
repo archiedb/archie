@@ -230,7 +230,7 @@ class Record extends database_object {
     $log_json = json_encode(array('Site'=>$site,'Catalog ID'=>$catalog_id,'Level'=>$input['level'],'LSG Unit'=>$lsg_unit,
                   'StationIndex'=>$station_index,'XRFMatrixIndex'=>$xrf_matrix_index,'Weight'=>$weight,
                   'Height'=>$height,'Thickness'=>$thickness,'Quanity',$quanity,'Material'=>$material,
-                  'Classification'=>$classification,'Feature ID'=>$input['feature'],'Krotovina ID'=>$input['krotovina'],
+                  'Classification'=>$classification,'Feature ID'=>$feature_uid,'Krotovina ID'=>$krotovina_uid,
                   'Notes'=>$notes,'Accession'=>$accession,'User'=>\UI\sess::$user->username,'Date'=>date("r",$created)));
 		Event::record('record::create',$log_json); 
 

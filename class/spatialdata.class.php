@@ -114,26 +114,30 @@ class SpatialData extends database_object {
       return false;
     }
 
-    $record = Dba::escape($input['record']);
-    $type = Dba::escape($input['type']);
-    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
-    $northing = Dba::escape($input['northing']);
-    $easting = Dba::escape($input['easting']);
-    $elevation = Dba::escape($input['elevation']);
-    $note = Dba::escape($input['note']);
+    $record         = $input['record'];
+    $type           = $input['type'];
+    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
+    $note           = $input['note'];
+    
     $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`,`northing`,`easting`,`elevation`,`note`) " . 
-        "VALUES ('$record','$type',$station_index,'$northing','$easting','$elevation','$note')";
-    $db_results = Dba::write($sql); 
+        "VALUES (?,?,?,?,?,?,?)";
+    $db_results = Dba::write($sql,array($record,$type,$station_index,$northing,$easting,$elevation,$note)); 
 
     $insert_id = Dba::insert_id();
 
     if (!$insert_id) { 
-      Error:add('general','Database Error inserting Spatial Data - Please contact your administrator');
-      Event::error('SpatialData',"Error inserting spatial data - UID:$record  --- Type:$type --- Station index:$station_index --- Nor:$northing --- Est:$easting --- Elv:$elevation --- Note:$note");
+      Error:add('general','Unable to insert Spatial Data - Please contact your administrator');
+      Event::error('SpatialData::create',"Error inserting spatial data - UID:$record  --- Type:$type --- Station index:$station_index --- Nor:$northing --- Est:$easting --- Elv:$elevation --- Note:$note");
       return false;
     }
 
-    Event::add('SpatialData',"Added point for UID:$record of type $type RN:$station_index,Nor:$northing,Est:$easting,Elv:$elevation");
+    $json_msg = json_encode(array('uid'=>$insert_id,'record'=>$record,'type'=>$type,
+      'station_index'=>$station_index,'nor'=>$northing,'est'=>$easting,'elv'=>$elevation,'note'=>$note));
+
+    Event::add('SpatialData::create',$json_msg);
     return $insert_id;
 
   } // create
@@ -154,22 +158,26 @@ class SpatialData extends database_object {
       return false;
     }
 
-    // Escape the values
-    $uid = Dba::escape($this->uid);
-    $type = Dba::escape($this->record_type);
-    $record = Dba::escape($this->record);
-    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
-    $northing = Dba::escape($input['northing']);
-    $easting = Dba::escape($input['easting']);
-    $elevation = Dba::escape($input['elevation']);
+    // Escape the values, and set to null if they aren't set
+    $uid            = $this->uid;
+    $type           = $this->record_type;
+    $record         = $this->record;
+    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
 
-    $sql = "UPDATE `spatial_data` SET `station_index`=$station_index,`northing`='$northing',`easting`='$easting',`elevation`='$elevation' " . 
-      "WHERE `uid`='$uid'";
-    $db_results = Dba::write($sql);
+    $sql = "UPDATE `spatial_data` SET `station_index`=?,`northing`=?,`easting`=?,`elevation`=? WHERE `uid`=? "; 
+    $db_results = Dba::write($sql,array($station_index,$northing,$easting,$elevation,$uid));
 
     if (!$db_results) { 
       return false;
     }
+
+    $json_msg = json_encode(array('uid'=>$insert_id,'record'=>$record,'type'=>$type,
+      'station_index'=>$station_index,'nor'=>$northing,'est'=>$easting,'elv'=>$elevation,'note'=>$note));
+
+    Event::add('SpatialData::update',$json_msg);
 
     return true;
 
@@ -270,11 +278,10 @@ class SpatialData extends database_object {
    */
   public static function is_site_unique($input,$record=0) { 
 
-    $input['station_index'] = isset($input['station_index']) ? $input['station_index'] : NULL;
-
-    $input['northing'] = isset($input['northing']) ? $input['northing'] : '';
-    $input['easting'] = isset($input['easting']) ? $input['easting'] : '';
-    $input['elevation'] = isset($input['elevation']) ? $input['elevation'] : '';
+    $input['station_index'] = isset($input['station_index']) ? $input['station_index'] : '';
+    $input['northing']      = isset($input['northing']) ? $input['northing'] : '';
+    $input['easting']       = isset($input['easting']) ? $input['easting'] : '';
+    $input['elevation']     = isset($input['elevation']) ? $input['elevation'] : '';
 
     // If they've passed nothing then yes it's unique
     if (!strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation']) AND !strlen($input['station_index'])) {
