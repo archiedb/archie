@@ -41,7 +41,6 @@ class Field {
       case 'quanity':
       case 'xrf_matrix_index':
       case 'station_index':
-      case 'rn': //FIXME: Should always be station_index
         if (!is_numeric($value) OR $value <= 0) {
           $retval = false;
         }

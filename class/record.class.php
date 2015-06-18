@@ -158,11 +158,13 @@ class Record extends database_object {
 		// Reset Row variable
 		$row = array(); 
 
-		// If no catalog ID is defined then we need to auto-inc it
-		if (!isset($input['catalog_id'])) { 
-			$site = Dba::escape($input['site']); 
-			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`='$site' ORDER BY `catalog_id` DESC LIMIT 1"; 
-			$db_results = Dba::read($catalog_sql); 
+    // If catalog_id isn't set, set it to null
+    $input['catalog_id'] = isset($input['catalog_id']) ? $input['catalog_id'] : null;
+
+		// If no catalog_id specified, determine next available #
+		if (!$input['catalog_id']) { 
+			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? ORDER BY `catalog_id` DESC LIMIT 1"; 
+			$db_results = Dba::read($catalog_sql,array($input['site'])); 
 			$row = Dba::fetch_assoc($db_results); 	
 			Dba::finish($db_results); 
 
@@ -170,10 +172,8 @@ class Record extends database_object {
 		} 
 		// Else we need to make sure it isn't a duplicate
 		else { 
-			$site = Dba::escape($input['site']); 
-			$catalog_id = Dba::escape($input['catalog_id']); 
-			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`='$site' AND `catalog_id`='$catalog_id' LIMIT 1"; 
-			$db_results = Dba::read($catalog_sql); 
+			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? AND `catalog_id`=? LIMIT 1"; 
+			$db_results = Dba::read($catalog_sql,array($input['site'],$intput['catalog_id'])); 
 			$row = Dba::fetch_assoc($db_results); 
 			Dba::finish($db_results); 
 			if ($row['catalog_id']) { 
@@ -232,7 +232,7 @@ class Record extends database_object {
                   'Height'=>$height,'Thickness'=>$thickness,'Quanity',$quanity,'Material'=>$material,
                   'Classification'=>$classification,'Feature ID'=>$input['feature'],'Krotovina ID'=>$input['krotovina'],
                   'Notes'=>$notes,'Accession'=>$accession,'User'=>\UI\sess::$user->username,'Date'=>date("r",$created)));
-		Event::record('RECORDADD',$log_json); 
+		Event::record('record::create',$log_json); 
 
     // Create the spatial data entry
     $spatial = SpatialData::create(array('station_index'=>$station_index,
