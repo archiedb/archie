@@ -30,10 +30,15 @@ class RecordClassTests extends \Enhance\TestFixture {
   /* Test Valid Record Creation */
   public function validCreate() {
     
+    $retval = false; 
     $input = $this->fillInput(); 
     $results = Record::create($input);
-    if ($results) { $results = true; }
-    \Enhance\Assert::isTrue($results); 
+    if ($results) { 
+      // Make sure the record exists by pulling it back out
+      $record = new Record($results);
+      if ($record->uid > 0) { $retval = true; }
+    } 
+    \Enhance\Assert::isTrue($retval); 
 
   }
 
