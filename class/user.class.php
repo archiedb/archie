@@ -30,7 +30,7 @@ class User extends database_object {
 
     // Load their roles
     if (!is_array($this->roles)) {
-      $this->roles = User::get_roles($this->uid);
+      $this->roles = User::get_roles($this->uid,$this->site);
       $row['roles'] = $this->roles;
       parent::add_to_cache('users',$uid,$row);
     }
