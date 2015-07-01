@@ -36,12 +36,12 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/users/view'); 
   break;
   case 'site':
-    if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','edit')) { \UI\access_denied(); }
+    if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','edit')) { \UI\access_denied('User Edit Permissions Required'); }
     $user = \UI\sess::$user;
     require_once \UI\template('/users/view_site');
   break;
   case 'siteupdate':
-    if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','edit')) { \UI\access_denied(); }
+    if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','edit')) { \UI\access_denied('User Edit Permissions Required'); }
     //FIXME: make sure they already have access to this site
     \UI\sess::$user->update_site(\UI\sess::location('objectid'));
     $user = \UI\sess::$user;
