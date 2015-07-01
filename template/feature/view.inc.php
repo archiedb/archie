@@ -50,3 +50,4 @@ foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']);
 <?php } ?>
 </table>
 <?php require_once \UI\template('/feature/modal_add_point'); ?>
+

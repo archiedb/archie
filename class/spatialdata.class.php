@@ -115,7 +115,7 @@ class SpatialData extends database_object {
     $northing       = isset($input['northing']) ? $input['northing'] : NULL;
     $easting        = isset($input['easting']) ? $input['easting'] : NULL;
     $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
-    $note           = $input['note'];
+    $note           = isset($input['note']) ? $input['note'] : NULL;
     
     $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`,`northing`,`easting`,`elevation`,`note`) " . 
         "VALUES (?,?,?,?,?,?,?)";
@@ -124,7 +124,7 @@ class SpatialData extends database_object {
     $insert_id = Dba::insert_id();
 
     if (!$insert_id) { 
-      Error:add('general','Unable to insert Spatial Data - Please contact your administrator');
+      Error::add('general','Unable to insert Spatial Data - Please contact your administrator');
       Event::error('SpatialData::create',"Error inserting spatial data - UID:$record  --- Type:$type --- Station index:$station_index --- Nor:$northing --- Est:$easting --- Elv:$elevation --- Note:$note");
       return false;
     }
