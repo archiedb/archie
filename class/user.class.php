@@ -84,11 +84,12 @@ class User extends database_object {
    * get_roles
    * Get the access roles for this user
    */
-  public static function get_roles($uid) {
+  public static function get_roles($uid,$site='') {
 
-    $uid = Dba::escape($uid);
-    $sql = "SELECT * FROM `user_permission_view` WHERE `user`='$uid'";
-    $db_results = Dba::read($sql);
+    $site = strlen($site) ? $site : \UI\sess::$user->site->uid;
+
+    $sql = "SELECT * FROM `user_permission_view` WHERE `user`=? AND (`site`=? OR `site`='0')";
+    $db_results = Dba::read($sql,array($uid,$site));
 
     $results = array();
 
@@ -362,8 +363,8 @@ class User extends database_object {
     $email = Dba::escape($input['email']); 
     $password = Dba::escape(hash('sha256',$input['password'])); 
 
-    $sql = "INSERT INTO `users` (`name`,`username`,`email`,`password`) VALUES (?,?,?,?)"; 
-    $db_results = Dba::write($sql,array($input['name'],$input['username'],$input['email'],$password)); 
+    $sql = "INSERT INTO `users` (`name`,`username`,`email`,`password`,`site`) VALUES (?,?,?,?,?)"; 
+    $db_results = Dba::write($sql,array($input['name'],$input['username'],$input['email'],$password,\UI\sess::$user->site->uid)); 
 
     if (!$db_results) { 
       Event::error('DATABASE','Error unable to insert user into database'); 
