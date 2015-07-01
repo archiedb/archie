@@ -279,11 +279,11 @@ class Feature extends database_object {
 
     Error::clear(); 
 
-      $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
-      $northing       = isset($input['northing']) ? $input['northing'] : NULL;
-      $easting        = isset($input['easting']) ? $input['easting'] : NULL;
-      $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
-      $note           = isset($input['note']) ? $input['note'] : NULL;
+    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
+    $note           = isset($input['note']) ? $input['note'] : NULL;
 
     $retval = SpatialData::create(array(
       'record'=>$this->uid,
@@ -297,6 +297,33 @@ class Feature extends database_object {
     return $retval;
 
   } //add_point
+
+  /**
+   * update_point
+   * Update existing point
+   */
+  public function update_point($input) { 
+
+    Error::clear();
+
+    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
+    $note           = isset($input['note']) ? $input['note'] : NULL;
+
+    $retval = SpatialData::update(array(
+      'record'=>$this->uid,
+      'type'=>'feature',
+      'station_index'=>$station_index,
+      'northing'=>$northing,
+      'easting'=>$easting,
+      'elevation'=>$elevation,
+      'note'=>$note));
+
+    return $retval;
+
+  } // update_point
 
   /**
    * del_point

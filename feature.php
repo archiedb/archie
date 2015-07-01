@@ -14,7 +14,7 @@ switch (\UI\sess::location('action')) {
     $feature_id = Feature::create($_POST);
     if ($feature_id) {
       $feature = new Feature($feature_id);
-      require_once \UI\template('/feature/view');
+      \UI\redirect('/feature/view/' . $feature_id);
     }
     else {
       require_once \UI\template('/feature/new');
@@ -29,20 +29,25 @@ switch (\UI\sess::location('action')) {
       break;
     }
     $feature->delete();
-    header('Location:' . Config::get('web_path') . '/feature');
+    \UI\redirect('/feature');
   break;
   case 'delpoint':
     if (!Access::has('feature','edit')) { \UI\access_denied(); }
     $feature = new Feature($_POST['feature_id']);
     $feature->del_point($_POST['uid']);
-    require_once \UI\template('/feature/view');
+    \UI\redirect('/feature/view' . $feature->uid);
   break;
   case 'addpoint':
     if (!Access::has('feature','edit')) { \UI\access_denied(); }
     $feature = new Feature($_POST['feature_id']);
     $feature->add_point($_POST);
-    require_once \UI\template('/feature/view');
+    \UI\redirect('/feature/view/' . $feature->uid);
   break;
+  case 'updatepoint':
+    if (!Access::has('feature','edit')) { \UI\access_denied(); }
+    $feature = new Feature($_POST['feature_id']);
+    $feature->update_point($_POST);
+    \UI\redirect('/feature/view/' . $feature->uid);
   case 'view':
     if (!Access::has('feature','read')) { \UI\access_denied(); }
     $feature = new Feature(\UI\sess::location('2'));

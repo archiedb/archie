@@ -54,8 +54,34 @@ class TestData {
 
   public static function level($field,$valid=true) {
 
+    switch ($field) { 
+      case 'elv_ne_finish':
+      case 'elv_se_finish':
+      case 'elv_sw_finish':
+      case 'elv_nw_finish':
+        $value = $valid ? array(null,'110.000') : array('113.111','-2109');
+      break;
+      case 'easting':
+      case 'elv_nw_start':
+      case 'elv_ne_start':
+      case 'elv_sw_start':
+      case 'elv_se_start':
+      case 'elv_center_start':
+      case 'northing':
+        $value = $valid ? array(null,'111.111') : array('-12309.12390');
+      break;
+      case 'site':
+        $value = $valid ? array('1') : array(NULL,'STRING');
+      break;
+      case 'catalog_id':
+        $value = $valid ? array('1') : array(NULL);
+      break;
+      default: 
+        $value = $valid ?  array() : array();
+      break;
+    }
 
-    return array();
+    return $value; 
 
   } // level
 

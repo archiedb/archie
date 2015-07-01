@@ -20,11 +20,16 @@ class LevelClassTests extends \Enhance\TestFixture {
   public function Level_invalidNorthing()   { $this->runFalseCreate('northing'); } // invalid northing
 
   /* Test Valid Record Creation */
-  public function validCreate() {
+  public function Level_validCreate() {
     
+    $retval = false; 
+
     $input = $this->fillInput(); 
     $results = Level::create($input);
-    if ($results) { $results = true; }
+    if ($results) { 
+      $level = new Level($results);
+      if ($level->uid) { $retval = true; }
+    }
     \Enhance\Assert::isTrue($results); 
 
   }

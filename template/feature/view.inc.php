@@ -22,7 +22,7 @@ if (INIT_LOADED != '1') { exit; }
 <h5>Feature Spatial Information</h5>
 <table class="table table-hover table-bordered table-white">
 <tr>
-  <th>RN</th>
+  <th>Station Index (RN)</th>
   <th>Northing</th>
   <th>Easting</th>
   <th>Elevation</th>
@@ -40,8 +40,11 @@ foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']);
   <td><?php echo scrub_out($spatialdata->elevation); ?></td>
   <td><?php echo scrub_out($spatialdata->note); ?></td>
   <td>
-    <a href="#confirmdel_<?php echo scrub_out($spatialdata->uid); ?>" class="btn btn-danger" role="button" data-toggle="modal">Delete</a>
+    <?php if (Access::has('feature','edit')) { ?>
+    <a href="#editspatial<?php $spatialdata->_print('uid'); ?>" class="btn btn-success" role="button" data-toggle="modal">Edit</a>
+    <a href="#confirmdel_<?php $spatialdata->_print('uid'); ?>" class="btn btn-danger" role="button" data-toggle="modal">Delete</a>
     <?php include \UI\template('/feature/modal_confirmdel_point'); ?>
+    <?php include \UI\template('/feature/modal_edit_point'); ?>
   </td>
 </tr>
 <?php } ?>
