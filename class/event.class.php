@@ -53,6 +53,9 @@ class Event {
           $header_small = ' ' . scrub_out($errors['general']);
           unset($errors['general']); 
         }
+        else { 
+          $header_small = '';
+        }
         foreach ($errors as $key=>$value) { 
           $message .= "<dl><dt>" . \UI\field_name($key) . "</dt><dd>$value</dd></dl>";
         }
