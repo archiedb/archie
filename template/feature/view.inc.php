@@ -45,6 +45,7 @@ foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']);
     <a href="#confirmdel_<?php $spatialdata->_print('uid'); ?>" class="btn btn-danger" role="button" data-toggle="modal">Delete</a>
     <?php include \UI\template('/feature/modal_confirmdel_point'); ?>
     <?php include \UI\template('/feature/modal_edit_point'); ?>
+    <?php } ?>
   </td>
 </tr>
 <?php } ?>
