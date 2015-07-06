@@ -132,8 +132,10 @@ class Site extends database_object {
     $db_results = Dba::read($sql,array($site,$field));
 
     $row = Dba::fetch_assoc($db_results);
+    
+    $value = isset($row['value']) ? $row['value'] : NULL;
 
-    return $row['value'];
+    return $value;
 
   } // get_data
 
