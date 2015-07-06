@@ -343,6 +343,13 @@ class Database {
                     ' - Set record.feature and record.krotovina to NULL if their value is currently "0".<br />' . 
                     ' - Add Accession to Records.<br />';
     $versions[] = array('version'=>'0017','description'=>$update_string);
+    $update_string = '- Remove UNIQUE on record.catalog_id.<br />' . 
+                    '- Add site.configuration as JSON encoded string of settings.<br />' .
+                    '- Drop record.quad and record.unit.<br />' . 
+                    '- Switch to Innodb Tables.<br />' . 
+                    '- Add FK site+level constraints to record,feature,krotovina.<br />';
+    $versions[] = array('version'=>'0018','description'=>$update_string);
+
 
 
 
@@ -375,7 +382,8 @@ class Database {
 
           if ($success) { self::set_version($update['version']); }
           else { 
-            \Event::error('DBUPGRADE','Database upgrade failed on version: ' . $update['version']);
+            \Error::add('Database','Upgrade failed on version: ' . $update['version']);
+            require_once \Config::get('prefix') . '/template/database_upgrade.inc.php';
             return false; 
           }
         }
@@ -1106,6 +1114,9 @@ class Database {
       $sql = "INSERT INTO `user_group` (`user`,`group`,`site`) VALUES ('" . $row['uid'] . "','1','$site')";
       $retval = \Dba::write($sql) ? $retval : false;
 
+      $sql = 'UPDATE `users` SET `site`=? WHERE `uid`=?';
+      $retval = \Dba::write($sql,array($site,$row['uid']));
+
     } 
 
     $sql = "SELECT `uid` FROM `role` WHERE `name`='admin'";
@@ -1328,6 +1339,39 @@ class Database {
   **/
   public static function update_0018() {
 
+    // Pre-update verfication needed
+    $sql = "SELECT `record`.`uid`,`site`.`uid` FROM `record` LEFT JOIN `site` ON `site`.`uid`=`record`.`site` WHERE `site`.`uid` IS NULL";
+    $db_results = \Dba::read($sql); 
+
+    if (\Dba::num_rows($db_results)) { 
+      \Error::add('Invalid Site','One or more records has an invalid Site, please see run bin/validate-records.php.inc for more information');
+    }
+
+    $sql = "SELECT `record`.`uid`,`level`.`uid` FROM `record` LEFT JOIN `level` ON `level`.`uid`=`record`.`level` WHERE `level`.`uid` IS NULL";
+    $db_results = \Dba::read($sql); 
+
+    if (\Dba::num_rows($db_results)) { 
+      \Error::add('Invalid Level','One or more records has an invalid Level, please see run bin/validate-records.php.inc for more information');
+    }
+
+    $sql = "SELECT `krotovina`.`uid`,`site`.`uid` FROM `krotovina` LEFT JOIN `site` ON `site`.`uid`=`krotovina`.`site` WHERE `site`.`uid` IS NULL";
+    $db_results = \Dba::read($sql); 
+
+    if (\Dba::num_rows($db_results)) { 
+      \Error::add('Invalid Site','One or more Krotovina has an invalid Site, please see run bin/validate-records.php.inc for more information');
+    }
+
+    $sql = "SELECT `feature`.`uid`,`site`.`uid` FROM `feature` LEFT JOIN `site` ON `site`.`uid`=`feature`.`site` WHERE `site`.`uid` IS NULL";
+    if (\Dba::num_rows($db_results)) { 
+      \Error::add('Invalid Site','One or more Features has an invalid Site, please see run bin/validate-records.php.inc for more information');
+    }
+
+    if (\Error::occurred()) { 
+      return false; 
+    }
+
+    // RUN THE UPDATE
+
     $retval = true; 
 
     $sql = "ALTER TABLE `site` ADD `settings` TEXT NULL AFTER `excavation_end`";
@@ -1347,19 +1391,15 @@ class Database {
     
     }
 
-    // Drop Record.Unit Record.Quad not in Level
-    $sql = "ALTER TABLE `record` DROP `unit`";
-    $retval = \Dba::write($sql) ? $retval : false;
-
-    $sql = "ALTER TABLE `record` DROP `quad`";
-    $retval = \Dba::write($sql) ? $retval : false;
-
     // Bring record.? into sync with the table fields it relates to
 
     $sql = "ALTER TABLE `site` CHANGE `uid` `uid` INT(11) UNSIGNED";
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `level` CHANGE `uid` `uid` INT(11) UNSIGNED";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `site` `site` INT(11) UNSIGNED";
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `feature` CHANGE `uid` `uid` INT(11) UNSIGNED";
@@ -1407,30 +1447,26 @@ class Database {
     $sql = "ALTER TABLE `user_group` ENGINE=InnoDB";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `site_data` ENGINE=InnoDB";
+    $retval = \Dba::write($sql) ? $retval : false;
 
     // Add FK constraints
-    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_record_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_level FOREIGN KEY (level) REFERENCES level(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_record_level FOREIGN KEY (level) REFERENCES level(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_krotovina FOREIGN KEY (krotovina) REFERENCES krotovina(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
-    $retval = \Dba::write($sql) ? $retval : false;
-
-    $sql = "ALTER TABLE `record` ADD CONSTRAINT fk_feature FOREIGN KEY (feature) REFERENCES feature(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
-    $retval = \Dba::write($sql) ? $retval : false;
-
-    $sql = "ALTER TABLE `level` ADD CONSTRAINT fk_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $sql = "ALTER TABLE `level` ADD CONSTRAINT fk_level_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
     $retval = \Dba::write($sql) ? $retval : false;
     
-    $sql = "ALTER TABLE `feature` ADD CONSTRAINT fk_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $sql = "ALTER TABLE `feature` ADD CONSTRAINT fk_feature_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
     $retval = \Dba::write($sql) ? $retval : false;
 
-    $sql = "ALTER TABLE `krotovina` ADD CONSTRAINT fk_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
+    $sql = "ALTER TABLE `krotovina` ADD CONSTRAINT fk_krotovina_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
     $retval = \Dba::write($sql) ? $retval : false;
 
-
+    return $retval;
 
   } // update_0018
 

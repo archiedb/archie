@@ -3,6 +3,7 @@
 
 define('CLI',true); 
 define('NO_LOG',true); 
+define('OUTDATED_DATABASE_OK',true);
 $file_path = dirname(__FILE__);
 $prefix = realpath($file_path . "/../");
 require_once $prefix . '/class/init.php';

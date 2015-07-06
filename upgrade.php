@@ -23,7 +23,7 @@ switch ($_POST['action']) {
 			}
 			else { 
 				$results = \update\Database::run(); 
-				if (!$results) { echo "NUTS DB update failed, you should restore your backup"; exit(); }
+				if (!$results) { exit(); }
 				else { header('Location:' . Config::get('web_path')); exit(); }			
       }
 		}
