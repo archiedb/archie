@@ -20,6 +20,21 @@ if (INIT_LOADED != '1') { exit; }
       <input name="email" type="text" id="inputEmail" placeholder="Email" value="<?php echo scrub_out($user->email); ?>">
     </div>
   </div>
+  <div class="control-group">
+    <label class="control-label" for="inputSite">Current Site</label>
+    <div class="controls">
+      <select id="inputSite" name="site">
+      <?php
+          $sites = $user->get_sites();
+          foreach ($sites as $site) {
+            $is_selected= ($site->uid == $user->site->uid) ? ' selected="selected"' : '';
+            
+      ?>
+        <option value="<?php $site->_print('uid'); ?>"<?php echo $is_selected; ?>><?php $site->_print('name'); ?></option>
+      <?php } ?>
+      </select>
+    </div>
+  </div>
   <div class="control-group<?php Error::display_class('password'); ?>">
     <label class="control-label" for="inputPassword">Password</label>
     <div class="controls">

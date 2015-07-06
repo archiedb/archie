@@ -307,8 +307,8 @@ class User extends database_object {
 		$name = Dba::escape($input['name']); 
 		$email = Dba::escape($input['email']); 
 
-		$sql = "UPDATE `users` SET `name`='$name', `email`='$email' WHERE `uid`='$uid' LIMIT 1"; 
-		$db_results = Dba::write($sql); 
+		$sql = 'UPDATE `users` SET `site`=?, `name`=?, `email`=? WHERE `uid`=? LIMIT 1'; 
+		$db_results = Dba::write($sql,array($input['site'],$input['name'],$input['email'],$uid)); 
 
 		// If this is the current logged in user, refresh them
 		if (\UI\sess::$user->uid == $this->uid) { 
