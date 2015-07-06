@@ -218,6 +218,34 @@ class Dba {
 
 	} // finish
 
+  /**
+   * commit
+   * Commits the current transaction
+   */
+  public static function commit() {
+
+    $dbh = self::dbh();
+
+    $retval = $dbh->commit();
+
+    return $retval;
+
+  } // commit
+
+  /**
+   * rollback
+   * Roll the transactio back
+   */
+  public static function rollback() { 
+
+      $dbh = self::dbh();
+
+      $retval = $dbh->rollBack();
+
+      return $retval;
+
+  } 
+
 	/**
 	 * affected_rows
 	 * This emulates the mysql_affected_rows function
@@ -228,6 +256,20 @@ class Dba {
     return $result;
 
 	} // affected_rows
+
+  /**
+   * begin_transaction
+   * Start a transaction
+   */
+  public static function begin_transaction() {
+
+    $dbh = self::dbh();
+   
+    $retval = $dbh->beginTransaction();
+
+    return $retval;
+
+  } //begin_transaction
 
 	/**
 	 * _connect

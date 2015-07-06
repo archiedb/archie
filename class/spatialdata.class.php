@@ -191,7 +191,7 @@ class SpatialData extends database_object {
 
     // They have to enter something
     if (!strlen($input['station_index']) AND !strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation'])) {
-      Error::add('general','Must specify Station Index (RN) or Northing, Easting & Elevation');
+      Error::add('station_index','Must specify Station Index (RN) or Northing, Easting & Elevation');
       $retval = false;
     }
 

@@ -133,27 +133,10 @@ class Record extends database_object {
 			return false; 
 		} 
 
-		$db_results = false; 
-		$times = 0; 
-		$lock_sql = "LOCK TABLES `record` READ, `krotovina` READ, `feature` READ, `level` READ, `spatial_data` READ;"; 
-		$unlock_sql = "UNLOCK TABLES"; 
-
-		// Only wait 3 seconds for this, it shouldn't take that long
-		while (!$db_results && $times < 3) { 
-
-      $db_results = true; 
-			// If we make it this far we're good to go, we need to figure out the next station ID
-//			$db_results = Dba::write($lock_sql); 
-		
-			if (!$db_results) { sleep(1); $times++; } 
-
-		} 
-
-		// If we never obtain the lock, then we can't go on
-		if (!$db_results) { 
-			Error::add('general','Database Read Failure, please resubmit'); 
-			return false; 
-		} 
+    if (!Dba::begin_transaction()) {
+      Error::add('general','Unable to start DB Transaction, please try again');
+      return false; 
+    }
 
 		// Reset Row variable
 		$row = array(); 
@@ -163,22 +146,27 @@ class Record extends database_object {
 
 		// If no catalog_id specified, determine next available #
 		if (!$input['catalog_id']) { 
-			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? ORDER BY `catalog_id` DESC LIMIT 1"; 
+			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? ORDER BY `catalog_id` DESC LIMIT 1 FOR UPDATE"; 
 			$db_results = Dba::read($catalog_sql,array($input['site'])); 
+      if (!$db_results) {
+        Error::add('general','Database timeout reached, please re-submit'); 
+        return false;
+      }
 			$row = Dba::fetch_assoc($db_results); 	
-			Dba::finish($db_results); 
-
 			$catalog_id = $row['catalog_id']+1; 
 		} 
 		// Else we need to make sure it isn't a duplicate
 		else { 
-			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? AND `catalog_id`=? LIMIT 1"; 
+			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? AND `catalog_id`=? LIMIT 1 FOR UPDATE"; 
 			$db_results = Dba::read($catalog_sql,array($input['site'],$intput['catalog_id'])); 
+      if (!$db_results) {
+        Error::add('general','Database timeout reached, please re-submit'); 
+        return false;
+      }
 			$row = Dba::fetch_assoc($db_results); 
-			Dba::finish($db_results); 
 			if ($row['catalog_id']) { 
 				Error::add('general','Database Failure - Duplicate CatalogID - ' . $catalog_id); 
-		//		$db_results = Dba::write($unlock_sql); 
+        Dba::commit();
 				return false; 
 			} 
 
@@ -218,14 +206,14 @@ class Record extends database_object {
 		$db_results = Dba::write($sql,array($site,$catalog_id,$level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$accession,$feature,$krotovina,$user,$created)); 
 
 		if (!$db_results) { 
-			Error::add('general','Unknown Error inserting record into database'); 
-			$db_results = Dba::write($unlock_sql); 
+			Error::add('general','Unable to insert record, reverting changes.'); 
+      // Roll the transaction back
+      $retval = Dba::rollback();
+      if (!$retval) { Error::add('general','Unable to roll Database changes back, please report this to your Administrator'); }
 			return false; 
 		} 
-		$insert_id = Dba::insert_id(); 
 
-    // Unlock 
-//		$db_results = Dba::write($unlock_sql); 
+		$insert_id = Dba::insert_id(); 
 
     $log_json = json_encode(array('Site'=>$site,'Catalog ID'=>$catalog_id,'Level'=>$input['level'],'LSG Unit'=>$lsg_unit,
                   'StationIndex'=>$station_index,'XRFMatrixIndex'=>$xrf_matrix_index,'Weight'=>$weight,
@@ -244,6 +232,9 @@ class Record extends database_object {
 
 		// We're sure we've got a record so lets generate our QR code. 
 		Content::write($insert_id,'qrcode'); 
+
+    // Commit and unlock
+    Dba::commit();
 
 		return $insert_id; 
 
@@ -475,17 +466,21 @@ class Record extends database_object {
 
     // Feature must exist first
     if (isset($input['feature'])) { 
-      $feature_uid = Feature::get_uid_from_record($input['feature']); 
-      if (!$feature_uid) {
-  			Error::add('Feature','Feature not found, please create feature record first'); 
-  		} 
+      if ($input['feature']) {
+        $feature_uid = Feature::get_uid_from_record($input['feature']); 
+        if (!$feature_uid) {
+    			Error::add('Feature','Feature not found, please create feature record first'); 
+    		} 
+      }
     } // if feature specified
 
     // Krotovina must exist first
     if (isset($input['krotovina'])) {
-      $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
-      if (!$krotovina_uid) {
-        Error::add('Krotovina','Krotovina not found, please create Krotovina record first');
+      if ($input['krotovina']) {
+        $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
+        if (!$krotovina_uid) {
+          Error::add('Krotovina','Krotovina not found, please create Krotovina record first');
+        }
       }
     }
 
