@@ -151,6 +151,7 @@ elseif (!defined('CLI') AND !defined('NO_SESSION')) {
 
 	// If nothing comes back kick-em-out
 	if (!\UI\sess::$user->uid) { vauth::logout(session_id()); exit; }
+  \UI\sess::$user->update_last_seen();
 	vauth::session_extend(session_id());
 
   // Load events, errors and clear old

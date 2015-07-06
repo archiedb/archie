@@ -337,6 +337,17 @@ class User extends database_object {
 
   } // update_site
 
+  /**
+   * update_last_seen
+   * Update the last_seen info
+   */
+  public function update_last_seen() {
+
+    $sql = 'UPDATE `users` SET `last_login`=? WHERE `uid`=?';
+    $db_results = Dba::write($sql,array(time(),$this->uid));
+
+  } // update_last_seen
+
 	/**
 	 * create
 	 * This creates a new user! hooray
