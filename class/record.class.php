@@ -181,7 +181,8 @@ class Record extends database_object {
     $site               = \UI\sess::$user->site->uid;
 		$level              = $level->uid; 
 		$lsg_unit           = $input['lsg_unit']; 
-		$xrf_matrix_index   = $input['xrf_matrix_index']; 
+		$xrf_matrix_index   = isset($input['xrf_matrix_index']) ? $input['xrf_matrix_index'] : NULL;
+		$xrf_artifact_index = isset($input['xrf_artifact_index']) ? $input['xrf_artifact_index'] : NULL;
 		$weight             = $input['weight']; 
 		$height             = $input['height']; 
 		$width              = $input['width']; 
@@ -190,7 +191,6 @@ class Record extends database_object {
 		$material           = $input['material']; 
 		$classification     = $input['classification']; 
 		$notes              = $input['notes']; 
-		$xrf_artifact_index = $input['xrf_artifact_index']; 
     $accession          = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
     $station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
     $northing           = isset($input['northing']) ? $input['northing'] : NULL;
@@ -223,12 +223,14 @@ class Record extends database_object {
 		Event::record('record::create',$log_json); 
 
     // Create the spatial data entry
-    $spatial = SpatialData::create(array('station_index'=>$station_index,
+    if ($station_index OR $northing OR $easting OR $elevation) { 
+      $spatial = SpatialData::create(array('station_index'=>$station_index,
                                         'record'=>$insert_id,
                                         'northing'=>$northing,
                                         'easting'=>$easting,
                                         'elevation'=>$elevation,
                                         'type'=>'record'));
+    } // end if they specified something spatial
 
 		// We're sure we've got a record so lets generate our QR code. 
 		Content::write($insert_id,'qrcode'); 
@@ -257,41 +259,39 @@ class Record extends database_object {
     }
 
     // We need the real UID of the following objects
-    $level = new Level($input['level']);
-    $level_uid = $level->uid;
-    $feature_uid  = Feature::get_uid_from_record($input['feature']);
-    $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
+    $level              = new Level($input['level']);
+    $level_uid          = $level->uid;
+    $feature_uid        = Feature::get_uid_from_record($input['feature']);
+    $krotovina_uid      = Krotovina::get_uid_from_record($input['krotovina']);
 
-		$lsg_unit = Dba::escape($input['lsg_unit']); 
-		$xrf_matrix_index = Dba::escape($input['xrf_matrix_index']); 
-		$weight = Dba::escape($input['weight']); 
-		$height = Dba::escape($input['height']); 
-		$width = Dba::Escape($input['width']); 
-		$thickness = Dba::escape($input['thickness']); 
-		$quanity = Dba::escape($input['quanity']); 
-		$material = Dba::escape($input['material']); 
-		$classification = Dba::escape($input['classification']); 
-		$notes = Dba::escape($input['notes']); 
-		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
-		$feature = Dba::escape($feature_uid); 
-    $krotovina = Dba::escape($krotovina_uid);
-    $northing = isset($input['northing']) ? Dba::escape($input['northing']) : Dba::escape($this->northing); 
-    $easting = isset($input['easting']) ? Dba::escape($input['easting']) : Dba::escape($this->easting); 
-    $elevation = isset($input['elevation']) ? Dba::escape($input['elevation']) : Dba::escape($this->elevation); 
-		$user = Dba::escape(\UI\sess::$user->uid); 
-		$updated = time(); 
-		$record_uid = Dba::escape($this->uid); 
+		$lsg_unit           = $input['lsg_unit']; 
+		$xrf_matrix_index   = strlen($input['xrf_matrix_index']) ? $input['xrf_matrix_index'] : NULL; 
+		$weight             = strlen($input['weight']) ? $input['weight'] : NULL;
+		$height             = strlen($input['height']) ? $input['height'] : NULL;
+		$width              = strlen($input['width']) ? $input['width'] : NULL; 
+		$thickness          = strlen($input['thickness']) ? $input['thickness'] : NULL;
+		$quanity            = strlen($input['quanity']) ? $input['quanity'] : '1';
+		$material           = $input['material']; 
+		$classification     = $input['classification']; 
+		$notes              = $input['notes']; 
+		$xrf_artifact_index = strlen($input['xrf_artifact_index']) ? $input['xrf_artifact_index'] : NULL;
+		$feature            = ($feature_uid > 0) ? $feature_uid : NULL;
+    $krotovina          = ($krotovina_uid > 0) ? $krotovina_uid : NULL;
+    $northing           = isset($input['northing']) ? $input['northing'] : $this->northing; 
+    $easting            = isset($input['easting']) ? $input['easting'] : $this->easting; 
+    $elevation          = isset($input['elevation']) ? $input['elevation'] : $this->elevation; 
+		$user               = \UI\sess::$user->uid; 
+		$updated            = time(); 
+		$record_uid         = $this->uid; 
+		$station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
+		$level              = $input['level'];
 
-		// Allow this to be null
-		$station_index = $input['station_index'];
-		$level = $input['level'] ? "'" . Dba::escape($level_uid) . "'" : "NULL"; 
-
-		$sql = "UPDATE `record` SET `level`=$level, `lsg_unit`='$lsg_unit', `xrf_matrix_index`='$xrf_matrix_index', " . 
-      "`weight`='$weight', `height`='$height', `width`='$width', `thickness`='$thickness', `quanity`='$quanity', " . 
-      "`material`='$material', `classification`='$classification', `notes`='$notes', `xrf_artifact_index`='$xrf_artifact_index', " . 
-			"`user`='$user', `updated`='$updated', `feature`='$feature', `krotovina`='$krotovina' " .
-			"WHERE `uid`='$record_uid'"; 
-		$db_results = Dba::write($sql); 
+		$sql = "UPDATE `record` SET `level`=?, `lsg_unit`=?, `xrf_matrix_index`=?, " . 
+      "`weight`=?, `height`=?, `width`=?, `thickness`=?, `quanity`=?, " . 
+      "`material`=?, `classification`=?, `notes`=?, `xrf_artifact_index`=?, " . 
+			"`user`=?, `updated`=?, `feature`=?, `krotovina`=? " .
+			"WHERE `uid`=?"; 
+		$db_results = Dba::write($sql,array($level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$user,$updated,$feature,$krotovina,$record_uid)); 
 
 		if (!$db_results) { 
 			Error::add('general','Database Error, please try again'); 
@@ -301,7 +301,7 @@ class Record extends database_object {
     // Update the SpatialData
     $spatialdata = SpatialData::get_record_data($record_uid,'record','single');
     if ($spatialdata->uid) { 
-      $return = $spatialdata->update(array('rn'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
+      $return = $spatialdata->update(array('station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
     }
     elseif ($station_index OR $northing OR $easting OR $elevation) { 
       $return = Spatialdata::Create(array('record'=>$record_uid,'station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation,'type'=>'record'));
@@ -323,7 +323,7 @@ class Record extends database_object {
 
     $site = $this->site->name; 
 
-		$log_line = "$site,".$level->unit->name."," . $input['level']. ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification," . $input['feature'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$updated) . "\"";
+		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit->name,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,'Station Index'=>$station_index,'XRFMatrix'=>$xrf_matrix_index,'Weight'=>$weight,'Height'=>$height,'Width'=>$width,'Thickness'=>$thickness,'Quanity'=>$quanity,'Material'=>$material,'Classification'=>$classification,'Feature'=>$input['feature'],'Notes'=>$notes,'User'=>\UI\sess::$user->username,'Update'=>date("r",$updated)));
 		Event::record('UPDATE',$log_line); 
 		return true; 
 
@@ -409,13 +409,17 @@ class Record extends database_object {
 
 		// Height, numeric
 		if (!Field::validate('height',$input['height'])) { 
-			Error::add('height','Height must be numeric to a thousandth of an mm'); 
+			Error::add('height','Height must be numeric to a thousandth of a mm'); 
 		} 
 
 		// Width, numeric
 		if (!Field::validate('width',$input['width'])) { 
-			Error::add('width','Length must be numeric to a thousandth of an mm'); 
+			Error::add('width','Width must be numeric to a thousandth of a mm'); 
 		} 
+
+    if (!Field::validate('length',$input['length'])) {
+      Error::add('length','Length must be numeric to a thousandth of a mm');
+    }
 
 		// Thickness
 		if (!Field::validate('thickness',$input['thickness'])) { 

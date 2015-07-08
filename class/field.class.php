@@ -24,6 +24,12 @@ class Field {
       case 'weight':
       case 'height':
       case 'width':
+      case 'length':
+        // These fields can't be more then 99999.999
+        if ($value > 99999.999) {
+          $retval = false;
+          break;
+        }
       case 'northing':
       case 'easting':
       case 'thickness':

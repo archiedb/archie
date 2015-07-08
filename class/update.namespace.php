@@ -1391,6 +1391,20 @@ class Database {
     
     }
 
+    // Allow notes on Saptial Data to be null
+    $sql = "ALTER TABLE `spatial_data` CHANGE `note` `note` VARCHAR( 255 ) NULL";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "ALTER TABLE `spatial_data` CHANGE `northing` `northing` decimal(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `spatial_data` CHANGE `easting` `easting` decimal(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+    
+    $sql = "ALTER TABLE `spatial_data` CHANGE `elevation` `elevation` decimal(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+
     // Bring record.? into sync with the table fields it relates to
 
     $sql = "ALTER TABLE `site` CHANGE `uid` `uid` INT(11) UNSIGNED";

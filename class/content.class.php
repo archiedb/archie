@@ -449,6 +449,7 @@ class content extends database_object {
 
     $type = Config::get('ticket_size');
 
+    //FIXME: BROKEN BROKEN BROKEN
     Genpdf::{"ticket_$type"}($record,$filename);
 
 		if (!$update_record) { 
