@@ -285,6 +285,12 @@ class Feature extends database_object {
     $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
     $note           = isset($input['note']) ? $input['note'] : NULL;
 
+    if (!$station_index AND !$northing AND !$easting AND !$elevation) { 
+      // Well you have to specify something!
+      Error::add('general','Nothing entered, doing nothing');
+      return false;
+    }
+
     $retval = SpatialData::create(array(
       'record'=>$this->uid,
       'type'=>'feature',
