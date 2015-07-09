@@ -103,7 +103,7 @@ if (INIT_LOADED != '1') { exit; }
     </div>
   </div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('length'); ?>">
+<div class="control-group span4 offset1<?php Error::display_class('height'); ?>">
   <label class="control-label" for="inputLength">Length</label>
   <div class="controls">
 	  <div class="input-append">
