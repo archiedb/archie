@@ -64,7 +64,7 @@ class LevelClassTests extends \Enhance\TestFixture {
     $input = array(); 
 
     $input['unit'] = 'A';
-    $input['level'] = '1';
+    $input['level'] = '2';
     $input['quad'] = '1';
     $input['lsg_unit'] = '2';
     $input['catalog_id'] = '1';

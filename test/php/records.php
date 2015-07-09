@@ -87,6 +87,7 @@ class RecordClassTests extends \Enhance\TestFixture {
     $input['classification'] = '1';
     $input['notes'] = '1';
     $input['user'] = '1';
+    $input['station_index'] = NULL;
 
     return $input;
 
