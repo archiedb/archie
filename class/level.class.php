@@ -659,8 +659,15 @@ class Level extends database_object {
 
     while ($row = Dba::fetch_assoc($db_results)) { 
       $results[] = $row['uid'];
+      $users[$row['user']] = $row['user'];
+      if ($row['excavator_one']) { $users[$row['excavator_one']] = $row['excavator_one']; }
+      if ($row['excavator_two']) { $users[$row['excavator_two']] = $row['excavator_two']; }
+      if ($row['excavator_three']) { $users[$row['excavator_three']] = $row['excavator_three']; }
+      if ($row['excavator_four']) { $users[$row['excavator_four']] = $row['excavator_four']; }
       parent::add_to_cache('level',$row['uid'],$row);
     }
+
+    User::build_cache($users);
 
     return $results;
 
