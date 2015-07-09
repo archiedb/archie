@@ -8,7 +8,7 @@
  */
 function redirect($path) {
 
-  header('Location:' . Config::get('web_path') . '/' . $path);
+  header('Location:' . \Config::get('web_path') . $path);
   exit; 
 
 } // redirect
