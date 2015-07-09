@@ -11,11 +11,11 @@ class Record extends database_object {
   public $krotovina;
   public $level; 
   public $lsg_unit; 
-  public $station_index; // LISTED AS RN in the interface
+  public $station_index; // LISTED AS RN in the interface (>.<)
   public $xrf_matrix_index; 
   public $weight; 
   public $width; 
-  public $height; 
+  public $height; // Displayed as Length in interface (>.<)
   public $thickness; 
   public $quanity; 
   public $material; // FK
@@ -210,6 +210,7 @@ class Record extends database_object {
       // Roll the transaction back
       $retval = Dba::rollback();
       if (!$retval) { Error::add('general','Unable to roll Database changes back, please report this to your Administrator'); }
+      Dba::commit();
 			return false; 
 		} 
 
@@ -236,7 +237,10 @@ class Record extends database_object {
 		Content::write($insert_id,'qrcode'); 
 
     // Commit and unlock
-    Dba::commit();
+    if (!Dba::commit()) {
+      Event::record('DBA::commit','Commit Failure - unable to close transaction');
+      return false;
+    }
 
 		return $insert_id; 
 
@@ -286,11 +290,9 @@ class Record extends database_object {
 		$station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
 		$level              = $input['level'];
 
-		$sql = "UPDATE `record` SET `level`=?, `lsg_unit`=?, `xrf_matrix_index`=?, " . 
-      "`weight`=?, `height`=?, `width`=?, `thickness`=?, `quanity`=?, " . 
-      "`material`=?, `classification`=?, `notes`=?, `xrf_artifact_index`=?, " . 
-			"`user`=?, `updated`=?, `feature`=?, `krotovina`=? " .
-			"WHERE `uid`=?"; 
+		$sql = "UPDATE `record` SET `level`=?, `lsg_unit`=?, `xrf_matrix_index`=?, `weight`=?, `height`=?, " . 
+      "`width`=?, `thickness`=?, `quanity`=?, `material`=?, `classification`=?, `notes`=?, `xrf_artifact_index`=?, " . 
+			"`user`=?, `updated`=?, `feature`=?, `krotovina`=? WHERE `uid`=?"; 
 		$db_results = Dba::write($sql,array($level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$user,$updated,$feature,$krotovina,$record_uid)); 
 
 		if (!$db_results) { 
@@ -416,10 +418,6 @@ class Record extends database_object {
 		if (!Field::validate('width',$input['width'])) { 
 			Error::add('width','Width must be numeric to a thousandth of a mm'); 
 		} 
-
-    if (!Field::validate('length',$input['length'])) {
-      Error::add('length','Length must be numeric to a thousandth of a mm');
-    }
 
 		// Thickness
 		if (!Field::validate('thickness',$input['thickness'])) { 

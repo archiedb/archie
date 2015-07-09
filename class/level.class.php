@@ -78,8 +78,11 @@ class Level extends database_object {
     $db_results = Dba::read($sql); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
+      $sites[$row['site']] = $row['site'];
       parent::add_to_cache('level',$row['uid'],$row); 
     }
+
+    Site::build_cache($sites);
 
     return true; 
 

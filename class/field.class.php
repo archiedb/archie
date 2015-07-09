@@ -20,20 +20,19 @@ class Field {
     $retval = true;
 
     switch ($field) {
-      // INT, rounded to 3 places or blank
+      // INT, rounded to 3 places or blank and less than 99,999.999 (DECIMAL 8,3)
       case 'weight':
       case 'height':
       case 'width':
-      case 'length':
+      case 'thickness':
+      case 'northing':
+      case 'easting':
+      case 'elevation':
         // These fields can't be more then 99999.999
         if ($value > 99999.999) {
           $retval = false;
           break;
         }
-      case 'northing':
-      case 'easting':
-      case 'thickness':
-      case 'elevation':
         if (!strlen($value)) { 
           $retval = true;
           break;

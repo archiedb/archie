@@ -20,16 +20,17 @@ class User extends database_object {
 		if (!is_numeric($uid)) { return false; } 
 
 		$row = $this->get_info($uid,'users'); 
-    if (is_array($row)) {
-  		foreach ($row as $key=>$value) { 
-  			$this->$key = $value; 
-  		} 
-    } // is array
+    if (is_array($row)) { 
+    	foreach ($row as $key=>$value) { 
+    		$this->$key = $value; 
+    	} 
+    }
 		// Don't actually keep this in the object 
-		if (isset($this->password)) { unset($this->password); }
+		if (property_exists($this,'password')) { unset($this->password); }
 
     // Load their roles
-    if (!is_array($this->roles)) {
+    if (!isset($row['roles'])) { $row['roles'] = false; }
+    if (!is_array($row['roles'])) {
       $this->roles = User::get_roles($this->uid,$this->site);
       $row['roles'] = $this->roles;
       parent::add_to_cache('users',$uid,$row);
@@ -72,6 +73,7 @@ class User extends database_object {
 
     while ($row = Dba::fetch_assoc($db_results)) { 
       // If they have no role, give them an empty one so it's recongized as cached
+      if (!isset($roles[$row['uid']])) { $roles[$row['uid']] = array(); }
       $row['roles'] = $roles[$row['uid']];
       parent::add_to_cache('users',$row['uid'],$row); 
     }

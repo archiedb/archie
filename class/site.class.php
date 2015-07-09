@@ -21,20 +21,28 @@ class Site extends database_object {
 	public function __construct($uid='') { 
 
 		if (!is_numeric($uid)) { return false; } 
+    // By default don't re-cache
+    $recache = false;
 
 		$row = $this->get_info($uid,'site'); 
-
-    // Get the project and accession - may be cached
-    if (!isset($this->project)) { 
-      $this->project = Site::get_data($uid,'project');
-    }
-    if (!isset($this->accession)) { 
-      $this->accession = Site::get_data($uid,'accession');
-    }
-
 		foreach ($row as $key=>$value) { 
 			$this->$key = $value; 
 		} 
+    // Get the project and accession - may be cached
+    if (!property_exists($this,'project')) { 
+      $this->project = Site::get_data($uid,'project');
+      $row['project'] = $this->project;
+      $recache = true;
+    }
+    if (!property_exists($this,'accession')) { 
+      $this->accession = Site::get_data($uid,'accession');
+      $row['accession'] = $this->accession;
+      $recache = true;
+    }
+
+    if ($recache === true) {
+      parent::add_to_cache('site',$row['uid'],$row);
+    }
 
 		return true; 
 
