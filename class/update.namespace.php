@@ -1480,6 +1480,11 @@ class Database {
     $sql = "ALTER TABLE `krotovina` ADD CONSTRAINT fk_krotovina_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
     $retval = \Dba::write($sql) ? $retval : false;
 
+
+    // Fix the level table uid dropped auto_inc somehow? 
+    $sql = "ALTER TABLE `level` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     return $retval;
 
   } // update_0018
