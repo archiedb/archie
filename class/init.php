@@ -168,7 +168,6 @@ elseif (!defined('CLI') AND !defined('NO_SESSION')) {
 
 } 
 
-
 /* Clean up a bit */
 unset($array);
 unset($results);
