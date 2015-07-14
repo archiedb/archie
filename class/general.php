@@ -62,6 +62,9 @@ function scrub_out($string) {
  * Logs an event to a defined log file based on config options
  */
 function log_event($username, $event_name, $event_description, $log_name) {
+
+	if (defined('NO_LOG')) { return true; }
+
         /* Set it up here to make sure it's _always_ the same */
         $time           = time();
         // Turn time into strings

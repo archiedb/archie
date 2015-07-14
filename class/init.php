@@ -71,6 +71,12 @@ else {
 	$http_type = "http://";
 }
 
+if (!file_exists($configfile) AND !defined('CLI') AND !defined('INSTALL')) { 
+  // Must need to install? 
+  header('Location:install.php');
+  exit;
+}
+
 // Use the built in PHP function, suppress errors here so we can handle it
 // properly below
 $results = parse_ini_file($configfile);
