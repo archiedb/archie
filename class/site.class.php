@@ -25,9 +25,12 @@ class Site extends database_object {
     $recache = false;
 
 		$row = $this->get_info($uid,'site'); 
-		foreach ($row as $key=>$value) { 
-			$this->$key = $value; 
-		} 
+    if (is_array($row)) {
+  		foreach ($row as $key=>$value) { 
+  			$this->$key = $value; 
+  		} 
+    }
+    else { return false; }
     // Get the project and accession - may be cached
     if (!property_exists($this,'project')) { 
       $this->project = Site::get_data($uid,'project');
