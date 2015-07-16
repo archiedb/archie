@@ -48,15 +48,15 @@ if (INIT_LOADED != '1') { exit; }
 </head>
 <body>
 <div class="container">
-  <h2 class="text-center">Archie System Installer :: Step 2 - Install Database</h2>
+  <h2 class="text-center">Archie System Installer :: Step 2 - Install</h2>
   <p>
-    <em>This step installs the database, you will need a username and password with full
-    administrative access to the database server.</em> 
+    <em>This step installs the database and creates the config file. You will need a username and password with full
+    administrative access to the database server as well as a username and password for the initial user.</em> 
     <?php Error::display('general'); ?>
   </p>
 <form class="form-horizontal" id="insert_db" method="post" action="install.php?action=insertdb">
-<h4>Database Connection Information</h4>
 <div class="control-group span8">
+<h4>Database Connection Information</h4>
   <label class="control-label" for="inputUsername">Username</label>
   <div class="controls">
     <input id="inputUsername" name="username" value="<?php echo scrub_out($_POST['username']); ?>" tabindex="1" />
@@ -81,9 +81,28 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div>
 <div class="control-group span8">
+<h4>Initial Admin User</h4>
+  <label class="control-label" for="inputAdminUsername">Username</label>
+  <div class="controls">
+    <input id="inputAdminUsername" name="admin_username" value="<?php echo scrub_out($_POST['admin_username']); ?>" tabindex="5" />
+  </div>
+</div>
+<div class="control-group span8">
+  <label class="control-label" for="inputAdminPassword">Password</label>
+  <div class="controls">
+    <input id="inputAdminPassword" name="admin_password" value="<?php echo scrub_out($_POST['admin_password']); ?>" tabindex="6" />
+  </div>
+</div>
+<div class="control-group span8">
+  <label class="control-label" for="inputAdminPasswordC">Confirm Password</label>
+  <div class="controls">
+    <input id="inputAdminPasswordC" name="admin_pw_confirm" value="<?php echo scrub_out($_POST['admin_pw_confirm']); ?>" tabindex="7" />
+  </div>
+</div>
+<div class="control-group span8">
   <label class="control-label" for="submit"> </label>
   <div class="controls">
-    <input type="submit" class="btn btn-primary" value="Install Database" tabindex="5" />
+    <input type="submit" class="btn btn-primary" value="Install Archie" tabindex="8" />
   </div>
 </div>
 </div> <!-- /container -->

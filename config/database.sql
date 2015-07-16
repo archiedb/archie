@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.38, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.33, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: archie
 -- ------------------------------------------------------
--- Server version	5.5.38-0+wheezy1
+-- Server version	5.5.42-1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -23,11 +23,11 @@ DROP TABLE IF EXISTS `action`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `action` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +60,7 @@ CREATE TABLE `app_info` (
 
 LOCK TABLES `app_info` WRITE;
 /*!40000 ALTER TABLE `app_info` DISABLE KEYS */;
-INSERT INTO `app_info` VALUES ('db_version','0017');
+INSERT INTO `app_info` VALUES ('db_version','0018');
 /*!40000 ALTER TABLE `app_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -79,7 +79,7 @@ CREATE TABLE `classification` (
   PRIMARY KEY (`uid`),
   UNIQUE KEY `name` (`name`),
   KEY `enabled` (`enabled`)
-) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,7 +88,7 @@ CREATE TABLE `classification` (
 
 LOCK TABLES `classification` WRITE;
 /*!40000 ALTER TABLE `classification` DISABLE KEYS */;
-INSERT INTO `classification` VALUES (1,'Bone - Avian',1,''),(2,'Bone - Fish',1,''),(3,'Bone - Mammal',1,''),(4,'Bone - Unknown',1,''),(5,'Hair',1,''),(6,'Shell - River Mussel',1,''),(7,'Shell - Snail',1,''),(8,'Tooth',1,''),(9,'Other',1,''),(10,'Charcoal',1,''),(11,'Seed',1,''),(12,'Wood',1,''),(13,'Biface',1,''),(14,'Blade',1,''),(15,'Cobble Tool',1,''),(16,'Core',1,''),(17,'Debitage',1,''),(18,'FCR',1,''),(19,'Groundstone',1,''),(20,'Manuport',1,''),(21,'Modified Flake',1,''),(22,'Uniface',1,''),(23,'Ceramic',1,''),(24,'Glass',1,''),(25,'Fiber',1,''),(26,'Inorganic',1,''),(27,'Metal',1,''),(28,'Organic',1,''),(29,'Ochre',1,''),(30,'Sediment',1,'');
+INSERT INTO `classification` VALUES (1,'Bone - Avian',1,''),(2,'Bone - Fish',1,''),(3,'Bone - Mammal',1,''),(4,'Bone - Unknown',1,''),(5,'Hair',1,''),(6,'Shell - River Mussel',1,''),(7,'Shell - Snail',1,''),(8,'Tooth',1,''),(9,'Other',1,''),(10,'Charcoal',1,''),(11,'Seed',1,''),(12,'Wood',1,''),(13,'Biface',1,''),(14,'Blade',1,''),(15,'Cobble Tool',1,''),(16,'Core',1,''),(17,'Debitage',1,''),(18,'FCR',1,''),(19,'Groundstone',1,''),(20,'Manuport',1,''),(21,'Modified Flake',1,''),(22,'Uniface',1,''),(23,'Ceramic',1,''),(24,'Glass',1,''),(25,'Fiber',1,''),(26,'Inorganic',1,''),(27,'Metal',1,''),(28,'Organic',1,''),(29,'Ochre',1,''),(30,'Sediment',1,''),(31,'1/16\" Screen',1,'Material that has been screened using the 1/16\" screen');
 /*!40000 ALTER TABLE `classification` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,7 +100,7 @@ DROP TABLE IF EXISTS `feature`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `site` int(11) unsigned DEFAULT NULL,
   `catalog_id` int(11) unsigned DEFAULT NULL,
   `keywords` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
@@ -113,8 +113,9 @@ CREATE TABLE `feature` (
   `closed_user` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`uid`),
   KEY `site` (`site`),
-  KEY `record` (`catalog_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `record` (`catalog_id`),
+  CONSTRAINT `fk_feature_site` FOREIGN KEY (`site`) REFERENCES `site` (`uid`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,11 +135,11 @@ DROP TABLE IF EXISTS `group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `group` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +148,7 @@ CREATE TABLE `group` (
 
 LOCK TABLES `group` WRITE;
 /*!40000 ALTER TABLE `group` DISABLE KEYS */;
-INSERT INTO `group` VALUES (1,'Full Admin','Application Administrators');
+INSERT INTO `group` VALUES (1,'Full Admin','Application Administrators'),(2,'Technician','Base level data entry users'),(3,'Cataloger','Data Managers');
 /*!40000 ALTER TABLE `group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,12 +160,12 @@ DROP TABLE IF EXISTS `group_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `group_role` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `group` int(11) NOT NULL,
   `role` int(11) NOT NULL,
   `action` int(11) NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +174,7 @@ CREATE TABLE `group_role` (
 
 LOCK TABLES `group_role` WRITE;
 /*!40000 ALTER TABLE `group_role` DISABLE KEYS */;
-INSERT INTO `group_role` VALUES (1,1,9,8);
+INSERT INTO `group_role` VALUES (1,1,9,8),(2,2,2,1),(3,2,2,2),(4,2,2,3),(5,2,3,1),(6,2,3,2),(7,2,3,3),(8,2,7,1),(9,2,7,2),(10,2,7,3),(11,2,4,1),(12,2,4,2),(13,2,4,3),(14,2,5,1),(15,2,5,2),(17,3,2,2),(18,3,2,1),(19,3,2,3),(20,3,2,8),(21,3,3,1),(22,3,3,2),(23,3,3,3),(24,3,3,8),(25,3,4,1),(26,3,4,2),(27,3,4,3),(28,3,4,8),(29,3,5,1),(30,3,5,2),(31,3,5,5),(32,3,5,8),(33,3,8,1),(34,3,8,2),(35,3,7,1),(36,3,7,2),(37,3,7,3),(38,3,7,6),(39,3,7,8);
 /*!40000 ALTER TABLE `group_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -215,7 +216,7 @@ DROP TABLE IF EXISTS `krotovina`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `krotovina` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `site` int(11) unsigned DEFAULT NULL,
   `catalog_id` int(11) unsigned DEFAULT NULL,
   `keywords` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
@@ -228,8 +229,9 @@ CREATE TABLE `krotovina` (
   `closed_user` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`uid`),
   KEY `record` (`catalog_id`),
-  KEY `site` (`site`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `site` (`site`),
+  CONSTRAINT `fk_krotovina_site` FOREIGN KEY (`site`) REFERENCES `site` (`uid`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,8 +251,8 @@ DROP TABLE IF EXISTS `level`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `level` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
-  `site` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `site` int(11) unsigned DEFAULT NULL,
   `catalog_id` int(11) unsigned NOT NULL,
   `unit` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `quad` varchar(255) CHARACTER SET utf8 NOT NULL,
@@ -283,8 +285,9 @@ CREATE TABLE `level` (
   `closed_user` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`uid`),
   KEY `site` (`site`),
-  KEY `record_id` (`catalog_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `record_id` (`catalog_id`),
+  CONSTRAINT `fk_level_site` FOREIGN KEY (`site`) REFERENCES `site` (`uid`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -310,7 +313,7 @@ CREATE TABLE `material` (
   PRIMARY KEY (`uid`),
   UNIQUE KEY `name` (`name`),
   KEY `enabled` (`enabled`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -319,7 +322,7 @@ CREATE TABLE `material` (
 
 LOCK TABLES `material` WRITE;
 /*!40000 ALTER TABLE `material` DISABLE KEYS */;
-INSERT INTO `material` VALUES (1,'Faunal',1),(2,'Floral',1),(3,'Basalt',1),(4,'CCS',1),(5,'Metamorphic',1),(6,'Obsidian',1),(7,'Tuff',1),(8,'Historic',1),(9,'Sediment',1),(10,'Ochre',1);
+INSERT INTO `material` VALUES (1,'Faunal',1),(2,'Floral',1),(3,'Basalt',1),(4,'CCS',1),(5,'Metamorphic',1),(6,'Obsidian',1),(7,'Tuff',1),(8,'Historic',1),(9,'Sediment',1),(10,'Ochre',1),(11,'Screened Bag',1);
 /*!40000 ALTER TABLE `material` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -336,7 +339,7 @@ CREATE TABLE `material_classification` (
   `classification` int(10) unsigned NOT NULL,
   PRIMARY KEY (`uid`),
   KEY `material` (`material`,`classification`)
-) ENGINE=MyISAM AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=77 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -345,7 +348,7 @@ CREATE TABLE `material_classification` (
 
 LOCK TABLES `material_classification` WRITE;
 /*!40000 ALTER TABLE `material_classification` DISABLE KEYS */;
-INSERT INTO `material_classification` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,1,5),(6,1,6),(7,1,7),(8,1,8),(9,1,9),(10,2,10),(11,2,11),(12,2,12),(13,2,9),(14,3,13),(15,3,14),(16,3,15),(17,3,16),(18,3,17),(19,3,18),(20,3,19),(21,3,20),(22,3,21),(23,3,22),(24,3,9),(25,4,13),(26,4,14),(27,4,15),(28,4,16),(29,4,17),(30,4,19),(31,4,20),(32,4,21),(33,4,22),(34,4,9),(35,5,13),(36,5,14),(37,5,15),(38,5,16),(39,5,17),(40,5,18),(41,5,19),(42,5,20),(43,5,21),(44,5,22),(45,5,9),(46,6,13),(47,6,14),(48,6,15),(49,6,16),(50,6,17),(51,6,20),(52,6,21),(53,6,22),(54,6,9),(55,7,13),(56,7,14),(57,7,15),(58,7,16),(59,7,17),(60,7,18),(61,7,19),(62,7,21),(63,7,22),(64,7,20),(65,8,23),(66,8,24),(67,8,25),(68,8,26),(69,8,27),(70,8,28),(71,8,9),(72,10,29),(73,9,30),(74,4,18),(75,8,6);
+INSERT INTO `material_classification` VALUES (1,1,1),(2,1,2),(3,1,3),(4,1,4),(5,1,5),(6,1,6),(7,1,7),(8,1,8),(9,1,9),(10,2,10),(11,2,11),(12,2,12),(13,2,9),(14,3,13),(15,3,14),(16,3,15),(17,3,16),(18,3,17),(19,3,18),(20,3,19),(21,3,20),(22,3,21),(23,3,22),(24,3,9),(25,4,13),(26,4,14),(27,4,15),(28,4,16),(29,4,17),(30,4,19),(31,4,20),(32,4,21),(33,4,22),(34,4,9),(35,5,13),(36,5,14),(37,5,15),(38,5,16),(39,5,17),(40,5,18),(41,5,19),(42,5,20),(43,5,21),(44,5,22),(45,5,9),(46,6,13),(47,6,14),(48,6,15),(49,6,16),(50,6,17),(51,6,20),(52,6,21),(53,6,22),(54,6,9),(55,7,13),(56,7,14),(57,7,15),(58,7,16),(59,7,17),(60,7,18),(61,7,19),(62,7,21),(63,7,22),(64,7,20),(65,8,23),(66,8,24),(67,8,25),(68,8,26),(69,8,27),(70,8,28),(71,8,9),(72,10,29),(73,9,30),(74,4,18),(75,8,6),(76,11,31);
 /*!40000 ALTER TABLE `material_classification` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -387,7 +390,7 @@ DROP TABLE IF EXISTS `record`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `record` (
-  `uid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `site` int(11) unsigned DEFAULT NULL,
   `catalog_id` int(10) unsigned NOT NULL,
   `level` int(11) unsigned NOT NULL,
@@ -409,15 +412,16 @@ CREATE TABLE `record` (
   `created` int(10) unsigned NOT NULL,
   `updated` int(10) unsigned NOT NULL,
   PRIMARY KEY (`uid`),
-  UNIQUE KEY `catalog_id` (`catalog_id`),
   KEY `user` (`user`),
   KEY `lsg_unit` (`lsg_unit`),
   KEY `feature` (`feature`),
   KEY `level` (`level`),
   KEY `classification` (`classification`),
   KEY `material` (`material`),
-  KEY `site` (`site`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  KEY `site` (`site`),
+  CONSTRAINT `fk_record_level` FOREIGN KEY (`level`) REFERENCES `level` (`uid`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_record_site` FOREIGN KEY (`site`) REFERENCES `site` (`uid`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -437,7 +441,7 @@ DROP TABLE IF EXISTS `role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `role` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`uid`)
@@ -516,7 +520,7 @@ DROP TABLE IF EXISTS `site`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `site` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `description` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `northing` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -526,9 +530,10 @@ CREATE TABLE `site` (
   `partners` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `excavation_start` int(11) unsigned NOT NULL,
   `excavation_end` int(11) unsigned NOT NULL,
+  `settings` text COLLATE utf8_unicode_ci,
   `enabled` int(1) unsigned NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -537,6 +542,7 @@ CREATE TABLE `site` (
 
 LOCK TABLES `site` WRITE;
 /*!40000 ALTER TABLE `site` DISABLE KEYS */;
+INSERT INTO `site` VALUES (1,'Initial Site','Initial Site',NULL,NULL,NULL,'Archie PI',NULL,1,2,NULL,1);
 /*!40000 ALTER TABLE `site` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -548,7 +554,7 @@ DROP TABLE IF EXISTS `site_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `site_data` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `site` int(11) NOT NULL,
   `key` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
   `value` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
@@ -556,8 +562,8 @@ CREATE TABLE `site_data` (
   `closed` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`uid`),
   KEY `site` (`site`),
-  KEY `key` (`key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `key` (`key`(255))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -581,10 +587,10 @@ CREATE TABLE `spatial_data` (
   `record` int(11) unsigned DEFAULT NULL,
   `record_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `station_index` int(11) unsigned DEFAULT NULL,
-  `northing` decimal(8,3) NOT NULL,
-  `easting` decimal(8,3) NOT NULL,
-  `elevation` decimal(8,3) NOT NULL,
-  `note` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `northing` decimal(8,3) DEFAULT NULL,
+  `easting` decimal(8,3) DEFAULT NULL,
+  `elevation` decimal(8,3) DEFAULT NULL,
+  `note` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`uid`),
   KEY `record_type` (`record_type`),
   KEY `record` (`record`)
@@ -633,12 +639,12 @@ DROP TABLE IF EXISTS `user_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_group` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user` int(11) NOT NULL,
   `group` int(11) NOT NULL,
   `site` int(11) NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -647,25 +653,8 @@ CREATE TABLE `user_group` (
 
 LOCK TABLES `user_group` WRITE;
 /*!40000 ALTER TABLE `user_group` DISABLE KEYS */;
-INSERT INTO `user_group` VALUES (1,1,1,0);
 /*!40000 ALTER TABLE `user_group` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Temporary table structure for view `user_permission_view`
---
-
-DROP TABLE IF EXISTS `user_permission_view`;
-/*!50001 DROP VIEW IF EXISTS `user_permission_view`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE TABLE `user_permission_view` (
-  `site` tinyint NOT NULL,
-  `user` tinyint NOT NULL,
-  `role` tinyint NOT NULL,
-  `action` tinyint NOT NULL
-) ENGINE=MyISAM */;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `users`
@@ -698,6 +687,10 @@ LOCK TABLES `users` WRITE;
 UNLOCK TABLES;
 
 --
+-- Dumping routines for database 'archie'
+--
+
+--
 -- Final view structure for view `user_permission_view`
 --
 
@@ -720,9 +713,6 @@ UNLOCK TABLES;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-11 23:53:05
+-- Dump completed on 2015-07-16 15:48:43

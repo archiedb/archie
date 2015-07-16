@@ -364,20 +364,18 @@ class User extends database_object {
       Error::add('general','adding new user'); 
       return false; 
     } 
-   
+
     // This is here because we only check on the creation of a user 
     if (strlen($input['password']) < 2) { 
       Error::add('password','Password not long enough'); 
       return false; 
     }
 
-    $username = Dba::escape($input['username']); 
-    $name = Dba::escape($input['name']); 
-    $email = Dba::escape($input['email']); 
-    $password = Dba::escape(hash('sha256',$input['password'])); 
+    $password = hash('sha256',$input['password']); 
+    $site = isset($input['site']) ? $input['site'] : \UI\sess::$user->site->uid;
 
     $sql = "INSERT INTO `users` (`name`,`username`,`email`,`password`,`site`) VALUES (?,?,?,?,?)"; 
-    $db_results = Dba::write($sql,array($input['name'],$input['username'],$input['email'],$password,\UI\sess::$user->site->uid)); 
+    $db_results = Dba::write($sql,array($input['name'],$input['username'],$input['email'],$password,$site)); 
 
     if (!$db_results) { 
       Event::error('DATABASE','Error unable to insert user into database'); 

@@ -83,6 +83,22 @@ if (INIT_LOADED != '1') { exit; }
         <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_python_scatterplots()); ?></p></td>
         <td>Python + Modules:MySQLdb,os,errno,csv,sys,numpy,matplotlib,ConfigParser</td>
       </tr>
+      <tr>
+        <td>WWW Directory Writeable</td>
+        <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_root_writeable()); ?></p></td>
+        <td>Ensure WWW Directory is writeable by webserver</td>
+      </tr>
+      <tr>
+        <td>Config Directory Writeable</td>
+        <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_config_writeable()); ?></p></td>
+        <td>Verify ./config/ directory is writeable by webserver</td>
+      </tr>
+      <tr>
+        <td>Apache Mod-Rewrite Enabled</td>
+        <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_mod_rewrite()); ?></p></td>
+        <td>Make sure mod_rewrite is enabled in Apache</td>
+      </tr>
+      </tr>
     </tbody>
   </table>
 

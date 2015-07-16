@@ -88,11 +88,16 @@ class Code {
    * config_update
    * Returns a string of the updated config
    */
-  public static function config_update() {
+  public static function config_update($settings=false) {
 
     // Read new, set new to old where they overlap
     $dist = file_get_contents(\Config::get('prefix') . '/config/settings.php.dist');
-    $live_results = parse_ini_file(\Config::get('prefix') . '/config/settings.php');
+    if (!is_array($settings)) {
+      $live_results = parse_ini_file(\Config::get('prefix') . '/config/settings.php');
+    }
+    else { 
+      $live_results = $settings;
+    }
 
     $data = explode("\n",$dist);
 
@@ -117,7 +122,9 @@ class Code {
 
     } // end foreach rows
 
-    if (is_writeable(\Config::get('prefix') . '/config/settings.php')) {
+    $writeable_check = file_exists(\Config::get('prefix') . '/config/settings.php') ? \Config::get('prefix') . '/config/settings.php' : \Config::get('prefix') . '/config'; 
+
+    if (is_writeable($writeable_check)) {
       // If it works return
       if (($result = file_put_contents(\Config::get('prefix') . '/config/settings.php',$config_new)) !== false) {
          return true; 
@@ -1464,8 +1471,35 @@ class Database {
     $sql = "ALTER TABLE `site_data` ENGINE=InnoDB";
     $retval = \Dba::write($sql) ? $retval : false;
 
-// Fix the level table uid dropped auto_inc somehow? 
+    // Fix the UID auto_increments dropped when converting ENGINE Grrrrr
+    $sql = "ALTER TABLE `record` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `site` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     $sql = "ALTER TABLE `level` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `action` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `group` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `group_role` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `user_group` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `site_data` CHANGE `uid` `uid` INT(11) UNSIGNED AUTO_INCREMENT";
     $retval = \Dba::write($sql) ? $retval : false;
 
     // Add FK constraints

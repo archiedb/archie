@@ -42,7 +42,7 @@ function insert_db($info) {
     $errors = array();
     for ($i=0; $i<count($pieces); $i++) {
       $pieces[$i] = trim($pieces[$i]);
-      if (substr($pieces[$i],0,2) != '--' AND substr($pieces[$i],0,2) != "/*" AND !empty($pieces[$i])) {
+      if (substr($pieces[$i],0,2) != '--' AND substr($pieces[$i],0,2) != "#" AND !empty($pieces[$i])) {
         if (!$db_results = \Dba::write($pieces[$i])) {
           $errors[] = array(\Dba::error(),$pieces[$i]);
         }
@@ -50,13 +50,86 @@ function insert_db($info) {
     }
 
     if (count($errors)) {
-      \Error::add('general',print_r($errors,1));
+      \Error::add('general',json_encode($errors));
       $retval = false;
     }
 
     return $retval;
 
 } // insert_db
+
+/**
+ * write_config
+ * Attempt to write out the Archie config
+ */
+function write_config($input) { 
+
+  $retval = true; 
+
+  // Attempt to write out the config
+  $retval = \update\Code::config_update(array('database_username'=>$input['username'],
+    'database_password'=>$input['password'],
+    'database_hostname'=>$input['hostname'],
+    'database_name'=>$input['database']));
+
+
+  return $retval; 
+
+} // write_config
+
+
+/**
+ * initial_user
+ * Create the first admin user
+ */
+function initial_user($input) { 
+
+  // Attempt to insert the initial user, by now
+  // we should have a working DBH() so just go for it
+  $user_data = array('password'=>$input['admin_password'],
+    'username'=>$input['admin_username'],
+    'name'=>$input['admin_username'],
+    'confirmpassword'=>$input['admin_pw_confirm'],
+    'email'=>'admin@localhost',
+    'site'=>'1');
+  $retval = \User::create($user_data);
+
+  if (!$retval) { 
+    \Error::add('general','Unable to create initial Administrative account');
+    return false;
+  }
+
+  \UI\sess::$user = new \User($retval);
+  
+  // We can be sure it's 1 because there is only 1.. to rule them all
+  $retval = \UI\sess::$user->add_group('1');
+
+  return $retval;
+
+} // initial_user
+
+/**
+ * htaccess_enable
+ * Move htaccess into place
+ */
+function htaccess_enable() {
+
+  $data = file_get_contents(\Config::get('prefix') . '/htaccess.dist');
+  $retval = file_put_contents(\Config::get('prefix') . '/.htaccess',$data);
+
+  $data = file_get_contents(\Config::get('prefix') . '/config/units.csv.dist');
+  $retval = file_put_contents(\Config::get('prefix') . '/config/units.csv',$data);
+
+  $data = file_get_contents(\Config::get('prefix') . '/config/quads.csv.dist');
+  $retval = file_put_contents(\Config::get('prefix') . '/config/quads.csv',$data);
+
+  if (!$retval) { 
+    \Error::add('general','Permission Denied installing .htaccess file');
+  }
+
+  return $retval;
+
+} // htaccess_enable
 
 /**
  * split_sql
