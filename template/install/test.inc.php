@@ -73,6 +73,16 @@ if (INIT_LOADED != '1') { exit; }
         <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_php_pdomysql()); ?></p></td>
         <td>MySQL Extensions for PHP PDO are enabled</td>
       </tr>
+      <tr>
+        <td>ImageMagick</td>
+        <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_imagemagick()); ?></p></td>
+        <td>ImageMagick Convert</td>
+      </tr>
+      <tr>
+        <td>Python & Required Modules</td>
+        <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_python_scatterplots()); ?></p></td>
+        <td>Python + Modules:MySQLdb,os,errno,csv,sys,numpy,matplotlib,ConfigParser</td>
+      </tr>
     </tbody>
   </table>
 

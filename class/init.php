@@ -79,7 +79,9 @@ if (!file_exists($configfile) AND !defined('CLI') AND !defined('INSTALL')) {
 
 // Use the built in PHP function, suppress errors here so we can handle it
 // properly below
-$results = parse_ini_file($configfile);
+if (!defined('INSTALL')) {
+  $results = parse_ini_file($configfile);
+}
 $results['web_prefix']		= $results['web_path']; 
 $results['web_path']		= $http_type . $_SERVER['HTTP_HOST'] . $results['web_path'];
 $results['ajax_url']		= $results['web_path'] . '/server/ajax.server.php'; 
@@ -111,7 +113,6 @@ $results['mysql_db']		= $results['database_name'];
 define('INIT_LOADED','1');
 
 Config::set_by_array($results,1);
-
 // check and see if database upgrade(s) need to be done
 if (!defined('OUTDATED_DATABASE_OK')) { 
   if (!\Update\Database::check()) { 

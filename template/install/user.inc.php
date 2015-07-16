@@ -48,14 +48,14 @@ if (INIT_LOADED != '1') { exit; }
 </head>
 <body>
 <div class="container">
-  <h2 class="text-center">Archie System Installer :: Step 2 - Install Database</h2>
+  <h2 class="text-center">Archie System Installer :: Step 3 - Create Admin User</h2>
   <p>
-    <em>This step installs the database, you will need a username and password with full
-    administrative access to the database server.</em> 
+    <em>This step sets up an initial Administrative user, this user will have full access
+    to the system, it can be removed or disabled later</em>
     <?php Error::display('general'); ?>
   </p>
-<form class="form-horizontal" id="insert_db" method="post" action="install.php?action=insertdb">
-<h4>Database Connection Information</h4>
+<form class="form-horizontal" id="insert_db" method="post" action="install.php?action=createadmin">
+<h4>Admin User Information</h4>
 <div class="control-group span8">
   <label class="control-label" for="inputUsername">Username</label>
   <div class="controls">
@@ -69,21 +69,9 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div>
 <div class="control-group span8">
-  <label class="control-label" for="inputHostname">Hostname</label>
-  <div class="controls">
-    <input id="inputHostname" name="hostname" value="<?php echo scrub_out($_POST['hostname']); ?>" tabindex="3" />
-  </div>
-</div>
-<div class="control-group span8">
-  <label class="control-label" for="inputDBName">Database Name</label>
-  <div class="controls">
-    <input id="inputDBName" name="database" value="<?php echo scrub_out($_POST['database']); ?>" tabindex="4" />
-  </div>
-</div>
-<div class="control-group span8">
   <label class="control-label" for="submit"> </label>
   <div class="controls">
-    <input type="submit" class="btn btn-primary" value="Install Database" tabindex="5" />
+    <input type="submit" class="btn btn-primary" value="Create User" tabindex="5" />
   </div>
 </div>
 </div> <!-- /container -->
