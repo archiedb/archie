@@ -19,19 +19,12 @@ switch ($_GET['action']) {
 	break;
   case 'insertdb':
     // Attempt to install DB
-    $retval = \Install\insert_db($_POST);
-    // If that works, go for the config!
-    if ($retval) { $retval = \Install\write_config($_POST); }
-    // If _that_ worked, create the user
-    if ($retval) { $retval = \Install\initial_user($_POST); }
-    // Put .htaccess in place
-    if ($retval) { $retval = \Install\htaccess_enable(); }
-    // Ok what happened
+    $retval = \Install\run($_POST);
     if (!$retval) { 
       require_once 'template/install/database.inc.php';
     }
     else {
-      header("Location:index.php");
+      header("Location:login.php");
       exit;
     }
 

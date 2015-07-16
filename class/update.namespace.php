@@ -130,6 +130,7 @@ class Code {
          return true; 
       }
     }
+    elseif (defined('INSTALL')) { return false; }
 
     // If the config file is not writeable by the webserver (likely a good thing!)
     // Whipe anything that's been output

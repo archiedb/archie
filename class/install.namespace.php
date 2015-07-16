@@ -2,6 +2,92 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 /**
+ * run
+ * This does the install, and will revert all changes
+ * if there's a failure
+ */
+function run($info) { 
+
+  // Attepmt to install the Database
+  $retval = insert_db($info);
+
+  // Failure? 
+  if (!$retval) {
+    remove_db($info); 
+    return false; 
+  }
+
+  $retval = write_config($info);
+
+  if (!$retval) {
+    delete_config();
+    remove_db($info);
+    return false;
+  }
+
+  $retval = initial_user($info); 
+
+  if (!$retval) {
+    delete_config();
+    remove_db($info);
+    return false; 
+  }
+
+  $retval = htaccess_enabled();
+
+  if (!$retval) {
+    delete_htaccess();
+    delete_config();
+    remove_db($info);
+    return false;
+  }
+
+  return true;
+
+} // run
+
+/**
+ * delete_htaccess
+ * removes the htaccess file
+ */
+function delete_htaccess() {
+ 
+  $dir = dirname(__FILE__);
+  $prefx = realpath($dir,"/../");
+  unlink($prefix . '/.htaccess');
+
+  return true; 
+
+} //delete_htaccess
+  
+/**
+ * delete_config
+ * Removes the config!
+ */
+function delete_config() { 
+
+  $dir = dirname(__FILE__);
+  $prefx = realpath($dir,"/../");
+  unlink($prefix . '/config/settings.php');
+
+  return true; 
+
+} // delete_config
+
+/**
+ * remove_db
+ * Delete the database!
+ */
+function remove_db($info) {
+
+  $sql = "DROP DATABASE `" . $info['database'] . "`";
+  \Dba::write($sql); 
+
+  return true; 
+
+} // remove_db
+
+/**
  * insert_db
  * Install the database using the connection
  * information provided
@@ -72,6 +158,9 @@ function write_config($input) {
     'database_hostname'=>$input['hostname'],
     'database_name'=>$input['database']));
 
+  if (!$retval) { 
+    \Error::add('general','Unable to write out config file, please check permissions');
+  }
 
   return $retval; 
 
