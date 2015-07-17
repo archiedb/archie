@@ -1,5 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 /**
  * __autoload
@@ -65,25 +65,33 @@ function log_event($username, $event_name, $event_description, $log_name) {
 
 	if (defined('NO_LOG')) { return true; }
 
-        /* Set it up here to make sure it's _always_ the same */
-        $time           = time();
-        // Turn time into strings
-        $log_day        = date('Ymd', $time);
-        $log_time       = date('Y-m-d H:i:s', $time);
+  /* Set it up here to make sure it's _always_ the same */
+  $time           = time();
+  // Turn time into strings
+  switch($log_name) { 
+	  case 'query':
+      $log_day  = date('Ymd', $time);
+    break;
+    default:
+      $log_day  = date('Ym',$time);
+    break;
+  }
 
-        /* must have some name */
-        $log_name       = $log_name ? $log_name : 'general';
-        $username       = $username ? $username : 'unknown';
+  $log_time       = date('Y-m-d H:i:s', $time);
 
-        $log_filename   = Config::get('log_path') . "/$log_name.$log_day.log";
-        $log_line       = "$log_time [$event_name] :: $event_description \n";
+  /* must have some name */
+  $log_name       = $log_name ? $log_name : 'general';
+  $username       = $username ? $username : 'unknown';
 
-        // Do the deed
-        $log_write = error_log($log_line, 3, $log_filename);
+  $log_filename   = Config::get('log_path') . "/$log_name.$log_day.log";
+  $log_line       = "$log_time [$event_name] :: $event_description \n";
 
-        if (!$log_write) {
-                echo "Warning: Unable to write to log ($log_filename) Please check your log_path variable in settings.php";
-        }
+  // Do the deed
+  $log_write = error_log($log_line, 3, $log_filename);
+
+  if (!$log_write) {
+    echo "Unable to write event to $log_filename\n";
+  }
 
 } // log_event
 
