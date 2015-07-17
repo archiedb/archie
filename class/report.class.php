@@ -524,13 +524,14 @@ class Report {
       if ($level->excavator_three > 0) { $ex = new User($level->excavator_three);$ex_three = $ex->name; } else { $ex_three = 'NONE'; }
       if ($level->excavator_four > 0) { $ex = new User($level->excavator_four);$ex_four = $ex->name; } else { $ex_four = 'NONE'; }
       if ($level->closed_user > 0) { $ex = new User($level->closed_user);$closed_user = $ex->name; } else { $closed_user = 'NONE'; }
+      $closed_date = $level->closed_date > 0 ? date("m-d-Y h:i:s",$level->closed_date) : "NA";
       $ex = new User($level->user); $open_user = $ex->name; 
 
-      $data[] = array($level->catalog_id,$level->site->name,$level->unit,$level->quad->name,$level->lsg_unit,
+      $data[] = array($level->catalog_id,$level->site->name,$level->unit,$level->quad->name,$level->lsg_unit->name,
         $level->northing,$level->easting,$level->elv_nw_start,$level->elv_nw_finish,$level->elv_ne_start,$level->elv_ne_finish,
         $level->elv_se_start,$level->elv_se_finish,$level->elv_sw_start,$level->elv_sw_finish,$level->elv_center_start,$level->elv_center_finish,
         $ex_one,$ex_two,$ex_three,$ex_four,$level->description,$level->difference,$level->notes,date("m-d-Y h:i:s",$level->created),
-        $open_user,$level->closed,date("m-d-Y h:i:s",$level->closed_date),$closed_user);
+        $open_user,$level->closed,$closed_date,$closed_user);
                 
     } // while levels
 
