@@ -5,19 +5,33 @@ if (INIT_LOADED != '1') { exit; }
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="template/base.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" />
-<script src="template/ajax.js" language="javascript" type="text/javascript"></script>
-<script src="lib/javascript/jquery-1.9.1.min.js" language="javascript" type="text/javascript"></script>
-<script src="lib/bootstrap/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="template/base.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="lib/bootstrap-3/css/bootstrap.min.css" />
+  <script src="template/ajax.js" language="javascript" type="text/javascript"></script>
+  <script src="lib/javascript/jquery-1.11.3.min.js" language="javascript" type="text/javascript"></script>
+  <script src="lib/bootstrap-3/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
 <title> Archie :: Installer </title>
    <style type="text/css">
-      body {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
-      }
+    body {
+      padding-top: 70px;
+      padding-bottom: 30px;
+    }
 
+    .theme-dropdown .dropdown-menu {
+      position: static;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .theme-showcase > p > .btn {
+      margin: 5px 0;
+    }
+
+    .theme-showcase .navbar .container {
+      width: auto;
+    }
       .form-signin {
         max-width: 300px;
         padding: 19px 29px 29px;
@@ -47,59 +61,62 @@ if (INIT_LOADED != '1') { exit; }
 
 </head>
 <body>
-<div class="container">
-  <h2 class="text-center">Archie System Installer :: Step 2 - Install</h2>
+<div class="container theme-showcase" role="main">
+<div class="jumbotron">
+  <h1>Archie Installer</h2>
   <p>
-    <em>This step installs the database and creates the config file. You will need a username and password with full
-    administrative access to the database server as well as a username and password for the initial user.</em> 
-    <?php Error::display('general'); ?>
+    <strong>Step 2: Installation</strong><br />
+    This step installs the database and creates the config file. You will need a username and password with full
+    administrative access to the database server as well as a username and password for the initial user.
   </p>
+</div>
+<?php Error::display('general'); ?>
 <form class="form-horizontal" id="insert_db" method="post" action="install.php?action=insertdb">
-<div class="control-group span8">
 <h4>Database Connection Information</h4>
-  <label class="control-label" for="inputUsername">Username</label>
-  <div class="controls">
+<div class="form-group">
+  <label class="col-sm-2 control-label" for="inputUsername">Username</label>
+  <div class="col-sm-10">
     <input id="inputUsername" name="username" value="<?php echo scrub_out($_POST['username']); ?>" tabindex="1" />
   </div>
 </div>
-<div class="control-group span8">
-  <label class="control-label" for="inputPassword">Password</label>
-  <div class="controls">
+<div class="form-group">
+  <label class="col-sm-2 control-label" for="inputPassword">Password</label>
+  <div class="col-sm-10">
     <input id="inputPassword" name="password" value="<?php echo scrub_out($_POST['password']); ?>" tabindex="2" />
   </div>
 </div>
-<div class="control-group span8">
-  <label class="control-label" for="inputHostname">Hostname</label>
-  <div class="controls">
+<div class="form-group">
+  <label class="col-sm-2 control-label" for="inputHostname">Hostname</label>
+  <div class="col-sm-10">
     <input id="inputHostname" name="hostname" value="<?php echo scrub_out($_POST['hostname']); ?>" tabindex="3" />
   </div>
 </div>
-<div class="control-group span8">
-  <label class="control-label" for="inputDBName">Database Name</label>
-  <div class="controls">
-    <input id="inputDBName" name="database" value="<?php echo scrub_out($_POST['database']); ?>" tabindex="4" />
+<div class="form-group">
+  <label class="col-sm-2 control-label" for="inputDBName">Database Name</label>
+  <div class="col-sm-10">
+    <input placeholder="A-Z,0-9,_,-" id="inputDBName" name="database" value="<?php echo scrub_out($_POST['database']); ?>" tabindex="4" />
   </div>
 </div>
-<div class="control-group span8">
 <h4>Initial Admin User</h4>
-  <label class="control-label" for="inputAdminUsername">Username</label>
-  <div class="controls">
+<div class="form-group">
+  <label class="col-sm-2 control-label" for="inputAdminUsername">Username</label>
+  <div class="col-sm-10">
     <input id="inputAdminUsername" name="admin_username" value="<?php echo scrub_out($_POST['admin_username']); ?>" tabindex="5" />
   </div>
 </div>
-<div class="control-group span8">
-  <label class="control-label" for="inputAdminPassword">Password</label>
-  <div class="controls">
+<div class="form-group">
+  <label class="col-sm-2 control-label" for="inputAdminPassword">Password</label>
+  <div class="col-sm-10">
     <input id="inputAdminPassword" name="admin_password" value="<?php echo scrub_out($_POST['admin_password']); ?>" tabindex="6" />
   </div>
 </div>
-<div class="control-group span8">
-  <label class="control-label" for="inputAdminPasswordC">Confirm Password</label>
-  <div class="controls">
-    <input id="inputAdminPasswordC" name="admin_pw_confirm" value="<?php echo scrub_out($_POST['admin_pw_confirm']); ?>" tabindex="7" />
+<div class="form-group">
+  <label class="col-sm-2 control-label" for="inputAdminPasswordC">Confirm Password</label>
+  <div class="col-sm-10">
+    <input id="inputAdminPasswordC" placeholder="Confirm Password" name="admin_pw_confirm" value="<?php echo scrub_out($_POST['admin_pw_confirm']); ?>" tabindex="7" />
   </div>
 </div>
-<div class="control-group span8">
+<div class="form-group span8">
   <label class="control-label" for="submit"> </label>
   <div class="controls">
     <input type="submit" class="btn btn-primary" value="Install Archie" tabindex="8" />

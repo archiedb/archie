@@ -3,8 +3,6 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<div class="content-block">
-<fieldset>
 <legend>Add New User</legend>
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" method="post" action="<?php echo Config::get('web_path'); ?>/users/create">
@@ -48,5 +46,3 @@ if (INIT_LOADED != '1') { exit; }
     </div>
   </div>
 </form>
-</fieldset>
-</div><!-- End content block -->

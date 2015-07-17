@@ -208,7 +208,7 @@ class Error {
 		// Be smart about this, if no error don't print
 		if (!isset(Error::$errors[$name])) { return ''; }
 		
-		echo '<div class="alert alert-error">Error: ' . Error::$errors[$name] . '</div>';
+		echo '<div class="alert alert-error alert-danger" role="alert">Error: ' . Error::$errors[$name] . '</div>';
 
 	} // display
 

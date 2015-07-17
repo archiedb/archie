@@ -5,19 +5,33 @@ if (INIT_LOADED != '1') { exit; }
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="template/base.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" />
-<script src="template/ajax.js" language="javascript" type="text/javascript"></script>
-<script src="lib/javascript/jquery-1.9.1.min.js" language="javascript" type="text/javascript"></script>
-<script src="lib/bootstrap/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
-<title> Archie :: Installer </title>
-   <style type="text/css">
-      body {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
-      }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="template/base.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="lib/bootstrap-3/css/bootstrap.min.css" />
+  <script src="template/ajax.js" language="javascript" type="text/javascript"></script>
+  <script src="lib/javascript/jquery-1.11.3.min.js" language="javascript" type="text/javascript"></script>
+  <script src="lib/bootstrap-3/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
+  <title> Archie :: Installer </title>
+  <style type="text/css">
+    body {
+      padding-top: 70px;
+      padding-bottom: 30px;
+    }
 
+    .theme-dropdown .dropdown-menu {
+      position: static;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .theme-showcase > p > .btn {
+      margin: 5px 0;
+    }
+  
+    .theme-showcase .navbar .container {
+      width: auto;
+    }
       .form-signin {
         max-width: 300px;
         padding: 19px 29px 29px;
@@ -47,14 +61,17 @@ if (INIT_LOADED != '1') { exit; }
 
 </head>
 <body>
-<div class="container">
-  <h2 class="text-center">Archie System Installer :: Step 1 - Verify System</h2>
+<div class="container theme-showcase" role="main">
+<div class="jumbotron">
+  <h1>Archie Installer</h1>
   <p>
+<strong>Step 1: Verify System Configuration</strong><br />
     Before continuing with the Archie installation please make sure that the 
     following tests pass. Your Archie system may not install correctly if any 
     of these tests do not pass. 
   </p>
-  <table class="table table-hover table-bordered table-condensed">
+</div>
+  <table class="table table-striped table-hover">
     <thead>
       <tr>
         <th>Check</th>
@@ -102,7 +119,7 @@ if (INIT_LOADED != '1') { exit; }
     </tbody>
   </table>
 
-  <a href="install.php?action=database" class="btn">Step 2 :: Database Install</a>
+  <a href="install.php?action=database" class="btn btn-primary" role="button">Step 2 :: Database Install</a>
 
 </div> <!-- /container -->
 </body>
