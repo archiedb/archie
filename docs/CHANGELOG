@@ -1,3 +1,35 @@
+ FIX - SpatialData didn't read RN correctly on creation
+ FIX - missing UID reference that made updating impossible
+ FIX - incorrect field value on notes
+ FIX - accession/project not being set correctly on site
+ CHANGE - query log daily rotate, error monthly
+ ADD Bootstrap-3 and use it for installer
+ ADD - ability to roll back on partial install failure!
+ ADD - Completed installer with no remorse for mistakes, full-restart required if you make a mistake
+ ADD - Database installer portion
+ ADD - Installer (prelim)
+ FIX - php error when site is invalid
+ FIX
+ FIX - installer sql file
+ ADD - manual check for admin
+ CHANGE - Allow reset-password to work without db update (RISKY) - might want to add a warning
+ FIX - bug where re-submitting same level wouldn't trigger a friendly error
+ FIX - level table uid lost auto_inc?!
+ FIX - php tests
+ FIX - Display proper error message if they don't enter _anything_
+ FIX - Redirect function
+ FIX - lack of caching on index page
+ FIX - Mem cache for User permissions and site data
+ FIX - error display on length
+ FIX misc bugs in update and create record due to changes in DB
+ ADD - Last login tracking
+ FIX - Record creation to use Innodb based transactions to prevent overlapping catalog_id values
+ ADD - ability to set users current site, and display it on their profile page
+ FIX - parse error
+ DBUPGRADE - for FKs
+ FIX - php error due to unset header_small
+ FIX - PHP warning on site accession/project if it's not set
+ NEW changelog
  FIX - PHP warning on spatialdata create
  FIX - main user permissions wouldn't be set correctly if group is set to 1
  ADD - Point editing to feature and krotovina
