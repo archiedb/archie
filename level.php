@@ -43,6 +43,7 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('level','edit')) { \UI\access_denied(); }
     $level = new Level($_POST['uid']);
     $_POST['user'] = \UI\sess::$user->uid;
+    $_POST['uid'] = $level->uid;
     if (!$level->update($_POST)) { 
       require_once \UI\template('/level/edit');
     }
