@@ -154,7 +154,8 @@ function boolean_word($boolean,$string='') {
     return '<span class="label label-success">' . $string . '</span>';
   }
   else {
-    return '<span class="label label-important">' . $string . '</span>';
+    //FIXME: Remove label-important, bootstrap 2.x compatibility
+    return '<span class="label label-danger label-important">' . $string . '</span>';
   }
 
   return false; 
