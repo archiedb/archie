@@ -16,7 +16,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4 offset1<?php Error::display_class('keywords'); ?>">
   <label class="control-label" for="inputKeywords">Additional Notes?</label>
   <div class="controls">
-    <textarea placeholder="..." rows="4" cols="80" name="keywords" id="inputKeywords" ><?php echo scrub_out($krotovina->description); ?></textarea>
+    <textarea placeholder="..." rows="4" cols="80" name="keywords" id="inputKeywords" ><?php echo scrub_out($krotovina->keywords); ?></textarea>
   </div>
 </div>
 <div class="control-group span8">
