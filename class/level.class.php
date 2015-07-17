@@ -317,7 +317,7 @@ class Level extends database_object {
     }
     else {
       // Make sure this isn't a duplicate level, filter on UID if passed
-      $uid_sql    = isset($input['uid']) ? "AND `uid`<>'" . Dba::escape($uid) . "'" : '';
+      $uid_sql    = isset($input['uid']) ? "AND `uid`<>'" . Dba::escape($input['uid']) . "'" : '';
 
       $sql = "SELECT `level`.`uid` FROM `level` WHERE `catalog_id`=? AND `quad`=? AND `unit`=? AND `site`=? $uid_sql";
       $db_results = Dba::read($sql,array($input['catalog_id'],$input['quad'],$input['unit'],$input['site'])); 

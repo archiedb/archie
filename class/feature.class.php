@@ -183,7 +183,7 @@ class Feature extends database_object {
     $db_results = Dba::write($unlock_sql);
     
     // Now we add the initial spatial data
-    $spatialdata = SpatialData::create(array('record'=>$insert_id,'type'=>'feature','rn'=>$input['initial_rn'],'northing'=>$input['northing'],
+    $spatialdata = SpatialData::create(array('record'=>$insert_id,'type'=>'feature','station_index'=>$input['initial_rn'],'northing'=>$input['northing'],
                       'easting'=>$input['easting'],'elevation'=>$input['elevation']));
 
     if (!$spatialdata) { 
