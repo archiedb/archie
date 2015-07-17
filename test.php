@@ -6,19 +6,33 @@ require_once 'class/ui.namespace.php';
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="template/base.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" />
-<script src="template/ajax.js" language="javascript" type="text/javascript"></script>
-<script src="lib/javascript/jquery-1.9.1.min.js" language="javascript" type="text/javascript"></script>
-<script src="lib/bootstrap/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
-<title> Archie :: Test Page </title>
-   <style type="text/css">
-      body {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
-      }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="template/base.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="lib/bootstrap-3/css/bootstrap.min.css" />
+  <script src="template/ajax.js" language="javascript" type="text/javascript"></script>
+  <script src="lib/javascript/jquery-1.11.3.min.js" language="javascript" type="text/javascript"></script>
+  <script src="lib/bootstrap-3/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
+  <title> Archie :: Test </title>
+  <style type="text/css">
+    body {
+      padding-top: 70px;
+      padding-bottom: 30px;
+    }
 
+    .theme-dropdown .dropdown-menu {
+      position: static;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .theme-showcase > p > .btn {
+      margin: 5px 0;
+    }
+
+    .theme-showcase .navbar .container {
+      width: auto;
+    }
       .form-signin {
         max-width: 300px;
         padding: 19px 29px 29px;
@@ -49,13 +63,15 @@ require_once 'class/ui.namespace.php';
 </head>
 <body>
 <div class="container">
-  <h2 class="text-center">Archie System Test Page</h2>
+<div class="jumbotron">
+  <h1>Archie Test Page</h2>
   <p>
     This page does a series of basic tests of your system, and current configuration. Any tests that
     fail are displayed in red. Yellow indicates that archie should work on your system but some features 
     might not be available. Green indicates that everything is ok, and Archie should work as expected. 
   </p>
-  <table class="table table-hover table-bordered table-condensed">
+</div>
+  <table class="table table-hover table-striped">
     <thead>
       <tr>
         <th>Check</th>
@@ -84,7 +100,7 @@ require_once 'class/ui.namespace.php';
         <?php 
           $config_valid = true;
           $fields = \Debug\check_archie_config();
-          if (strlen($fields)) { $config_valid = false; }
+          if (strlen($fields)) { $fields = "False"; $config_valid = false; }
         ?>
         <td><p align="center"><?php echo \UI\boolean_word($config_valid,$fields); ?></p></td>
         <td>Archie config has the minimum required settings</td>
@@ -109,6 +125,11 @@ require_once 'class/ui.namespace.php';
         <td><p align="center"><?php echo \UI\boolean_word($db_inserted,$msg); ?></td>
         <td>Basic Database tables exist and are readable with at least one active user</td>
       </tr>
+      <tr>
+        <td>Apache Rewrite</td>
+        <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_mod_rewrite()); ?></td>
+        <td>Check to see if Apache's Mod_rewrite is enabled, this check is invalid on CGI based installations</td>
+      </tr> 
     </tbody>
   </table>
 </div> <!-- /container -->

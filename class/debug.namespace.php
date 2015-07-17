@@ -238,6 +238,7 @@ function check_mysql_config() {
 
   $dir = dirname(__FILE__);
   $prefix = realpath($dir . "/../");
+  if (!file_exists($prefix . '/config/settings.php')) { return 'False'; }
   $data = parse_ini_file($prefix . '/config/settings.php'); 
   $dsn = 'mysql:host=' . $data['database_hostname'];
   try {
@@ -259,6 +260,7 @@ function check_mysql_db() {
 
   $dir = dirname(__FILE__);
   $prefix = realpath($dir . "/../");
+  if (!file_exists($prefix . '/config/settings.php')) { return 'False'; }
   $data = parse_ini_file($prefix . '/config/settings.php'); 
   $dsn = 'mysql:host=' . $data['database_hostname'];
   try {
@@ -281,7 +283,7 @@ function check_mysql_db() {
 
   return '';
 
-} // check_msyql_inserted
+} // check_msyql_db
 
 /**
  * check_imagemagick
