@@ -491,8 +491,8 @@ class View {
     $sql = $this->get_base_sql(); 
 
     $filter_sql = $this->get_filter_sql(); 
-    $join_sql = $this->get_join_sql(); 
     $order_sql = $limit ? $this->get_sort_sql() : ''; // Don't sort if we don't have a limit 
+    $join_sql = $this->get_join_sql(); // Run After Order_SQL where Joins are set 
     $limit_sql = $limit ? $this->get_limit_sql() : ''; // Don't limit if we don't want it? 
     $final_sql = $sql . $join_sql . $filter_sql . $order_sql . $limit_sql; 
 
@@ -859,10 +859,10 @@ class View {
     $this->reset_select(); 
     $this->reset_join(); 
     $this->reset_filters(); 
-    $this->set_start('0'); 
-    $this->set_offset(Config::get('page_limit') ? Config::get('page_limit') : '50'); 
     $this->reset_sort(); 
     $this->reset_total(); 
+    $this->set_start('0'); 
+    $this->set_offset(Config::get('page_limit') ? Config::get('page_limit') : '50'); 
 
   } // reset
 

@@ -36,6 +36,7 @@ if (defined('CLI')) {
   $_SERVER['SERVER_PORT'] = false;
   $_SERVER['SERVER_NAME'] = false;
   $_SERVER['REQUEST_URI'] = false;
+  $_SERVER['HTTP_USER_AGENT'] = false;
 }
 
 // Do a check for PHP5 because nothing will work without it
@@ -70,9 +71,17 @@ else {
 	$http_type = "http://";
 }
 
+if (!file_exists($configfile) AND !defined('CLI') AND !defined('INSTALL')) { 
+  // Must need to install? 
+  header('Location:install.php');
+  exit;
+}
+
 // Use the built in PHP function, suppress errors here so we can handle it
 // properly below
-$results = parse_ini_file($configfile);
+if (!defined('INSTALL')) {
+  $results = parse_ini_file($configfile);
+}
 $results['web_prefix']		= $results['web_path']; 
 $results['web_path']		= $http_type . $_SERVER['HTTP_HOST'] . $results['web_path'];
 $results['ajax_url']		= $results['web_path'] . '/server/ajax.server.php'; 
@@ -104,7 +113,6 @@ $results['mysql_db']		= $results['database_name'];
 define('INIT_LOADED','1');
 
 Config::set_by_array($results,1);
-
 // check and see if database upgrade(s) need to be done
 if (!defined('OUTDATED_DATABASE_OK')) { 
   if (!\Update\Database::check()) { 
@@ -150,6 +158,7 @@ elseif (!defined('CLI') AND !defined('NO_SESSION')) {
 
 	// If nothing comes back kick-em-out
 	if (!\UI\sess::$user->uid) { vauth::logout(session_id()); exit; }
+  \UI\sess::$user->update_last_seen();
 	vauth::session_extend(session_id());
 
   // Load events, errors and clear old
@@ -159,7 +168,6 @@ elseif (!defined('CLI') AND !defined('NO_SESSION')) {
   $_SESSION['warnings'] = array(); 
 
 } 
-
 
 /* Clean up a bit */
 unset($array);

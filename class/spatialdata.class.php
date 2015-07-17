@@ -86,11 +86,12 @@ class SpatialData extends database_object {
     // Load it we need to track this
     $spatialdata = new SpatialData($uid);
 
-    $uid = Dba::escape($uid);
-    $sql = "DELETE FROM `spatial_data` WHERE `uid`='$uid' LIMIT 1";
-    $db_results = Dba::write($sql); 
+    $sql = "DELETE FROM `spatial_data` WHERE `uid`=? LIMIT 1";
+    $db_results = Dba::write($sql,array($uid)); 
 
-    Event::record('SpatialData','Deleted Spatial Data UID:' . $uid . ' RN:' . $spatialdata->station_index . ' North:' . $spatialdata->northing . ' East:' . $spatialdata->easting . ' Elev:' . $spatialdata->elevation . ' Note:' . $spatialdata->note);
+    $json_msg = json_encode(array('uid'=>$uid,'station_index'=>$spatialdata->station_index,'nor'=>$spatialdata->northing,'est'=>$spatialdata->easting,'elv'=>$spatialdata->elevation,'note'=>$spatialdata->note));
+
+    Event::record('spatialdata::remove','Deleted Spatial Data -- ' . $json_msg);
 
     return $db_results;
 
@@ -99,39 +100,39 @@ class SpatialData extends database_object {
   /**
    * create
    * Enter in a new record
-   * Input array should be array('record','type','rn','northing','easting','elevation','note');
+   * Input array should be array('record','type','station_index','northing','easting','elevation','note');
    */
    public static function create($input) { 
-
-    if (!isset($input['rn']) AND isset($input['station_index'])) {
-      $input['rn'] = $input['station_index'];
-    }
 
     if (!SpatialData::validate($input)) { 
       Error::add('general','Invalid Spatial Data fields - please check input');
       return false;
     }
 
-    $record = Dba::escape($input['record']);
-    $type = Dba::escape($input['type']);
-    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
-    $northing = Dba::escape($input['northing']);
-    $easting = Dba::escape($input['easting']);
-    $elevation = Dba::escape($input['elevation']);
-    $note = Dba::escape($input['note']);
+    $record         = $input['record'];
+    $type           = $input['type'];
+    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
+    $note           = isset($input['note']) ? $input['note'] : NULL;
+    
     $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`,`northing`,`easting`,`elevation`,`note`) " . 
-        "VALUES ('$record','$type',$station_index,'$northing','$easting','$elevation','$note')";
-    $db_results = Dba::write($sql); 
+        "VALUES (?,?,?,?,?,?,?)";
+    $db_results = Dba::write($sql,array($record,$type,$station_index,$northing,$easting,$elevation,$note)); 
 
     $insert_id = Dba::insert_id();
 
     if (!$insert_id) { 
-      Error:add('general','Database Error inserting Spatial Data - Please contact your administrator');
-      Event::error('SpatialData',"Error inserting spatial data - UID:$record  --- Type:$type --- Station index:$station_index --- Nor:$northing --- Est:$easting --- Elv:$elevation --- Note:$note");
+      Error::add('general','Unable to insert Spatial Data - Please contact your administrator');
+      Event::error('SpatialData::create',"Error inserting spatial data - UID:$record  --- Type:$type --- Station index:$station_index --- Nor:$northing --- Est:$easting --- Elv:$elevation --- Note:$note");
       return false;
     }
 
-    Event::add('SpatialData',"Added point for UID:$record of type $type RN:$station_index,Nor:$northing,Est:$easting,Elv:$elevation");
+    $json_msg = json_encode(array('uid'=>$insert_id,'record'=>$record,'type'=>$type,
+      'station_index'=>$station_index,'nor'=>$northing,'est'=>$easting,'elv'=>$elevation,'note'=>$note));
+
+    Event::add('SpatialData::create',$json_msg);
     return $insert_id;
 
   } // create
@@ -152,22 +153,26 @@ class SpatialData extends database_object {
       return false;
     }
 
-    // Escape the values
-    $uid = Dba::escape($this->uid);
-    $type = Dba::escape($this->record_type);
-    $record = Dba::escape($this->record);
-    $station_index = $input['rn'] != 0 ? "'".Dba::escape($input['rn'])."'" : 'NULL';
-    $northing = Dba::escape($input['northing']);
-    $easting = Dba::escape($input['easting']);
-    $elevation = Dba::escape($input['elevation']);
+    // Escape the values, and set to null if they aren't set
+    $uid            = $this->uid;
+    $type           = $this->record_type;
+    $record         = $this->record;
+    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
 
-    $sql = "UPDATE `spatial_data` SET `station_index`=$station_index,`northing`='$northing',`easting`='$easting',`elevation`='$elevation' " . 
-      "WHERE `uid`='$uid'";
-    $db_results = Dba::write($sql);
+    $sql = "UPDATE `spatial_data` SET `station_index`=?,`northing`=?,`easting`=?,`elevation`=? WHERE `uid`=? "; 
+    $db_results = Dba::write($sql,array($station_index,$northing,$easting,$elevation,$uid));
 
     if (!$db_results) { 
       return false;
     }
+
+    $json_msg = json_encode(array('uid'=>$insert_id,'record'=>$record,'type'=>$type,
+      'station_index'=>$station_index,'nor'=>$northing,'est'=>$easting,'elv'=>$elevation,'note'=>$note));
+
+    Event::add('SpatialData::update',$json_msg);
 
     return true;
 
@@ -184,38 +189,39 @@ class SpatialData extends database_object {
     // just fails
     $retval = true;
 
-    // If they've entered nothing then we're good!
-    if (!strlen($input['rn']) AND !strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation'])) {
-      return $retval;
+    // They have to enter something
+    if (!strlen($input['station_index']) AND !strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation'])) {
+      Error::add('station_index','Must specify Station Index (RN) or Northing, Easting & Elevation');
+      $retval = false;
     }
 
     // If specified
-    if (strlen($input['rn'])) { 
-      if (!Field::validate('rn',$input['rn'])) { 
-        Event::error('SpatialData',$input['rn'] . ' is not a valid RN');
-        Error::add('Total Station Index','Invalid RN specified');
+    if (strlen($input['station_index'])) { 
+      if (!Field::validate('station_index',$input['station_index'])) { 
+        Event::error('SpatialData',$input['station_index'] . ' is not a valid Station Index (RN)');
+        Error::add('Total Station Index','Invalid Station Index (RN) specified');
         $retval = false;
       }
     }
 
-    if (strlen($input['rn']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
-      Event::error('SpatialData',$input['rn'] . ' was specified in addition to easting/northing or elevation');
-      Error::add('Total Station Index','RN and Elevation/Northing/Easting specified, only one may be set');
+    if (strlen($input['station_index']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
+      Event::error('SpatialData','Station Index' . $input['station_index'] . ' was specified in addition to easting/northing or elevation');
+      Error::add('Total Station Index','Station Index (RN) and Elevation/Northing/Easting specified, only one may be set');
       $retval = false;
     }
 
-    if (strlen($input['rn'])) {
+    if (strlen($input['station_index'])) {
       // Make sure this RN + Record + Type is unique
-      $rn = Dba::escape($input['rn']);
+      $station_index = Dba::escape($input['station_index']);
       $type = Dba::escape($input['type']);
       $record = Dba::escape($input['record']);
-      $sql = "SELECT * FROM `spatial_data` WHERE `station_index`='$rn' AND `record_type`='$type' AND `record`='$record'";
+      $sql = "SELECT * FROM `spatial_data` WHERE `station_index`='$station_index' AND `record_type`='$type' AND `record`='$record'";
       $db_results = Dba::read($sql);
 
       $row = Dba::fetch_assoc($db_results); 
       if (isset($row['uid']) AND !$input['update']) { 
-        Event::error('SpatialData','Attempted to add duplicate record - ' . $input['rn'] . ' -> ' . $input['type'] . ' - ' . $input['record']); 
-        Error::add('Total Station Index','RN Already assoicated with this record');
+        Event::error('SpatialData::validate','Attempted to add duplicate record - ' . $input['station_index'] . ' -> ' . $input['type'] . ' - ' . $input['record']); 
+        Error::add('Total Station Index','Station Index (RN) already exists cannot create duplicate record');
         $retval = false; 
       }
     } // end if RN
@@ -231,8 +237,8 @@ class SpatialData extends database_object {
 
       $row = Dba::fetch_assoc($db_results);
       if (isset($row['uid']) AND !$input['update']) {
-        Event::error('SpatialData','Attempted to add duplicate record - ' . $input['northing'] . ' / ' . $input['easting'], ' / ' . $input['elevation'] . ' -> ' . $input['type'] . ' / ' . $input['record']);
-        Error::add('Northing / Easting / Elevation','Point already assoicated with this record');
+        Event::error('SpatialData::validate','Attempted to add duplicate record - ' . $input['northing'] . ' / ' . $input['easting'], ' / ' . $input['elevation'] . ' -> ' . $input['type'] . ' / ' . $input['record']);
+        Error::add('Northing / Easting / Elevation','Point already exists cannot create duplicate record');
         $retval = false;
       }
 
@@ -254,7 +260,7 @@ class SpatialData extends database_object {
 
     // Make sure it's unique to the site
     if (!SpatialData::is_site_unique($input,$input['record'])) {
-      Error::add('Spatialdata','Attempted to add duplicate record');
+      Error::add('Spatialdata','Station Index (RN) / Northing / Easting / Elevation already exists cannot create duplicate record');
       $retval = false;
     }
 
@@ -268,18 +274,19 @@ class SpatialData extends database_object {
    */
   public static function is_site_unique($input,$record=0) { 
 
-    $input['rn'] = isset($input['rn']) ? $input['rn'] : '';
-
-    $input['northing'] = isset($input['northing']) ? $input['northing'] : '';
-    $input['easting'] = isset($input['easting']) ? $input['easting'] : '';
-    $input['elevation'] = isset($input['elevation']) ? $input['elevation'] : '';
+    $input['station_index'] = isset($input['station_index']) ? $input['station_index'] : '';
+    $input['northing']      = isset($input['northing']) ? $input['northing'] : '';
+    $input['easting']       = isset($input['easting']) ? $input['easting'] : '';
+    $input['elevation']     = isset($input['elevation']) ? $input['elevation'] : '';
 
     // If they've passed nothing then yes it's unique
-    if (!strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation']) AND !strlen($input['rn'])) {
+    if (!strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation']) AND !strlen($input['station_index'])) {
       return true;
     }
 
     $query = array();
+    $station_index_sql = '';
+    $cord_sql = '';
 
     if (strlen($input['northing']) AND strlen($input['easting']) AND strlen($input['elevation'])) { 
       $cord_sql = "(`northing`=? AND `easting`=? AND `elevation`=?) OR";
@@ -287,14 +294,16 @@ class SpatialData extends database_object {
       $query[] = $input['easting'];
       $query[] = $input['elevation'];
     }
-    if (strlen($input['rn'])) { 
-      $rn_sql = "`station_index`=?";
-      $query[] = $input['rn'];
+    if (strlen($input['station_index'])) { 
+      $station_index_sql = "`station_index`=?";
+      $query[] = $input['station_index'];
     }
 
-    $sql = "SELECT * FROM `spatial_data` WHERE $cord_sql $rn_sql";
+    $sql = "SELECT * FROM `spatial_data` WHERE $cord_sql $station_index_sql";
     $sql = rtrim($sql,'OR ');
     $db_results = Dba::read($sql,$query);
+
+    $results = array();
 
     while ($row = Dba::fetch_assoc($db_results)) {
       $results[] = $row;

@@ -24,7 +24,7 @@ if (INIT_LOADED != '1') { exit; }
 <h5>Krotovina Spatial Information</h5>
 <table class="table table-hover table-bordered table-white">
 <tr>
-  <th>RN</th>
+  <th>Station Index (RN)</th>
   <th>Northing</th>
   <th>Easting</th>
   <th>Elevation</th>

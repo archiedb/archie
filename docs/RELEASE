@@ -1,0 +1,8 @@
+Just a checklist for myself for updating for release
+
+ * Dump good SQL
+ * Update
+ * SET FOREIGN_KEY_CHECKS=0;
+ * truncate feature;truncate image;truncate krotovina;truncate level;truncate media;truncate record;truncate session;truncate site;truncate site_data;truncate spatial_data;truncate temp_data;truncate user_group;truncate users;
+ * INSERT INTO `site` VALUES ('1','Initial Site','Initial Site',NULL,NULL,NULL,'Archie PI',NULL,1,2,NULL,1);
+ * mysqldump -u root -p taco --add-drop-table --allow-keywords --routines > config/database.sql

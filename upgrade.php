@@ -18,12 +18,19 @@ switch ($_POST['action']) {
       $is_admin = false; 
       // Check the old admin way
       if (isset($user->access)) { if ($user->access == 100) { $is_admin = true; } }
+      else { 
+        // Manually check to see if they have Admin on Site ''
+        $sql = "SELECT * FROM `user_permission_view` WHERE `user`=? AND `role`='admin' AND `action='admin'";
+        $db_results = Dba::read($sql,array($user->uid));
+        $results = Dba::fetch_assoc($db_results);
+        if ($results['user'] > 0) { $is_admin = true; }
+      } // end else
       if (!Access::is_admin() AND $is_admin === false) {
         Error::add('general','Invalid Username/Password or insufficient access level'); 
 			}
 			else { 
 				$results = \update\Database::run(); 
-				if (!$results) { echo "NUTS DB update failed, you should restore your backup"; exit(); }
+				if (!$results) { exit(); }
 				else { header('Location:' . Config::get('web_path')); exit(); }			
       }
 		}

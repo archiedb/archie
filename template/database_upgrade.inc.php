@@ -30,7 +30,7 @@ if (INIT_LOADED != '1') { exit; }
 	Please see below for details on the upgrade which need to be performed on this system. You must enter
 	the username and password of an administrator in order to start the database upgrade. 
 	</p>
-  <?php Error::display('general'); ?>
+  <?php Event::display('errors'); ?>
 	<form class="form-inline text-center" action="<?php echo Config::get('web_path'); ?>/upgrade.php" method="post">
 		<input name="username" type="text" class="input-small" placeholder="Username">
 		<input name="password" type="password" class="input-small" placeholder="Password">

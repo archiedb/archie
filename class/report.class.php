@@ -262,7 +262,7 @@ class Report {
 
     $date = $this->last_report();
 
-    $sql = "SELECT `feature`.`uid` FROM `feature` WHERE `created`>=? OR `update`>=?";
+    $sql = "SELECT `feature`.`uid` FROM `feature` WHERE `created`>=? OR `updated`>=?";
     $db_results = Dba::read($sql,array($date,$date));
 
     $rows = Dba::num_rows($db_results);
@@ -278,7 +278,7 @@ class Report {
 
     $date = $this->last_report();
 
-    $sql = "SELECT `krotovina`.`uid` FROM `krotovina` WHERE `created`>=? OR `update`>=?";
+    $sql = "SELECT `krotovina`.`uid` FROM `krotovina` WHERE `created`>=? OR `updated`>=?";
     $db_results = Dba::read($sql,array($date,$date));
 
     $rows = Dba::num_rows($db_results);
@@ -307,6 +307,11 @@ class Report {
    */
   public function csv_sitelevel_stale() {
 
+    $retval = false; 
+
+    $retval = $this->csv_siterecord_stale() ? 'true' : $retval;
+    $retval = $this->csv_sitefeature_stale() ? 'true' : $retval;
+    $retval = $this->csv_sitekrotovina_stale() ? 'true' : $retval;
 
     return $retval;
 
@@ -350,6 +355,9 @@ class Report {
       break;
       case 'siterecord':
         $data = $this->csv_siterecord($option); 
+      break;
+      case 'sitelevel':
+        $data = $this->csv_sitelevel($option);
       break;
     }
 
@@ -499,16 +507,33 @@ class Report {
 
     $data = array();
 
-    $data[] = array('site','catalog id','record','unit','quad','lsg unit','northing','easting','elv nw start','elv nw finish','elv ne start','elv ne finish','elv sw start','elv se finish','elv sw start','elv sw finish','elv center start','elv center finish','excavator one','excavator two','excavator three','excavator four','description','difference','notes','created','user','closed','closed date','closed user');
+    $data[] = array('level','site','unit','quad','lsg unit','northing','easting','elv nw start','elv nw finish','elv ne start',
+      'elv ne finish','elv se start','elv se finish','elv sw start','elv sw finish','elv center start','elv center finish',
+      'excavator one','excavator two','excavator three','excavator four','description','difference','notes','created',
+      'user','closed','closed date','closed user');
 
     $sql = "SELECT `uid` FROM `level` WHERE `site`=?";
     $db_results = Dba::read($sql,array($site->uid));
 
     while ($row = Dba::fetch_assoc($db_results)) { 
-    
+      $level = new Level($row['uid']); 
 
+      // Deal with the user's return $user->name OR NONE
+      if ($level->excavator_one > 0) { $ex = new User($level->excavator_one);$ex_one = $ex->name; } else { $ex_one = 'NONE'; }
+      if ($level->excavator_two > 0) { $ex = new User($level->excavator_two);$ex_two = $ex->name; } else { $ex_two = 'NONE'; }
+      if ($level->excavator_three > 0) { $ex = new User($level->excavator_three);$ex_three = $ex->name; } else { $ex_three = 'NONE'; }
+      if ($level->excavator_four > 0) { $ex = new User($level->excavator_four);$ex_four = $ex->name; } else { $ex_four = 'NONE'; }
+      if ($level->closed_user > 0) { $ex = new User($level->closed_user);$closed_user = $ex->name; } else { $closed_user = 'NONE'; }
+      $closed_date = $level->closed_date > 0 ? date("m-d-Y h:i:s",$level->closed_date) : "NA";
+      $ex = new User($level->user); $open_user = $ex->name; 
+
+      $data[] = array($level->catalog_id,$level->site->name,$level->unit,$level->quad->name,$level->lsg_unit->name,
+        $level->northing,$level->easting,$level->elv_nw_start,$level->elv_nw_finish,$level->elv_ne_start,$level->elv_ne_finish,
+        $level->elv_se_start,$level->elv_se_finish,$level->elv_sw_start,$level->elv_sw_finish,$level->elv_center_start,$level->elv_center_finish,
+        $ex_one,$ex_two,$ex_three,$ex_four,$level->description,$level->difference,$level->notes,date("m-d-Y h:i:s",$level->created),
+        $open_user,$level->closed,$closed_date,$closed_user);
+                
     } // while levels
-
 
     return $data;
 

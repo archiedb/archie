@@ -183,7 +183,7 @@ class Feature extends database_object {
     $db_results = Dba::write($unlock_sql);
     
     // Now we add the initial spatial data
-    $spatialdata = SpatialData::create(array('record'=>$insert_id,'type'=>'feature','rn'=>$input['initial_rn'],'northing'=>$input['northing'],
+    $spatialdata = SpatialData::create(array('record'=>$insert_id,'type'=>'feature','station_index'=>$input['initial_rn'],'northing'=>$input['northing'],
                       'easting'=>$input['easting'],'elevation'=>$input['elevation']));
 
     if (!$spatialdata) { 
@@ -279,18 +279,57 @@ class Feature extends database_object {
 
     Error::clear(); 
 
+    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
+    $note           = isset($input['note']) ? $input['note'] : NULL;
+
+    if (!$station_index AND !$northing AND !$easting AND !$elevation) { 
+      // Well you have to specify something!
+      Error::add('general','Nothing entered, doing nothing');
+      return false;
+    }
+
     $retval = SpatialData::create(array(
       'record'=>$this->uid,
       'type'=>'feature',
-      'rn'=>$input['rn'],
-      'northing'=>$input['northing'],
-      'easting'=>$input['easting'],
-      'elevation'=>$input['elevation'],
-      'note'=>$input['note']));
+      'station_index'=>$station_index,
+      'northing'=>$northing,
+      'easting'=>$easting,
+      'elevation'=>$elevation,
+      'note'=>$note));
 
     return $retval;
 
   } //add_point
+
+  /**
+   * update_point
+   * Update existing point
+   */
+  public function update_point($input) { 
+
+    Error::clear();
+
+    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
+    $note           = isset($input['note']) ? $input['note'] : NULL;
+
+    $retval = SpatialData::update(array(
+      'record'=>$this->uid,
+      'type'=>'feature',
+      'station_index'=>$station_index,
+      'northing'=>$northing,
+      'easting'=>$easting,
+      'elevation'=>$elevation,
+      'note'=>$note));
+
+    return $retval;
+
+  } // update_point
 
   /**
    * del_point

@@ -20,17 +20,18 @@ class User extends database_object {
 		if (!is_numeric($uid)) { return false; } 
 
 		$row = $this->get_info($uid,'users'); 
-    if (is_array($row)) {
-  		foreach ($row as $key=>$value) { 
-  			$this->$key = $value; 
-  		} 
-    } // is array
+    if (is_array($row)) { 
+    	foreach ($row as $key=>$value) { 
+    		$this->$key = $value; 
+    	} 
+    }
 		// Don't actually keep this in the object 
-		if (isset($this->password)) { unset($this->password); }
+		if (property_exists($this,'password')) { unset($this->password); }
 
     // Load their roles
-    if (!is_array($this->roles)) {
-      $this->roles = User::get_roles($this->uid);
+    if (!isset($row['roles'])) { $row['roles'] = false; }
+    if (!is_array($row['roles'])) {
+      $this->roles = User::get_roles($this->uid,$this->site);
       $row['roles'] = $this->roles;
       parent::add_to_cache('users',$uid,$row);
     }
@@ -72,6 +73,7 @@ class User extends database_object {
 
     while ($row = Dba::fetch_assoc($db_results)) { 
       // If they have no role, give them an empty one so it's recongized as cached
+      if (!isset($roles[$row['uid']])) { $roles[$row['uid']] = array(); }
       $row['roles'] = $roles[$row['uid']];
       parent::add_to_cache('users',$row['uid'],$row); 
     }
@@ -84,11 +86,12 @@ class User extends database_object {
    * get_roles
    * Get the access roles for this user
    */
-  public static function get_roles($uid) {
+  public static function get_roles($uid,$site='') {
 
-    $uid = Dba::escape($uid);
-    $sql = "SELECT * FROM `user_permission_view` WHERE `user`='$uid'";
-    $db_results = Dba::read($sql);
+    $site = strlen($site) ? $site : \UI\sess::$user->site->uid;
+
+    $sql = "SELECT * FROM `user_permission_view` WHERE `user`=? AND (`site`=? OR `site`='0')";
+    $db_results = Dba::read($sql,array($uid,$site));
 
     $results = array();
 
@@ -306,8 +309,8 @@ class User extends database_object {
 		$name = Dba::escape($input['name']); 
 		$email = Dba::escape($input['email']); 
 
-		$sql = "UPDATE `users` SET `name`='$name', `email`='$email' WHERE `uid`='$uid' LIMIT 1"; 
-		$db_results = Dba::write($sql); 
+		$sql = 'UPDATE `users` SET `site`=?, `name`=?, `email`=? WHERE `uid`=? LIMIT 1'; 
+		$db_results = Dba::write($sql,array($input['site'],$input['name'],$input['email'],$uid)); 
 
 		// If this is the current logged in user, refresh them
 		if (\UI\sess::$user->uid == $this->uid) { 
@@ -336,6 +339,17 @@ class User extends database_object {
 
   } // update_site
 
+  /**
+   * update_last_seen
+   * Update the last_seen info
+   */
+  public function update_last_seen() {
+
+    $sql = 'UPDATE `users` SET `last_login`=? WHERE `uid`=?';
+    $db_results = Dba::write($sql,array(time(),$this->uid));
+
+  } // update_last_seen
+
 	/**
 	 * create
 	 * This creates a new user! hooray
@@ -350,20 +364,18 @@ class User extends database_object {
       Error::add('general','adding new user'); 
       return false; 
     } 
-   
+
     // This is here because we only check on the creation of a user 
     if (strlen($input['password']) < 2) { 
       Error::add('password','Password not long enough'); 
       return false; 
     }
 
-    $username = Dba::escape($input['username']); 
-    $name = Dba::escape($input['name']); 
-    $email = Dba::escape($input['email']); 
-    $password = Dba::escape(hash('sha256',$input['password'])); 
+    $password = hash('sha256',$input['password']); 
+    $site = isset($input['site']) ? $input['site'] : \UI\sess::$user->site->uid;
 
-    $sql = "INSERT INTO `users` (`name`,`username`,`email`,`password`) VALUES (?,?,?,?)"; 
-    $db_results = Dba::write($sql,array($input['name'],$input['username'],$input['email'],$password)); 
+    $sql = "INSERT INTO `users` (`name`,`username`,`email`,`password`,`site`) VALUES (?,?,?,?,?)"; 
+    $db_results = Dba::write($sql,array($input['name'],$input['username'],$input['email'],$password,$site)); 
 
     if (!$db_results) { 
       Event::error('DATABASE','Error unable to insert user into database'); 

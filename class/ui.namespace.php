@@ -8,7 +8,7 @@
  */
 function redirect($path) {
 
-  header('Location:' . Config::get('web_path') . '/' . $path);
+  header('Location:' . \Config::get('web_path') . $path);
   exit; 
 
 } // redirect
@@ -47,14 +47,14 @@ function return_url($input) {
  * access_denied
  * Throw up "DO NOT PASS GO" and exit
  */
-function access_denied() {
+function access_denied($msg='') {
 
   include_once template('/header');
   include_once template('/menu');
   $header = '<h4>Error: Insufficient Access</h4>';
   $size = ' alert-block';
   $css_class = ' alert-error';
-  $message = 'Unable to continue you do not have sufficient access to perform this action';
+  $message = strlen($msg) ? $msg : 'Unable to continue you do not have sufficient access to perform this action';
   require template('/event');
   include_once template('/footer');
   exit;
@@ -154,7 +154,8 @@ function boolean_word($boolean,$string='') {
     return '<span class="label label-success">' . $string . '</span>';
   }
   else {
-    return '<span class="label label-important">' . $string . '</span>';
+    //FIXME: Remove label-important, bootstrap 2.x compatibility
+    return '<span class="label label-danger label-important">' . $string . '</span>';
   }
 
   return false; 

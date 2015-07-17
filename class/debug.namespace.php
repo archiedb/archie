@@ -102,6 +102,36 @@ function check_cache_writeable() {
 } // check_qrcode_cache_writeable
 
 /**
+ * check_root_writeable
+ * Make sure the root dir is writeable (for installer)
+ */
+function check_root_writeable() {
+
+  $dir = dirname(__FILE__);
+  $prefix = realpath($dir . "/../");
+  
+  if (!is_writeable($prefix)) { return false; }
+
+  return true;
+
+}
+
+/**
+ * check_config_writeable
+ * Make sure the config dir is writeable (for installer)
+ */
+function check_config_writeable() {
+
+  $dir = dirname(__FILE__);
+  $prefix = realpath($dir . "/../");
+
+  if (!is_writeable($prefix . '/config')) { return false; }
+
+  return true; 
+
+} // check_config_writeable
+
+/**
  * 3dmodel_to_png
  * Checks that we've got the required commands to convert stl -> png
  */
@@ -208,6 +238,7 @@ function check_mysql_config() {
 
   $dir = dirname(__FILE__);
   $prefix = realpath($dir . "/../");
+  if (!file_exists($prefix . '/config/settings.php')) { return 'False'; }
   $data = parse_ini_file($prefix . '/config/settings.php'); 
   $dsn = 'mysql:host=' . $data['database_hostname'];
   try {
@@ -229,6 +260,7 @@ function check_mysql_db() {
 
   $dir = dirname(__FILE__);
   $prefix = realpath($dir . "/../");
+  if (!file_exists($prefix . '/config/settings.php')) { return 'False'; }
   $data = parse_ini_file($prefix . '/config/settings.php'); 
   $dsn = 'mysql:host=' . $data['database_hostname'];
   try {
@@ -251,7 +283,7 @@ function check_mysql_db() {
 
   return '';
 
-} // check_msyql_inserted
+} // check_msyql_db
 
 /**
  * check_imagemagick
@@ -262,6 +294,22 @@ function check_imagemagick() {
     return is_executable('/usr/bin/convert');
 
 } // check_imagemagick
+
+/**
+ * check_mod_rewrite
+ * check for rewrites
+ */
+function check_mod_rewrite() { 
+
+  if (function_exists('apache_get_modules')) {
+    if (in_array('mod_rewrite',apache_get_modules())) {
+      return true;
+    }
+  }
+
+  return false;
+
+} // check_mod_rewrite
 
 
 ?>

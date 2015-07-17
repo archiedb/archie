@@ -13,28 +13,38 @@ class Site extends database_object {
   public $partners; // text field
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
-  public $project; // current (many on a single site) 
-  public $accession; // current (many on a single site)
   public $enabled; 
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
 
 		if (!is_numeric($uid)) { return false; } 
+    // By default don't re-cache
+    $recache = false;
 
 		$row = $this->get_info($uid,'site'); 
+    if (is_array($row)) {
+  		foreach ($row as $key=>$value) { 
+  			$this->$key = $value; 
+  		} 
+    }
+    else { return false; }
 
     // Get the project and accession - may be cached
-    if (!isset($this->project)) { 
+    if (!property_exists($this,'project')) { 
       $this->project = Site::get_data($uid,'project');
+      $row['project'] = $this->project;
+      $recache = true;
     }
-    if (!isset($this->accession)) { 
+    if (!property_exists($this,'accession')) { 
       $this->accession = Site::get_data($uid,'accession');
+      $row['accession'] = $this->accession;
+      $recache = true;
     }
 
-		foreach ($row as $key=>$value) { 
-			$this->$key = $value; 
-		} 
+    if ($recache === true) {
+      parent::add_to_cache('site',$row['uid'],$row);
+    }
 
 		return true; 
 
@@ -132,8 +142,10 @@ class Site extends database_object {
     $db_results = Dba::read($sql,array($site,$field));
 
     $row = Dba::fetch_assoc($db_results);
+    
+    $value = isset($row['value']) ? $row['value'] : NULL;
 
-    return $row['value'];
+    return $value;
 
   } // get_data
 

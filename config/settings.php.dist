@@ -20,7 +20,7 @@ data_root=/var/lib/archie
 
 ; Operational stuff
 ;; This is the number of records per page
-page_limit = 250
+page_limit = 100
 
 ; Use RAM to avoid MySQL queries
 ; It is recommended to turn this on, only turn it off if

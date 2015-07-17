@@ -11,11 +11,11 @@ class Record extends database_object {
   public $krotovina;
   public $level; 
   public $lsg_unit; 
-  public $station_index; // LISTED AS RN in the interface
+  public $station_index; // LISTED AS RN in the interface (>.<)
   public $xrf_matrix_index; 
   public $weight; 
   public $width; 
-  public $height; 
+  public $height; // Displayed as Length in interface (>.<)
   public $thickness; 
   public $quanity; 
   public $material; // FK
@@ -37,6 +37,7 @@ class Record extends database_object {
 		if (!is_numeric($uid)) { return false; } 
 		
 		$row = $this->get_info($uid,'record'); 
+    if (!is_array($row)) { return false; }
 
 		foreach ($row as $key=>$value) { $this->$key = $value; } 
 
@@ -133,52 +134,40 @@ class Record extends database_object {
 			return false; 
 		} 
 
-		$db_results = false; 
-		$times = 0; 
-		$lock_sql = "LOCK TABLES `record` READ, `krotovina` READ, `feature` READ, `level` READ, `spatial_data` READ;"; 
-		$unlock_sql = "UNLOCK TABLES"; 
-
-		// Only wait 3 seconds for this, it shouldn't take that long
-		while (!$db_results && $times < 3) { 
-
-      $db_results = true; 
-			// If we make it this far we're good to go, we need to figure out the next station ID
-//			$db_results = Dba::write($lock_sql); 
-		
-			if (!$db_results) { sleep(1); $times++; } 
-
-		} 
-
-		// If we never obtain the lock, then we can't go on
-		if (!$db_results) { 
-			Error::add('general','Database Read Failure, please resubmit'); 
-			return false; 
-		} 
+    if (!Dba::begin_transaction()) {
+      Error::add('general','Unable to start DB Transaction, please try again');
+      return false; 
+    }
 
 		// Reset Row variable
 		$row = array(); 
 
-		// If no catalog ID is defined then we need to auto-inc it
-		if (!$input['catalog_id']) { 
-			$site = Dba::escape($input['site']); 
-			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`='$site' ORDER BY `catalog_id` DESC LIMIT 1"; 
-			$db_results = Dba::read($catalog_sql); 
-			$row = Dba::fetch_assoc($db_results); 	
-			Dba::finish($db_results); 
+    // If catalog_id isn't set, set it to null
+    $input['catalog_id'] = isset($input['catalog_id']) ? $input['catalog_id'] : null;
 
+		// If no catalog_id specified, determine next available #
+		if (!$input['catalog_id']) { 
+			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? ORDER BY `catalog_id` DESC LIMIT 1 FOR UPDATE"; 
+			$db_results = Dba::read($catalog_sql,array($input['site'])); 
+      if (!$db_results) {
+        Error::add('general','Database timeout reached, please re-submit'); 
+        return false;
+      }
+			$row = Dba::fetch_assoc($db_results); 	
 			$catalog_id = $row['catalog_id']+1; 
 		} 
 		// Else we need to make sure it isn't a duplicate
 		else { 
-			$site = Dba::escape($input['site']); 
-			$catalog_id = Dba::escape($input['catalog_id']); 
-			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`='$site' AND `catalog_id`='$catalog_id' LIMIT 1"; 
-			$db_results = Dba::read($catalog_sql); 
+			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? AND `catalog_id`=? LIMIT 1 FOR UPDATE"; 
+			$db_results = Dba::read($catalog_sql,array($input['site'],$intput['catalog_id'])); 
+      if (!$db_results) {
+        Error::add('general','Database timeout reached, please re-submit'); 
+        return false;
+      }
 			$row = Dba::fetch_assoc($db_results); 
-			Dba::finish($db_results); 
 			if ($row['catalog_id']) { 
 				Error::add('general','Database Failure - Duplicate CatalogID - ' . $catalog_id); 
-		//		$db_results = Dba::write($unlock_sql); 
+        Dba::commit();
 				return false; 
 			} 
 
@@ -186,56 +175,73 @@ class Record extends database_object {
 
     // We need the real UID of the following objects
     $level = new Level($input['level']);
-    $feature_uid  = Feature::get_uid_from_record($input['feature']);
-    $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
+    $feature_uid  = isset($input['feature']) ? Feature::get_uid_from_record($input['feature']) : null;
+    $krotovina_uid = isset($input['krotovina']) ? Krotovina::get_uid_from_record($input['krotovina']) : null;
 
-		// Insert the new record
-    $site = \UI\sess::$user->site->uid;
-		$unit = $level->unit; 
-		$level = $level->uid; 
-		$lsg_unit = $input['lsg_unit']; 
-		$xrf_matrix_index = $input['xrf_matrix_index']; 
-		$weight = $input['weight']; 
-		$height = $input['height']; 
-		$width = $input['width']; 
-		$thickness = $input['thickness']; 
-		$quanity = ($input['quanity'] == 0) ? '1' : $input['quanity']; // Default to Quanity 1 
-		$material = $input['material']; 
-		$classification = $input['classification']; 
-		$notes = $input['notes']; 
-		$xrf_artifact_index = $input['xrf_artifact_index']; 
-    $accession = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
-		$quad = isset($level->quad->uid) ? $level->quad->uid : '0'; 
-		$feature = $feature_uid;  
-    $krotovina = $krotovina_uid;
-		$user = \UI\sess::$user->uid; 
-		$created = time(); 
+		// Normalize the input, set unset variables to NULL
+    $site               = \UI\sess::$user->site->uid;
+		$level              = $level->uid; 
+		$lsg_unit           = $input['lsg_unit']; 
+		$xrf_matrix_index   = isset($input['xrf_matrix_index']) ? $input['xrf_matrix_index'] : NULL;
+		$xrf_artifact_index = isset($input['xrf_artifact_index']) ? $input['xrf_artifact_index'] : NULL;
+		$weight             = $input['weight']; 
+		$height             = $input['height']; 
+		$width              = $input['width']; 
+		$thickness          = $input['thickness']; 
+		$quanity            = ($input['quanity'] == 0) ? '1' : $input['quanity']; // Default to Quanity 1 
+		$material           = $input['material']; 
+		$classification     = $input['classification']; 
+		$notes              = $input['notes']; 
+    $accession          = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
+    $station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
+    $northing           = isset($input['northing']) ? $input['northing'] : NULL;
+    $easting            = isset($input['easting']) ? $input['easting'] : NULL;
+    $elevation          = isset($input['elevation']) ? $input['elevation'] : NULL;
+		$feature            = $feature_uid;  
+    $krotovina          = $krotovina_uid;
+		$user               = \UI\sess::$user->uid; 
+		$created            = time(); 
 
 		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`level`,`lsg_unit`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`accession`,`feature`,`krotovina`,`user`,`created`) " . 
 			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
 		$db_results = Dba::write($sql,array($site,$catalog_id,$level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$accession,$feature,$krotovina,$user,$created)); 
 
 		if (!$db_results) { 
-			Error::add('general','Unknown Error inserting record into database'); 
-			$db_results = Dba::write($unlock_sql); 
+			Error::add('general','Unable to insert record, reverting changes.'); 
+      // Roll the transaction back
+      $retval = Dba::rollback();
+      if (!$retval) { Error::add('general','Unable to roll Database changes back, please report this to your Administrator'); }
+      Dba::commit();
 			return false; 
 		} 
+
 		$insert_id = Dba::insert_id(); 
 
-    // Unlock 
-//		$db_results = Dba::write($unlock_sql); 
+    $log_json = json_encode(array('Site'=>$site,'Catalog ID'=>$catalog_id,'Level'=>$input['level'],'LSG Unit'=>$lsg_unit,
+                  'StationIndex'=>$station_index,'XRFMatrixIndex'=>$xrf_matrix_index,'Weight'=>$weight,
+                  'Height'=>$height,'Thickness'=>$thickness,'Quanity',$quanity,'Material'=>$material,
+                  'Classification'=>$classification,'Feature ID'=>$feature_uid,'Krotovina ID'=>$krotovina_uid,
+                  'Notes'=>$notes,'Accession'=>$accession,'User'=>\UI\sess::$user->username,'Date'=>date("r",$created)));
+		Event::record('record::create',$log_json); 
 
-    $legend_line = "Site,Catalog ID,Unit,Level,LSG Unit,RN,XRF Matrix Index, Weight (grams),Height(mm),Width(mm),Thickness(mm),Quanity,Material,Classification,Quad,Feature ID,Krotovina ID,User,Date";
-    Event::record('ADD-LEGEND',$legend_line);
-		$log_line = "$site,$catalog_id,$unit," . $input['level'] . ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$quad," . $input['feature'] ."," . $input['krotovina'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$created) . "\"";
-		Event::record('ADD',$log_line); 
-
-   // Create the spatial data entry
-    $spatial = SpatialData::create(array('station_index'=>$input['station_index'],'record'=>$insert_id,'northing'=>$input['northing'],'easting'=>$input['easting'],'elevation'=>$input['elevation'],'type'=>'record'));
-    //FIXME: Catch this and deal with it in a sane way
+    // Create the spatial data entry
+    if ($station_index OR $northing OR $easting OR $elevation) { 
+      $spatial = SpatialData::create(array('station_index'=>$station_index,
+                                        'record'=>$insert_id,
+                                        'northing'=>$northing,
+                                        'easting'=>$easting,
+                                        'elevation'=>$elevation,
+                                        'type'=>'record'));
+    } // end if they specified something spatial
 
 		// We're sure we've got a record so lets generate our QR code. 
 		Content::write($insert_id,'qrcode'); 
+
+    // Commit and unlock
+    if (!Dba::commit()) {
+      Event::record('DBA::commit','Commit Failure - unable to close transaction');
+      return false;
+    }
 
 		return $insert_id; 
 
@@ -258,41 +264,37 @@ class Record extends database_object {
     }
 
     // We need the real UID of the following objects
-    $level = new Level($input['level']);
-    $level_uid = $level->uid;
-    $feature_uid  = Feature::get_uid_from_record($input['feature']);
-    $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
+    $level              = new Level($input['level']);
+    $level_uid          = $level->uid;
+    $feature_uid        = Feature::get_uid_from_record($input['feature']);
+    $krotovina_uid      = Krotovina::get_uid_from_record($input['krotovina']);
 
-		$lsg_unit = Dba::escape($input['lsg_unit']); 
-		$xrf_matrix_index = Dba::escape($input['xrf_matrix_index']); 
-		$weight = Dba::escape($input['weight']); 
-		$height = Dba::escape($input['height']); 
-		$width = Dba::Escape($input['width']); 
-		$thickness = Dba::escape($input['thickness']); 
-		$quanity = Dba::escape($input['quanity']); 
-		$material = Dba::escape($input['material']); 
-		$classification = Dba::escape($input['classification']); 
-		$notes = Dba::escape($input['notes']); 
-		$xrf_artifact_index = Dba::escape($input['xrf_artifact_index']); 
-		$feature = Dba::escape($feature_uid); 
-    $krotovina = Dba::escape($krotovina_uid);
-    $northing = isset($input['northing']) ? Dba::escape($input['northing']) : Dba::escape($this->northing); 
-    $easting = isset($input['easting']) ? Dba::escape($input['easting']) : Dba::escape($this->easting); 
-    $elevation = isset($input['elevation']) ? Dba::escape($input['elevation']) : Dba::escape($this->elevation); 
-		$user = Dba::escape(\UI\sess::$user->uid); 
-		$updated = time(); 
-		$record_uid = Dba::escape($this->uid); 
+		$lsg_unit           = $input['lsg_unit']; 
+		$xrf_matrix_index   = strlen($input['xrf_matrix_index']) ? $input['xrf_matrix_index'] : NULL; 
+		$weight             = strlen($input['weight']) ? $input['weight'] : NULL;
+		$height             = strlen($input['height']) ? $input['height'] : NULL;
+		$width              = strlen($input['width']) ? $input['width'] : NULL; 
+		$thickness          = strlen($input['thickness']) ? $input['thickness'] : NULL;
+		$quanity            = strlen($input['quanity']) ? $input['quanity'] : '1';
+		$material           = $input['material']; 
+		$classification     = $input['classification']; 
+		$notes              = $input['notes']; 
+		$xrf_artifact_index = strlen($input['xrf_artifact_index']) ? $input['xrf_artifact_index'] : NULL;
+		$feature            = ($feature_uid > 0) ? $feature_uid : NULL;
+    $krotovina          = ($krotovina_uid > 0) ? $krotovina_uid : NULL;
+    $northing           = isset($input['northing']) ? $input['northing'] : $this->northing; 
+    $easting            = isset($input['easting']) ? $input['easting'] : $this->easting; 
+    $elevation          = isset($input['elevation']) ? $input['elevation'] : $this->elevation; 
+		$user               = \UI\sess::$user->uid; 
+		$updated            = time(); 
+		$record_uid         = $this->uid; 
+		$station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
+		$level              = $input['level'];
 
-		// Allow this to be null
-		$station_index = $input['station_index'];
-		$level = $input['level'] ? "'" . Dba::escape($level_uid) . "'" : "NULL"; 
-
-		$sql = "UPDATE `record` SET `level`=$level, `lsg_unit`='$lsg_unit', `xrf_matrix_index`='$xrf_matrix_index', " . 
-      "`weight`='$weight', `height`='$height', `width`='$width', `thickness`='$thickness', `quanity`='$quanity', " . 
-      "`material`='$material', `classification`='$classification', `notes`='$notes', `xrf_artifact_index`='$xrf_artifact_index', " . 
-			"`user`='$user', `updated`='$updated', `feature`='$feature', `krotovina`='$krotovina' " .
-			"WHERE `uid`='$record_uid'"; 
-		$db_results = Dba::write($sql); 
+		$sql = "UPDATE `record` SET `level`=?, `lsg_unit`=?, `xrf_matrix_index`=?, `weight`=?, `height`=?, " . 
+      "`width`=?, `thickness`=?, `quanity`=?, `material`=?, `classification`=?, `notes`=?, `xrf_artifact_index`=?, " . 
+			"`user`=?, `updated`=?, `feature`=?, `krotovina`=? WHERE `uid`=?"; 
+		$db_results = Dba::write($sql,array($level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$user,$updated,$feature,$krotovina,$record_uid)); 
 
 		if (!$db_results) { 
 			Error::add('general','Database Error, please try again'); 
@@ -302,7 +304,7 @@ class Record extends database_object {
     // Update the SpatialData
     $spatialdata = SpatialData::get_record_data($record_uid,'record','single');
     if ($spatialdata->uid) { 
-      $return = $spatialdata->update(array('rn'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
+      $return = $spatialdata->update(array('station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
     }
     elseif ($station_index OR $northing OR $easting OR $elevation) { 
       $return = Spatialdata::Create(array('record'=>$record_uid,'station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation,'type'=>'record'));
@@ -324,7 +326,7 @@ class Record extends database_object {
 
     $site = $this->site->name; 
 
-		$log_line = "$site,".$level->unit->name."," . $input['level']. ",$lsg_unit,$station_index,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification," . $input['feature'] . ",\"" . addslashes($notes) . "\"," . \UI\sess::$user->username . ",\"" . date("r",$updated) . "\"";
+		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit->name,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,'Station Index'=>$station_index,'XRFMatrix'=>$xrf_matrix_index,'Weight'=>$weight,'Height'=>$height,'Width'=>$width,'Thickness'=>$thickness,'Quanity'=>$quanity,'Material'=>$material,'Classification'=>$classification,'Feature'=>$input['feature'],'Notes'=>$notes,'User'=>\UI\sess::$user->username,'Update'=>date("r",$updated)));
 		Event::record('UPDATE',$log_line); 
 		return true; 
 
@@ -345,10 +347,13 @@ class Record extends database_object {
 			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
 		}
 
+    if (!isset($input['station_index'])) { $input['station_index'] = null; }
+
 		// Station Index must be numeric
-		if ((!is_numeric($input['station_index']) OR $input['station_index'] <= 0) AND strlen($input['station_index'])) { 
+    if (!Field::validate('station_index',$input['station_index']) AND strlen($input['station_index'])) {
 			Error::add('station_index','Station Index must be numeric'); 
-		} 
+    } 
+
     //FIXME: This should be standardize on the table name
     $input['rn'] = $input['station_index'];
     // Unique Spatial Record check
@@ -360,7 +365,7 @@ class Record extends database_object {
     if (strlen($input['station_index'])) { 
     
       // If we are comparing it to an existing record
-      if ($record->uid) {   
+      if (isset($record->uid)) {   
 		    if (strlen($input['northing']) AND $input['northing'] != $record->northing) {
           Error::add('northing','Northing can not be changed if the record has an RN'); 
         }
@@ -396,37 +401,37 @@ class Record extends database_object {
         }
     }
 		// XRF Matrix Index numeric
-		if (!is_numeric($input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
+		if (!Field::validate('xrf_matrix_index',$input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
 			Error::add('xrf_matrix_index','XRF Matrix Index must be numeric'); 
 		}
 
 		// Weight, numeric floating point
-		if (round($input['weight'],3) != $input['weight'] AND strlen($input['weight'])) { 
+		if (!Field::validate('weight',$input['weight'])) { 
 			Error::add('weight','Weight must be numeric to a thousandth of a gram'); 
 		} 
 
 		// Height, numeric
-		if (round($input['height'],3) != $input['height'] AND strlen($input['height'])) { 
-			Error::add('height','Height must be numeric to a thousandth of an mm'); 
+		if (!Field::validate('height',$input['height'])) { 
+			Error::add('height','Height must be numeric to a thousandth of a mm'); 
 		} 
 
 		// Width, numeric
-		if (round($input['width'],3) != $input['width'] AND strlen($input['width'])) { 
-			Error::add('width','Length must be numeric to a thousandth of an mm'); 
+		if (!Field::validate('width',$input['width'])) { 
+			Error::add('width','Width must be numeric to a thousandth of a mm'); 
 		} 
 
 		// Thickness
-		if (round($input['thickness'],3) != $input['thickness'] AND strlen($input['thickness'])) { 
+		if (!Field::validate('thickness',$input['thickness'])) { 
 			Error::add('thickness','Thickness must be numeric'); 
 		} 
 		
 		// Quanity, numeric
-		if (!is_numeric($input['quanity']) AND strlen($input['quanity'])) { 
+		if (!Field::validate('quanity',$input['quanity']) AND strlen($input['quanity'])) { 
 			Error::add('quanity','Quanity must be numeric'); 
 		}
  
 		// XRF Artifact Index, numeric
-		if (!is_numeric($input['xrf_artifact_index']) AND strlen($input['xrf_artifact_index'])) { 
+		if (!Field::validate('xrf_artifact_index',$input['xrf_artifact_index']) AND strlen($input['xrf_artifact_index'])) { 
 			Error::add('xrf_artifact_index','XRF Artifact Index must be numeric'); 
 		} 
 
@@ -463,18 +468,22 @@ class Record extends database_object {
 		} // end if material 
 
     // Feature must exist first
-    if (strlen($input['feature'])) { 
-      $feature_uid = Feature::get_uid_from_record($input['feature']); 
-      if (!$feature_uid) {
-  			Error::add('Feature','Feature not found, please create feature record first'); 
-  		} 
+    if (isset($input['feature'])) { 
+      if ($input['feature']) {
+        $feature_uid = Feature::get_uid_from_record($input['feature']); 
+        if (!$feature_uid) {
+    			Error::add('Feature','Feature not found, please create feature record first'); 
+    		} 
+      }
     } // if feature specified
 
     // Krotovina must exist first
-    if (strlen($input['krotovina'])) {
-      $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
-      if (!$krotovina_uid) {
-        Error::add('Krotovina','Krotovina not found, please create Krotovina record first');
+    if (isset($input['krotovina'])) {
+      if ($input['krotovina']) {
+        $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
+        if (!$krotovina_uid) {
+          Error::add('Krotovina','Krotovina not found, please create Krotovina record first');
+        }
       }
     }
 

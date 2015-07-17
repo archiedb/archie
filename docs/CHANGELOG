@@ -1,3 +1,84 @@
+ FIX - SpatialData didn't read RN correctly on creation
+ FIX - missing UID reference that made updating impossible
+ FIX - incorrect field value on notes
+ FIX - accession/project not being set correctly on site
+ CHANGE - query log daily rotate, error monthly
+ ADD Bootstrap-3 and use it for installer
+ ADD - ability to roll back on partial install failure!
+ ADD - Completed installer with no remorse for mistakes, full-restart required if you make a mistake
+ ADD - Database installer portion
+ ADD - Installer (prelim)
+ FIX - php error when site is invalid
+ FIX
+ FIX - installer sql file
+ ADD - manual check for admin
+ CHANGE - Allow reset-password to work without db update (RISKY) - might want to add a warning
+ FIX - bug where re-submitting same level wouldn't trigger a friendly error
+ FIX - level table uid lost auto_inc?!
+ FIX - php tests
+ FIX - Display proper error message if they don't enter _anything_
+ FIX - Redirect function
+ FIX - lack of caching on index page
+ FIX - Mem cache for User permissions and site data
+ FIX - error display on length
+ FIX misc bugs in update and create record due to changes in DB
+ ADD - Last login tracking
+ FIX - Record creation to use Innodb based transactions to prevent overlapping catalog_id values
+ ADD - ability to set users current site, and display it on their profile page
+ FIX - parse error
+ DBUPGRADE - for FKs
+ FIX - php error due to unset header_small
+ FIX - PHP warning on site accession/project if it's not set
+ NEW changelog
+ FIX - PHP warning on spatialdata create
+ FIX - main user permissions wouldn't be set correctly if group is set to 1
+ ADD - Point editing to feature and krotovina
+ FIX - Set default site for users on creation to the current site FIX - User permission view should sort on site as it claims
+ ADD - allow custom access_denied message
+ FIX - Issue where you could create blank spatialdata points
+ VERSION - Bump to 0618 to reflect significant changes upcoming to db
+ FIX - More PHP Warnings
+ ADD - check to make sure Create worked by re-reading it back out of the DB
+ FIX - php warnings uncovered by test suite
+ REMOVE - reference to rn variable standardize on station_index
+ CHANGE - Log for new records to json encoded string, machine and human readable
+ FIX - Path for qrcodes and other data during tests, set to ./lib/cache
+ FIX - PHP warnings
+ CHANGE - move summary line to top per UofO request
+ CHANGE - Default content path ot /var/lib
+ FIX - bug where SORTs that required JOINs wouldn't work on first run due to ordering of SQL retrival
+ CHANGE - Set default view limit to 100 (performance)
+ CHANGE - Validate records behavior, and Error behavior when run from CLI
+ DOC - Add development branch build image
+ DEBUG - Remove it...
+ IMPROVE - Config updater to retain comments
+ FIX - prevent web users from accessing test directory
+ FIX - Index warnings
+ ADD - copy csv.dist to .csv
+ FIX - re-enable no_log
+ FIX - Level and Record tests, also fixed Field::validate()
+ CHANGE - When CLI dump UI errors into error log
+ FIX - PHP warnings
+ FIX - Path for discovery
+ UPDATE - PHP Tests
+ FIX - Properly use field::validate function for record update/create
+ ADD - Database migration steps, not activated yet switches to InnoDB and adds FK constraints
+ ADD - .htaccess to config/ with Deny from all
+ CHANGE - Drop unique catalog_id index from record
+ FIX - workaround for UofO
+ UPDATE - update-archie script, add bash-colors file for easy color echoing
+ ADD - build status to README file
+ REMOVE - PHP 5.3 from tests
+ ADD test_settings.php and fix second long-tag missing from modal_add_role
+ FIX - missing long-tag
+ CHANGE - downgrade to PHP 5.4, don't test 5.5?
+ UPDATE - installation script, and bring the database.sql up to date as well as filling in the test_db.sql
+ UPDATE .gitignore and .travis.yml
+ FIX - missing services mysql check
+ FIX - Travis-CI checks
+ DB - Add settings field and start moving tables to InnoDB
+ FIX - Travis CI integration, do syntax check on files
+ UPDATE - Changelog for Field2015
  VERSION - Bump to Field2015 version
  FIX - build-changelog.sh so that it can be run from any dir
  FIX - remove debug

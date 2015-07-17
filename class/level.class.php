@@ -78,8 +78,11 @@ class Level extends database_object {
     $db_results = Dba::read($sql); 
 
     while ($row = Dba::fetch_assoc($db_results)) { 
+      $sites[$row['site']] = $row['site'];
       parent::add_to_cache('level',$row['uid'],$row); 
     }
+
+    Site::build_cache($sites);
 
     return true; 
 
@@ -122,33 +125,30 @@ class Level extends database_object {
       return false; 
     }
 
-    $site     = Dba::escape($input['site']); 
-    $unit     = Dba::escape($input['unit']); 
-    $quad     = Dba::escape($input['quad']); 
-    $lsg_unit = Dba::escape($input['lsg_unit']); 
-    $northing = Dba::escape($input['northing']); 
-    $easting  = Dba::escape($input['easting']); 
-    $catalog_id     = Dba::escape($input['catalog_id']); 
-    $elv_nw_start   = Dba::escape($input['elv_nw_start']); 
-    $elv_ne_start   = Dba::escape($input['elv_ne_start']); 
-    $elv_sw_start   = Dba::escape($input['elv_sw_start']); 
-    $elv_se_start   = Dba::escape($input['elv_se_start']); 
-    $elv_center_start = Dba::escape($input['elv_center_start']); 
-    $excavator_one  = Dba::escape($input['excavator_one']); 
-    $excavator_two  = Dba::escape($input['excavator_two']); 
-    $excavator_three = Dba::escape($input['excavator_three']); 
-    $excavator_four = Dba::escape($input['excavator_four']); 
-    $user = Dba::escape(\UI\sess::$user->uid);
-    $created = time(); 
+    $site             = $input['site']; 
+    $unit             = $input['unit']; 
+    $quad             = $input['quad']; 
+    $lsg_unit         = $input['lsg_unit']; 
+    $northing         = $input['northing']; 
+    $easting          = $input['easting']; 
+    $catalog_id       = $input['catalog_id']; 
+    $elv_nw_start     = $input['elv_nw_start']; 
+    $elv_ne_start     = $input['elv_ne_start']; 
+    $elv_sw_start     = $input['elv_sw_start']; 
+    $elv_se_start     = $input['elv_se_start']; 
+    $elv_center_start = $input['elv_center_start']; 
+    $excavator_one    = $input['excavator_one']; 
+    $excavator_two    = $input['excavator_two']; 
+    $excavator_three  = $input['excavator_three']; 
+    $excavator_four   = $input['excavator_four']; 
+    $user             = \UI\sess::$user->uid;
+    $created          = time(); 
     
     $sql = "INSERT INTO `level` (`site`,`catalog_id`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`," . 
         "`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`excavator_one`,`excavator_two`," . 
-        "`excavator_three`,`excavator_four`,`user`,`created`) VALUES ('$site','$catalog_id','$unit','$quad','$lsg_unit','$northing','$easting'," . 
-        "'$elv_nw_start','$elv_ne_start','$elv_sw_start','$elv_se_start','$elv_center_start','$excavator_one','$excavator_two', " . 
-        "'$excavator_three','$excavator_four','$user','$created')"; 
-    $db_results = Dba::write($sql); 
+        "`excavator_three`,`excavator_four`,`user`,`created`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+    $db_results = Dba::write($sql,array($site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start,$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$user,$created)); 
 
-    // If it fails we need to unlock!
     if (!$db_results) { 
       Error::add('general','Unable to insert level, DB error please contact administrator'); 
       return false;
@@ -156,10 +156,11 @@ class Level extends database_object {
 
     $insert_id = Dba::insert_id();
 
-    $log_line = "$site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start," . 
-          "$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three," . 
-          "$excavator_four," . \UI\sess::$user->username . ",\"" . date('r',$created) . "\"";
-    Event::record('LEVEL-ADD',$log_line); 
+    $log_line = json_encode(array('site'=>$site,'Catalog ID'=>$catalog_id,'Unit'=>$unit,'Quad'=>$quad,'LSG-Unit'=>$lsg_unit,'Northing'=>$northing,
+          'Easting'=>$easting,'Elv-NW-S'=>$elv_nw_start,'Elv-NE-S'=>$elv_ne_start,'Elv-SW-S'=>$elv_sw_start,'Elv-SE-S'=>$elv_se_start,
+          'Elv-Cent-S'=>$elv_center_start,'Exc-one'=>$excavator_one,'Exc-two'=>$excavator_two,'Exc-three'=>$excavator_three,'Exc-four'=>$excavator_four,
+          'User'=>\UI\sess::$user->username,'Date'=>date('r',$created)));
+    Event::record('level::create',$log_line); 
 
     return $insert_id; 
 
@@ -304,22 +305,22 @@ class Level extends database_object {
    */
   public static function validate($input) { 
 
-    if ($input['closed'] == 1 AND !Access::is_admin()) {
-      Error::add('closed','Level is closed, unable to updated'); 
+    // If closed is specified
+    if (isset($input['closed'])) {
+      if ($input['closed'] == 1 AND !Access::is_admin()) {
+        Error::add('closed','Level is closed, unable to updated'); 
+      }
     }
 
     if (!$input['catalog_id']) { 
       Error::add('level','Required field');
     }
     else {
-      // Make sure this isn't a duplicate level
-      $catalog_id = Dba::escape($input['catalog_id']);
-      $quad   = Dba::escape($input['quad']); 
-      $unit   = Dba::escape($input['unit']); 
-      $uid    = Dba::escape($input['uid']); 
-      $site   = Dba::escape($input['site']); 
-      $sql = "SELECT `level`.`uid` FROM `level` WHERE `catalog_id`='$catalog_id' AND `quad`='$quad' AND `unit`='$unit' AND `site`='$site' AND `uid`<>'$uid'";
-      $db_results = Dba::read($sql); 
+      // Make sure this isn't a duplicate level, filter on UID if passed
+      $uid_sql    = isset($input['uid']) ? "AND `uid`<>'" . Dba::escape($input['uid']) . "'" : '';
+
+      $sql = "SELECT `level`.`uid` FROM `level` WHERE `catalog_id`=? AND `quad`=? AND `unit`=? AND `site`=? $uid_sql";
+      $db_results = Dba::read($sql,array($input['catalog_id'],$input['quad'],$input['unit'],$input['site'])); 
       $row = Dba::fetch_assoc($db_results); 
       if ($row['uid']) { 
         Error::add('level','Duplicate Level for this Unit and Quad'); 
@@ -653,8 +654,15 @@ class Level extends database_object {
 
     while ($row = Dba::fetch_assoc($db_results)) { 
       $results[] = $row['uid'];
+      $users[$row['user']] = $row['user'];
+      if ($row['excavator_one']) { $users[$row['excavator_one']] = $row['excavator_one']; }
+      if ($row['excavator_two']) { $users[$row['excavator_two']] = $row['excavator_two']; }
+      if ($row['excavator_three']) { $users[$row['excavator_three']] = $row['excavator_three']; }
+      if ($row['excavator_four']) { $users[$row['excavator_four']] = $row['excavator_four']; }
       parent::add_to_cache('level',$row['uid'],$row);
     }
+
+    User::build_cache($users);
 
     return $results;
 

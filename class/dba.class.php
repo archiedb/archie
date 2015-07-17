@@ -71,8 +71,7 @@ class Dba {
 	 */
 	public static function query($sql,$params=array()) {
 
-    Event::error('SQL',$sql . " ::: " . json_encode($params));
-
+    Event::record('SQL',$sql . " ::: " . json_encode($params),'query');
     $dbh = self::dbh();
     if (!$dbh) { 
       Event::error('Database','Error no database handle found');
@@ -95,10 +94,12 @@ class Dba {
     // Check for errors
     if (!$statement) {
       Event::error('Database','DB Error: ' . json_encode($dbh->errorInfo()));
+      self::$_error = json_encode($dbh->errorInfo());
       self::disconnect();
     }
     elseif ($statement->errorCode() && $statement->errorCode() != '00000') {
       Event::error('Database','Query Error: ' . json_encode($statement->errorInfo()));
+      self::$_error = json_encode($dbh->errorInfo());
       self::finish($statement);
       self::disconnect();
       return false;
@@ -218,6 +219,34 @@ class Dba {
 
 	} // finish
 
+  /**
+   * commit
+   * Commits the current transaction
+   */
+  public static function commit() {
+
+    $dbh = self::dbh();
+
+    $retval = $dbh->commit();
+
+    return $retval;
+
+  } // commit
+
+  /**
+   * rollback
+   * Roll the transactio back
+   */
+  public static function rollback() { 
+
+      $dbh = self::dbh();
+
+      $retval = $dbh->rollBack();
+
+      return $retval;
+
+  } 
+
 	/**
 	 * affected_rows
 	 * This emulates the mysql_affected_rows function
@@ -228,6 +257,20 @@ class Dba {
     return $result;
 
 	} // affected_rows
+
+  /**
+   * begin_transaction
+   * Start a transaction
+   */
+  public static function begin_transaction() {
+
+    $dbh = self::dbh();
+   
+    $retval = $dbh->beginTransaction();
+
+    return $retval;
+
+  } //begin_transaction
 
 	/**
 	 * _connect
@@ -328,15 +371,16 @@ class Dba {
 	 * dbh
 	 * This is called by the class to return the database handle
 	 * for the specified database, if none is found it connects
+   * Reconnect - If true, reconnect regardless
 	 */
-	public static function dbh($database='') {
+	public static function dbh($database='',$reconnect=false) {
 
 		if (!$database) { $database = self::$_default_db; }
 
 		// Assign the Handle name that we are going to store
 		$handle = 'dbh_' . $database;
 
-		if (!is_object(Config::get($handle))) {
+		if (!is_object(Config::get($handle)) OR $reconnect === true) {
 			$dbh = self::_connect();
 			self::_config_dbh($dbh,$database);
 			Config::set($handle,$dbh,true);

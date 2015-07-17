@@ -14,8 +14,7 @@ switch (\UI\sess::location('action')) {
     // Attempt to create it
     $level_id = Level::create($_POST);
     if ($level_id) {
-      header('Location:' . Config::get('web_path') . '/level/view/' . scrub_out($level_id));
-      exit;
+      \UI\redirect('/level/view/' . $level_id);
     }
     else {
       require_once \UI\template('/level/new');
@@ -44,6 +43,7 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('level','edit')) { \UI\access_denied(); }
     $level = new Level($_POST['uid']);
     $_POST['user'] = \UI\sess::$user->uid;
+    $_POST['uid'] = $level->uid;
     if (!$level->update($_POST)) { 
       require_once \UI\template('/level/edit');
     }

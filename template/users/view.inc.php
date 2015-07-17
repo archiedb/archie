@@ -20,6 +20,7 @@ if (INIT_LOADED != '1') { exit; }
   <?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)
   <small><?php echo scrub_out($user->email); ?></small>
 </h4>
+<em>Currently working on <?php $user->site->_print('name'); ?></em>
 </div>
 <?php Event::display(); ?>
 <table class="table table-bordered table-hover">
