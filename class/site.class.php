@@ -13,8 +13,6 @@ class Site extends database_object {
   public $partners; // text field
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
-  public $project; // current (many on a single site) 
-  public $accession; // current (many on a single site)
   public $enabled; 
 
 	// Constructor takes a uid
@@ -31,6 +29,7 @@ class Site extends database_object {
   		} 
     }
     else { return false; }
+
     // Get the project and accession - may be cached
     if (!property_exists($this,'project')) { 
       $this->project = Site::get_data($uid,'project');
