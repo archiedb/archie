@@ -21,10 +21,9 @@ class SpatialData extends database_object {
     if (!$uid OR !is_numeric($uid)) { return true; }
 
     $row = $this->get_info($uid,'spatial_data');
-
     if (!is_array($row)) { return true; }
     foreach ($row as $key=>$value) {
-      if ($value == 0) { $value = '';}
+      if ($value === 0) { $value = '';}
       $this->$key = $value;
     }
 
@@ -161,9 +160,10 @@ class SpatialData extends database_object {
     $northing       = isset($input['northing']) ? $input['northing'] : NULL;
     $easting        = isset($input['easting']) ? $input['easting'] : NULL;
     $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
+    $note           = isset($input['note']) ? $input['note'] : NULL;
 
-    $sql = "UPDATE `spatial_data` SET `station_index`=?,`northing`=?,`easting`=?,`elevation`=? WHERE `uid`=? "; 
-    $db_results = Dba::write($sql,array($station_index,$northing,$easting,$elevation,$uid));
+    $sql = "UPDATE `spatial_data` SET `station_index`=?,`northing`=?,`easting`=?,`elevation`=?,`note`=? WHERE `uid`=? "; 
+    $db_results = Dba::write($sql,array($station_index,$northing,$easting,$elevation,$note,$uid));
 
     if (!$db_results) { 
       return false;
@@ -204,10 +204,23 @@ class SpatialData extends database_object {
       }
     }
 
+    // If station_index AND elv,est,nor are specified
     if (strlen($input['station_index']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
-      Event::error('SpatialData','Station Index' . $input['station_index'] . ' was specified in addition to easting/northing or elevation');
-      Error::add('Total Station Index','Station Index (RN) and Elevation/Northing/Easting specified, only one may be set');
-      $retval = false;
+      // If this is an "update" then there's a chance they are working with imported data
+      // If so make sure they only changed the station_index or note
+      if (isset($input['update'])) { 
+        $point = new SpatialData($input['spatialdata_id']);
+        if ($point->northing != $input['northing'] OR $point->easting != $input['easting'] OR $point->elevation != $input['elevation'] AND strlen($input['station_index'])) {
+          Error::add('Total Station Index','Cannot update cordinates if Station Index is specified');
+          $retval = false; 
+        }
+
+      } // 
+      else { 
+        Event::error('SpatialData','Station Index' . $input['station_index'] . ' was specified in addition to easting/northing or elevation');
+        Error::add('Total Station Index','Station Index (RN) and Elevation/Northing/Easting specified, only one may be set');
+        $retval = false;
+      }
     }
 
     if (strlen($input['station_index'])) {

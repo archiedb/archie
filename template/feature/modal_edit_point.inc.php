@@ -43,6 +43,7 @@ if (INIT_LOADED != '1') { exit; }
   <div class="modal-footer">
     <button type="submit" class="btn btn-success">Update Point</a>
     <input type="hidden" name="spatialdata_id" value="<?php $spatialdata->_print('uid'); ?>">
+    <input type="hidden" name="feature_id" value="<?php $feature->_print('uid'); ?>">
     <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
     <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
   </div>
