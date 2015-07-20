@@ -42,6 +42,9 @@ class Site extends database_object {
       $recache = true;
     }
 
+    // Decode settings
+    $recache = $this->decode_settings() ? true : $recache;
+
     if ($recache === true) {
       parent::add_to_cache('site',$row['uid'],$row);
     }
@@ -74,6 +77,19 @@ class Site extends database_object {
     return true; 
 
   } //build_cache
+
+  /**
+   * decode_settings
+   * This takes the ->settings field from the DB
+   * runs a json_decode() and does what it needs to
+   */
+  public function decode_settings() { 
+
+    $settings = json_decode($this->settings); 
+
+    print_r($settings);
+
+  } // decode_settings
 
   /**
    * get_from_name
