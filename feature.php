@@ -48,6 +48,7 @@ switch (\UI\sess::location('action')) {
     $feature = new Feature($_POST['feature_id']);
     $feature->update_point($_POST);
     \UI\redirect('/feature/view/' . $feature->uid);
+  break;
   case 'view':
     if (!Access::has('feature','read')) { \UI\access_denied(); }
     $feature = new Feature(\UI\sess::location('2'));

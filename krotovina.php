@@ -43,6 +43,12 @@ switch (\UI\sess::location('action')) {
     header('Location:'  . Config::get('web_path') . '/krotovina/view/' . $krotovina->uid);
     exit;
   break;
+  case 'updatepoint':
+    if (!Access::has('feature','edit')) { \UI\access_denied(); }
+    $krotovina = new Krotovina($_POST['krotovina_id']);
+    $krotovina->update_point($_POST);
+    \UI\redirect('/krotovina/view/' . $krotovina->uid);
+  break;
   case 'view':
     if (!Access::has('krotovina','read')) { \UI\access_denied(); }
     $krotovina = new Krotovina(\UI\sess::location('2'));

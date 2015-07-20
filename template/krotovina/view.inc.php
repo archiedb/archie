@@ -42,8 +42,10 @@ foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']);
   <td><?php echo scrub_out($spatialdata->elevation); ?></td>
   <td><?php echo scrub_out($spatialdata->note); ?></td>
   <td>
-    <a href="#confirmdel_<?php echo scrub_out($spatialdata->uid); ?>" class="btn btn-danger" role="button" data-toggle="modal">Remove</a>
+    <a href="#editspatial<?php $spatialdata->_print('uid'); ?>" class="btn btn-success" role="button" data-toggle="modal">Edit</a>
+    <a href="#confirmdel_<?php $spatialdata->_print('uid'); ?>" class="btn btn-danger" role="button" data-toggle="modal">Remove</a>
     <?php include \UI\template('/krotovina/modal_confirmdel_point'); ?>
+    <?php include \UI\template('/krotovina/modal_edit_point'); ?>
   </td>
 </tr>
 <?php } ?>
