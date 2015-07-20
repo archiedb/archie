@@ -63,7 +63,7 @@ if (INIT_LOADED != '1') { exit; }
 <body>
 <div class="container theme-showcase" role="main">
 <div class="jumbotron">
-  <h1>Archie Installer</h2>
+  <h1>Archie Installer</h1>
   <p>
     <strong>Step 2: Installation</strong><br />
     This step installs the database and creates the config file. You will need a username and password with full
