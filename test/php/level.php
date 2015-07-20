@@ -30,7 +30,7 @@ class LevelClassTests extends \Enhance\TestFixture {
       $level = new Level($results);
       if ($level->uid) { $retval = true; }
     }
-    \Enhance\Assert::isTrue($results); 
+    \Enhance\Assert::isTrue($retval); 
 
   }
 
@@ -66,14 +66,14 @@ class LevelClassTests extends \Enhance\TestFixture {
     $input['unit'] = 'A';
     $input['level'] = '2';
     $input['quad'] = '1';
-    $input['lsg_unit'] = '2';
+    $input['lsg_unit'] = '3';
     $input['catalog_id'] = '1';
     $input['northing'] = '111.111';
     $input['easting'] = '111.111';
     $input['excavator_one'] = '1';
-    $input['excavator_two'] = '2';
-    $input['excavator_three'] = '3';
-    $input['excavator_four'] = '4';
+    $input['excavator_two'] =  NULL;
+    $input['excavator_three'] = NULL;
+    $input['excavator_four'] =  NULL;
     $input['elv_nw_start'] = '111.111';
     $input['elv_nw_finish'] = '111.110';
     $input['elv_ne_start'] = '111.111';
@@ -85,7 +85,6 @@ class LevelClassTests extends \Enhance\TestFixture {
     $input['elv_center_start'] = '111.111';
     $input['elv_center_finish'] = '111.110';
     $input['user'] = '1';
-    $input['uid'] = '1';
 
     return $input;
 
