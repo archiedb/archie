@@ -34,11 +34,11 @@ $spatialdata = SpatialData::get_record_data($feature->uid,'feature');
 foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']); 
 ?>
 <tr>
-  <td><?php echo scrub_out($spatialdata->station_index); ?></td>
-  <td><?php echo scrub_out($spatialdata->northing); ?></td>
-  <td><?php echo scrub_out($spatialdata->easting); ?></td>
-  <td><?php echo scrub_out($spatialdata->elevation); ?></td>
-  <td><?php echo scrub_out($spatialdata->note); ?></td>
+  <td><?php $spatialdata->_print('station_index'); ?></td>
+  <td><?php $spatialdata->_print('northing'); ?></td>
+  <td><?php $spatialdata->_print('easting'); ?></td>
+  <td><?php $spatialdata->_print('elevation'); ?></td>
+  <td><?php $spatialdata->_print('note'); ?></td>
   <td>
     <?php if (Access::has('feature','edit')) { ?>
     <a href="#editspatial<?php $spatialdata->_print('uid'); ?>" class="btn btn-success" role="button" data-toggle="modal">Edit</a>

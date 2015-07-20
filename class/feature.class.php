@@ -318,7 +318,10 @@ class Feature extends database_object {
     $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
     $note           = isset($input['note']) ? $input['note'] : NULL;
 
-    $retval = SpatialData::update(array(
+    $point = new SpatialData($input['spatialdata_id']);
+
+    $retval = $point->update(array(
+      'spatialdata_id'=>$input['spatialdata_id'],
       'record'=>$this->uid,
       'type'=>'feature',
       'station_index'=>$station_index,

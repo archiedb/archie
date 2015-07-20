@@ -96,6 +96,8 @@ class Error {
 	
 		Error::$error_count++; 
 
+    if (defined('UNIT_TEST') AND $name == 'general') { return false; }
+
     if (defined('CLI')) {
       echo "\t$name => $message\n";
     }

@@ -28,8 +28,8 @@ class RecordClassTests extends \Enhance\TestFixture {
   public function Record_invalidQuanity()    { $this->runFalseCreate('quanity'); } // invalid quanity
 
   /* Test Valid Record Creation */
-  public function validCreate() {
-    
+  public function Record_validCreate() {
+
     $retval = false; 
     $input = $this->fillInput(); 
     $results = Record::create($input);
