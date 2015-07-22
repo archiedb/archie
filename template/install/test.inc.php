@@ -120,6 +120,7 @@ if (INIT_LOADED != '1') { exit; }
   </table>
 
   <a href="install.php?action=database" class="btn btn-primary" role="button">Step 2 :: Database Install</a>
+  <a href="install.php" class="btn btn-danger" role="button">Recheck</a>
 
 </div> <!-- /container -->
 </body>
