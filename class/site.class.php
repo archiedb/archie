@@ -85,9 +85,21 @@ class Site extends database_object {
    */
   public function decode_settings() { 
 
-    $settings = json_decode($this->settings); 
+    $settings = json_decode($this->settings,true); 
 
-    print_r($settings);
+    // Check for some defaults, load from dist file if none set
+    if (!isset($settings['units'])) { 
+      $settings['units'] = fgetcsv(fopen(Config::get('prefix') . '/config/units.csv.dist','r'));
+    }
+    if (!isset($settings['quads'])) {
+      $settings['quads'] = fgetcsv(fopen(Config::get('prefix') . '/config/quads.csv.dist','r'));
+    }
+    if (!isset($settings['ticket'])) { 
+      $settings['ticket'] = Config::get('ticket_size');
+    }
+
+    // Set
+    $this->settings = $settings; 
 
   } // decode_settings
 

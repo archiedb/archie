@@ -55,8 +55,28 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
   <td>
     <?php echo scrub_out($site->easting); ?>
   </td>
-  <td colspan="2"></td>
+  <th>Enabled</th>
+  <td><?php echo \UI\boolean_word($site->enabled); ?>
 </tr>
+</table>
+<h4>Site Settings</h4>
+<table class="table table-hover table-striped">
+<tbody>
+<tr>
+  <th>Setting</th>
+  <th>Value</th>
+  <th>&nbsp;</th>
+</tr>
+<?php foreach ($site->settings as $key=>$value) { ?>
+<tr>
+  <td><?php echo scrub_out(ucfirst($key)); ?></td>
+  <td><?php \UI\print_var($value); ?></td>
+  <td><a href="#editsetting<?php echo scrub_out($key); ?>" role="button" data-toggle="modal" class="btn">Edit</a>
+    <?php include \UI\template('/site/modal_edit_setting'); ?>
+  </td>
+</tr>
+<?php } ?>
+</tbody>
 </table>
 <?php $accessions = $site->get_all_data('accession'); ?>
 <?php array_shift($accessions); ?>

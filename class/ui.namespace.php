@@ -163,6 +163,27 @@ function boolean_word($boolean,$string='') {
 } // boolean_word
 
 /**
+ * print_var
+ * Takes a PHP var/array/whatever and prints it out in a way we want
+ */
+function print_var($input) { 
+  
+  $output = NULL;
+
+  if (is_array($input)) { 
+    foreach ($input as $value) { 
+      $output .= $value . ',';
+    }
+    $output = trim($output,',');
+  }
+  else { 
+    $output = $input;
+  }
+  echo $output; 
+
+} // print_var
+
+/**
  * template
  * Returns the full filename for the template
  * uses sess::location() to figure it out
