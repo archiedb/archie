@@ -39,7 +39,7 @@ switch ($_POST['action']) {
 		require_once Config::get('prefix') . '/template/database_upgrade.inc.php';
 	break;
 	default: 
-		// Nothin
+    require_once \UI\template('/database_upgrade');
 	break; 
 } // action
 ?>
