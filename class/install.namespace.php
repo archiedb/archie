@@ -33,7 +33,7 @@ function run($info) {
     return false; 
   }
 
-  $retval = htaccess_enabled();
+  $retval = htaccess_enable();
 
   if (!$retval) {
     delete_htaccess();
@@ -193,6 +193,11 @@ function initial_user($input) {
   // We can be sure it's 1 because there is only 1.. to rule them all
   $retval = \UI\sess::$user->add_group('1');
 
+  if (!$retval) { 
+    \Error::add('general','Unable to add initial Admin account to Admin group');
+    return false;
+  }
+
   return $retval;
 
 } // initial_user
@@ -205,12 +210,6 @@ function htaccess_enable() {
 
   $data = file_get_contents(\Config::get('prefix') . '/htaccess.dist');
   $retval = file_put_contents(\Config::get('prefix') . '/.htaccess',$data);
-
-  $data = file_get_contents(\Config::get('prefix') . '/config/units.csv.dist');
-  $retval = file_put_contents(\Config::get('prefix') . '/config/units.csv',$data);
-
-  $data = file_get_contents(\Config::get('prefix') . '/config/quads.csv.dist');
-  $retval = file_put_contents(\Config::get('prefix') . '/config/quads.csv',$data);
 
   if (!$retval) { 
     \Error::add('general','Permission Denied installing .htaccess file');
