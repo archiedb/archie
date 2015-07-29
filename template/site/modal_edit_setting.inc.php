@@ -3,7 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <div id="editsetting<?php echo scrub_out($key); ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <form method="post" action="<?php echo Config::get('web_path'); ?>/site/updatesettings">
+  <form method="post" action="<?php echo Config::get('web_path'); ?>/manage/site/updatesettings">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel">Edit <?php $site->_print('name'); ?> Settings</h3>
@@ -12,7 +12,15 @@ if (INIT_LOADED != '1') { exit; }
     <div class="control-group span4">
       <label class="control-label" for="inputKey"><?php echo ucfirst($key); ?></label>
       <div class="controls">
+    <?php // Adjust based on what setting 
+      if ($key == 'ticket') { ?>
+        <select id="inputKey" name="<?php echo $key; ?>">
+          <option value="88x25mm">88x25mm Label</option>
+          <option value="57x32mm">57x32mm Label</option>
+        </select>
+    <?php } else { ?>
         <textarea id="inputKey" name="<?php echo $key; ?>"><?php echo \UI\print_var($value); ?></textarea>
+    <?php } ?>
       </div>
     </div>
   </div>

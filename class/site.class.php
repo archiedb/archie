@@ -104,6 +104,44 @@ class Site extends database_object {
   } // decode_settings
 
   /**
+   * update_settings
+   * json_encode() and update db
+   */
+  public function update_settings($input) { 
+
+    // Validate settings
+    if (!$this->validate_settings($input)) {
+      Error::add('general','Invalid Settings specified');
+      return false;
+    }
+
+  } // update_settings
+
+  /**
+   * validate_settings
+   * validate the settings
+   */
+  public function validate_settings($input) { 
+
+    switch ($input['key']) {
+      case 'ticket':
+        // only allow valid tickets
+
+      break;
+      case 'units':
+        // Must be a csv, and only A-Z,0-9,_,-? 
+
+      break;
+      case 'quads':
+        // Must be a csv, and only A-Z,0-9,_,-?
+      break;
+    }
+
+    return false;
+
+  } // validate_settings
+
+  /**
    * get_from_name
    * Take a sitename and return the object
    */

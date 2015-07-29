@@ -26,6 +26,7 @@ function return_url($input) {
                     '/users/view',
                     '/level/edit/',
                     '/level/view/',
+                    '/manage/site/view',
                     '/krotovina/edit/',
                     '/krotovina/view/',
                    '/users/manage/disabled',
