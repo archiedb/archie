@@ -13,13 +13,16 @@ if (INIT_LOADED != '1') { exit; }
       <label class="control-label" for="inputKey"><?php echo ucfirst($key); ?></label>
       <div class="controls">
     <?php // Adjust based on what setting 
-      if ($key == 'ticket') { ?>
+      if ($key == 'ticket') { 
+        $name = 'selected_' . $site->$key;
+        ${$name} = ' selected="selected"';
+      ?>
         <select id="inputKey" name="<?php echo $key; ?>">
-          <option value="88x25mm">88x25mm Label</option>
-          <option value="57x32mm">57x32mm Label</option>
+          <option value="88x25mm"<?php echo $selected_88x25mm; ?>>88x25mm Label</option>
+          <option value="57x32mm"<?php echo $selected_57x32mm; ?>>57x32mm Label</option>
         </select>
     <?php } else { ?>
-        <textarea id="inputKey" name="<?php echo $key; ?>"><?php echo \UI\print_var($value); ?></textarea>
+        <textarea id="inputKey" name="<?php echo $key; ?>"><?php echo \UI\print_var($site->$key); ?></textarea>
     <?php } ?>
       </div>
     </div>
@@ -27,7 +30,7 @@ if (INIT_LOADED != '1') { exit; }
   <div class="modal-footer">
     <button type="submit" class="btn btn-success">Update <?php echo ucfirst($key); ?></a>
     <input type="hidden" name="site_id" value="<?php $site->_print('uid'); ?>">
-    <input type="hidden" name="key" value="<?php scrub_out($key); ?>">
+    <input type="hidden" name="key" value="<?php echo scrub_out($key); ?>">
     <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
     <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
   </div>

@@ -447,7 +447,7 @@ class content extends database_object {
 	 */
 	private static function write_ticket(&$record,$filename,$update_record) {
 
-    $type = Config::get('ticket_size');
+    $type = \UI\sess::$user->site->ticket;
 
     //FIXME: BROKEN BROKEN BROKEN
     Genpdf::{"ticket_$type"}($record,$filename);

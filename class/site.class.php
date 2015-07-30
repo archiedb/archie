@@ -13,6 +13,9 @@ class Site extends database_object {
   public $partners; // text field
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
+  public $units; // from Settings
+  public $quads; // from Settings
+  public $ticket; // from Settings
   public $enabled; 
 
 	// Constructor takes a uid
@@ -99,7 +102,11 @@ class Site extends database_object {
     }
 
     // Set
-    $this->settings = $settings; 
+    $this->quads = $settings['quads'];
+    $this->units = $settings['units'];
+    $this->ticket = $settings['ticket'];
+
+    return true; 
 
   } // decode_settings
 
@@ -115,6 +122,17 @@ class Site extends database_object {
       return false;
     }
 
+    // Setup the new array
+    $settings = array();
+    $settings['quads'] = isset($input['quads']) ? explode(',',$input['quads']) : $this->quads; 
+    $settings['units'] = isset($input['units']) ? explode(',',$input['units']) : $this->units; 
+    $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->ticket; 
+
+    $sql = "UPDATE `site` SET `settings`=? WHERE `uid`=?";
+    $db_results = Dba::write($sql,array(json_encode($settings),$this->uid));
+
+    return true;
+
   } // update_settings
 
   /**
@@ -126,14 +144,38 @@ class Site extends database_object {
     switch ($input['key']) {
       case 'ticket':
         // only allow valid tickets
-
+        $tickets = get_class_methods('genpdf');
+        $method_name = 'ticket_' . $input['ticket'];
+        if (in_array($method_name,$tickets)) { return true; }
+        else { return false; }
       break;
       case 'units':
+        $invalid_units = '';
+        $retval = true;
         // Must be a csv, and only A-Z,0-9,_,-? 
-
+        $units = explode(',',$input['units']);
+        foreach ($units as $unit) {
+          if (preg_match('/[^a-z_\-0-9]/i',$unit)) {
+            $invalid_units .= $unit . ' :: ';
+            $retval = false;
+          }
+        }
+        if (!$retval) { Error::add('units','Invalid Units, only A-Z,0-9,_,- allowed, Invalid Unit(s) - ' . $invalid_units); }
+        return $retval; 
       break;
       case 'quads':
         // Must be a csv, and only A-Z,0-9,_,-?
+        $invalid_quads = '';
+        $retval = true;
+        $quads = explode(',',$input['quads']);
+        foreach ($quads as $quad) {
+          if (preg_match('/[^a-z_\-0-9]/i',$quad)) {
+            $retval = false;
+            $invalid_quads = $quad . ' :: ';
+          }
+        } 
+        if (!$retval) { Error::add('quads','Invalid Quads, only A-Z,0-9,_,- allowed, Invalid Quad(s) - '. $invalid_quads); }
+        return $retval;
       break;
     }
 

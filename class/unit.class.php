@@ -48,9 +48,14 @@ class unit {
   public static function _auto_init() {
 
     // Read in the units.csv
-    $fhandle = fopen(Config::get('prefix') . '/config/units.csv','r');
-    $units = fgetcsv($fhandle);
-    self::$values = $units;
+    if (isset(\UI\sess::$user)) {
+      self::$values = \UI\sess::$user->site->units;
+    }
+    else { 
+      $fhandle = fopen(Config::get('prefix') . '/config/units.csv.dist','r');
+      $units = fgetcsv($fhandle);
+      self::$values = $units;
+    }
 
   } // _auto_init
 

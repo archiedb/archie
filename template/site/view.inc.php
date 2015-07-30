@@ -67,10 +67,10 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
   <th>Value</th>
   <th>&nbsp;</th>
 </tr>
-<?php foreach ($site->settings as $key=>$value) { ?>
+<?php foreach (array('units','quads','ticket') as $key) { ?>
 <tr>
   <td><?php echo scrub_out(ucfirst($key)); ?></td>
-  <td><?php \UI\print_var($value); ?></td>
+  <td><?php \UI\print_var($site->$key); ?></td>
   <td><a href="#editsetting<?php echo scrub_out($key); ?>" role="button" data-toggle="modal" class="btn">Edit</a>
     <?php include \UI\template('/site/modal_edit_setting'); ?>
   </td>
