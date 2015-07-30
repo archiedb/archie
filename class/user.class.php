@@ -90,8 +90,8 @@ class User extends database_object {
 
     $site = strlen($site) ? $site : \UI\sess::$user->site->uid;
 
-    $sql = "SELECT * FROM `user_permission_view` WHERE `user`=? AND (`site`=? OR `site`='0')";
-    $db_results = Dba::read($sql,array($uid,$site));
+    $sql = "SELECT * FROM `user_permission_view` WHERE (`user`=? AND (`site`=? OR `site`='0')) OR (`user`=? AND `role`='admin' AND `action`='admin')";
+    $db_results = Dba::read($sql,array($uid,$site,$uid));
 
     $results = array();
 
