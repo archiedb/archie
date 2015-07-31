@@ -138,9 +138,9 @@ class Level extends database_object {
     $elv_se_start     = $input['elv_se_start']; 
     $elv_center_start = $input['elv_center_start']; 
     $excavator_one    = $input['excavator_one']; 
-    $excavator_two    = $input['excavator_two'];
-    $excavator_three  = $input['excavator_three'];
-    $excavator_four   = $input['excavator_four'];
+    $excavator_two    = strlen($input['excavator_two']) > 0 ? $input['excavator_two'] : NULL;
+    $excavator_three  = strlen($input['excavator_three']) > 0 ? $input['excavator_three'] : NULL;
+    $excavator_four   = strlen($input['excavator_four']) > 0 ? $input['excavator_four'] : NULL;
     $user             = \UI\sess::$user->uid;
     $created          = time(); 
     

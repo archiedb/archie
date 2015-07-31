@@ -1546,6 +1546,9 @@ class Database {
     $sql = "ALTER TABLE `level` CHANGE `elv_ne_finish` `elv_ne_finish` DECIMAL(8,3) NULL";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `level` CHANGE `elv_sw_finish` `elv_sw_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     return $retval;
 
   } //update_0019
