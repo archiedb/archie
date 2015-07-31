@@ -147,8 +147,8 @@ class Level extends database_object {
     //FIXME: Allow updated to be null in the future
     $sql = "INSERT INTO `level` (`site`,`catalog_id`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`," . 
         "`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`excavator_one`,`excavator_two`," . 
-        "`excavator_three`,`excavator_four`,`user`,`created`,`updated`,`image`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
-    $db_results = Dba::write($sql,array($site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start,$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$user,$created,0,0)); 
+        "`excavator_three`,`excavator_four`,`user`,`created`,`updated`,`image`,`elv_nw_finish`,`elv_ne_finish`,`elv_sw_finish`,`elv_se_finish`,`elv_center_finish`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+    $db_results = Dba::write($sql,array($site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start,$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$user,$created,0,0,0,0,0,0,0)); 
 
     if (!$db_results) { 
       Error::add('general','Unable to insert level, DB error please contact administrator'); 
