@@ -291,7 +291,17 @@ function check_mysql_db() {
  */
 function check_imagemagick() {
 
-    return is_executable('/usr/bin/convert');
+    $retval = false;
+
+    $convert_paths = array('/usr/bin/convert','/opt/local/bin/convert');
+    foreach ($convert_paths as $path) { 
+      if (is_executable($path)) {
+        $retval = true;
+        break 1;
+      }
+    }
+
+    return $retval;
 
 } // check_imagemagick
 
