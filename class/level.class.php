@@ -138,16 +138,17 @@ class Level extends database_object {
     $elv_se_start     = $input['elv_se_start']; 
     $elv_center_start = $input['elv_center_start']; 
     $excavator_one    = $input['excavator_one']; 
-    $excavator_two    = $input['excavator_two']; 
-    $excavator_three  = $input['excavator_three']; 
-    $excavator_four   = $input['excavator_four']; 
+    $excavator_two    = isset($input['excavator_two']) ? $input['excavator_two'] : NULL;
+    $excavator_three  = isset($input['excavator_three']) ? $input['excavator_three'] : NULL;
+    $excavator_four   = isset($input['excavator_four']) ? $input['excavator_four'] : NULL;
     $user             = \UI\sess::$user->uid;
     $created          = time(); 
     
+    //FIXME: Allow updated to be null in the future
     $sql = "INSERT INTO `level` (`site`,`catalog_id`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`," . 
         "`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`excavator_one`,`excavator_two`," . 
-        "`excavator_three`,`excavator_four`,`user`,`created`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
-    $db_results = Dba::write($sql,array($site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start,$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$user,$created)); 
+        "`excavator_three`,`excavator_four`,`user`,`created`,`updated`,`image`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+    $db_results = Dba::write($sql,array($site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start,$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$user,$created,0,0)); 
 
     if (!$db_results) { 
       Error::add('general','Unable to insert level, DB error please contact administrator'); 

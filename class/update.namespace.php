@@ -1519,10 +1519,30 @@ class Database {
     $sql = "ALTER TABLE `krotovina` ADD CONSTRAINT fk_krotovina_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
     $retval = \Dba::write($sql) ? $retval : false;
 
-
     return $retval;
 
   } // update_0018
+
+  /**
+   * update_0019
+   * Allow level.updated to be null
+   */
+  public static function update_0019() {
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `level` CHANGE `updated` `updated` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `created` `created` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `image` `image` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } //update_0019
 
 } // \Update\Database class
 
