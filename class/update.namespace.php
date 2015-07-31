@@ -1540,6 +1540,12 @@ class Database {
     $sql = "ALTER TABLE `level` CHANGE `image` `image` INT( 11 ) UNSIGNED NULL";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `level` CHANGE `elv_nw_finish` `elv_nw_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_ne_finish` `elv_ne_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     return $retval;
 
   } //update_0019
