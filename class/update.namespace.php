@@ -1612,6 +1612,9 @@ class Database {
     $sql = "ALTER TABLE `site` CHANGE `excavation_end` `excavation_end` INT( 11 ) UNSIGNED NULL";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    $sql = "ALTER TABLE `site` CHANGE `excavation_start` `excavation_start` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     // Fix temp_data
 
     $sql = "ALTER TABLE `temp_data` CHANGE `objects` `objects` LONGTEXT NULL";

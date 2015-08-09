@@ -293,18 +293,18 @@ class Site extends database_object {
       return false; 
     }
 
-    $name = Dba::escape($input['name']);
-    $desc = Dba::escape($input['description']);
-    $exc_start = Dba::escape($input['excavation_start']);
-    $exc_end = Dba::escape($input['excavation_end']);
+    $name       = Dba::escape($input['name']);
+    $desc       = Dba::escape($input['description']);
+    $exc_start  = strlen($input['excavation_start']) ? $input['excavation_start'] : NULL;
+    $exc_end    = strlen($input['excavation_end']) ? $input['excavation_end'] : NULL;
     $pi = Dba::escape($input['pi']);
     $elevation = Dba::escape($input['elevation']);
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
     $partners = Dba::escape($input['partners']);
     $sql = "INSERT INTO `site` (`name`,`description`,`principal_investigator`,`excavation_start`,`excavation_end`,`partners`,`northing`,`easting`,`elevation`,`enabled`) " . 
-      "VALUES ('$name','$desc','$pi','$exc_start','$exc_end','$partners','$northing','$easting','$elevation','1')";
-    $results = Dba::write($sql); 
+      "VALUES ('$name','$desc','$pi',?,?,'$partners','$northing','$easting','$elevation','1')";
+    $results = Dba::write($sql,array($exc_start,$exc_end)); 
 
     $insert_id = Dba::insert_id();
 
@@ -381,6 +381,7 @@ class Site extends database_object {
     if (!Field::notempty($input['pi'])) {
       Error::add('pi','Required Field');
     } 
+
 
     // Make sure if start and end are set that end is after start
     $start = strtotime($input['excavation_start']);
