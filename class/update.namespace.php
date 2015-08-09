@@ -357,6 +357,8 @@ class Database {
                     '- Switch to Innodb Tables.<br />' . 
                     '- Add FK site+level constraints to record,feature,krotovina.<br />';
     $versions[] = array('version'=>'0018','description'=>$update_string);
+    $update_string = '- Fix NULL and default values.<br />';
+    $versions[] = array('version'=>'0019','description'=>$update_string);
 
 
 
@@ -1559,13 +1561,55 @@ class Database {
 
     // Fix krot nulls
 
-    $sql = "ALTER TABLE `krotovina` CHANGE `updated` `updated` INT( 11 ) UNSIGNED NULL";
+    $sql = "ALTER TABLE `krotovina` CHANGE `updated` `updated` INT( 11 ) UNSIGNED NULL DEFAULT NULL";
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `krotovina` CHANGE `created` `created` INT( 11 ) UNSIGNED NOT NULL";
     $retval = \Dba::write($sql) ? $retval : false;
     
     $sql = "ALTER TABLE `krotovina` CHANGE `site` `site` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` DROP `closed`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` DROP `closed_date`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` DROP `closed_user`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Fix Feature nulls
+
+    $sql = "ALTER TABLE `feature` CHANGE `updated` `updated` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` CHANGE `site` `site` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` DROP `closed`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` DROP `closed_date`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` DROP `closed_user`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Fix Record 
+
+    $sql = "ALTER TABLE `record` CHANGE `site` `site` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `quanity` `quanity` INT( 11 ) UNSIGNED NOT NULL DEFAULT '1'";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `updated` `updated` INT ( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    // Fix site
+
+    $sql = "ALTER TABLE `site` CHANGE `excavation_end` `excavation_end` INT( 11 ) UNSIGNED NULL";
     $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval;
