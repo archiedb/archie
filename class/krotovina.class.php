@@ -114,7 +114,7 @@ class Krotovina extends database_object {
     // Force the site to the current users site
     $input['site'] = \UI\sess::$user->site->uid;
 
-    if (!Feature::validate($input)) {
+    if (!Krotovina::validate($input)) {
       Error::add('general','Invalid Field Values - please check input');
       return false;
     }
