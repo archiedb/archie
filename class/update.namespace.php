@@ -1617,6 +1617,11 @@ class Database {
     $sql = "ALTER TABLE `temp_data` CHANGE `objects` `objects` LONGTEXT NULL";
     $retval = \Dba::write($sql) ? $retval : false;
 
+    // Fix media
+
+    $sql = "ALTER TABLE `media` DROP `record_type`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
     return $retval;
 
   } //update_0019

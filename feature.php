@@ -35,7 +35,7 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('feature','edit')) { \UI\access_denied(); }
     $feature = new Feature($_POST['feature_id']);
     $feature->del_point($_POST['uid']);
-    \UI\redirect('/feature/view' . $feature->uid);
+    \UI\redirect('/feature/view/' . $feature->uid);
   break;
   case 'addpoint':
     if (!Access::has('feature','edit')) { \UI\access_denied(); }

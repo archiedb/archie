@@ -175,8 +175,9 @@ class Record extends database_object {
 
     // We need the real UID of the following objects
     $level = new Level($input['level']);
-    $feature_uid  = isset($input['feature']) ? Feature::get_uid_from_record($input['feature']) : null;
-    $krotovina_uid = isset($input['krotovina']) ? Krotovina::get_uid_from_record($input['krotovina']) : null;
+
+    $feature_uid  = strlen($input['feature']) ? Feature::get_uid_from_record($input['feature']) : null;
+    $krotovina_uid = strlen($input['krotovina']) ? Krotovina::get_uid_from_record($input['krotovina']) : null;
 
 		// Normalize the input, set unset variables to NULL
     $site               = \UI\sess::$user->site->uid;

@@ -427,8 +427,8 @@ class content extends database_object {
 		$type = 'qrcode';
 
 		if (!$update_record) {
-			$sql = "INSERT INTO `media` (`filename`,`type`,`record`) VALUES ('$filename','$type','$uid')"; 
-			$db_results = Dba::write($sql); 
+			$sql = "INSERT INTO `media` (`filename`,`type`,`record`,`user`) VALUES ('$filename','$type','$uid',?)"; 
+			$db_results = Dba::write($sql,array(\UI\sess::$user->uid)); 
 
 			if (!$db_results) { 
 				Event::error('Database','Unknown Database Error inserting QRCode'); 
@@ -450,14 +450,15 @@ class content extends database_object {
     $type = \UI\sess::$user->site->ticket;
 
     //FIXME: BROKEN BROKEN BROKEN
-    Genpdf::{"ticket_$type"}($record,$filename);
+    $pdf = new Genpdf($type);
+    $pdf->{"ticket_$type"}($record,$filename);
 
 		if (!$update_record) { 
 			$filename = ltrim($filename,Config::get('data_root')); 
 			$uid = $record->uid; 
 
-			$sql = "INSERT INTO `media` (`filename`,`type`,`record`) VALUES (?,?,?)";
-			$db_results = Dba::write($sql,array($filename,'ticket',$uid)); 
+			$sql = "INSERT INTO `media` (`filename`,`type`,`record`,`user`) VALUES (?,?,?,?)";
+			$db_results = Dba::write($sql,array($filename,'ticket',$uid,\UI\sess::$user->uid)); 
 
 			if (!$db_results) { 
 				Event::error('Database','Unknown Database error inserting ticket'); 
