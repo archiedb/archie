@@ -146,9 +146,8 @@ class Krotovina extends database_object {
     //FIXME: Change to NULL once DB change is in place update_0019()
     // Now it's safe to insert it
     $created = time();
-    $sql = "INSERT INTO `krotovina` (`site`,`catalog_id`,`description`,`keywords`,`user`,`created`) " . 
-      "VALUES (?,?,?,?,?,?)";
-    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$input['description'],$input['keywords'],\UI\sess::$user->uid,$created);
+    $sql = "INSERT INTO `krotovina` (`site`,`catalog_id`,`description`,`keywords`,`user`,`created`) VALUES (?,?,?,?,?,?)";
+    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$input['description'],$input['keywords'],\UI\sess::$user->uid,$created));
 
     if (!$db_results) { 
       Error:add('general','Unknown Error - inserting krotovina into database');

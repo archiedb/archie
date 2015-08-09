@@ -22,8 +22,8 @@ class View {
 
     // Our session
     $sid = Dba::escape(session_id()); 
-
-    if (is_null($uid) AND !isset($_SESSION['view_uid'])) { 
+    
+    if (is_null($uid) AND !($_SESSION['view_uid'])) { 
       $this->reset(); 
       $data = Dba::escape(serialize($this->_state)); 
       
@@ -172,6 +172,9 @@ class View {
       return false; 
     } 
 
+    if (!isset($this->_state['sort'])) { $this->_state['sort'] = array(); }
+    if (!isset($this->_state['sort'][$sort])) { $this->_state['sort'][$sort] = array(); }
+
     if ($order) { 
       $order = ($order == 'DESC') ? 'DESC' : 'ASC'; 
       $this->_state['sort'] = array(); 
@@ -244,7 +247,9 @@ class View {
    */
   public function set_base_sql($force = false) { 
 
-    if (strlen($this->_state['base']) && !$force) { return true; } 
+    if (isset($this->_state['base'])) {
+      if (strlen($this->_state['base']) && !$force) { return true; } 
+    }
 
     // Set our base SQL statement and select based on the type
     switch ($this->_state['type']) {
@@ -370,6 +375,10 @@ class View {
    */
   public function get_filter_sql() { 
 
+  
+    if (!isset($this->_state['filter'])) {
+      return '';
+    }
     if (!is_array($this->_state['filter'])) { 
       return ''; 
     } 
