@@ -13,10 +13,10 @@ if (INIT_LOADED != '1') { exit; }
     <textarea placeholder="..." rows="4" cols="80" name="description" tabindex="1"><?php echo scrub_out($_POST['description']); ?></textarea>
   </div>
 </div>
-<div class="control-group span4 offset1<?php Error::display_class('initial_rn'); ?>">
-  <label class="control-label" for="inputInitialRN">Initial RN</label>
+<div class="control-group span4 offset1<?php Error::display_class('station_index'); ?>">
+  <label class="control-label" for="inputInitialRN">Station Index (RN)</label>
   <div class="controls">
-    <input id="inputInitialRN" name="initial_rn" type="text" value="<?php echo scrub_out($_POST['initial_rn']); ?>" tabindex="3" />
+    <input id="inputInitialRN" name="station_index" type="text" value="<?php echo scrub_out($_POST['station_index']); ?>" tabindex="3" />
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('northing'); ?>">

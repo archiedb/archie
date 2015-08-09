@@ -119,80 +119,65 @@ class Krotovina extends database_object {
       return false;
     }
 
-    // Record (id for bag) is generated here, lock tables time!
-    $db_results = false;
-    $times = 0;
-    $lock_sql = "LOCK TABLES `krotovina` WRITE";
-    $unlock_sql = "UNLOCK TABLES";
-
-    // Only wait 3 seconds for this, shouldn't take that long
-    while (!$db_results && $times < 3) { 
-      // If we make it this far we're good to go
-      $db_results = Dba::write($lock_sql);
-
-      if (!$db_results) { sleep(1); $times++; }
-
-    } // end while
-
-    // If we didn't get the lock, bail
-    if (!$db_results) {
-      Error::add('general','Database Read Failure, please resubmit');
-      return false;
+    // Start the transaction
+    if (!Dba::begin_transaction()) { 
+      Error::add('general','Unable to tart DB Transaction, please try again');
+      return false; 
     }
 
+    // Check for existing krotovina
     if (!isset($input['catalog_id'])) {
-      $site = Dba::escape($input['site']);
-      $catalog_sql = "SELECT `catalog_id` FROM `krotovina` WHERE `site`='$site' ORDER BY `catalog_id` DESC LIMIT 1";
-      $db_results = Dba::read($catalog_sql);
+      $catalog_sql = "SELECT `catalog_id` FROM `krotovina` WHERE `site`=? ORDER BY `catalog_id` DESC LIMIT 1 FOR UPDATE";
+      $db_results = Dba::read($catalog_sql,array($input['site']));
       $row = Dba::fetch_assoc($db_results);
-      Dba::finish($db_results);
-
       $input['catalog_id'] = $row['catalog_id']+1;
     }
     else { 
-      $site = Dba::escape($input['site']);
-      $catalog_id = Dba::escape($input['catalog_id']);
-      $catalog_sql = "SELECT `catalog_id` FROM `krotovina` WHERE `site`='$site' AND `catalog_id`='$catalog_id' LIMIT 1";
-      $db_results = Dba::read($catalog_sql);
+      $catalog_sql = "SELECT `catalog_id` FROM `krotovina` WHERE `site`=? AND `catalog_id`=? LIMIT 1 FOR UPDATE";
+      $db_results = Dba::read($catalog_sql,array($input['site'],$input['catalog_id']));
       $row = Dba::fetch_assoc($db_results);
-      Dba::finish($db_results);
       if ($row['catalog_id']) {
         Error::add('general','Duplicate Feature ID - ' . $catalog_id);
-        $db_results = Dba::write($unlock_sql);
+        Dba::commit();
         return false;
       }
     } // else
 
+    //FIXME: Change to NULL once DB change is in place update_0019()
     // Now it's safe to insert it
-    $site = Dba::escape($input['site']);
-    $catalog_id = Dba::escape($input['catalog_id']);
-    $description = Dba::escape($input['description']);
-    $keywords = Dba::escape($input['keywords']);
-    $user = Dba::escape(\UI\sess::$user->uid);
     $created = time();
-    $sql = "INSERT INTO `krotovina` (`site`,`catalog_id`,`description`,`keywords`,`user`,`created`) " . 
-      "VALUES ('$site','$catalog_id','$description','$keywords','$user','$created')";
-    $db_results = Dba::write($sql);
+    $sql = "INSERT INTO `krotovina` (`site`,`catalog_id`,`description`,`keywords`,`user`,`created`,`update`,`closed`,`closed_date`,`closed_user`) " . 
+      "VALUES (?,?,?,?,?,?,'0','0','0','0')";
+    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$input['description'],$input['keywords'],\UI\sess::$user->uid,$created);
 
     if (!$db_results) { 
       Error:add('general','Unknown Error - inserting krotovina into database');
-      $db_results = Dba::write($unlock_sql);
+      $retval = Dba::rollback();
+      if (!$retval) { Error::add('general','Unable to roll database changes back, please report this to your Administrator'); }
+      Dba::commit();
       return false;
     }
+
+    // Take the insert_id and return it
     $insert_id = Dba::insert_id();
-    $db_results = Dba::write($unlock_sql);
+
+    $log_json = json_encode(array('Site'=>$input['site'],'Catalog ID'=>$input['catalog_id'],'Description'=>$input['description'],
+        'Keywords'=>$input['keywords'],'User'=>\UI\sess::$user->username,'Created'=>date("r",$created)));
+
+    Event::record('krotovina::create',$log_json);
     
     // Now we add the initial spatial data
-    $spatialdata = SpatialData::create(array('record'=>$insert_id,'type'=>'krotovina','station_index'=>$input['initial_rn'],'northing'=>$input['northing'],
+    $spatialdata = SpatialData::create(array('record'=>$insert_id,'type'=>'krotovina','station_index'=>$input['station_index'],'northing'=>$input['northing'],
                       'easting'=>$input['easting'],'elevation'=>$input['elevation']));
 
     if (!$spatialdata) { 
-      Error::add('general','Error inserting Spatial Information - please contact your administrator');
+      Error::add('general','Unable to insert Spatial Information, but Krotovina created, please manually add point');
     }
 
-
-    $log_line = "$site,F-$catalog_id,\"" . addslashes($description) . "\",\"$keywords\"," . \UI\sess::$user->username . ",\"" . date('r',$created) . "\"";
-    Event::record('ADD-FEATURE',$log_line);
+    if (!Dba::commit()) { 
+      Event::record('DBA::commit','Commit Failure - unable to close transaction');
+      return false;
+    }
 
     return $insert_id;
 
@@ -213,14 +198,14 @@ class Krotovina extends database_object {
     }
 
     // If RN then no others
-    if (strlen($input['initial_rn']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
-      Error::add('initial_rn','Initial RN and North/East/Elevation can not be specified at the same time');
-      if (!Field::validate('rn',$input['initial_rn'])) {
-        Error::add('initial_rn','Must be numeric');
+    if (strlen($input['station_index']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
+      Error::add('station_index','Initial RN and North/East/Elevation can not be specified at the same time');
+      if (!Field::validate('rn',$input['station_index'])) {
+        Error::add('station_index','Must be numeric');
       }
     }
     // If no RN then all others - unless we have a krotovina_id
-    if (!$input['krotovina_id'] AND strlen($input['initial_rn']) == 0 AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
+    if (!$input['krotovina_id'] AND strlen($input['station_index']) == 0 AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
       Error::add('general','Northing, Easting and Elevation are all required if no Initial RN set');
       if (!strlen($input['easting'])) {
         Error::add('easting','Easting Required');
@@ -243,9 +228,9 @@ class Krotovina extends database_object {
     } // End if No RN
 
     // Make sure the RN isn't duplicated for this site. 
-    $input['rn'] = $input['initial_rn'];
+    $input['rn'] = $input['station_index'];
     if (!SpatialData::is_site_unique($input,$input['krotovina_id'])) {
-      Error::add('initial_rn','Duplicate RN in this site');
+      Error::add('station_index','Duplicate RN in this site');
     }
 
     if (Error::occurred()) { return false; }

@@ -1531,6 +1531,8 @@ class Database {
 
     $retval = true; 
 
+    // Fix level nulls
+
     $sql = "ALTER TABLE `level` CHANGE `updated` `updated` INT( 11 ) UNSIGNED NULL";
     $retval = \Dba::write($sql) ? $retval : false;
 
@@ -1547,6 +1549,23 @@ class Database {
     $retval = \Dba::write($sql) ? $retval : false;
 
     $sql = "ALTER TABLE `level` CHANGE `elv_sw_finish` `elv_sw_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_se_finish` `elv_se_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_center_finish` `elv_center_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Fix krot nulls
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `updated` `updated` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `created` `created` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+    
+    $sql = "ALTER TABLE `krotovina` CHANGE `site` `site` INT( 11 ) UNSIGNED NOT NULL";
     $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval;
