@@ -121,7 +121,7 @@ class Krotovina extends database_object {
 
     // Start the transaction
     if (!Dba::begin_transaction()) { 
-      Error::add('general','Unable to tart DB Transaction, please try again');
+      Error::add('general','Unable to start DB Transaction, please try again');
       return false; 
     }
 
@@ -199,7 +199,7 @@ class Krotovina extends database_object {
     // If RN then no others
     if (strlen($input['station_index']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
       Error::add('station_index','Initial RN and North/East/Elevation can not be specified at the same time');
-      if (!Field::validate('rn',$input['station_index'])) {
+      if (!Field::validate('station_index',$input['station_index'])) {
         Error::add('station_index','Must be numeric');
       }
     }
