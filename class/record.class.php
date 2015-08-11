@@ -183,8 +183,8 @@ class Record extends database_object {
     $site               = \UI\sess::$user->site->uid;
 		$level              = $level->uid; 
 		$lsg_unit           = $input['lsg_unit']; 
-		$xrf_matrix_index   = isset($input['xrf_matrix_index']) ? $input['xrf_matrix_index'] : NULL;
-		$xrf_artifact_index = isset($input['xrf_artifact_index']) ? $input['xrf_artifact_index'] : NULL;
+		$xrf_matrix_index   = strlen($input['xrf_matrix_index']) ? $input['xrf_matrix_index'] : NULL;
+		$xrf_artifact_index = strlen($input['xrf_artifact_index']) ? $input['xrf_artifact_index'] : NULL;
 		$weight             = $input['weight']; 
 		$height             = $input['height']; 
 		$width              = $input['width']; 
@@ -194,10 +194,10 @@ class Record extends database_object {
 		$classification     = $input['classification']; 
 		$notes              = $input['notes']; 
     $accession          = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
-    $station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
-    $northing           = isset($input['northing']) ? $input['northing'] : NULL;
-    $easting            = isset($input['easting']) ? $input['easting'] : NULL;
-    $elevation          = isset($input['elevation']) ? $input['elevation'] : NULL;
+    $station_index      = strlen($input['station_index']) ? $input['station_index'] : NULL;
+    $northing           = strlen($input['northing']) ? $input['northing'] : NULL;
+    $easting            = strlen($input['easting']) ? $input['easting'] : NULL;
+    $elevation          = strlen($input['elevation']) ? $input['elevation'] : NULL;
 		$feature            = $feature_uid;  
     $krotovina          = $krotovina_uid;
 		$user               = \UI\sess::$user->uid; 
