@@ -117,6 +117,30 @@ function check_root_writeable() {
 }
 
 /**
+ * check_datadir_writeable
+ * Make sure that /var/lib/archie is writeable 
+ */
+function check_datadir_writeable() {
+
+  if (!is_writeable('/var/lib/archie')) { return false; }
+
+  return true; 
+
+} // check_datadir_writeable
+
+/**
+ * check_logdir_writeable
+ * Make sure the log directory is writeable
+ */
+function check_logdir_writeable() {
+
+  if (!is_writeable('/var/log/archie')) { return false; }
+
+  return true;
+
+} // check_logdir_writeable
+
+/**
  * check_config_writeable
  * Make sure the config dir is writeable (for installer)
  */

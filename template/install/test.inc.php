@@ -111,6 +111,16 @@ if (INIT_LOADED != '1') { exit; }
         <td>Verify ./config/ directory is writeable by webserver</td>
       </tr>
       <tr>
+        <td>Data Directory Writeable</td>
+        <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_datadir_writeable()); ?></p></td>
+        <td>Check /var/lib/archie to make sure it's writeable, if you plan to change the datadir after installation you can ignore this error.</td>
+      </tr>
+      <tr>
+        <td>Log Directory Writeable</td>
+        <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_logdir_writeable()); ?></p></td>
+        <td>Check /var/log/archie to make sure it's writeable, if you plan to change the log dir after installaion you can ignore this error.</td>
+      </tr>
+      <tr>
         <td>Apache Mod-Rewrite Enabled</td>
         <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_mod_rewrite()); ?></p></td>
         <td>Make sure mod_rewrite is enabled in Apache</td>
