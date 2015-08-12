@@ -344,6 +344,10 @@ class Record extends database_object {
    */
 	public static function validate($input,$record_id='') { 
 
+    // Fill empty optional fields with null 
+    $fields = array('xrf_matrix_index','weight','height','width','thickness','quanity');
+    foreach ($fields as $key) { if (!isset($input[$key])) { $input[$key] = NULL; } }
+
     // If we were given the record for which these values are assoicated
     if ($record_id) { $record = new Record($record_id); }
 		
