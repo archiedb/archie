@@ -58,6 +58,12 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
   <th>Enabled</th>
   <td><?php echo \UI\boolean_word($site->enabled); ?>
 </tr>
+<tr>
+  <th>Excavation Start</th>
+  <td><?php $site->_print('excavation_start'); ?></td>
+  <th>Excavation End</th>
+  <td><?php $site->_print('excavation_end'); ?></td>
+</tr>
 </table>
 <h4>Site Settings</h4>
 <table class="table table-hover table-striped">

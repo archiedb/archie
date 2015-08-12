@@ -46,6 +46,18 @@ if (INIT_LOADED != '1') { exit; }
     <input id="inputEasting" name="easting" type="text" value="<?php echo scrub_out($site->easting); ?>" />
   </div>
 </div>
+<div class="control-group span4 offset1<?php Error::display_class('excavation_start'); ?>">
+  <label class="control-label" for="inputExcavationStart">Excavation Start</label>
+  <div class="controls">
+    <input id="inputExcavationStart" name="excavation_start" type="text" value="<?php echo scrub_out($site->excavation_start); ?>" />
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('excavation_end'); ?>">
+  <label class="control-label" for="inputExcavationEnd">Excavation End</label>
+  <div class="controls">
+    <input id="inputExcavationEnd" name="excavation_end" type="text" value="<?php echo scrub_out($site->excavation_end); ?>" />
+  </div>
+</div>
 <div class="control-group span8">
   <div class="controls">
     <input type="hidden" name="site_uid" value="<?php echo scrub_out($site->uid); ?>" />

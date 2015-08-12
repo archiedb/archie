@@ -293,18 +293,11 @@ class Site extends database_object {
       return false; 
     }
 
-    $name       = Dba::escape($input['name']);
-    $desc       = Dba::escape($input['description']);
-    $exc_start  = strlen($input['excavation_start']) ? $input['excavation_start'] : NULL;
-    $exc_end    = strlen($input['excavation_end']) ? $input['excavation_end'] : NULL;
-    $pi = Dba::escape($input['pi']);
-    $elevation = Dba::escape($input['elevation']);
-    $northing = Dba::escape($input['northing']);
-    $easting = Dba::escape($input['easting']);
-    $partners = Dba::escape($input['partners']);
+    $exc_start  = empty($input['excavation_start']) ? NULL : $input['excavation_start'];
+    $exc_end    = empty($input['excavation_end']) ? NULL : $input['excavation_end'];
     $sql = "INSERT INTO `site` (`name`,`description`,`principal_investigator`,`excavation_start`,`excavation_end`,`partners`,`northing`,`easting`,`elevation`,`enabled`) " . 
-      "VALUES ('$name','$desc','$pi',?,?,'$partners','$northing','$easting','$elevation','1')";
-    $results = Dba::write($sql,array($exc_start,$exc_end)); 
+      "VALUES (?,?,?,?,?,?,?,?,?,?)";
+    $results = Dba::write($sql,array($input['name'],$input['description'],$input['pi'],$exc_start,$exc_end,$input['partners'],$input['northing'],$input['easting'],$input['elevation'],1)); 
 
     $insert_id = Dba::insert_id();
 
@@ -332,19 +325,18 @@ class Site extends database_object {
     }
 
     $uid = Dba::escape($this->uid);
-    $name = Dba::escape($input['name']);
     $pi = Dba::escape($input['pi']);
     $description = Dba::escape($input['description']);
     $partners = Dba::escape($input['partners']);
-    $exc_start = Dba::escape($input['excavation_start']);
-    $exc_end = Dba::escape($input['excavation-end']);
+    $exc_start = empty($input['excavation_start']) ? NULL : strtotime($input['excavation_start']);
+    $exc_end = empty($input['excavation_end']) ? NULL : strtotime($input['excavation_end']);
     $elevation = Dba::escape($input['elevation']);
     $northing = Dba::escape($input['northing']);
     $easting = Dba::escape($input['easting']);
-    $sql = "UPDATE `site` SET `name`='$name', `principal_investigator`='$pi',`description`='$description'," . 
-      "`partners`='$partners',`excavation_start`='$exc_start',`excavation_end`='$exc_end',`elevation`='$elevation'," . 
+    $sql = "UPDATE `site` SET `name`=?, `principal_investigator`='$pi',`description`='$description'," . 
+      "`partners`='$partners',`excavation_start`=?,`excavation_end`=?,`elevation`='$elevation'," . 
       "`northing`='$northing',`easting`='$easting' WHERE `uid`='$uid'";
-    $db_results = Dba::write($sql);
+    $db_results = Dba::write($sql,array($input['name'],$exc_start,$exc_end));
 
     if (!$db_results) { 
       Error::add('general','Unknown Database Error - Please try again');
