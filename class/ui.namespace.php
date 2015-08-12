@@ -102,6 +102,18 @@ function search_link($field,$value,$text='') {
 
 } // search_link
 
+/** 
+ * form_value
+ * Look in _POST, ${variable} or passed and output it if it exists
+ */
+function form_value($name) { 
+
+    if (empty($_POST[$name])) { echo ''; return; }
+
+    echo scrub_out($_POST[$name]); 
+    
+} // form_value
+
 /**
  * sort_icon
  * Takes a field and sort (ASC/DESC), and returns the html for the correct icon baesd on its current sort
