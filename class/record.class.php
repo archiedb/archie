@@ -176,28 +176,28 @@ class Record extends database_object {
     // We need the real UID of the following objects
     $level = new Level($input['level']);
 
-    $feature_uid  = strlen($input['feature']) ? Feature::get_uid_from_record($input['feature']) : null;
-    $krotovina_uid = strlen($input['krotovina']) ? Krotovina::get_uid_from_record($input['krotovina']) : null;
+    $feature_uid    = empty($input['feature']) ? NULL : Feature::get_uid_from_record($input['feature']);
+    $krotovina_uid  = empty($input['krotovina']) ? NULL : Krotovina::get_uid_from_record($input['krotovina']);
 
 		// Normalize the input, set unset variables to NULL
     $site               = \UI\sess::$user->site->uid;
 		$level              = $level->uid; 
 		$lsg_unit           = $input['lsg_unit']; 
-		$xrf_matrix_index   = strlen($input['xrf_matrix_index']) ? $input['xrf_matrix_index'] : NULL;
-		$xrf_artifact_index = strlen($input['xrf_artifact_index']) ? $input['xrf_artifact_index'] : NULL;
+		$xrf_matrix_index   = empty($input['xrf_matrix_index']) ? NULL : $input['xrf_matrix_index'];
+		$xrf_artifact_index = empty($input['xrf_artifact_index']) ? NULL : $input['xrf_artifact_index'];
 		$weight             = $input['weight']; 
 		$height             = $input['height']; 
 		$width              = $input['width']; 
 		$thickness          = $input['thickness']; 
-		$quanity            = ($input['quanity'] == 0) ? '1' : $input['quanity']; // Default to Quanity 1 
+		$quanity            = empty($input['quanity']) ? '1' : $input['quanity']; // Default to Quanity 1 
 		$material           = $input['material']; 
 		$classification     = $input['classification']; 
 		$notes              = $input['notes']; 
-    $accession          = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
-    $station_index      = strlen($input['station_index']) ? $input['station_index'] : NULL;
-    $northing           = strlen($input['northing']) ? $input['northing'] : NULL;
-    $easting            = strlen($input['easting']) ? $input['easting'] : NULL;
-    $elevation          = strlen($input['elevation']) ? $input['elevation'] : NULL;
+    $accession          = empty(\UI\sess::$user->site->accession) ? NULL: \UI\sess::$user->site->accession;
+    $station_index      = empty($input['station_index']) ? NULL : $input['station_index'];
+    $northing           = empty($input['northing']) ? NULL : $input['northing'];
+    $easting            = empty($input['easting']) ? NULL : $input['easting'];
+    $elevation          = empty($input['elevation']) ? NULL : $input['elevation'];
 		$feature            = $feature_uid;  
     $krotovina          = $krotovina_uid;
 		$user               = \UI\sess::$user->uid; 
@@ -326,9 +326,13 @@ class Record extends database_object {
     Content::write($record_uid,'ticket',$ticket->filename);
 
     $site = $this->site->name; 
+    $level = new Level($input['level']);
 
-		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit->name,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,'Station Index'=>$station_index,'XRFMatrix'=>$xrf_matrix_index,'Weight'=>$weight,'Height'=>$height,'Width'=>$width,'Thickness'=>$thickness,'Quanity'=>$quanity,'Material'=>$material,'Classification'=>$classification,'Feature'=>$input['feature'],'Notes'=>$notes,'User'=>\UI\sess::$user->username,'Update'=>date("r",$updated)));
-		Event::record('UPDATE',$log_line); 
+		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,
+        'Station Index'=>$station_index,'XRFMatrix'=>$xrf_matrix_index,'Weight'=>$weight,'Height'=>$height,'Width'=>$width,
+        'Thickness'=>$thickness,'Quanity'=>$quanity,'Material'=>$material,'Classification'=>$classification,'Feature'=>$input['feature'],
+        'Notes'=>$notes,'User'=>\UI\sess::$user->username,'Update'=>date("r",$updated)));
+		Event::record('record::update',$log_line); 
 		return true; 
 
 	} // update
@@ -363,7 +367,7 @@ class Record extends database_object {
     }
 
     // If they've set a RN then we need to make sure they didn't set northing,easting,elevation
-    if (strlen($input['station_index'])) { 
+    if (!empty($input['station_index'])) { 
     
       // If we are comparing it to an existing record
       if (isset($record->uid)) {   
@@ -401,6 +405,7 @@ class Record extends database_object {
           Error::add('elevation','Elevation must be numeric'); 
         }
     }
+
 		// XRF Matrix Index numeric
 		if (!Field::validate('xrf_matrix_index',$input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
 			Error::add('xrf_matrix_index','XRF Matrix Index must be numeric'); 
