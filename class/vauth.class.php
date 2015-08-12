@@ -115,7 +115,7 @@ class vauth {
 			"`expire`='$expire' WHERE `id`='$key'";
 		$db_results = Dba::write($sql);
 
-		Event::error('SESSION', 'Writing to ' . $key . ' with expire ' . $expire . ' ' . Dba::error());
+		Event::record('vauth::write', 'Writing to ' . $key . ' with expire ' . $expire . ' ' . Dba::error());
 
 		return Dba::error();
 
@@ -135,7 +135,7 @@ class vauth {
 		$sql = "DELETE FROM `session` WHERE `id`='$key'";
 		$db_results = Dba::write($sql);
 
-		Event::error('SESSION', 'Deleting Session with key:' . $key);
+		Event::record('vauth::destory', 'Deleting Session with key:' . $key);
 
 		// Destroy our cookie!
 		setcookie(Config::get('session_name'), '', time() - 86400);
@@ -311,7 +311,7 @@ class vauth {
 			return false;
 		}
 
-		Event::error('SESSION', 'Session Created:' . $key);
+		Event::record('vauth:;session_create', 'Session Created:' . $key);
 
 		return $key;
 
@@ -390,7 +390,7 @@ class vauth {
 		$sql = "UPDATE `session` SET `expire`='$expire' WHERE `id`='$sid'";
 		$db_results = Dba::write($sql);
 
-		Event::error('SESSION', 'Session:' . $sid . ' has been extended to ' . date("r",$expire) . ' extension length ' . $len);
+		Event::record('vauth::session_extend', 'Session:' . $sid . ' has been extended to ' . date("r",$expire) . ' extension length ' . $len);
 
 		return $db_results;
 
