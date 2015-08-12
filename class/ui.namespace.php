@@ -76,9 +76,9 @@ function record_link($uid,$type,$text='') {
     'krotovina'=>'krotovina',
   );
 
-  if (!$uid) { return ''; }
-  if (!$text) { $text = $uid; }
-  if (!isset($type_map[$type])) { return $uid; }
+  if (empty($uid)) { return ''; }
+  if (empty($text)) { $text = $uid; }
+  if (empty($type_map[$type])) { return $uid; }
 
   $url = \Config::get('web_path') . '/' . $type_map[$type] . '/view/' . scrub_out($uid);
 
@@ -87,6 +87,20 @@ function record_link($uid,$type,$text='') {
   return $return;
 
 } // record_link
+
+/** 
+ * build a search link
+ */
+function search_link($field,$value,$text='') {
+
+    if (empty($field)) { return $text; }
+    if (empty($text)) { $text = $value; }
+    if (empty($value)) { return $text; }
+
+    $url = \Config::get('web_path') . '/record/search/' . $field . '/'  . scrub_out($value);
+    return '<a href="' . $url . '">' . scrub_out($text) . '</a>';
+
+} // search_link
 
 /**
  * sort_icon

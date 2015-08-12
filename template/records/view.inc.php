@@ -31,18 +31,18 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 <tr>
   <th>Quad</th><td><?php echo scrub_out($record->level->quad->name); ?></td>
-  <th>RN</th><td><?php echo scrub_out($record->station_index); ?></td>
+  <th>Station Index (RN)</th><td><?php echo scrub_out($record->station_index); ?></td>
 </tr>
 <tr>
-  <th>Weight</th><td><?php echo scrub_out($record->weight); ?> grams</td>
-  <th>Thickness</th><td><?php echo scrub_out($record->thickness); ?> mm</td>
+  <th>Weight</th><td><?php echo empty($record->weight) ? '' : $record->weight . 'g'; ?></td>
+  <th>Thickness</th><td><?php echo empty($record->thickness) ? '' : $record->thickness . 'mm'; ?></td>
 </tr>
 <tr>
-  <th>Length</th><td><?php echo scrub_out($record->height); ?> mm</td>
-  <th>Width</th><td><?php echo scrub_out($record->width); ?> mm</td>
+  <th>Length</th><td><?php echo empty($record->height) ? '' : $record->height . 'mm'; ?></td>
+  <th>Width</th><td><?php echo empty($record->width) ? '' : $record->width . 'mm'; ?></td>
 <tr>
-  <th>Material</th><td><?php echo scrub_out($record->material->name); ?></td>
-  <th>Classification</th><td><?php echo scrub_out($record->classification->name); ?></td>
+  <th>Material</th><td><?php echo \UI\search_link('material',$record->material->name); ?></td>
+  <th>Classification</th><td><? echo \UI\search_link('classification',$record->classification->name); ?></td>
 </tr>
 <tr>
   <th>Matrix XRF #</th><td><?php echo scrub_out($record->xrf_matrix_index); ?></td>
