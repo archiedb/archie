@@ -143,14 +143,11 @@ class Feature extends database_object {
     } // else
 
     // Now it's safe to insert it
-    $site = Dba::escape($input['site']);
-    $catalog_id = Dba::escape($input['catalog_id']);
-    $description = Dba::escape($input['description']);
-    $keywords = Dba::escape($input['keywords']);
-    $user = Dba::escape(\UI\sess::$user->uid);
-    $created = time();
+    $description  = empty($input['description']) ? NULL : $input['description'];
+    $keywords     = empty($input['keywords']) ? NULL : $input['keywords'];
+    $created      = time();
     $sql = "INSERT INTO `feature` (`site`,`catalog_id`,`description`,`keywords`,`user`,`created`) VALUES (?,?,?,?,?,?)";
-    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$input['description'],$input['keywords'],\UI\sess::$user->uid,$created));
+    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$description,$keywords,\UI\sess::$user->uid,$created));
 
     if (!$db_results) { 
       Error:add('general','Unknown Error - inserting feature into database');
