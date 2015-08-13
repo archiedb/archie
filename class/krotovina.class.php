@@ -87,19 +87,25 @@ class Krotovina extends database_object {
       return false;
     }
 
-    $uid = Dba::escape($input['krotovina_id']);
-    $description = Dba::escape($input['description']);
-    $keywords = Dba::escape($input['keywords']);
-    $updated = time();
-    $sql = "UPDATE `krotovina` SET `updated`='$updated', `keywords`='$keywords', `description`='$description' WHERE `uid`='$uid'";
-    $db_results = Dba::write($sql); 
+    $uid          = $input['krotovina_id'];
+    $description  = empty($input['description']) ? NULL : $input['description'];
+    $keywords     = empty($input['keywords']) ? NULL : $input['keywords'];
+    $updated      = time();
+    $sql = "UPDATE `krotovina` SET `updated`=?, `keywords`=?, `description`=? WHERE `uid`=?";
+    $db_results = Dba::write($sql,array($updated,$keywords,$description,$uid)); 
+
+    if (!$db_results) { 
+      Error::add('general','Unable to update Krotovina - please see error log');
+      return false;
+    }
+
+    $log_json = json_encode(array('Description'=>$description,'Keywords'=>$keywords,'User'=>\UI\sess::$user->username,'Updated'=>date('r',$updated)));
+    Event::record('krotovina::update',$log_json);
 
     $this->refresh();
     $record = $this->record;
-    $log_line = "$site,$record,\"" . addslashes($description) . "\",\"$keywords\"," . \UI\sess::$user->username . ",\"" . date('r',$updated) . "\"";
-    Event::record('UPDATE-FEATURE',$log_line);
 
-    return $db_results;
+    return true;
 
   } // update
 
@@ -246,11 +252,11 @@ class Krotovina extends database_object {
 
     Error::clear();
 
-    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
-    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
-    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
-    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
-    $note           = isset($input['note']) ? $input['note'] : NULL;
+    $station_index  = empty($input['station_index']) ? NULL : $input['station_index'];
+    $northing       = empty($input['northing']) ? NULL : $input['northing'];
+    $easting        = empty($input['easting']) ? NULL : $input['easting'];
+    $elevation      = empty($input['elevation']) ? NULL : $input['elevation'];
+    $note           = empty($input['note']) ? NULL : $input['note'];
 
     // Really we're just going to be using the spatialdata class for this, but
     // we want to set the data and type correctly so here we are
