@@ -185,14 +185,14 @@ class Record extends database_object {
 		$lsg_unit           = $input['lsg_unit']; 
 		$xrf_matrix_index   = empty($input['xrf_matrix_index']) ? NULL : $input['xrf_matrix_index'];
 		$xrf_artifact_index = empty($input['xrf_artifact_index']) ? NULL : $input['xrf_artifact_index'];
-		$weight             = $input['weight']; 
-		$height             = $input['height']; 
-		$width              = $input['width']; 
-		$thickness          = $input['thickness']; 
+		$weight             = empty($input['weight']) ? NULL : $input['weight'];
+		$height             = empty($input['height']) ? NULL : $input['height'];
+		$width              = empty($input['width']) ? NULL : $input['width'];
+		$thickness          = empty($input['thickness']) ? NULL : $input['thickness'];
 		$quanity            = empty($input['quanity']) ? '1' : $input['quanity']; // Default to Quanity 1 
 		$material           = $input['material']; 
 		$classification     = $input['classification']; 
-		$notes              = $input['notes']; 
+		$notes              = empty($input['notes']) ? NULL : $input['notes'];
     $accession          = empty(\UI\sess::$user->site->accession) ? NULL: \UI\sess::$user->site->accession;
     $station_index      = empty($input['station_index']) ? NULL : $input['station_index'];
     $northing           = empty($input['northing']) ? NULL : $input['northing'];
@@ -345,7 +345,7 @@ class Record extends database_object {
 	public static function validate($input,$record_id='') { 
 
     // Fill empty optional fields with null 
-    $fields = array('xrf_matrix_index','weight','height','width','thickness','quanity');
+    $fields = array('xrf_matrix_index','xrf_artifact_index','weight','height','width','thickness','quanity');
     foreach ($fields as $key) { if (!isset($input[$key])) { $input[$key] = NULL; } }
 
     // If we were given the record for which these values are assoicated

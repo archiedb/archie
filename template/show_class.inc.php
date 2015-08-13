@@ -1,6 +1,7 @@
 <?php 
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
-$class_id = $class_id ? $class_id : $_POST['classification']; 
+if (!isset($_POST['classification'])) { $_POST['classification'] = ''; }
+$class_id = empty($class_id) ? $_POST['classification'] : $class_id;
 ?>
 <?php foreach ($classes as $class) { 
 	$is_selected = ''; 

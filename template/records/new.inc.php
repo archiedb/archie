@@ -70,7 +70,7 @@ if (INIT_LOADED != '1') { exit; }
 	<div class="controls">
     <div class="input-prepend">
       <span class="add-on">F-</span>
-      <input id="inputFeature" class="span2" name="feature" type="text" value="<?php echo scrub_out($_POST['feature']); ?>" />
+      <input id="inputFeature" class="span2" name="feature" type="text" value="<?php \UI\form_value('feature'); ?>" />
     </div>
   </div>
 </div>
@@ -79,7 +79,7 @@ if (INIT_LOADED != '1') { exit; }
 	<div class="controls">
     <div class="input-prepend">
       <span class="add-on">K-</span>
-      <input id="inputKrotovina" class="span2" name="krotovina" type="text" value="<?php echo scrub_out($_POST['krotovina']); ?>" />
+      <input id="inputKrotovina" class="span2" name="krotovina" type="text" value="<?php \UI\form_value('krotovina'); ?>" />
     </div>
   </div>
 </div>
@@ -107,7 +107,7 @@ if (INIT_LOADED != '1') { exit; }
     <select id="classification" name="classification">
     	<option value="">&nbsp;</option> 
       <?php 
-      if (isset($_POST['material'])) { $classes = Classification::get_from_material($_POST['material']); }
+      if (!empty($_POST['material'])) { $classes = Classification::get_from_material($_POST['material']); }
       else { $classes = Classification::get_all(); } 
       ?>
       <?php require_once Config::get('prefix') . '/template/show_class.inc.php'; ?>
@@ -117,31 +117,31 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('northing'); ?>">
   <label class="control-label" for="inputNorthing">Northing</label>
   <div class="controls">
-    <input id="inputNorthing" type="text" name="northing" value="<?php echo scrub_out($_POST['northing']); ?>">
+    <input id="inputNorthing" type="text" name="northing" value="<?php \UI\form_value('northing'); ?>">
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('easting'); ?>">
   <label class="control-label" for="inputEasting">Easting</label>
   <div class="controls">
-    <input id="inputEasting" type="text" name="easting" value="<?php echo scrub_out($_POST['easting']); ?>">
+    <input id="inputEasting" type="text" name="easting" value="<?php \UI\form_value('easting'); ?>">
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('elevation'); ?>">
   <label class="control-label" for="inputElevation">Elevation</label>
   <div class="controls">
-    <input id="inputElevation" type="text" name="elevation" value="<?php echo scrub_out($_POST['elevation']); ?>">
+    <input id="inputElevation" type="text" name="elevation" value="<?php \UI\form_value('elevation'); ?>">
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('station_index'); ?>">
   <label class="control-label" for="inputStationIndex">RN</label>
   <div class="controls">
-    <input id="inputStationIndex" name="station_index" type="text" value="<?php echo scrub_out($_POST['station_index']); ?>" />
+    <input id="inputStationIndex" name="station_index" type="text" value="<?php \UI\form_value('station_index'); ?>" />
   </div>
 </div>
 <div class="control-group span8<?php Error::display_class('notes'); ?>">
   <label class="control-label" for="inputNotes">Notes</label>
   <div class="controls">
-	  <textarea placeholder="Notes..." rows="4" name="notes"><?php echo scrub_out($_POST['notes']); ?></textarea>
+	  <textarea placeholder="Notes..." rows="4" name="notes"><?php \UI\form_value('notes'); ?></textarea>
   </div>
 </div>
 <div class="control-group span8">

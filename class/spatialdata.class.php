@@ -110,11 +110,11 @@ class SpatialData extends database_object {
 
     $record         = $input['record'];
     $type           = $input['type'];
-    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
-    $northing       = strlen($input['northing']) ? $input['northing'] : NULL;
-    $easting        = strlen($input['easting']) ? $input['easting'] : NULL;
-    $elevation      = strlen($input['elevation']) ? $input['elevation'] : NULL;
-    $note           = isset($input['note']) ? $input['note'] : NULL;
+    $station_index  = empty($input['station_index']) ? NULL: intval($input['station_index']);
+    $northing       = empty($input['northing']) ? NULL : $input['northing'];
+    $easting        = empty($input['easting']) ? NULL : $input['easting'];
+    $elevation      = empty($input['elevation']) ? NULL : $input['elevation'];
+    $note           = empty($input['note']) ? NULL : $input['note'];
     
     $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`,`northing`,`easting`,`elevation`,`note`) " . 
         "VALUES (?,?,?,?,?,?,?)";
@@ -157,7 +157,7 @@ class SpatialData extends database_object {
     $uid            = $this->uid;
     $type           = $this->record_type;
     $record         = $this->record;
-    $station_index  = empty($input['station_index']) ? NULL : $input['station_index'];
+    $station_index  = empty($input['station_index']) ? NULL : intval($input['station_index']);
     $northing       = empty($input['northing']) ? NULL : $input['northing'];
     $easting        = empty($input['easting']) ? NULL : $input['easting'];
     $elevation      = empty($input['elevation']) ? NULL : $input['elevation'];

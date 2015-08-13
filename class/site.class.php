@@ -293,18 +293,28 @@ class Site extends database_object {
       return false; 
     }
 
-    $exc_start  = empty($input['excavation_start']) ? NULL : $input['excavation_start'];
-    $exc_end    = empty($input['excavation_end']) ? NULL : $input['excavation_end'];
+    $exc_start    = empty($input['excavation_start']) ? NULL : strtotime($input['excavation_start']);
+    $exc_end      = empty($input['excavation_end']) ? NULL : strtotime($input['excavation_end']);
+    $description  = empty($input['description']) ? NULL : $input['description'];
+    $northing     = empty($input['northing']) ? NULL : $input['northing'];
+    $easting      = empty($input['easting']) ? NULL : $input['easting'];
+    $elevation    = empty($input['elevation']) ? NULL : $input['elevation'];
+    $partners     = empty($input['partners']) ? NULL : $input['partners'];
     $sql = "INSERT INTO `site` (`name`,`description`,`principal_investigator`,`excavation_start`,`excavation_end`,`partners`,`northing`,`easting`,`elevation`,`enabled`) " . 
       "VALUES (?,?,?,?,?,?,?,?,?,?)";
-    $results = Dba::write($sql,array($input['name'],$input['description'],$input['pi'],$exc_start,$exc_end,$input['partners'],$input['northing'],$input['easting'],$input['elevation'],1)); 
+    $results = Dba::write($sql,array($input['name'],$description,$input['pi'],$exc_start,$exc_end,$partners,$northing,$easting,$elevation,1)); 
+
+    if (!$results) { 
+      Error::add('general','Unable to add site, please see error log');
+      return false;
+    }
 
     $insert_id = Dba::insert_id();
 
-    if (!$insert_id OR !$results) { 
-      Error::add('general','Unknown database error adding new site');
-      return false;
-    }
+    $json_log = json_encode(array('Name'=>$input['name'],'Description'=>$input['description'],'PI'=>$input['pi'],'Exc Start'=>$input['excavation_start'],
+      'Exc End'=>$input['excavation_end'],'Partners'=>$input['partners'],'Northing'=>$input['northing'],'Easting'=>$input['easting'],'Elevation'=>$input['elevation'],
+      'Enabled'=>1));
+    Event::record('site::create',$json_log);
 
     return $insert_id;
 
@@ -324,24 +334,27 @@ class Site extends database_object {
       return false;
     }
 
-    $uid = Dba::escape($this->uid);
-    $pi = Dba::escape($input['pi']);
-    $description = Dba::escape($input['description']);
-    $partners = Dba::escape($input['partners']);
-    $exc_start = empty($input['excavation_start']) ? NULL : strtotime($input['excavation_start']);
-    $exc_end = empty($input['excavation_end']) ? NULL : strtotime($input['excavation_end']);
-    $elevation = Dba::escape($input['elevation']);
-    $northing = Dba::escape($input['northing']);
-    $easting = Dba::escape($input['easting']);
-    $sql = "UPDATE `site` SET `name`=?, `principal_investigator`='$pi',`description`='$description'," . 
-      "`partners`='$partners',`excavation_start`=?,`excavation_end`=?,`elevation`='$elevation'," . 
-      "`northing`='$northing',`easting`='$easting' WHERE `uid`='$uid'";
-    $db_results = Dba::write($sql,array($input['name'],$exc_start,$exc_end));
+    $description  = empty($input['description']) ? NULL : $input['description'];
+    $partners     = empty($input['partners']) ? NULL : $input['partners'];
+    $exc_start    = empty($input['excavation_start']) ? NULL : strtotime($input['excavation_start']);
+    $exc_end      = empty($input['excavation_end']) ? NULL : strtotime($input['excavation_end']);
+    $elevation    = empty($input['elevation']) ? NULL : $input['elevation'];
+    $northing     = empty($input['northing']) ? NULL : $input['northing'];
+    $easting      = empty($input['easting']) ? NULL : $input['easting'];
+    $sql = "UPDATE `site` SET `name`=?, `principal_investigator`=?,`description`=?," . 
+      "`partners`=?,`excavation_start`=?,`excavation_end`=?,`elevation`=?," . 
+      "`northing`=?,`easting`=? WHERE `uid`=?";
+    $db_results = Dba::write($sql,array($input['name'],$input['pi'],$description,$partners,$exc_start,$exc_end,$elevation,$northing,$easting,$this->uid));
 
     if (!$db_results) { 
-      Error::add('general','Unknown Database Error - Please try again');
+      Error::add('general','Unable to update View, please check error log.');
       return false;
     }
+
+    $json_log = json_encode(array('Name'=>$input['name'],'Description'=>$input['description'],'PI'=>$input['pi'],'Exc Start'=>$input['excavation_start'],
+      'Exc End'=>$input['excavation_end'],'Partners'=>$input['partners'],'Northing'=>$input['northing'],'Easting'=>$input['easting'],'Elevation'=>$input['elevation'],
+      'Enabled'=>1));
+    Event::record('site::update',$json_log);
 
     return true;
 
@@ -374,13 +387,20 @@ class Site extends database_object {
       Error::add('pi','Required Field');
     } 
 
-
     // Make sure if start and end are set that end is after start
     $start = strtotime($input['excavation_start']);
     $end = strtotime($input['excavation_end']);
 
     if ($start > 0 AND $end > 0 AND $start > $end) { 
       Error::add('excavation_end','End must be after Start');
+    }
+
+    if (strlen($input['excavation_start']) AND !$start) {
+      Error::add('excavation_start','Invalid Date specified');
+    }
+
+    if (strlen($input['excavation_end']) AND !$end) {
+      Error::add('excavation_end','Invalid Date specified');
     }
 
     if (Error::occurred()) { return false; }
