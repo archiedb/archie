@@ -205,8 +205,11 @@ class Feature extends database_object {
    */
   public static function validate($input) { 
 
-    if (!strlen($input['description'])) {
+    if (!Field::notempty($input['description'])) {
       Error::add('description','Required field');
+    }
+    if (!Field::notempty($input['keywords'])) {
+      Error::add('keywords','Required field');
     }
 
     // If RN then no others

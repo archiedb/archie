@@ -4,11 +4,11 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="pull-right">
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success">Print Ticket</a>
+  <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn">Edit Record</a>
   <?php if (Access::has('record','delete')) { ?>
   <a href="#confirmdel_<?php echo scrub_out($record->uid); ?>" role="button" data-toggle="modal" class="btn btn-danger">Delete</a>
   <?php } ?>
-  <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn">Edit Record</a>
-  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success">Print Ticket</a>
 </p>
   <?php if (Access::has('record','delete')) { include \UI\template('/records/modal_delete_record');  } ?>
 <h3><?php echo $record->site->name . '-' . $record->catalog_id; ?>
