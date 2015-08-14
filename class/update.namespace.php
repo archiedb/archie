@@ -1622,7 +1622,7 @@ class Database {
 
     // Fix media
 
-    $sql = "ALTER TABLE `media` DROP `record_type`";
+    $sql = "UPDATE `media` SET `record_type`='record'";
     $retval = \Dba::write($sql) ? $retval : false;
 
     return $retval;

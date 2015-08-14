@@ -77,7 +77,7 @@ switch (\UI\sess::location('action')) {
   break;
   case 'image_delete':
     if (!Access::has('media','delete')) { \UI\access_denied(); }
-    $image = new Content($_POST['uid'],'image'); 
+    $image = new Content($_POST['uid'],'image','level'); 
     if (!$image->delete()) { 
       Error::add('delete','Unable to perform image deletion request, please contact administrator'); 
     }

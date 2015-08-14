@@ -251,17 +251,17 @@ class Level extends database_object {
     // Delete any content first
     $images = Content::level($this->uid,'image');
     foreach ($images as $uid) { 
-      $image = new Content($uid,'image');
+      $image = new Content($uid,'image','level');
       $image->delete();
     }
     $models = Content::level($this->uid,'3dmodel');
     foreach ($models as $uid) { 
-      $model = new Content($uid,'3dmodel');
+      $model = new Content($uid,'3dmodel','level');
       $model->delete();
     }
     $others = Content::level($this->uid,'media');
     foreach ($others as $uid) { 
-      $other = new Content($uid,'media');
+      $other = new Content($uid,'media','level');
       $other->delete();
     }
 

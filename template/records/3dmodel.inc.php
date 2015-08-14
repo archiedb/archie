@@ -20,9 +20,9 @@ foreach ($images as $uid) {
     <div class="thumbnail">
       <p class="text-center">
       <?php if ($extension == 'stl') { ?>
-      <a href="<?php echo Config::get('web_path'); ?>/viewer/stl/<?php echo scrub_out($model->uid); ?>" title="3D View"><img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>/thumb" /></a>
+      <a href="<?php echo Config::get('web_path'); ?>/viewer/stl/record/<?php echo scrub_out($model->uid); ?>" title="3D View"><img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>/thumb" /></a>
       <?php } else { ?>
-      <img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>/thumb" />
+      <img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/record/<?php echo scrub_out($model->uid);?>/thumb" />
       <?php } ?>
       <br />
       <?php echo scrub_out($name); ?>

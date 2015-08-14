@@ -15,7 +15,7 @@ if (count($items)) {
 <tbody>
 <?php
 foreach ($items as $item) {
-  $media = new Content($item,'media'); 
+  $media = new Content($item,'media','level'); 
   $info = pathinfo($media->filename); 
   $extension = $info['extension']; 
   $name = strlen($media->notes) ? $media->notes : basename($media->filename); 
@@ -32,7 +32,7 @@ foreach ($items as $item) {
       <?php } ?>
       <?php if (Access::has('media','delete',$media->uid)) { ?>
       <a href="#confirm_delete_media_<?php echo scrub_out($media->uid); ?>" role="button" data-toggle="modal" class="btn btn-small btn-danger">Delete</a>
-      <?php require \UI\template('/records/modal_delete_media'); ?>
+      <?php require \UI\template('/level/modal_delete_media'); ?>
       <?php } ?>
   </td>
 </tr>

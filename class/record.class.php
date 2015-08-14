@@ -322,7 +322,7 @@ class Record extends database_object {
 		$this->refresh(); 
 
     // Rebuild the ticket as values may have changed
-    $ticket = new Content($record_uid,'ticket');
+    $ticket = new Content($record_uid,'ticket','record');
     Content::write($record_uid,'ticket',$ticket->filename);
 
     $site = $this->site->name; 
@@ -562,7 +562,7 @@ class Record extends database_object {
 		$images = $record->get_images(); 
 		foreach ($images as $image) { 
 			// Delete image and thumbnail if it exists
-			$content = new Content($image['uid'],'image'); 
+			$content = new Content($image['uid'],'image','record'); 
 			if ($content->uid) { 
 				$content->delete(); 
 			}
@@ -570,7 +570,7 @@ class Record extends database_object {
 
     $media = $record->get_media(); 
     foreach ($media as $item) { 
-      $content = new Content($item['uid'],'media'); 
+      $content = new Content($item['uid'],'media','record'); 
       if ($content->uid) { 
         $content->delete(); 
       }
@@ -639,7 +639,7 @@ class Record extends database_object {
 	 */
 	public function get_ticket() { 
 
-		$ticket = new Content($this->uid,'ticket'); 
+		$ticket = new Content($this->uid,'ticket','record'); 
 
 		return $ticket; 
 

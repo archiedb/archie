@@ -7,7 +7,7 @@ if (INIT_LOADED != '1') { exit; }
 $images = Content::level($level->uid,'image'); 
 $i=0; 
 foreach ($images as $uid) {
-  $image = new Content($uid,'image'); 
+  $image = new Content($uid,'image','level'); 
   if ($i/4 == floor($i/4)) {
       echo '</ul><ul class="thumbnails">';
   }
@@ -17,7 +17,7 @@ foreach ($images as $uid) {
     <div class="thumbnail">
       <p class="text-center">
       <?php if ($level->image == $image->uid) { ?><span class="label label-success"><?php } ?>
-      <a href="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid); ?>" target="_blank"><img src="<?php echo Config::get('web_path'); ?>/media/image/<?php echo scrub_out($image->uid);?>/thumb" alt="Image <?php echo $i; ?>" /></a><br />
+      <a href="<?php echo Config::get('web_path'); ?>/media/image/level/<?php echo scrub_out($image->uid); ?>" target="_blank"><img src="<?php echo Config::get('web_path'); ?>/media/image/level/<?php echo scrub_out($image->uid);?>/thumb" alt="Image <?php echo $i; ?>" /></a><br />
         <?php echo scrub_out($image->notes); ?>
       <?php if ($level->image == $image->uid) { ?></span><?php } ?>
       </p>
