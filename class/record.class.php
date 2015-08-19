@@ -446,7 +446,10 @@ class Record extends database_object {
 		} 
 
 		// Material, must be a valid UID
-		if (strlen($input['material'])) { 
+    if (empty($input['material'])) { 
+      Error::add('material','Must specify material');
+    }
+		if (!empty($input['material'])) { 
 			$material = new Material($input['material']); 
 			if (!$material->name) { 
 				Error::add('material','Invalid Material ID Specified, please refresh'); 
