@@ -412,6 +412,11 @@ class content extends database_object {
 	 */
 	public static function write_qrcode($uid,$filename,$update_record) { 
 
+    if (!is_writeable(Config::get('prefix') . '/lib/cache')) {
+      Error::add('general','QRCode tmp directory unwriteable, unable to create QRCode for record ticket');
+      return false;
+    }
+
 		$qrcode_data = Config::get('web_path') . '/records/view/' . $uid;
 		QRcode::png($qrcode_data,$filename,'H','2',2); 
 		
