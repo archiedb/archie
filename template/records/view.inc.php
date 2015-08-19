@@ -42,7 +42,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>Width</th><td><?php echo empty($record->width) ? '' : $record->width . 'mm'; ?></td>
 <tr>
   <th>Material</th><td><?php echo \UI\search_link('material',$record->material->name); ?></td>
-  <th>Classification</th><td><? echo \UI\search_link('classification',$record->classification->name); ?></td>
+  <th>Classification</th><td><?php echo \UI\search_link('classification',$record->classification->name); ?></td>
 </tr>
 <tr>
   <th>Matrix XRF #</th><td><?php echo scrub_out($record->xrf_matrix_index); ?></td>
