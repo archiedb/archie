@@ -45,6 +45,11 @@ if (floatval(phpversion()) < 5.3) {
 	exit;
 }
 
+// Set Timezone to UTC if not set
+if (empty(ini_get('date.timezone'))) {
+  ini_set('date.timezone','UTC');
+}
+
 //error_reporting(E_ERROR); // Only show fatal errors in production
 
 $file_path = dirname(__FILE__);
