@@ -108,6 +108,35 @@ function search_link($field,$value,$text='') {
  */
 function form_value($name) { 
 
+    $form_value = '';
+
+    if (is_array($name)) {
+      foreach ($name as $field=>$value) {
+        switch ($field) {
+          case 'post':
+            if (!empty($_POST[$value])) {
+              $form_value = $_POST[$value];
+              break 2;
+            }
+          break;
+          case 'get':
+            if (!empty($_GET[$value])) {
+              $form_value = $_GET[$value];
+              break 2;
+            }
+          break;
+          case 'var':
+            if (!empty($value)) {
+              $form_value = $value;
+              break 2;
+            }
+          break;
+        }
+      } // end foreach
+      echo scrub_out($form_value);
+      return true; 
+    } // end if array
+          
     if (empty($_POST[$name])) { echo ''; return; }
 
     echo scrub_out($_POST[$name]); 

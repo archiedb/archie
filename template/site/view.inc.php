@@ -61,9 +61,9 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
 </tr>
 <tr>
   <th>Excavation Start</th>
-  <td><?php echo $site->excavation_start > 0 ? date('r',$site->excavation_start) : 'N/A'; ?></td>
+  <td><?php echo $site->excavation_start > 0 ? date('d-M-Y',$site->excavation_start) : 'N/A'; ?></td>
   <th>Excavation End</th>
-  <td><?php echo $site->excavation_end > 0 ? date('r',$site->excavation_end) : 'N/A'; ?></td>
+  <td><?php echo $site->excavation_end > 0 ? date('d-M-Y',$site->excavation_end) : 'N/A'; ?></td>
 </tr>
 </table>
 <h4>Site Settings</h4>

@@ -45,6 +45,9 @@ class Site extends database_object {
       $recache = true;
     }
 
+    $this->excavation_end_date = empty($this->excavation_end) ? '' : date('d-M-Y',$this->excavation_end);
+    $this->excavation_start_date = empty($this->excavation_start) ? '' : date('d-M-Y',$this->excavation_start);
+
     // Decode settings
     $recache = $this->decode_settings() ? true : $recache;
 
@@ -387,6 +390,19 @@ class Site extends database_object {
       Error::add('pi','Required Field');
     } 
 
+    // Make sure northing/easting/elevation are numeric
+    if (!Field::validate('elevation',$input['elevation'])) {
+      Error::add('elevation','Invalid Elevation');
+    }
+
+    if (!Field::validate('northing',$input['northing'])) {
+      Error::add('northing','Invalid Northing');
+    }
+
+    if (!Field::validate('easting',$input['easting'])) {
+      Error::add('easting','Invalid Easting');
+    }
+
     // Make sure if start and end are set that end is after start
     $start = strtotime($input['excavation_start']);
     $end = strtotime($input['excavation_end']);
@@ -400,7 +416,7 @@ class Site extends database_object {
     }
 
     if (strlen($input['excavation_end']) AND !$end) {
-      Error::add('excavation_end','Invalid Date specified');
+      Error::add('excavation_end','Invalid Date format specified');
     }
 
     if (Error::occurred()) { return false; }

@@ -357,7 +357,9 @@ class Database {
                     '- Switch to Innodb Tables.<br />' . 
                     '- Add FK site+level constraints to record,feature,krotovina.<br />';
     $versions[] = array('version'=>'0018','description'=>$update_string);
-    $update_string = '- Fix NULL and default values.<br />';
+    $update_string = '- Fix NULL and default values.<br />' .
+                    '- Set record_type to Record on media.<br />' . 
+                    '- Drop Krotovina and Feature closed,closed_date & closed_user fields.<br />';
     $versions[] = array('version'=>'0019','description'=>$update_string);
 
 
