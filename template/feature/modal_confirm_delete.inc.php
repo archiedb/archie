@@ -15,7 +15,7 @@ if (INIT_LOADED != '1') { exit; }
     </ul>
     <?php if ($has_records) { ?>
       Unable to delete feature, there are still records associated with it. You must re-assign all of the 
-      <a href="<?php echo Config::get('web_path'); ?>/record/search/feature/<?php echo scrub_out($feature->catalog_id); ?>">Records</a>
+      <a href="<?php echo Config::get('web_path'); ?>/records/search/feature/<?php echo scrub_out($feature->catalog_id); ?>">Records</a>
       before deleting the Feature. 
     <?php } else { ?>
       No records found for this Feature. All spatial points associated with this feature will be removed when the feature is deleted.

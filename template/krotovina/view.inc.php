@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="pull-right">
   <a href="<?php echo Config::get('web_path'); ?>/krotovina/edit/<?php echo scrub_out($krotovina->uid); ?>" class="btn">Edit Krotovina</a>
-  <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/record/search/krotovina/<?php echo scrub_out($krotovina->catalog_id); ?>">View Records</a>
+  <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/records/search/krotovina/<?php echo scrub_out($krotovina->catalog_id); ?>">View Records</a>
   <a class="btn btn-success" href="#addspatial" role="button" data-toggle="modal">Add Spatial Point</a>
 </p>
 <h3><?php echo $krotovina->site->name . ' ' . $krotovina->record; ?>

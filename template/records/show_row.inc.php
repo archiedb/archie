@@ -13,8 +13,8 @@ if (INIT_LOADED != '1') { exit; }
 	<td><?php echo \UI\record_link($record->level->uid,'level',$record->level->record); ?></td>
 	<td><?php echo \UI\record_link($record->feature->uid,'feature',$record->feature->catalog_id); ?></td>
 	<td><?php echo scrub_out($record->lsg_unit->name); ?></td>
-	<td><?php echo scrub_out($record->material->name); ?></td>
-	<td><?php echo scrub_out($record->classification->name); ?></td>
+	<td><?php echo \UI\search_link('material',$record->material->name); ?></td>
+	<td><?php echo \UI\search_link('classification',$record->classification->name); ?></td>
   <td>
     <div class="btn-group">
       <button class="btn" data-toggle="collapse" data-target="#more_<?php echo scrub_out($record->uid); ?>_info">More</button>

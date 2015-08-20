@@ -41,7 +41,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('level'); ?>">
   <label class="control-label" for="inputLevel">Level</label>
   <div class="controls">
-	  <input id="inputLevel" name="catalog_id" type="text" value="<?php echo scrub_out($_POST['catalog_id']); ?>" />
+	  <input id="inputLevel" name="catalog_id" type="text" value="<?php \UI\form_value('catalog_id'); ?>" />
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('lsg_unit'); ?>">
@@ -62,13 +62,13 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4<?php Error::display_class('northing'); ?>">
   <label class="control-label" for="inputNorthing">Northing</label>
   <div class="controls">
-    <input id="inputNorthing" name="northing" type="text" value="<?php echo scrub_out($_POST['northing']); ?>" />
+    <input id="inputNorthing" name="northing" type="text" value="<?php \UI\form_value('northing'); ?>" />
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('easting'); ?>">
   <label class="control-label" for="inputEasting">Easting</label>
   <div class="controls">
-    <input id="inputEasting" name="easting" type="text" value="<?php echo scrub_out($_POST['easting']); ?>" />
+    <input id="inputEasting" name="easting" type="text" value="<?php \UI\form_value('easting'); ?>" />
   </div>
 </div>
 <div class="control-group offset1 span10">
@@ -78,31 +78,31 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4 <?php Error::display_class('elv_nw_start'); ?>">
   <label class="control-label" for="inputElvNWStart">NW</label>
   <div class="controls">
-    <input id="inputElvNWStart" name="elv_nw_start" type="text" value="<?php echo scrub_out($_POST['elv_nw_start']); ?>" />
+    <input id="inputElvNWStart" name="elv_nw_start" type="text" value="<?php \UI\form_value('elv_nw_start'); ?>" />
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('elv_ne_start'); ?>">
   <label class="control-label" for="inputElvNEStart">NE</label>
   <div class="controls">
-    <input id="inputElvNEStart" name="elv_ne_start" type="text" value="<?php echo scrub_out($_POST['elv_ne_start']); ?>" />
+    <input id="inputElvNEStart" name="elv_ne_start" type="text" value="<?php \UI\form_value('elv_ne_start'); ?>" />
   </div>
 </div>
 <div class="control-group span4 <?php Error::display_class('elv_sw_start'); ?>">
   <label class="control-label" for="inputElvSWStart">SW</label>
   <div class="controls">
-    <input id="inputElvSWStart" name="elv_sw_start" type="text" value="<?php echo scrub_out($_POST['elv_sw_start']); ?>" />
+    <input id="inputElvSWStart" name="elv_sw_start" type="text" value="<?php \UI\form_value('elv_sw_start'); ?>" />
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('elv_se_start'); ?>">
   <label class="control-label" for="inputElvSEStart">SE</label>
   <div class="controls">
-    <input id="inputElvSEStart" name="elv_se_start" type="text" value="<?php echo scrub_out($_POST['elv_se_start']); ?>" />
+    <input id="inputElvSEStart" name="elv_se_start" type="text" value="<?php \UI\form_value('elv_se_start'); ?>" />
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('elv_center_start'); ?>">
   <label class="control-label" for="inputElvCenterStart">Center</label>
   <div class="controls">
-    <input id="inputElvCenterStart" name="elv_center_start" type="text" value="<?php echo scrub_out($_POST['elv_center_start']); ?>" />
+    <input id="inputElvCenterStart" name="elv_center_start" type="text" value="<?php \UI\form_value('elv_center_start'); ?>" />
   </div>
 </div>
 <div class="control-group offset1 span10">

@@ -33,10 +33,9 @@ if (INIT_LOADED != '1') { exit; }
       width: auto;
     }
     </style>
-
 </head>
 <body>
-<div class="container">
+<div class="container theme-showcase" role="main">
 <div class="jumbotron">
 	<h1>Update Archie</h1>
 	<p>
@@ -51,7 +50,7 @@ if (INIT_LOADED != '1') { exit; }
 		<input name="username" type="text" class="input-small" placeholder="Username">
 		<input name="password" type="password" class="input-small" placeholder="Password">
 		<input type="hidden" name="action" value="database" />
-      		<button type="submit" class="btn btn-danger">Upgrade Database</button>
+ 		<button type="submit" class="btn btn-danger">Upgrade Database</button>
 	</form>
 	<hr />
   <?php 

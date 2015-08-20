@@ -26,6 +26,7 @@ function return_url($input) {
                     '/users/view',
                     '/level/edit/',
                     '/level/view/',
+                    '/manage/site/view',
                     '/krotovina/edit/',
                     '/krotovina/view/',
                    '/users/manage/disabled',
@@ -75,9 +76,9 @@ function record_link($uid,$type,$text='') {
     'krotovina'=>'krotovina',
   );
 
-  if (!$uid) { return ''; }
-  if (!$text) { $text = $uid; }
-  if (!isset($type_map[$type])) { return $uid; }
+  if (empty($uid)) { return ''; }
+  if (empty($text)) { $text = $uid; }
+  if (empty($type_map[$type])) { return $uid; }
 
   $url = \Config::get('web_path') . '/' . $type_map[$type] . '/view/' . scrub_out($uid);
 
@@ -86,6 +87,61 @@ function record_link($uid,$type,$text='') {
   return $return;
 
 } // record_link
+
+/** 
+ * build a search link
+ */
+function search_link($field,$value,$text='') {
+
+    if (empty($field)) { return $text; }
+    if (empty($text)) { $text = $value; }
+    if (empty($value)) { return $text; }
+
+    $url = \Config::get('web_path') . '/record/search/' . $field . '/'  . scrub_out($value);
+    return '<a href="' . $url . '">' . scrub_out($text) . '</a>';
+
+} // search_link
+
+/** 
+ * form_value
+ * Look in _POST, ${variable} or passed and output it if it exists
+ */
+function form_value($name) { 
+
+    $form_value = '';
+
+    if (is_array($name)) {
+      foreach ($name as $field=>$value) {
+        switch ($field) {
+          case 'post':
+            if (!empty($_POST[$value])) {
+              $form_value = $_POST[$value];
+              break 2;
+            }
+          break;
+          case 'get':
+            if (!empty($_GET[$value])) {
+              $form_value = $_GET[$value];
+              break 2;
+            }
+          break;
+          case 'var':
+            if (!empty($value)) {
+              $form_value = $value;
+              break 2;
+            }
+          break;
+        }
+      } // end foreach
+      echo scrub_out($form_value);
+      return true; 
+    } // end if array
+          
+    if (empty($_POST[$name])) { echo ''; return; }
+
+    echo scrub_out($_POST[$name]); 
+    
+} // form_value
 
 /**
  * sort_icon
@@ -161,6 +217,27 @@ function boolean_word($boolean,$string='') {
   return false; 
 
 } // boolean_word
+
+/**
+ * print_var
+ * Takes a PHP var/array/whatever and prints it out in a way we want
+ */
+function print_var($input) { 
+  
+  $output = NULL;
+
+  if (is_array($input)) { 
+    foreach ($input as $value) { 
+      $output .= $value . ',';
+    }
+    $output = trim($output,',');
+  }
+  else { 
+    $output = $input;
+  }
+  echo $output; 
+
+} // print_var
 
 /**
  * template
@@ -306,8 +383,19 @@ function resize($imagePath,$opts=null){
 
 	$cacheFolder = $opts['cacheFolder'];
 	$remoteFolder = $opts['remoteFolder'];
+	
+  // Set Default convert path
+  $path_to_convert = '/usr/bin/convert'; # this could be something like /usr/bin/convert or /opt/local/share/bin/convert
 
-	$path_to_convert = '/usr/bin/convert'; # this could be something like /usr/bin/convert or /opt/local/share/bin/convert
+  // Try to find convert
+  $convert_paths = array('/usr/bin/convert','/opt/local/bin/convert');
+  foreach ($convert_paths as $convert_path) { 
+    if (is_executable($convert_path)) {
+      $path_to_convert = $convert_path;
+      break 1;
+    }
+  } // foreach possible location
+
 	
 	## you shouldn't need to configure anything else beyond this point
 

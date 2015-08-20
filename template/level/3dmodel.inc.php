@@ -7,7 +7,7 @@ if (INIT_LOADED != '1') { exit; }
 $images = Content::level($level->uid,'3dmodel'); 
 $i=0; 
 foreach ($images as $uid) {
-  $model = new Content($uid,'3dmodel'); 
+  $model = new Content($uid,'3dmodel','level'); 
   if ($i/4 == floor($i/4)) {
       echo '</ul><ul class="thumbnails">';
   }
@@ -20,9 +20,9 @@ foreach ($images as $uid) {
     <div class="thumbnail">
       <p class="text-center">
       <?php if ($extension == 'stl') { ?>
-      <a href="<?php echo Config::get('web_path'); ?>/viewer/stl/<?php echo scrub_out($model->uid); ?>" title="3D View"><img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>/thumb" /></a>
+      <a href="<?php echo Config::get('web_path'); ?>/viewer/stl/level/<?php echo scrub_out($model->uid); ?>" title="3D View"><img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/level/<?php echo scrub_out($model->uid);?>/thumb" /></a>
       <?php } else { ?>
-      <img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>/thumb" />
+      <img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/level/<?php echo scrub_out($model->uid);?>/thumb" />
       <?php } ?>
       <br />
       <?php echo scrub_out($name); ?>
@@ -41,10 +41,10 @@ foreach ($images as $uid) {
       <?php } ?>
       <?php 
       if (Access::has('media','delete',$model->uid)) { 
-        require \UI\template('/records/modal_delete_3dmodel'); 
+        require \UI\template('/level/modal_delete_3dmodel'); 
       } 
       if (Access::has('media','write',$model->uid)) { 
-        require \UI\template('/records/modal_edit_3dmodel'); 
+        require \UI\template('/level/modal_edit_3dmodel'); 
       } 
       ?>
       <?php } ?>

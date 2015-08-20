@@ -12,7 +12,7 @@ function check_gd_support() {
   }
 
   $info = gd_info(); 
-
+print_r($info);
   // Make sure we have JPEG and PNG support
   if (!$info['PNG Support']) {
     return false; 
@@ -115,6 +115,30 @@ function check_root_writeable() {
   return true;
 
 }
+
+/**
+ * check_datadir_writeable
+ * Make sure that /var/lib/archie is writeable 
+ */
+function check_datadir_writeable() {
+
+  if (!is_writeable('/var/lib/archie')) { return false; }
+
+  return true; 
+
+} // check_datadir_writeable
+
+/**
+ * check_logdir_writeable
+ * Make sure the log directory is writeable
+ */
+function check_logdir_writeable() {
+
+  if (!is_writeable('/var/log/archie')) { return false; }
+
+  return true;
+
+} // check_logdir_writeable
 
 /**
  * check_config_writeable
@@ -291,7 +315,17 @@ function check_mysql_db() {
  */
 function check_imagemagick() {
 
-    return is_executable('/usr/bin/convert');
+    $retval = false;
+
+    $convert_paths = array('/usr/bin/convert','/opt/local/bin/convert');
+    foreach ($convert_paths as $path) { 
+      if (is_executable($path)) {
+        $retval = true;
+        break 1;
+      }
+    }
+
+    return $retval;
 
 } // check_imagemagick
 

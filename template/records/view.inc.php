@@ -4,11 +4,11 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <p class="pull-right">
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success">Print Ticket</a>
+  <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn">Edit Record</a>
   <?php if (Access::has('record','delete')) { ?>
   <a href="#confirmdel_<?php echo scrub_out($record->uid); ?>" role="button" data-toggle="modal" class="btn btn-danger">Delete</a>
   <?php } ?>
-  <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn">Edit Record</a>
-  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success">Print Ticket</a>
 </p>
   <?php if (Access::has('record','delete')) { include \UI\template('/records/modal_delete_record');  } ?>
 <h3><?php echo $record->site->name . '-' . $record->catalog_id; ?>
@@ -31,18 +31,18 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 <tr>
   <th>Quad</th><td><?php echo scrub_out($record->level->quad->name); ?></td>
-  <th>RN</th><td><?php echo scrub_out($record->station_index); ?></td>
+  <th>Station Index (RN)</th><td><?php echo scrub_out($record->station_index); ?></td>
 </tr>
 <tr>
-  <th>Weight</th><td><?php echo scrub_out($record->weight); ?> grams</td>
-  <th>Thickness</th><td><?php echo scrub_out($record->thickness); ?> mm</td>
+  <th>Weight</th><td><?php echo empty($record->weight) ? '' : $record->weight . 'g'; ?></td>
+  <th>Thickness</th><td><?php echo empty($record->thickness) ? '' : $record->thickness . 'mm'; ?></td>
 </tr>
 <tr>
-  <th>Length</th><td><?php echo scrub_out($record->height); ?> mm</td>
-  <th>Width</th><td><?php echo scrub_out($record->width); ?> mm</td>
+  <th>Length</th><td><?php echo empty($record->height) ? '' : $record->height . 'mm'; ?></td>
+  <th>Width</th><td><?php echo empty($record->width) ? '' : $record->width . 'mm'; ?></td>
 <tr>
-  <th>Material</th><td><?php echo scrub_out($record->material->name); ?></td>
-  <th>Classification</th><td><?php echo scrub_out($record->classification->name); ?></td>
+  <th>Material</th><td><?php echo \UI\search_link('material',$record->material->name); ?></td>
+  <th>Classification</th><td><?php echo \UI\search_link('classification',$record->classification->name); ?></td>
 </tr>
 <tr>
   <th>Matrix XRF #</th><td><?php echo scrub_out($record->xrf_matrix_index); ?></td>

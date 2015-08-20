@@ -13,6 +13,9 @@ class Site extends database_object {
   public $partners; // text field
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
+  public $units; // from Settings
+  public $quads; // from Settings
+  public $ticket; // from Settings
   public $enabled; 
 
 	// Constructor takes a uid
@@ -41,6 +44,12 @@ class Site extends database_object {
       $row['accession'] = $this->accession;
       $recache = true;
     }
+
+    $this->excavation_end_date = empty($this->excavation_end) ? '' : date('d-M-Y',$this->excavation_end);
+    $this->excavation_start_date = empty($this->excavation_start) ? '' : date('d-M-Y',$this->excavation_start);
+
+    // Decode settings
+    $recache = $this->decode_settings() ? true : $recache;
 
     if ($recache === true) {
       parent::add_to_cache('site',$row['uid'],$row);
@@ -74,6 +83,108 @@ class Site extends database_object {
     return true; 
 
   } //build_cache
+
+  /**
+   * decode_settings
+   * This takes the ->settings field from the DB
+   * runs a json_decode() and does what it needs to
+   */
+  public function decode_settings() { 
+
+    $settings = json_decode($this->settings,true); 
+
+    // Check for some defaults, load from dist file if none set
+    if (!isset($settings['units'])) { 
+      $settings['units'] = fgetcsv(fopen(Config::get('prefix') . '/config/units.csv.dist','r'));
+    }
+    if (!isset($settings['quads'])) {
+      $settings['quads'] = fgetcsv(fopen(Config::get('prefix') . '/config/quads.csv.dist','r'));
+    }
+    if (!isset($settings['ticket'])) { 
+      $settings['ticket'] = Config::get('ticket_size');
+    }
+
+    // Set
+    $this->quads = $settings['quads'];
+    $this->units = $settings['units'];
+    $this->ticket = $settings['ticket'];
+
+    return true; 
+
+  } // decode_settings
+
+  /**
+   * update_settings
+   * json_encode() and update db
+   */
+  public function update_settings($input) { 
+
+    // Validate settings
+    if (!$this->validate_settings($input)) {
+      Error::add('general','Invalid Settings specified');
+      return false;
+    }
+
+    // Setup the new array
+    $settings = array();
+    $settings['quads'] = isset($input['quads']) ? explode(',',$input['quads']) : $this->quads; 
+    $settings['units'] = isset($input['units']) ? explode(',',$input['units']) : $this->units; 
+    $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->ticket; 
+
+    $sql = "UPDATE `site` SET `settings`=? WHERE `uid`=?";
+    $db_results = Dba::write($sql,array(json_encode($settings),$this->uid));
+
+    return true;
+
+  } // update_settings
+
+  /**
+   * validate_settings
+   * validate the settings
+   */
+  public function validate_settings($input) { 
+
+    switch ($input['key']) {
+      case 'ticket':
+        // only allow valid tickets
+        $tickets = get_class_methods('genpdf');
+        $method_name = 'ticket_' . $input['ticket'];
+        if (in_array($method_name,$tickets)) { return true; }
+        else { return false; }
+      break;
+      case 'units':
+        $invalid_units = '';
+        $retval = true;
+        // Must be a csv, and only A-Z,0-9,_,-? 
+        $units = explode(',',$input['units']);
+        foreach ($units as $unit) {
+          if (preg_match('/[^a-z_\-0-9]/i',$unit)) {
+            $invalid_units .= $unit . ' :: ';
+            $retval = false;
+          }
+        }
+        if (!$retval) { Error::add('units','Invalid Units, only A-Z,0-9,_,- allowed, Invalid Unit(s) - ' . $invalid_units); }
+        return $retval; 
+      break;
+      case 'quads':
+        // Must be a csv, and only A-Z,0-9,_,-?
+        $invalid_quads = '';
+        $retval = true;
+        $quads = explode(',',$input['quads']);
+        foreach ($quads as $quad) {
+          if (preg_match('/[^a-z_\-0-9]/i',$quad)) {
+            $retval = false;
+            $invalid_quads = $quad . ' :: ';
+          }
+        } 
+        if (!$retval) { Error::add('quads','Invalid Quads, only A-Z,0-9,_,- allowed, Invalid Quad(s) - '. $invalid_quads); }
+        return $retval;
+      break;
+    }
+
+    return false;
+
+  } // validate_settings
 
   /**
    * get_from_name
@@ -185,25 +296,28 @@ class Site extends database_object {
       return false; 
     }
 
-    $name = Dba::escape($input['name']);
-    $desc = Dba::escape($input['description']);
-    $exc_start = Dba::escape($input['excavation_start']);
-    $exc_end = Dba::escape($input['excavation_end']);
-    $pi = Dba::escape($input['pi']);
-    $elevation = Dba::escape($input['elevation']);
-    $northing = Dba::escape($input['northing']);
-    $easting = Dba::escape($input['easting']);
-    $partners = Dba::escape($input['partners']);
+    $exc_start    = empty($input['excavation_start']) ? NULL : strtotime($input['excavation_start']);
+    $exc_end      = empty($input['excavation_end']) ? NULL : strtotime($input['excavation_end']);
+    $description  = empty($input['description']) ? NULL : $input['description'];
+    $northing     = empty($input['northing']) ? NULL : $input['northing'];
+    $easting      = empty($input['easting']) ? NULL : $input['easting'];
+    $elevation    = empty($input['elevation']) ? NULL : $input['elevation'];
+    $partners     = empty($input['partners']) ? NULL : $input['partners'];
     $sql = "INSERT INTO `site` (`name`,`description`,`principal_investigator`,`excavation_start`,`excavation_end`,`partners`,`northing`,`easting`,`elevation`,`enabled`) " . 
-      "VALUES ('$name','$desc','$pi','$exc_start','$exc_end','$partners','$northing','$easting','$elevation','1')";
-    $results = Dba::write($sql); 
+      "VALUES (?,?,?,?,?,?,?,?,?,?)";
+    $results = Dba::write($sql,array($input['name'],$description,$input['pi'],$exc_start,$exc_end,$partners,$northing,$easting,$elevation,1)); 
+
+    if (!$results) { 
+      Error::add('general','Unable to add site, please see error log');
+      return false;
+    }
 
     $insert_id = Dba::insert_id();
 
-    if (!$insert_id OR !$results) { 
-      Error::add('general','Unknown database error adding new site');
-      return false;
-    }
+    $json_log = json_encode(array('Name'=>$input['name'],'Description'=>$input['description'],'PI'=>$input['pi'],'Exc Start'=>$input['excavation_start'],
+      'Exc End'=>$input['excavation_end'],'Partners'=>$input['partners'],'Northing'=>$input['northing'],'Easting'=>$input['easting'],'Elevation'=>$input['elevation'],
+      'Enabled'=>1));
+    Event::record('site::create',$json_log);
 
     return $insert_id;
 
@@ -223,25 +337,27 @@ class Site extends database_object {
       return false;
     }
 
-    $uid = Dba::escape($this->uid);
-    $name = Dba::escape($input['name']);
-    $pi = Dba::escape($input['pi']);
-    $description = Dba::escape($input['description']);
-    $partners = Dba::escape($input['partners']);
-    $exc_start = Dba::escape($input['excavation_start']);
-    $exc_end = Dba::escape($input['excavation-end']);
-    $elevation = Dba::escape($input['elevation']);
-    $northing = Dba::escape($input['northing']);
-    $easting = Dba::escape($input['easting']);
-    $sql = "UPDATE `site` SET `name`='$name', `principal_investigator`='$pi',`description`='$description'," . 
-      "`partners`='$partners',`excavation_start`='$exc_start',`excavation_end`='$exc_end',`elevation`='$elevation'," . 
-      "`northing`='$northing',`easting`='$easting' WHERE `uid`='$uid'";
-    $db_results = Dba::write($sql);
+    $description  = empty($input['description']) ? NULL : $input['description'];
+    $partners     = empty($input['partners']) ? NULL : $input['partners'];
+    $exc_start    = empty($input['excavation_start']) ? NULL : strtotime($input['excavation_start']);
+    $exc_end      = empty($input['excavation_end']) ? NULL : strtotime($input['excavation_end']);
+    $elevation    = empty($input['elevation']) ? NULL : $input['elevation'];
+    $northing     = empty($input['northing']) ? NULL : $input['northing'];
+    $easting      = empty($input['easting']) ? NULL : $input['easting'];
+    $sql = "UPDATE `site` SET `name`=?, `principal_investigator`=?,`description`=?," . 
+      "`partners`=?,`excavation_start`=?,`excavation_end`=?,`elevation`=?," . 
+      "`northing`=?,`easting`=? WHERE `uid`=?";
+    $db_results = Dba::write($sql,array($input['name'],$input['pi'],$description,$partners,$exc_start,$exc_end,$elevation,$northing,$easting,$this->uid));
 
     if (!$db_results) { 
-      Error::add('general','Unknown Database Error - Please try again');
+      Error::add('general','Unable to update View, please check error log.');
       return false;
     }
+
+    $json_log = json_encode(array('Name'=>$input['name'],'Description'=>$input['description'],'PI'=>$input['pi'],'Exc Start'=>$input['excavation_start'],
+      'Exc End'=>$input['excavation_end'],'Partners'=>$input['partners'],'Northing'=>$input['northing'],'Easting'=>$input['easting'],'Elevation'=>$input['elevation'],
+      'Enabled'=>1));
+    Event::record('site::update',$json_log);
 
     return true;
 
@@ -274,12 +390,33 @@ class Site extends database_object {
       Error::add('pi','Required Field');
     } 
 
+    // Make sure northing/easting/elevation are numeric
+    if (!Field::validate('elevation',$input['elevation'])) {
+      Error::add('elevation','Invalid Elevation');
+    }
+
+    if (!Field::validate('northing',$input['northing'])) {
+      Error::add('northing','Invalid Northing');
+    }
+
+    if (!Field::validate('easting',$input['easting'])) {
+      Error::add('easting','Invalid Easting');
+    }
+
     // Make sure if start and end are set that end is after start
     $start = strtotime($input['excavation_start']);
     $end = strtotime($input['excavation_end']);
 
     if ($start > 0 AND $end > 0 AND $start > $end) { 
       Error::add('excavation_end','End must be after Start');
+    }
+
+    if (strlen($input['excavation_start']) AND !$start) {
+      Error::add('excavation_start','Invalid Date specified');
+    }
+
+    if (strlen($input['excavation_end']) AND !$end) {
+      Error::add('excavation_end','Invalid Date format specified');
     }
 
     if (Error::occurred()) { return false; }

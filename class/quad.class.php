@@ -10,7 +10,7 @@ class quad {
 	// Constructor
 	public function __construct($uid) { 
 
-    if (!isset($uid) OR !$uid) { return false; }
+    if (!isset($uid)) { return false; }
 
 		$this->uid = intval($uid); 
 		$this->name = isset(quad::$values[$uid]) ? quad::$values[$uid] : null;
@@ -49,9 +49,14 @@ class quad {
   public static function _auto_init() {
 
     // Read in the units.csv
-    $fhandle = fopen(Config::get('prefix') . '/config/quads.csv','r');
-    $quads = fgetcsv($fhandle);
-    self::$values = $quads;
+    if (isset(\UI\sess::$user)) {
+      self::$values = \UI\sess::$user->site->quads;
+    }
+    else {
+      $fhandle = fopen(Config::get('prefix') . '/config/quads.csv.dist','r');
+      $quads = fgetcsv($fhandle);
+      self::$values = $quads;
+    }
 
   } // _auto_init
 

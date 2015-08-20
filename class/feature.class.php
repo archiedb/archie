@@ -119,68 +119,48 @@ class Feature extends database_object {
       return false;
     }
 
-    // Record (id for bag) is generated here, lock tables time!
-    $db_results = false;
-    $times = 0;
-    $lock_sql = "LOCK TABLES `feature` WRITE";
-    $unlock_sql = "UNLOCK TABLES";
-
-    // Only wait 3 seconds for this, shouldn't take that long
-    while (!$db_results && $times < 3) { 
-      // If we make it this far we're good to go
-      $db_results = Dba::write($lock_sql);
-
-      if (!$db_results) { sleep(1); $times++; }
-
-    } // end while
-
-    // If we didn't get the lock, bail
-    if (!$db_results) {
-      Error::add('general','Database Read Failure, please resubmit');
+    // Start the transaction
+    if (!Dba::begin_transaction()) {
+      Error::add('general','Unable to start DB Transaction, please try again');
       return false;
     }
 
     if (!isset($input['catalog_id'])) {
-      $site = Dba::escape($input['site']);
-      $catalog_sql = "SELECT `catalog_id` FROM `feature` WHERE `site`='$site' ORDER BY `catalog_id` DESC LIMIT 1";
-      $db_results = Dba::read($catalog_sql);
+      $catalog_sql = "SELECT `catalog_id` FROM `feature` WHERE `site`=? ORDER BY `catalog_id` DESC LIMIT 1 FOR UPDATE";
+      $db_results = Dba::read($catalog_sql,array($input['site']));
       $row = Dba::fetch_assoc($db_results);
-      Dba::finish($db_results);
-
       $input['catalog_id'] = $row['catalog_id']+1;
     }
     else { 
-      $site = Dba::escape($input['site']);
-      $catalog_id = Dba::escape($input['catalog_id']);
-      $catalog_sql = "SELECT `catalog_id` FROM `feature` WHERE `site`='$site' AND `catalog_id`='$catalog_id' LIMIT 1";
-      $db_results = Dba::read($catalog_sql);
+      $catalog_sql = "SELECT `catalog_id` FROM `feature` WHERE `site`=? AND `catalog_id`=? LIMIT 1 FOR UPDATE";
+      $db_results = Dba::read($catalog_sql,array($input['site'],$input['catalog_id']));
       $row = Dba::fetch_assoc($db_results);
-      Dba::finish($db_results);
       if ($row['catalog_id']) {
         Error::add('general','Duplicate Feature ID - ' . $catalog_id);
-        $db_results = Dba::write($unlock_sql);
+        Dba::commit();
         return false;
       }
     } // else
 
     // Now it's safe to insert it
-    $site = Dba::escape($input['site']);
-    $catalog_id = Dba::escape($input['catalog_id']);
-    $description = Dba::escape($input['description']);
-    $keywords = Dba::escape($input['keywords']);
-    $user = Dba::escape(\UI\sess::$user->uid);
-    $created = time();
-    $sql = "INSERT INTO `feature` (`site`,`catalog_id`,`description`,`keywords`,`user`,`created`) " . 
-      "VALUES ('$site','$catalog_id','$description','$keywords','$user','$created')";
-    $db_results = Dba::write($sql);
+    $description  = empty($input['description']) ? NULL : $input['description'];
+    $keywords     = empty($input['keywords']) ? NULL : $input['keywords'];
+    $created      = time();
+    $sql = "INSERT INTO `feature` (`site`,`catalog_id`,`description`,`keywords`,`user`,`created`) VALUES (?,?,?,?,?,?)";
+    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$description,$keywords,\UI\sess::$user->uid,$created));
 
     if (!$db_results) { 
       Error:add('general','Unknown Error - inserting feature into database');
-      $db_results = Dba::write($unlock_sql);
+      $retval = Dba::rollback();
+      if (!$retval) { Error::add('general','Unable to roll database changes back, please report this to your Administrator'); }
+      Dba::commit();
       return false;
     }
+
     $insert_id = Dba::insert_id();
-    $db_results = Dba::write($unlock_sql);
+
+    $log_json = json_encode(array('Site'=>$input['site'],'Catalog ID'=>$input['catalog_id'],'Description'=>$input['description'],'Keywords'=>$input['keywords'],'User'=>\UI\sess::$user->username,'Created'=>$created));
+    Event::record('feature::create',$log_json);
     
     // Now we add the initial spatial data
     $spatialdata = SpatialData::create(array('record'=>$insert_id,'type'=>'feature','station_index'=>$input['initial_rn'],'northing'=>$input['northing'],
@@ -190,9 +170,10 @@ class Feature extends database_object {
       Error::add('general','Error inserting Spatial Information - please contact your administrator');
     }
 
-
-    $log_line = "$site,F-$catalog_id,\"" . addslashes($description) . "\",\"$keywords\"," . \UI\sess::$user->username . ",\"" . date('r',$created) . "\"";
-    Event::record('ADD-FEATURE',$log_line);
+    if (!Dba::commit()) {
+      Event::record('Dba::commit','Commit Failure - unable to close transaction');
+      return false;
+    }
 
     return $insert_id;
 
@@ -224,8 +205,11 @@ class Feature extends database_object {
    */
   public static function validate($input) { 
 
-    if (!strlen($input['description'])) {
+    if (!Field::notempty($input['description'])) {
       Error::add('description','Required field');
+    }
+    if (!Field::notempty($input['keywords'])) {
+      Error::add('keywords','Required field');
     }
 
     // If RN then no others

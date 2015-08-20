@@ -11,11 +11,19 @@ if (INIT_LOADED != '1') { exit; }
   <div class="modal-body">
     <p>Are you sure you want to remove this spatial point from <?php echo scrub_out($feature->record); ?>?</p>
     <p>
-      <div class="span2">Station Index (RN)</div><div class="span3"><strong><?php echo scrub_out($spatialdata->station_index); ?></strong></div>
-      <div class="span2">Northing</div><div class="span3"><strong><?php echo scrub_out($spatialdata->northing); ?></strong></div>
-      <div class="span2">Easting</div><div class="span3"><strong><?php echo scrub_out($spatialdata->easting); ?></strong></div>
-      <div class="span2">Elevation</div><div class="span3"><strong><?php echo scrub_out($spatialdata->easting); ?></strong></div>
-      <div class="span2">Note</div><div class="span3"><strong><?php echo scrub_out($spatialdata->note); ?></strong></div>
+      <table>
+        <tr>
+          <td>Station Index (RN)</td><td><strong><?php echo scrub_out($spatialdata->station_index); ?></strong></td>
+        </tr><tr>
+          <td>Northing</td><td><strong><?php echo scrub_out($spatialdata->northing); ?></strong></td>
+        </tr><tr>
+          <td>Easting</td><td><strong><?php echo scrub_out($spatialdata->easting); ?></strong></td>
+        </tr><tr>
+          <td>Elevation</td><td><strong><?php echo scrub_out($spatialdata->easting); ?></strong></td>
+        </tr><tr>
+          <td>Note</td><td><strong><?php echo scrub_out($spatialdata->note); ?></strong></td>
+        </tr>
+      </table>
     </p>
   </div>
   <div class="modal-footer">

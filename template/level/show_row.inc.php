@@ -19,7 +19,7 @@ if (INIT_LOADED != '1') { exit; }
       <?php if (Access::has('admin','admin',$level->uid) OR !$level->closed) { ?>
       <li><a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>">Edit</a></li>
       <?php } ?>
-      <li><a href="<?php echo Config::get('web_path'); ?>/record/search/level/<?php echo scrub_out($level->uid); ?>">Records</a></li>
+      <li><a href="<?php echo Config::get('web_path'); ?>/records/search/level/<?php echo scrub_out($level->uid); ?>">Records</a></li>
       <?php if (Access::has('level','delete',$level->uid)) { ?>
       <li><a href="#confirmdel_<?php echo scrub_out($level->uid); ?>" role="button" data-toggle="modal">Delete</a></li>
       <?php } ?>

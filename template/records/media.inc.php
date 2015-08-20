@@ -15,7 +15,7 @@ if (count($items)) {
 <tbody>
 <?php
 foreach ($items as $item) {
-  $media = new Content($item,'media'); 
+  $media = new Content($item,'media','record'); 
   $info = pathinfo($media->filename); 
   $extension = $info['extension']; 
   $name = strlen($media->notes) ? $media->notes : basename($media->filename); 

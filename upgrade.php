@@ -20,7 +20,7 @@ switch ($_POST['action']) {
       if (isset($user->access)) { if ($user->access == 100) { $is_admin = true; } }
       else { 
         // Manually check to see if they have Admin on Site ''
-        $sql = "SELECT * FROM `user_permission_view` WHERE `user`=? AND `role`='admin' AND `action='admin'";
+        $sql = "SELECT * FROM `user_permission_view` WHERE `user`=? AND `role`='admin' AND `action`='admin'";
         $db_results = Dba::read($sql,array($user->uid));
         $results = Dba::fetch_assoc($db_results);
         if ($results['user'] > 0) { $is_admin = true; }

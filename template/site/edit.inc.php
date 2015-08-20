@@ -25,25 +25,37 @@ if (INIT_LOADED != '1') { exit; }
 <div class="control-group span4 offset1<?php Error::display_class('partners'); ?>">
   <label class="control-label" for="inputPartners">Partners</label>
   <div class="controls">
-  	<textarea id="inputPartners" name="partners" class="textbox" rows="5"><?php echo scrub_out($site->partners); ?></textarea>
+  	<textarea id="inputPartners" name="partners" class="textbox" rows="5"><?php \UI\form_value(array('post'=>'partners','var'=>$site->partners)); ?></textarea>
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('elevation'); ?>">
   <label class="control-label" for="inputElevation">Elevation</label>
   <div class="controls">
-    <input id="inputElevation" name="elevation" type="text" value="<?php echo scrub_out($site->elevation); ?>" />
+    <input id="inputElevation" name="elevation" type="text" value="<?php \UI\form_value(array('post'=>'elevation','var'=>$site->elevation)); ?>" />
   </div>
 </div>
 <div class="control-group span4 offset1<?php Error::display_class('northing'); ?>">
   <label class="control-label" for="inputNorthing">Northing</label>
   <div class="controls">
-    <input id="inputNorthing" name="northing" type="text" value="<?php echo scrub_out($site->northing); ?>" />
+    <input id="inputNorthing" name="northing" type="text" value="<?php \UI\form_value(array('post'=>'northing','var'=>$site->northing)); ?>" />
   </div>
 </div>
 <div class="control-group span4<?php Error::display_class('easting'); ?>">
   <label class="control-label" for="inputEasting">Easting</label>
   <div class="controls">
-    <input id="inputEasting" name="easting" type="text" value="<?php echo scrub_out($site->easting); ?>" />
+    <input id="inputEasting" name="easting" type="text" value="<?php \UI\form_value(array('post'=>'easting','var'=>$site->easting)); ?>" />
+  </div>
+</div>
+<div class="control-group span4 offset1<?php Error::display_class('excavation_start'); ?>">
+  <label class="control-label" for="inputExcavationStart">Excavation Start</label>
+  <div class="controls">
+    <input id="inputExcavationStart" name="excavation_start" type="text" value="<?php \UI\form_value(array('post'=>'excavation_start','var'=>$site->excavation_start_date)); ?>" />
+  </div>
+</div>
+<div class="control-group span4<?php Error::display_class('excavation_end'); ?>">
+  <label class="control-label" for="inputExcavationEnd">Excavation End</label>
+  <div class="controls">
+    <input id="inputExcavationEnd" name="excavation_end" type="text" value="<?php \UI\form_value(array('post'=>'excavation_end','var'=>$site->excavation_end_date)); ?>" />
   </div>
 </div>
 <div class="control-group span8">

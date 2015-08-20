@@ -3,7 +3,7 @@
 define('CHECK_ONLY_SESSION','1'); 
 require_once 'class/init.php'; 
 // Pull the content from the URL 
-$content = new Content(\UI\sess::location('objectid'),\UI\sess::location('action')); 
+$content = new Content(\UI\sess::location('3'),\UI\sess::location('1'),\UI\sess::location('2')); 
 
 if (!$content->filename) { 
   // We have no file, nothing to display
@@ -11,7 +11,7 @@ if (!$content->filename) {
 }
 
 // If they pass 'thumb'
-if (\UI\sess::location('3') == 'thumb') {
+if (\UI\sess::location('4') == 'thumb') {
   $data = $content->thumbnail(); 
   $content->mime = 'image/png'; 
 }

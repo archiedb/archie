@@ -357,6 +357,10 @@ class Database {
                     '- Switch to Innodb Tables.<br />' . 
                     '- Add FK site+level constraints to record,feature,krotovina.<br />';
     $versions[] = array('version'=>'0018','description'=>$update_string);
+    $update_string = '- Fix NULL and default values.<br />' .
+                    '- Set record_type to Record on media.<br />' . 
+                    '- Drop Krotovina and Feature closed,closed_date & closed_user fields.<br />';
+    $versions[] = array('version'=>'0019','description'=>$update_string);
 
 
 
@@ -1519,10 +1523,113 @@ class Database {
     $sql = "ALTER TABLE `krotovina` ADD CONSTRAINT fk_krotovina_site FOREIGN KEY (site) REFERENCES site(uid) ON UPDATE CASCADE ON DELETE RESTRICT";
     $retval = \Dba::write($sql) ? $retval : false;
 
-
     return $retval;
 
   } // update_0018
+
+  /**
+   * update_0019
+   * Allow level.updated to be null
+   */
+  public static function update_0019() {
+
+    $retval = true; 
+
+    // Fix level nulls
+
+    $sql = "ALTER TABLE `level` CHANGE `updated` `updated` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `created` `created` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `image` `image` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_nw_finish` `elv_nw_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_ne_finish` `elv_ne_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_sw_finish` `elv_sw_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_se_finish` `elv_se_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `elv_center_finish` `elv_center_finish` DECIMAL(8,3) NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Fix krot nulls
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `updated` `updated` INT( 11 ) UNSIGNED NULL DEFAULT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `created` `created` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+    
+    $sql = "ALTER TABLE `krotovina` CHANGE `site` `site` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` DROP `closed`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` DROP `closed_date`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` DROP `closed_user`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Fix Feature nulls
+
+    $sql = "ALTER TABLE `feature` CHANGE `updated` `updated` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` CHANGE `site` `site` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` DROP `closed`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` DROP `closed_date`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `feature` DROP `closed_user`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Fix Record 
+
+    $sql = "ALTER TABLE `record` CHANGE `site` `site` INT( 11 ) UNSIGNED NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `quanity` `quanity` INT( 11 ) UNSIGNED NOT NULL DEFAULT '1'";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `record` CHANGE `updated` `updated` INT ( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    // Fix site
+
+    $sql = "ALTER TABLE `site` CHANGE `excavation_end` `excavation_end` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `site` CHANGE `excavation_start` `excavation_start` INT( 11 ) UNSIGNED NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Fix temp_data
+
+    $sql = "ALTER TABLE `temp_data` CHANGE `objects` `objects` LONGTEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Fix media
+
+    $sql = "UPDATE `media` SET `record_type`='record'";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } //update_0019
 
 } // \Update\Database class
 

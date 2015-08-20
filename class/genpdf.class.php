@@ -65,7 +65,7 @@ class Genpdf {
     $feat_krot = $record->feature->uid ? $record->feature->record : $record->krotovina->record;
 
     // We need the QRcode filename here
-    $qrcode = new Content($record->uid,'qrcode');
+    $qrcode = new Content($record->uid,'qrcode','record');
 
     // There are some edge cases where the QRCode might not exist, check and re-gen if needed
     if (!is_file($qrcode->filename)) {

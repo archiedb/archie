@@ -22,7 +22,7 @@ switch (\UI\sess::location('action')) {
   break;
   case 'image_delete':
     if (!Access::has('media','delete')) { \UI\access_denied(); }
-    $image = new Content($_POST['uid'],'image'); 
+    $image = new Content($_POST['uid'],'image','record'); 
     if (!$image->delete()) { 
       Error::add('delete','Unable to perform image deletion request, please contact administrator'); 
     }
@@ -34,7 +34,7 @@ switch (\UI\sess::location('action')) {
   break; 
   case '3dmodel_delete':
     if (!Access::has('media','delete')) { \UI\access_denied(); }
-    $media = new Content($_POST['uid'],'3dmodel'); 
+    $media = new Content($_POST['uid'],'3dmodel','record'); 
     if (!$media->delete()) { 
       Event::error('DELETE','Unable to delete media item:' . $media->filename); 
       Error::add('delete','Unable to 3D Model perform deletion request, please contact administrator'); 
@@ -44,7 +44,7 @@ switch (\UI\sess::location('action')) {
   break;
   case 'media_delete':
     if (!Access::has('media','delete')) { \UI\access_denied(); }
-    $media = new Content($_POST['uid'],'media'); 
+    $media = new Content($_POST['uid'],'media','record'); 
     if (!$media->delete()) { 
       Event::error('DELETE','Unable to delete media item:' . $media->filename); 
       Error::add('delete','Unable to Media perform deletion request, please contact administrator'); 
@@ -101,12 +101,12 @@ switch (\UI\sess::location('action')) {
   break;
   case 'print': 
     // For now its just tickets
-    $ticket = new Content(\UI\sess::location('objectid'),'ticket'); 
+    $ticket = new Content(\UI\sess::location('objectid'),'ticket','record'); 
     $record = new Record(\UI\sess::location('objectid')); 
     if (!$ticket->filename OR filemtime($ticket->filename) < $record->updated) { 
       Content::write(\UI\sess::location('objectid'),'ticket',$ticket->filename); 
     } 
-    header("Location:" . Config::get('web_path') . '/media/ticket/' . \UI\sess::location('objectid'));
+    header("Location:" . Config::get('web_path') . '/media/ticket/record/' . \UI\sess::location('objectid'));
   break; 
   case 'search':
     if (!Access::has('record','read')) { \UI\access_denied(); }

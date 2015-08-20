@@ -175,28 +175,29 @@ class Record extends database_object {
 
     // We need the real UID of the following objects
     $level = new Level($input['level']);
-    $feature_uid  = isset($input['feature']) ? Feature::get_uid_from_record($input['feature']) : null;
-    $krotovina_uid = isset($input['krotovina']) ? Krotovina::get_uid_from_record($input['krotovina']) : null;
+
+    $feature_uid    = empty($input['feature']) ? NULL : Feature::get_uid_from_record($input['feature']);
+    $krotovina_uid  = empty($input['krotovina']) ? NULL : Krotovina::get_uid_from_record($input['krotovina']);
 
 		// Normalize the input, set unset variables to NULL
     $site               = \UI\sess::$user->site->uid;
 		$level              = $level->uid; 
 		$lsg_unit           = $input['lsg_unit']; 
-		$xrf_matrix_index   = isset($input['xrf_matrix_index']) ? $input['xrf_matrix_index'] : NULL;
-		$xrf_artifact_index = isset($input['xrf_artifact_index']) ? $input['xrf_artifact_index'] : NULL;
-		$weight             = $input['weight']; 
-		$height             = $input['height']; 
-		$width              = $input['width']; 
-		$thickness          = $input['thickness']; 
-		$quanity            = ($input['quanity'] == 0) ? '1' : $input['quanity']; // Default to Quanity 1 
+		$xrf_matrix_index   = empty($input['xrf_matrix_index']) ? NULL : $input['xrf_matrix_index'];
+		$xrf_artifact_index = empty($input['xrf_artifact_index']) ? NULL : $input['xrf_artifact_index'];
+		$weight             = empty($input['weight']) ? NULL : $input['weight'];
+		$height             = empty($input['height']) ? NULL : $input['height'];
+		$width              = empty($input['width']) ? NULL : $input['width'];
+		$thickness          = empty($input['thickness']) ? NULL : $input['thickness'];
+		$quanity            = empty($input['quanity']) ? '1' : $input['quanity']; // Default to Quanity 1 
 		$material           = $input['material']; 
 		$classification     = $input['classification']; 
-		$notes              = $input['notes']; 
-    $accession          = (strlen(\UI\sess::$user->site->accession) > 0) ? \UI\sess::$user->site->accession : NULL;
-    $station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
-    $northing           = isset($input['northing']) ? $input['northing'] : NULL;
-    $easting            = isset($input['easting']) ? $input['easting'] : NULL;
-    $elevation          = isset($input['elevation']) ? $input['elevation'] : NULL;
+		$notes              = empty($input['notes']) ? NULL : $input['notes'];
+    $accession          = empty(\UI\sess::$user->site->accession) ? NULL: \UI\sess::$user->site->accession;
+    $station_index      = empty($input['station_index']) ? NULL : $input['station_index'];
+    $northing           = empty($input['northing']) ? NULL : $input['northing'];
+    $easting            = empty($input['easting']) ? NULL : $input['easting'];
+    $elevation          = empty($input['elevation']) ? NULL : $input['elevation'];
 		$feature            = $feature_uid;  
     $krotovina          = $krotovina_uid;
 		$user               = \UI\sess::$user->uid; 
@@ -321,13 +322,17 @@ class Record extends database_object {
 		$this->refresh(); 
 
     // Rebuild the ticket as values may have changed
-    $ticket = new Content($record_uid,'ticket');
+    $ticket = new Content($record_uid,'ticket','record');
     Content::write($record_uid,'ticket',$ticket->filename);
 
     $site = $this->site->name; 
+    $level = new Level($input['level']);
 
-		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit->name,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,'Station Index'=>$station_index,'XRFMatrix'=>$xrf_matrix_index,'Weight'=>$weight,'Height'=>$height,'Width'=>$width,'Thickness'=>$thickness,'Quanity'=>$quanity,'Material'=>$material,'Classification'=>$classification,'Feature'=>$input['feature'],'Notes'=>$notes,'User'=>\UI\sess::$user->username,'Update'=>date("r",$updated)));
-		Event::record('UPDATE',$log_line); 
+		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,
+        'Station Index'=>$station_index,'XRFMatrix'=>$xrf_matrix_index,'Weight'=>$weight,'Height'=>$height,'Width'=>$width,
+        'Thickness'=>$thickness,'Quanity'=>$quanity,'Material'=>$material,'Classification'=>$classification,'Feature'=>$input['feature'],
+        'Notes'=>$notes,'User'=>\UI\sess::$user->username,'Update'=>date("r",$updated)));
+		Event::record('record::update',$log_line); 
 		return true; 
 
 	} // update
@@ -338,6 +343,10 @@ class Record extends database_object {
    * Take the input data and validate pass optional record_id
    */
 	public static function validate($input,$record_id='') { 
+
+    // Fill empty optional fields with null 
+    $fields = array('xrf_matrix_index','xrf_artifact_index','weight','height','width','thickness','quanity');
+    foreach ($fields as $key) { if (!isset($input[$key])) { $input[$key] = NULL; } }
 
     // If we were given the record for which these values are assoicated
     if ($record_id) { $record = new Record($record_id); }
@@ -362,7 +371,7 @@ class Record extends database_object {
     }
 
     // If they've set a RN then we need to make sure they didn't set northing,easting,elevation
-    if (strlen($input['station_index'])) { 
+    if (!empty($input['station_index'])) { 
     
       // If we are comparing it to an existing record
       if (isset($record->uid)) {   
@@ -400,6 +409,7 @@ class Record extends database_object {
           Error::add('elevation','Elevation must be numeric'); 
         }
     }
+
 		// XRF Matrix Index numeric
 		if (!Field::validate('xrf_matrix_index',$input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
 			Error::add('xrf_matrix_index','XRF Matrix Index must be numeric'); 
@@ -436,7 +446,10 @@ class Record extends database_object {
 		} 
 
 		// Material, must be a valid UID
-		if (strlen($input['material'])) { 
+    if (empty($input['material'])) { 
+      Error::add('material','Must specify material');
+    }
+		if (!empty($input['material'])) { 
 			$material = new Material($input['material']); 
 			if (!$material->name) { 
 				Error::add('material','Invalid Material ID Specified, please refresh'); 
@@ -552,7 +565,7 @@ class Record extends database_object {
 		$images = $record->get_images(); 
 		foreach ($images as $image) { 
 			// Delete image and thumbnail if it exists
-			$content = new Content($image['uid'],'image'); 
+			$content = new Content($image['uid'],'image','record'); 
 			if ($content->uid) { 
 				$content->delete(); 
 			}
@@ -560,7 +573,7 @@ class Record extends database_object {
 
     $media = $record->get_media(); 
     foreach ($media as $item) { 
-      $content = new Content($item['uid'],'media'); 
+      $content = new Content($item['uid'],'media','record'); 
       if ($content->uid) { 
         $content->delete(); 
       }
@@ -629,7 +642,7 @@ class Record extends database_object {
 	 */
 	public function get_ticket() { 
 
-		$ticket = new Content($this->uid,'ticket'); 
+		$ticket = new Content($this->uid,'ticket','record'); 
 
 		return $ticket; 
 

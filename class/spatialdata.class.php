@@ -110,11 +110,11 @@ class SpatialData extends database_object {
 
     $record         = $input['record'];
     $type           = $input['type'];
-    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
-    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
-    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
-    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
-    $note           = isset($input['note']) ? $input['note'] : NULL;
+    $station_index  = empty($input['station_index']) ? NULL: intval($input['station_index']);
+    $northing       = empty($input['northing']) ? NULL : $input['northing'];
+    $easting        = empty($input['easting']) ? NULL : $input['easting'];
+    $elevation      = empty($input['elevation']) ? NULL : $input['elevation'];
+    $note           = empty($input['note']) ? NULL : $input['note'];
     
     $sql = "INSERT INTO `spatial_data` (`record`,`record_type`,`station_index`,`northing`,`easting`,`elevation`,`note`) " . 
         "VALUES (?,?,?,?,?,?,?)";
@@ -122,16 +122,17 @@ class SpatialData extends database_object {
 
     $insert_id = Dba::insert_id();
 
-    if (!$insert_id) { 
-      Error::add('general','Unable to insert Spatial Data - Please contact your administrator');
-      Event::error('SpatialData::create',"Error inserting spatial data - UID:$record  --- Type:$type --- Station index:$station_index --- Nor:$northing --- Est:$easting --- Elv:$elevation --- Note:$note");
-      return false;
-    }
-
     $json_msg = json_encode(array('uid'=>$insert_id,'record'=>$record,'type'=>$type,
       'station_index'=>$station_index,'nor'=>$northing,'est'=>$easting,'elv'=>$elevation,'note'=>$note));
 
     Event::add('SpatialData::create',$json_msg);
+
+    if (!$insert_id) { 
+      Error::add('general','Unable to insert Spatial Data - Please contact your administrator');
+      Event::add('SpatialData::create','ERROR INSERTING');
+      return false;
+    }
+
     return $insert_id;
 
   } // create
@@ -156,11 +157,11 @@ class SpatialData extends database_object {
     $uid            = $this->uid;
     $type           = $this->record_type;
     $record         = $this->record;
-    $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
-    $northing       = isset($input['northing']) ? $input['northing'] : NULL;
-    $easting        = isset($input['easting']) ? $input['easting'] : NULL;
-    $elevation      = isset($input['elevation']) ? $input['elevation'] : NULL;
-    $note           = isset($input['note']) ? $input['note'] : NULL;
+    $station_index  = empty($input['station_index']) ? NULL : intval($input['station_index']);
+    $northing       = empty($input['northing']) ? NULL : $input['northing'];
+    $easting        = empty($input['easting']) ? NULL : $input['easting'];
+    $elevation      = empty($input['elevation']) ? NULL : $input['elevation'];
+    $note           = empty($input['note']) ? NULL : $input['note'];
 
     $sql = "UPDATE `spatial_data` SET `station_index`=?,`northing`=?,`easting`=?,`elevation`=?,`note`=? WHERE `uid`=? "; 
     $db_results = Dba::write($sql,array($station_index,$northing,$easting,$elevation,$note,$uid));
@@ -169,7 +170,7 @@ class SpatialData extends database_object {
       return false;
     }
 
-    $json_msg = json_encode(array('uid'=>$insert_id,'record'=>$record,'type'=>$type,
+    $json_msg = json_encode(array('uid'=>$uid,'record'=>$record,'type'=>$type,
       'station_index'=>$station_index,'nor'=>$northing,'est'=>$easting,'elv'=>$elevation,'note'=>$note));
 
     Event::add('SpatialData::update',$json_msg);
