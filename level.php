@@ -87,6 +87,17 @@ switch (\UI\sess::location('action')) {
     // Return to whence we came,
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
   break;
+  case 'media_delete':
+    if (!Access::has('media','delete')) { \UI\access_denied(); }
+    $media = new Content($_POST['uid'],'media','level');
+    if (!$media->delete()) {
+      Error::add('delete','Unable to delete, please check your logs');
+    }
+    else { 
+      Event::add('level::media_delete',json_encode(array('Media'=>$media->uid,'Filename'=>$media->filename,'User'=>\UI\sess::$user->username)));
+    }
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
+  break;
   case 'upload':
     if (!Access::has('media','create')) { \UI\access_denied(); }
     Content::upload($_POST['uid'],$_POST,$_FILES,'level'); 
