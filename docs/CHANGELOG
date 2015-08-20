@@ -1,3 +1,54 @@
+ VERSION - Aug 20th, 2015
+ FIX - no error checking on Northing/Easting/Elevation on site
+ FIX - media view/edit/delete
+ CHANGE - attempt to fix weird MACOSX behavior
+ FIX - sql typo
+ FIX - force utc timezone if not set
+ FIX - more invalid paths
+ FIX - short-tag
+ ADD is_writeable check
+ ADD - check for material on create
+ FIX - level media/3dmodel upload
+ ADD - button to edit on view, and re-order button order on records
+ CHANGE - switch krotovinas to more modern methods
+ FIX - more warnings
+ FIX - php warnings, and force full NULL values if nothing specified on db
+ FIX - clean up site code
+ FIX - warnings, add \UI\form_value() function
+ FIX - warnings on optional fields
+ ADD - Search links for materials and classifications
+ CHANGE - switch to using empty()
+ CHANGE - Event::error() to Event::record() on non-errors
+ SWITCH - to strlen not isset()
+ ADD - checks for data dir and log dir on installer
+ ADD - transaction on feature/krotovina
+ ADD excavation_start allowed null
+ FIX - krotovina creation
+ FIX - Krotovina, spatialdata media and formating on confirmdel
+ FIX - view
+ ADD - db update and adjust krotovina create
+ ADD - krotovina transactions
+ ADD - remaining non-null
+ FIX - level create error on some versions of PHP-PDO
+ ADD - support for default location of convert in Darwin (MacOS)
+ ADD - ability to set quad/units/ticket per site
+ FIX - Admin/Admin is always that regardless of site
+ ADD - different UI for different site settings
+ FIX - Database upgrade page, migrate it to Bootstrap 3, and add a no updates needed
+ FIX - incorrect css referenced for Bootstrapt 3
+ FIX - installer, .htaccess wasn't created properly
+ ADD - site setting edit capabilities, default to existing values
+ ADD - initial work on site settings
+ CHANGE - switch upgrade to bootstrap 3.x
+ FIX - html error on installer
+ CHANGE - switch to container based Travis CI
+ FIX - unit tests
+ ADD - ability to edit krotovina points
+ FIX - Feature Spatialdata point editing
+ REFACTOR - Migrate test.php to bootstrap 3.x, and adjust debug functions to return even on failure
+ FIX - Bootstrap 3.x vs 2.x css on labels
+ FIX - level report
+ VERSION - Increase to 20150717
  FIX - SpatialData didn't read RN correctly on creation
  FIX - missing UID reference that made updating impossible
  FIX - incorrect field value on notes
@@ -9,7 +60,6 @@
  ADD - Database installer portion
  ADD - Installer (prelim)
  FIX - php error when site is invalid
- FIX
  FIX - installer sql file
  ADD - manual check for admin
  CHANGE - Allow reset-password to work without db update (RISKY) - might want to add a warning
