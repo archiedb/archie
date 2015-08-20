@@ -46,7 +46,8 @@ if (floatval(phpversion()) < 5.3) {
 }
 
 // Set Timezone to UTC if not set
-if (empty(ini_get('date.timezone'))) {
+$tz = ini_get('date.timezone');
+if (empty($tz)) {
   ini_set('date.timezone','UTC');
 }
 
