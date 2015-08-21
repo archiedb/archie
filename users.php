@@ -22,18 +22,28 @@ switch (\UI\sess::location('action')) {
   case 'update': 
     if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','edit')) { \UI\access_denied(); }
     // Make sure they set the password and confirmpassword to the same
+    $retval = true; 
     $user = new User($_POST['uid']); 
-
     if (!$user->update($_POST)) { 
-      require_once \UI\template('/users/edit'); 
-      break;
+      $retval = false;
+    }
+    else { 
+      Event::add('success','User information updated');
     }
     // Only reset the password if they typed something in!
-    if (strlen($_POST['password'])) { $user->set_password($_POST['password']); }
-    // Refresh!
-    Event::add('success','User information updated'); 
-    $user->refresh();  
-    require_once \UI\template('/users/view'); 
+    if (!empty($_POST['password'])) {
+      if (!$user->set_password($_POST['password'])) {
+        Error::add('general','Unable to update password');
+        $retval = false;
+      }
+    }
+    if ($retval == true) {
+      $user->refresh();  
+      \UI\redirect('/users/view/' . $user->uid);
+    }
+    else { 
+      require_once \UI\template('/users/edit');
+    }
   break;
   case 'site':
     if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','edit')) { \UI\access_denied('User Edit Permissions Required'); }

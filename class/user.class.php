@@ -267,16 +267,12 @@ class User extends database_object {
       return false;
     }
 
-		if (!strlen($input)) { 
-			Event::error('User::set_password','Error no password specified'); 
+    if (!User::validate_password($input)) {
 			return false; 
 		} 
 
-		$password = Dba::escape(hash('sha256',$input)); 
-		$uid = Dba::escape($this->uid); 
-
-		$sql = "UPDATE `users` SET `password`='$password' WHERE `uid`='$uid'"; 
-		$db_results = Dba::write($sql); 
+		$sql = "UPDATE `users` SET `password`=? WHERE `uid`=?"; 
+		$db_results = Dba::write($sql,array(hash('sha256',$input),$this->uid)); 
 
 		if (!$db_results) { 
 			Event::error('User::set_password','SQL Error, password update failed'); 
@@ -305,10 +301,7 @@ class User extends database_object {
       return false; 
     } 
 
-		$uid = Dba::escape($this->uid); 
-		$name = Dba::escape($input['name']); 
-		$email = Dba::escape($input['email']); 
-
+		$uid = $this->uid; 
 		$sql = 'UPDATE `users` SET `site`=?, `name`=?, `email`=? WHERE `uid`=? LIMIT 1'; 
 		$db_results = Dba::write($sql,array($input['site'],$input['name'],$input['email'],$uid)); 
 
@@ -387,6 +380,53 @@ class User extends database_object {
     return $insert_id; 
 
 	} // create
+
+  /**
+   * validate_password
+   * Do some more complex password checking
+   */
+  public static function validate_password($password) { 
+
+    if (empty($password)) { 
+      Error::add('password','Password empty');
+    }
+
+    // If they've specified a really long password, skip some of the other checks
+    if (strlen($password) > 15) {
+
+      // It can't be all the same character
+      if (mb_substr_count($password,substr($password,0,1)) == strlen($password)) {
+        Error::add('password','Must not be all one character');
+      }
+
+    } 
+    // Shorter passwords need to be more complex
+    else { 
+      if (strlen($password) < 6) { 
+        Error::add('password','Must be at least 6 characters long');
+      }
+
+      if (preg_match('/^a-z$/',$password)) {
+        Error::add('password','Short passwords cannot be only lower case');
+      }
+      if (preg_match('/^A-Z$/',$password)) { 
+        Error::add('password','Short passwords cannot be only upper case');
+      }
+      if (!preg_match('/[^a-zA-z]/',$password)) {
+        Error::add('password','Short passwords must have numbers or symbols');
+      }
+
+    }
+
+    if (preg_match('/^[0-9]+$/',$password)) {
+      Error::add('password','Must not be all numbers');
+    }
+
+    if (Error::occurred()) { return false; }
+
+    return true;
+
+  } // validate_password
 
   /**
    * validate
