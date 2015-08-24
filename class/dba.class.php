@@ -75,6 +75,7 @@ class Dba {
     $dbh = self::dbh();
     if (!$dbh) { 
       Event::error('Database','Error no database handle found');
+      echo "Database Connection Failure";
       return false;
     }
 
