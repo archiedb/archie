@@ -485,7 +485,7 @@ class Record extends database_object {
       if ($input['feature']) {
         $feature_uid = Feature::get_uid_from_record($input['feature']); 
         if (!$feature_uid) {
-    			Error::add('Feature','Feature not found, please create feature record first'); 
+    			Error::add('feature','Feature not found, please create feature record first'); 
     		} 
       }
     } // if feature specified
@@ -495,7 +495,7 @@ class Record extends database_object {
       if ($input['krotovina']) {
         $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
         if (!$krotovina_uid) {
-          Error::add('Krotovina','Krotovina not found, please create Krotovina record first');
+          Error::add('krotovina','Krotovina not found, please create Krotovina record first');
         }
       }
     }
@@ -504,17 +504,17 @@ class Record extends database_object {
     if (strlen($input['level'])) {
       $level = new Level($input['level']);
       if (!$level->catalog_id) {
-        Error::add('Level','Level not found, please create level record first');
+        Error::add('level','Level not found, please create level record first');
       }
     }
     else { 
-      Error::add('Level','Level must be specified for all records');
+      Error::add('level','Level must be specified for all records');
     }
 
     // Make sure they entered only one of the three (krot/level/feature)
     $items = intval(!empty($input['krotovina'])) + intval(!empty($input['feature']));
     if ($items > 1) { 
-      Error::add('Association','Record must be associated with only either a feature or a krotovina');
+      Error::add('association','Record must be associated with only either a feature or a krotovina');
     }
 
 		// Notes... character limit

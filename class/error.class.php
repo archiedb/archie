@@ -208,7 +208,6 @@ class Error {
 
     if (!isset(Error::$errors[$name])) { return false; }
 
- echo $name . 'is name'; 
     switch ($severity) {
       case 'optional':
         echo 'has-warning';

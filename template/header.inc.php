@@ -18,11 +18,11 @@ if (INIT_LOADED != '1') { exit; }
       <script src="../assets/js/html5shiv.js"></script>
     <![endif]-->
 <link rel="stylesheet" href="<?php echo Config::get('web_path'); ?>/template/base.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="<?php echo Config::get('web_path'); ?>/lib/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="<?php echo Config::get('web_path'); ?>/lib/bootstrap-3/css/bootstrap.min.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="<?php echo Config::get('web_path'); ?>/lib/bootstrap/css/bootstrap-fileupload.min.css" type="text/css" media="screen" />
 <script src="<?php echo Config::get('web_path'); ?>/template/ajax.js" language="javascript" type="text/javascript"></script>
-<script src="<?php echo Config::get('web_path'); ?>/lib/javascript/jquery-1.9.1.min.js" language="javascript" type="text/javascript"></script>
-<script src="<?php echo Config::get('web_path'); ?>/lib/bootstrap/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
-<script src="<?php echo Config::get('web_path'); ?>/lib/bootstrap/js/bootstrap-fileupload.min.js" language="javascript" type="text/javascript"></script>
+<script src="<?php echo Config::get('web_path'); ?>/lib/javascript/jquery-1.11.3.min.js" language="javascript" type="text/javascript"></script>
+<script src="<?php echo Config::get('web_path'); ?>/lib/bootstrap-3/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
+<script src="<?php echo Config::get('web_path'); ?>/lib/bootstrap-3/js/bootstrap-filestyle.min.js" language="javascript" type="text/javascript"></script>
 </head>
 <body>

@@ -57,9 +57,9 @@ class Event {
           $header_small = '';
         }
         foreach ($errors as $key=>$value) { 
-          $message .= "<dl><dt>" . \UI\field_name($key) . "</dt><dd>$value</dd></dl>";
+          $message .= "<dl><dt>" . \UI\field_name($key) . "</dt><dd>&nbsp;&nbsp;$value</dd></dl>";
         }
-        $css_class = ' alert-error';
+        $css_class = ' alert-danger';
         $header = '<h4>Error:' . $header_small . '</h4>';
         $size = ' alert-block';
         require \UI\template('/event'); 
