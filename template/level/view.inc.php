@@ -7,7 +7,7 @@ if (INIT_LOADED != '1') { exit; }
 <p class="pull-right">
   <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/level/<?php echo scrub_out($level->uid); ?>">View Records</a>
   <?php if (Access::has('level','reopen') AND $level->closed) { ?>
-  <a href="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" role="button" data-toggle="modal">Re-Open Level</a>
+  <button type="button" data-target="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" data-toggle="modal">Re-Open Level</button>
   <?php } ?>
   <?php if (Access::has('level','edit')) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn btn-primary">Edit Level</a>

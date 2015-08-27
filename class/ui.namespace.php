@@ -154,10 +154,10 @@ function sort_icon($sort) {
   if (!$sort) { return ''; }
 
   if ($sort == 'ASC') { 
-    $return = '<i class="icon-chevron-down"></i>';
+    $return = '<span class="glyphicon glyphicon-chevron-down"></span>';
   }
   else { 
-    $return = '<i class="icon-chevron-up"></i>';
+    $return = '<span class="glyphicon glyphicon-chevron-up"></span>';
   }
 
   return $return;

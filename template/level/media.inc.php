@@ -31,7 +31,7 @@ foreach ($items as $item) {
       <a href="<?php echo Config::get('web_path'); ?>/media/media/<?php echo scrub_out($media->uid); ?>" class="btn btn-small">Download</a>
       <?php } ?>
       <?php if (Access::has('media','delete',$media->uid)) { ?>
-      <a href="#confirm_delete_media_<?php echo scrub_out($media->uid); ?>" role="button" data-toggle="modal" class="btn btn-small btn-danger">Delete</a>
+      <button type="button" data-target="#confirm_delete_media_<?php echo scrub_out($media->uid); ?>" data-toggle="modal" class="btn btn-small btn-danger">Delete</button>
       <?php require \UI\template('/level/modal_delete_media'); ?>
       <?php } ?>
   </td>
@@ -39,4 +39,7 @@ foreach ($items as $item) {
 <?php } ?>
 </tbody>
 </table>
+<?php } else { ?>
+<div class="row"><h3 class="text-center">No Media Items</h3></div>
 <?php } ?>
+<hr />
