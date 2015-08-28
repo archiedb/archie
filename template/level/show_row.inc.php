@@ -13,8 +13,8 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo \UI\boolean_word($level->closed); ?></td>
   <td>
     <div class="btn-group">
-      <button class="btn" data-toggle="collapse" data-target="#more_<?php echo scrub_out($level->uid); ?>_info">More</button>
-      <a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+      <button class="btn btn-info" data-toggle="collapse" data-target="#more_<?php echo scrub_out($level->uid); ?>_info">More</button>
+      <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
     <ul class="dropdown-menu">
       <?php if (Access::has('admin','admin',$level->uid) OR !$level->closed) { ?>
       <li><a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>">Edit</a></li>
@@ -35,14 +35,14 @@ if (INIT_LOADED != '1') { exit; }
 </tr> 
 <tr style="border:0px;">
   <td colspan="10">
-  <div class="accordion-body collapse" style="height: 0px;" id="more_<?php echo scrub_out($level->uid); ?>_info">
-    <div class="accordion-inner">
-      <strong>Created by -</strong> <?php echo scrub_out($level->user->name); ?> on <?php echo scrub_out(date('d-M-Y',$level->created)); ?>
+  <div class="panel-collapse collapse" id="more_<?php echo scrub_out($level->uid); ?>_info">
+    <div class="panel-body">
+      <em>Created by <?php echo scrub_out($level->user->name); ?> on <?php echo scrub_out(date('d-M-Y',$level->created)); ?></em>
       <?php if ($level->updated) { ?>last updated on <?php echo scrub_out(date('d-M-Y',$level->updated)); ?><?php } ?>
         <table class="table table-hover table-bordered table-white">
         <tr>
-          <th>NORTHING</th><td><?php echo scrub_out($level->northing); ?></td>
-          <th>EASTING</th><td><?php echo scrub_out($level->easting); ?></td>
+          <th>Northing</th><td><?php echo scrub_out($level->northing); ?></td>
+          <th>Easting</th><td><?php echo scrub_out($level->easting); ?></td>
         </tr>
         <tr>
           <th>NW Start</th><td><?php echo scrub_out($level->elv_nw_start); ?></td>

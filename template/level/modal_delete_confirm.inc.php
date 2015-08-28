@@ -7,14 +7,16 @@ if (INIT_LOADED != '1') { exit; }
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h3 id="myModalLabel">Delete Level</h3>
+        <h3 id="myModalLabel">Delete Level <?php $level->_print('catalog_id'); ?></h3>
       </div>
       <div class="modal-body">
         <?php $has_records = $level->has_records(); ?>
         <p>
-          <ul><li> Has Records: <?php echo \UI\boolean_word($has_records); ?></li></ul>
+          <div class="row">
+              <h4 class="text-center">Has Records: <?php echo \UI\boolean_word($has_records); ?></h4>
+          </div>
         <?php if ($has_records) { ?>
-          Unable to delete level, there are still records associated with it. You must re-assign all of the
+          Unable to delete <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo $level->uid; ?>">level</a>, there are still records associated with it. You must re-assign all of the
           <a href="<?php echo Config::get('web_path'); ?>/records/search/level/<?php echo scrub_out($level->uid); ?>">Records</a>
           before deleting this Level.
         <?php } else { ?>

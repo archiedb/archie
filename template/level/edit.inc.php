@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <div class="page-header">
 <p class="pull-right">
- <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>" class="btn btn-primary">View Level</a>
+ <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>" class="btn btn-info">View Level</a>
   <?php if (!$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
   <?php } else { ?>

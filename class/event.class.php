@@ -50,14 +50,14 @@ class Event {
         if (!Error::occurred()) { return false; }
         $errors = Error::get_all(); 
         if (isset($errors['general'])) { 
-          $header_small = ' ' . scrub_out($errors['general']);
+          $header_small = ' ' . scrub_out(strip_tags($errors['general']));
           unset($errors['general']); 
         }
         else { 
           $header_small = '';
         }
         foreach ($errors as $key=>$value) { 
-          $message .= "<dl><dt>" . \UI\field_name($key) . "</dt><dd>&nbsp;&nbsp;$value</dd></dl>";
+          $message .= "<dl class=\"dl-horizontal\"><dt>" . \UI\field_name($key) . "</dt><dd>$value</dd></dl>";
         }
         $css_class = ' alert-danger';
         $header = '<h4>Error:' . $header_small . '</h4>';
@@ -72,7 +72,7 @@ class Event {
           unset($warnings['general']); 
         }
         foreach ($warnings as $key=>$value) { 
-          $message .= "<dl><dt>" . \UI\field_name($key) . "</dt><dd>$value</dd></dl>";
+          $message .= "<dl class=\"dl-horizontal\"><dt>" . \UI\field_name($key) . "</dt><dd>$value</dd></dl>";
         }
         $css_class = ''; 
         $header = '<h4>Warning:' . $header_small . '</h4>';
