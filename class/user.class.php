@@ -438,12 +438,16 @@ class User extends database_object {
       Error::add('password','Passwords do not match'); 
     } 
 
-    if (!strlen($input['name'])) { 
+    if (empty($input['name'])) { 
       Error::add('name','Display Name is a required field'); 
     }
 
-    if (!strlen($input['username'])) { 
+    if (empty($input['username'])) { 
       Error::add('username','Username is a required field'); 
+    }
+
+    if (preg_match("^[0-9A-Za-z_]+$",$input['username']) == 0) {
+      Error::add('username','Invalid Username, must only contain A-Z,a-z,0-9,_');
     }
 
     // Make sure that the username doesn't already exist
