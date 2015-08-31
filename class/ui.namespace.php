@@ -54,7 +54,7 @@ function access_denied($msg='') {
   include_once template('/menu');
   $header = '<h4>Error: Insufficient Access</h4>';
   $size = ' alert-block';
-  $css_class = ' alert-error';
+  $css_class = ' alert-error alert-danger';
   $message = strlen($msg) ? $msg : 'Unable to continue you do not have sufficient access to perform this action';
   require template('/event');
   include_once template('/footer');

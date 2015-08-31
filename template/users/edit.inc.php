@@ -3,27 +3,36 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<fieldset>
-<legend><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)</legend>
-<?php Error::display('general'); ?>
+<div class="page-header">
+<h3><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)</h3>
+</div>
+<?php Event::display(); ?>
+<?php Event::display('errors'); ?>
 <form class="form-horizontal" method="post" action="<?php echo Config::get('web_path'); ?>/users/update">
-  <div class="control-group<?php Error::display_class('name'); ?>">
-    <label class="control-label" for="inputName">Name</label>
-    <div class="controls">
-      <input name="name" type="text" id="inputName" placeholder="Display Name" value="<?php echo scrub_out($user->name); ?>">
+<div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class('name'); ?>">
+    <label class="col-md-2 control-label" for="inputName">Name</label>
+    <div class="col-md-2">
+      <input class="form-control" name="name" type="text" id="inputName" placeholder="Display Name" value="<?php \UI\form_value(array('post'=>'name','var'=>$user->name)); ?>">
       <span class="help-inline"><?php echo Error::get('name'); ?></span>
     </div>
-  </div>
-  <div class="control-group">
-    <label class="control-label" for="inputEmail">Email</label>
-    <div class="controls">
-      <input name="email" type="text" id="inputEmail" placeholder="Email" value="<?php echo scrub_out($user->email); ?>">
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="inputSite">Current Site</label>
-    <div class="controls">
-      <select id="inputSite" name="site">
+</div><div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class('email'); ?>">
+    <label class="col-md-2 control-label" for="inputEmail">Email</label>
+    <div class="col-md-2">
+      <input class="form-control" name="email" type="text" id="inputEmail" placeholder="Email" value="<?php \UI\form_value(array('post'=>'email','var'=>$user->email)); ?>">
+    </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="<?php Error::form_class('site'); ?>">
+    <label class="col-md-2 control-label" for="inputSite">Current Site</label>
+    <div class="col-md-2">
+      <select class="form-control" id="inputSite" name="site">
       <?php
           $sites = $user->get_sites();
           foreach ($sites as $site) {
@@ -34,23 +43,26 @@ if (INIT_LOADED != '1') { exit; }
       <?php } ?>
       </select>
     </div>
-  </div>
-  <div class="control-group<?php Error::display_class('password'); ?>">
-    <label class="control-label" for="inputPassword">Password</label>
-    <div class="controls">
-      <input name="password" type="password" id="inputPassword" placeholder="Reset Password...">
-      <span class="help-inline"><?php echo Error::get('password'); ?></span>
     </div>
   </div>
-  <div class="control-group<?php Error::display_class('password'); ?>">
-    <label class="control-label" for="inputConfirmPassword">Confirm Password</label>
-    <div class="controls">
-      <input name="confirmpassword" type="password" id="inputConfirmPassword" placeholder="Confirm Password...">
-      <span class="help-inline"><?php echo Error::get('password'); ?></span>
+  <div class="form-group">
+    <div class="<?php Error::form_class('password'); ?>">
+    <label class="col-md-2 control-label" for="inputPassword">Password</label>
+    <div class="col-md-2">
+      <input class="form-control" name="password" type="password" id="inputPassword" placeholder="Reset Password...">
+    </div>
     </div>
   </div>
-  <div class="control-group">
-    <div class="controls">
+  <div class="form-group">
+    <div class="<?php Error::form_class('password'); ?>">
+    <label class="col-md-2 control-label" for="inputConfirmPassword">Confirm Password</label>
+    <div class="col-md-2">
+      <input class="form-control" name="confirmpassword" type="password" id="inputConfirmPassword" placeholder="Confirm Password...">
+    </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-md-2 col-md-offset-2">
       <input type="hidden" name="uid" value="<?php echo scrub_out($user->uid); ?>">
       <button type="submit" class="btn btn-primary">Update</button>
     </div>

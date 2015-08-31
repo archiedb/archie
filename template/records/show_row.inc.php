@@ -16,7 +16,7 @@ if (INIT_LOADED != '1') { exit; }
 	<td><?php echo \UI\search_link('material',$record->material->name); ?></td>
 	<td><?php echo \UI\search_link('classification',$record->classification->name); ?></td>
   <td>
-    <div class="btn-group">
+    <div class="btn-group pull-right">
       <button class="btn btn-info" data-toggle="collapse" data-target="#more_<?php echo scrub_out($record->uid); ?>_info">More</button>
       <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
     <ul class="dropdown-menu">

@@ -10,7 +10,7 @@ if (INIT_LOADED != '1') { exit; }
 	<td><?php $feature->_print('keywords'); ?></td>
 	<td><?php $feature->_print('description'); ?></td>
   <td>
-    <div class="btn-group">
+    <div class="btn-group pull-right">
       <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/feature/<?php echo scrub_out($feature->catalog_id); ?>">Records</a>
       <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
       <ul class="dropdown-menu">

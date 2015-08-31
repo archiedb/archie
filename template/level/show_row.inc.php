@@ -3,27 +3,27 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <tr>
-	<td><?php echo scrub_out($level->unit); ?></td>
-	<td><?php echo scrub_out($level->quad->name); ?></td>
+	<td><?php $level->_print('unit'); ?></td>
+	<td><?php $level->quad->_print('name'); ?></td>
   <td>
-      <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>">
+      <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php $level->_print('uid'); ?>">
       <?php $level->_print('record'); ?></a>
   </td>
-  <td><?php echo scrub_out($level->lsg_unit->name); ?></td>
+  <td><?php $level->lsg_unit->_print('name'); ?></td>
   <td><?php echo \UI\boolean_word($level->closed); ?></td>
   <td>
-    <div class="btn-group">
-      <button class="btn btn-info" data-toggle="collapse" data-target="#more_<?php echo scrub_out($level->uid); ?>_info">More</button>
+    <div class="btn-group pull-right">
+      <button class="btn btn-info" data-toggle="collapse" data-target="#more_<?php $level->_print('uid'); ?>_info">More</button>
       <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
     <ul class="dropdown-menu">
       <?php if (Access::has('admin','admin',$level->uid) OR !$level->closed) { ?>
-      <li><a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>">Edit</a></li>
+      <li><a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php $level->_print('uid'); ?>">Edit</a></li>
       <?php } ?>
-      <li><a href="<?php echo Config::get('web_path'); ?>/records/search/level/<?php echo scrub_out($level->uid); ?>">Records</a></li>
+      <li><a href="<?php echo Config::get('web_path'); ?>/records/search/level/<?php $level->_print('uid'); ?>">Records</a></li>
       <?php if (Access::has('level','delete',$level->uid)) { ?>
-      <li><a href="#confirmdel_<?php echo scrub_out($level->uid); ?>" role="button" data-toggle="modal">Delete</a></li>
+      <li><a href="#confirmdel_<?php $level->_print('uid'); ?>" role="button" data-toggle="modal">Delete</a></li>
       <?php } ?>
-      <li><a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid); ?>">Generate Report</a></li>
+      <li><a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php $level->_print('uid'); ?>">Generate Report</a></li>
     </ul>
     </div>
     <?php 

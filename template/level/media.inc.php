@@ -42,4 +42,3 @@ foreach ($items as $item) {
 <?php } else { ?>
 <div class="row"><h3 class="text-center">No Media Items</h3></div>
 <?php } ?>
-<hr />

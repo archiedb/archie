@@ -58,4 +58,3 @@ foreach ($images as $uid) {
 </div>
 <?php } ?>
 </div>
-<hr />

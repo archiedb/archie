@@ -32,11 +32,11 @@ foreach ($images as $uid) {
         </p>
         <p class="text-center">
       <?php if (\UI\sess::location('action') != 'view') { ?>
-      <?php if (Access::has('media','delete',$model->uid)) { ?>
-          <button type="button" class="btn btn-small" data-target="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid); ?>" title="Download">Download</button>
+      <?php if (Access::has('media','read',$model->uid)) { ?>
+          <a class="btn btn-info btn-small" href="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid); ?>" title="Download">Download</a>
       <?php } ?>
       <?php if (Access::has('media','write',$model->uid)) { ?>
-          <button type="button" class="btn btn-small" data-target="#confirm_edit_3dmodel_<?php echo scrub_out($model->uid); ?>" data-toggle="modal">Edit</button>
+          <button type="button" class="btn btn-primary btn-small" data-target="#confirm_edit_3dmodel_<?php echo scrub_out($model->uid); ?>" data-toggle="modal">Edit</button>
       <?php } ?>
       <?php if (Access::has('media','delete',$model->uid)) { ?>
           <button type="button" class="btn btn-danger btn-small" data-target="#confirm_delete_3dmodel_<?php echo scrub_out($model->uid); ?>" data-toggle="modal">Delete</button>
@@ -55,4 +55,3 @@ foreach ($images as $uid) {
   </div>
 <?php } ?>
 </div>
-<hr />

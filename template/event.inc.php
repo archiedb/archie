@@ -8,6 +8,6 @@ if (!isset($message)) { $message=''; }
   <div class="row">
     <div class="col-md-12"><?php echo $header; ?></div>
   </div><div class="row">
-    <div><?php echo $message; ?></div>
+    <div class="col-md-12"><?php echo $message; ?></div>
   </div>
 </div>

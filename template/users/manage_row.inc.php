@@ -4,19 +4,19 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <tr>
   <td>
-    <a href="<?php echo Config::get('web_path'); ?>/users/view/<?php echo scrub_out($user->uid); ?>"><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)</a>
+    <a href="<?php echo Config::get('web_path'); ?>/users/view/<?php $user->_print('uid'); ?>"><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)</a>
   </td>
   <td><?php echo scrub_out($user->email); ?></td>
 	<td><?php $date = ($user->last_login > 0) ? date('m-d-Y',$user->last_login) : 'Never';echo $date; ?></td>
   <td>
-		<div class="btn-group">
-      <a class="btn" href="<?php echo Config::get('web_path'); ?>/users/edit/<?php echo scrub_out($user->uid); ?>">Edit</a>
-			<a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+		<div class="btn-group pull-right">
+      <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/users/edit/<?php $user->_print('uid'); ?>">Edit</a>
+			<a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
 			<ul class="dropdown-menu">
         <?php if ($user->disabled) { ?>
-				<li><a href="#confirm_enable_user_<?php echo scrub_out($user->uid); ?>" role="button" data-toggle="modal">Enable</a></li>
+				<li><a href="#confirm_enable_user_<?php $user->_print('uid'); ?>" role="button" data-toggle="modal">Enable</a></li>
         <?php } else { ?>
-				<li><a href="#confirm_disable_user_<?php echo scrub_out($user->uid); ?>" role="button" data-toggle="modal">Disable</a></li>
+				<li><a href="#confirm_disable_user_<?php $user->_print('uid'); ?>" role="button" data-toggle="modal">Disable</a></li>
         <?php } ?>
         <li><a href="<?php echo Config::get('web_path'); ?>/users/permissions/view/<?php echo $user->uid; ?>">Permissions</a></li>
 			</ul>

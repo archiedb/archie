@@ -30,7 +30,7 @@ require_once 'template/menu.inc.php';
   <div class="form-group">
     <div class="<?php Error::form_class('level'); ?>">
     <label class="col-md-2 control-label" for="inputLevel"><abbr title="Unit:Quad:Level">Locus</abbr></label>
-    <div class="col-md-2 <?php Error::display_class('level'); ?>">
+    <div class="col-md-2">
       <?php 
         $user_levels = Level::get_open_user_levels(); 
         if (!count($user_levels)) { $default_level_value = 'No Open Levels'; }
@@ -53,7 +53,7 @@ require_once 'template/menu.inc.php';
     </div> <!-- ERROR CHECK -->
     <div class="<?php Error::form_class('lsg_unit'); ?>">
     <label class="col-md-2 control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
-    <div class="col-md-2 <?php Error::display_class('lsg_unit'); ?>">
+    <div class="col-md-2">
 	    <select class="form-control" name="lsg_unit">
         <?php foreach (lsgunit::$values as $key=>$name) {
   	      $is_selected = '';
@@ -71,7 +71,7 @@ require_once 'template/menu.inc.php';
   <div class="form-group">
     <div class="<?php Error::form_class('feature'); ?>">
     <label class="col-md-2 control-label" for="inputFeature">Feature</label>
-    <div class="col-md-2 <?php Error::display_class('feature'); ?>">
+    <div class="col-md-2">
       <div class="input-group">
         <span class="input-group-addon">F-</span>
         <input id="inputFeature" class="form-control" name="feature" type="text" value="<?php \UI\form_value('feature'); ?>" />
@@ -80,7 +80,7 @@ require_once 'template/menu.inc.php';
     </div>
     <div class="<?php Error::form_class('krotovina'); ?>">
     <label class="col-md-2 control-label" for="inputKrotovina">Krotovina</label>
-    <div class="col-md-2 <?php Error::display_class('krotovina'); ?>">
+    <div class="col-md-2">
       <div class="input-group">
         <span class="input-group-addon">K-</span>
         <input id="inputKrotovina" class="form-control" name="krotovina" type="text" value="<?php \UI\form_value('krotovina'); ?>" />
@@ -92,7 +92,7 @@ require_once 'template/menu.inc.php';
   <div class="form-group">
     <div class="<?php Error::form_class('material'); ?>">
     <label class="col-md-2 control-label" for="material">Material</label>
-    <div class="col-md-2 <?php Error::display_class('material'); ?>">
+    <div class="col-md-2">
       <select class="form-control" id="material" name="material">
       	<option value="">&nbsp;</option> 
       	<?php $materials = Material::get_all(); ?>
@@ -110,14 +110,14 @@ require_once 'template/menu.inc.php';
     </div> <!-- ERROR CHECK -->
     <div class="<?php Error::form_class('classification'); ?>">
     <label class="col-md-2 control-label" for="classification">Classification</label>
-    <div class="col-md-2 <?php Error::display_class('classification'); ?>">
+    <div class="col-md-2">
       <select class="form-control" id="classification" name="classification">
       	<option value="">&nbsp;</option> 
         <?php 
         if (!empty($_POST['material'])) { $classes = Classification::get_from_material($_POST['material']); }
         else { $classes = Classification::get_all(); } 
+        require_once \UI\template('/show_class'); 
         ?>
-        <?php require_once Config::get('prefix') . '/template/show_class.inc.php'; ?>
       </select>
     </div>
     </div> <!-- ERROR CHECK -->
@@ -126,13 +126,13 @@ require_once 'template/menu.inc.php';
   <div class="form-group">
     <div class="<?php Error::form_class('northing'); ?>">
     <label class="col-md-2 control-label" for="inputNorthing">Northing</label>
-    <div class="col-md-2 <?php Error::display_class('northing'); ?>">
+    <div class="col-md-2">
       <input id="inputNorthing" class="form-control" type="text" name="northing" value="<?php \UI\form_value('northing'); ?>">
     </div>
     </div>
     <div class="<?php Error::form_class('easting'); ?>">
     <label class="col-md-2 control-label" for="inputEasting">Easting</label>
-    <div class="col-md-2 <?php Error::display_class('easting'); ?>">
+    <div class="col-md-2">
       <input id="inputEasting" class="form-control" type="text" name="easting" value="<?php \UI\form_value('easting'); ?>">
     </div>
     </div>

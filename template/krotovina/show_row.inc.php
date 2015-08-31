@@ -4,19 +4,19 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <tr>
   <td>
-      <a href="<?php echo Config::get('web_path'); ?>/krotovina/view/<?php echo scrub_out($krotovina->uid); ?>">
-      <?php echo scrub_out($krotovina->record); ?></a>
+      <a href="<?php echo Config::get('web_path'); ?>/krotovina/view/<?php $krotovina->_print('uid'); ?>">
+      <?php $krotovina->_print('record'); ?></a>
   </td>
-	<td><?php echo scrub_out($krotovina->keywords); ?></td>
-	<td><?php echo scrub_out($krotovina->description); ?></td>
+	<td><?php $krotovina->_print('keywords'); ?></td>
+	<td><?php $krotovina->_print('description'); ?></td>
   <td>
-    <div class="btn-group">
-      <a class="btn" href="<?php echo Config::get('web_path'); ?>/krotovina/edit/<?php echo scrub_out($krotovina->uid); ?>">Edit</a>
-      <a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+    <div class="btn-group pull-right">
+      <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/krotovina/<?php $krotovina->_print('uid'); ?>">Records</a></li>
+      <a href="#" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
       <ul class="dropdown-menu">
-        <li><a href="<?php echo Config::get('web_path'); ?>/records/search/krotovina/<?php echo scrub_out($krotovina->catalog_id); ?>">Records</a></li>
+        <li><a href="<?php echo Config::get('web_path'); ?>/krotovina/edit/<?php $krotovina->_print('uid'); ?>">Edit</a>
         <?php if (Access::has('krotovina','delete')) { ?>
-        <li><a href="#confirmdel_<?php echo scrub_out($krotovina->uid); ?>" role="button" data-toggle="modal">Delete</a></li>
+        <li><a href="#confirmdel_<?php $krotovina->_print('uid'); ?>" role="button" data-toggle="modal">Delete</a></li>
         <?php } ?>
       </ul>
     </div>

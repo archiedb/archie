@@ -3,45 +3,54 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
-<legend>Add New User</legend>
+<div class="page-header">
+  <h3>Add new User</h3>
+</div>
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" method="post" action="<?php echo Config::get('web_path'); ?>/users/create">
-  <div class="control-group<?php Error::display_class('name','required'); ?>">
-    <label class="control-label" for="inputName">Name</label>
-    <div class="controls">
-      <input name="name" type="text" id="inputName" placeholder="Display Name" value="<?php echo scrub_out($_POST['name']); ?>">
-      <span class="help-inline"><?php echo Error::get('name'); ?></span>
+<div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class('name'); ?>">
+    <label class="col-md-2 control-label" for="inputName">Name</label>
+    <div class="col-md-2">
+      <input class="form-control" name="name" type="text" id="inputName" placeholder="Display Name" value="<?php \UI\form_value('name'); ?>">
+    </div>
     </div>
   </div>
-  <div class="control-group<?php Error::display_class('username','required'); ?>">
-    <label class="control-label" for="inputUsername">Username</label>
-    <div class="controls">
-      <input name="username" type="text" id="inputUsername" placeholder="Username" value="<?php echo scrub_out($_POST['username']); ?>">
-      <span class="help-inline"><?php echo Error::get('username'); ?></span>
+  <div class="form-group<?php Error::display_class('username','required'); ?>">
+    <div class="<?php Error::form_class('username'); ?>">
+    <label class="col-md-2 control-label" for="inputUsername">Username</label>
+    <div class="col-md-2">
+      <input class="form-control" name="username" type="text" id="inputUsername" placeholder="Username" value="<?php \UI\form_value('username'); ?>">
+    </div>
     </div>
   </div>
-  <div class="control-group">
-    <label class="control-label" for="inputEmail">Email</label>
-    <div class="controls">
-      <input name="email" type="text" id="inputEmail" placeholder="Email Address" value="<?php echo scrub_out($_POST['email']); ?>">
+  <div class="form-group">
+    <div class="<?php Error::form_class('email'); ?>">
+    <label class="col-md-2 control-label" for="inputEmail">Email</label>
+    <div class="col-md-2">
+      <input class="form-control" name="email" type="text" id="inputEmail" placeholder="Email Address" value="<?php \UI\form_value('email'); ?>">
+    </div>
     </div>
   </div>
-  <div class="control-group<?php Error::display_class('password','required'); ?>">
-    <label class="control-label" for="inputPassword">Password</label>
-    <div class="controls">
-      <input name="password" type="password" id="inputPassword" placeholder="Password...">
-      <span class="help-inline"><?php echo Error::get('password'); ?></span>
+  <div class="form-group<?php Error::display_class('password','required'); ?>">
+    <div class="<?php Error::form_class('password'); ?>">
+    <label class="col-md-2 control-label" for="inputPassword">Password</label>
+    <div class="col-md-2">
+      <input class="form-control" name="password" type="password" id="inputPassword" placeholder="Password...">
+    </div>
     </div>
   </div>
-  <div class="control-group<?php Error::display_class('password','required'); ?>">
-    <label class="control-label" for="inputConfirmPassword">Confirm Password</label>
-    <div class="controls">
-      <input name="confirmpassword" type="password" id="inputConfirmPassword" placeholder="Confirm Password...">
-      <span class="help-inline"><?php echo Error::get('password'); ?></span>
+  <div class="form-group<?php Error::display_class('password','required'); ?>">
+    <div class="<?php Error::form_class('password'); ?>">
+    <label class="col-md-2 control-label" for="inputConfirmPassword">Confirm Password</label>
+    <div class="col-md-2">
+      <input class="form-control" name="confirmpassword" type="password" id="inputConfirmPassword" placeholder="Confirm Password...">
+    </div>
     </div>
   </div>
-  <div class="control-group">
-    <div class="controls">
+  <div class="form-group">
+    <div class="col-md-2 col-md-offset-2">
       <button type="submit" class="btn btn-success">Add New User</button>
     </div>
   </div>

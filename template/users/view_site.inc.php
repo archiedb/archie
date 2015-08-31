@@ -5,11 +5,11 @@ $sites = $user->get_sites();
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
 <div class="page-header">
-<h3>You are currently working on <strong><?php echo scrub_out($user->site->name); ?></strong></h3>
+<h3>You are currently working on <strong><?php $user->site->_print('name'); ?></strong></h3>
 </div>
 <?php Event::display(); ?>
 <h4>You have access to the following Sites</h4>
-<table class="table table-bordered table-hover">
+<table class="table table-hover">
 <tbody>
 <tr>
   <th><strong>Site Name</strong></th>

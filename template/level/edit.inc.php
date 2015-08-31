@@ -272,7 +272,7 @@ if (INIT_LOADED != '1') { exit; }
 </form>
 <h4>Upload</h4><hr />
 <form class="form-inline" enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/level/upload">
- 	<input type="hidden" name="uid" value="<?php echo scrub_out($level->uid); ?>" />
+ 	<input type="hidden" name="uid" value="<?php $level->_print('uid'); ?>" />
   <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
 <div class="row">
   <div class="form-group">
