@@ -82,7 +82,7 @@ function record_link($uid,$type,$text='') {
 
   $url = \Config::get('web_path') . '/' . $type_map[$type] . '/view/' . scrub_out($uid);
 
-  $return = scrub_out($text) . ' <a class="pull-right" href="' . $url . '" title="View Record" alt="View Record"><i class="icon-eye-open"></i></a>';
+  $return = '<a href="' . $url . '" title="View Record" alt="View Record">' . scrub_out($text) . '</a>';
 
   return $return;
 
