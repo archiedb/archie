@@ -72,6 +72,7 @@ function record_link($uid,$type,$text='') {
   $type_map = array(
     'record'=>'records',
     'level'=>'level',
+    'user'=>'users',
     'feature'=>'feature',
     'krotovina'=>'krotovina',
   );
