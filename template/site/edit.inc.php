@@ -2,70 +2,89 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
+<div class="page-header">
+  <h3>Edit Site - <?php echo scrub_out($site->name); ?></h3>
+</div>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<fieldset class="pull-left"><legend>Edit Site - <?php echo scrub_out($site->name); ?></legend>
 <form class="form-horizontal" id="update_site" method="post" action="<?php echo Config::get('web_path'); ?>/manage/site/update">
-<div class="control-group span4<?php Error::display_class('name'); ?>">
-  <label class="control-label" for="inputName">Name</label>
-  <div class="controls"><input id="inputName" name="name" type="text" value="<?php echo scrub_out($site->name); ?>" /></div>
-</div>
-<div class="control-group span4 offset1<?php Error::display_class('pi'); ?>">
-  <label class="control-label" for="inputPI">Principal Investigator</label>
-  <div class="controls">
-  	<input id="inputPI" name="pi" type="text" value="<?php echo scrub_out($site->principal_investigator); ?>" />
+<div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class('name'); ?>">
+    <label class="col-md-2 control-label" for="inputName">Name</label>
+    <div class="col-md-2">
+      <input class="form-control" id="inputName" name="name" type="text" value="<?php \UI\form_value(array('post'=>'name','var'=>$site->name)); ?>" />
+    </div>
+    </div>
+    <div class="<?php Error::form_class('pi'); ?>">
+    <label class="col-md-2 control-label" for="inputPI">Principal Investigator</label>
+    <div class="col-md-2">
+    	<input class="form-control" id="inputPI" name="pi" type="text" value="<?php \UI\form_value(array('post'=>'pi','var'=>$site->principal_investigator)); ?>" />
+    </div>
+    </div> 
   </div>
-</div> 
-<div class="control-group span4<?php Error::display_class('description'); ?>">
-  <label class="control-label" for="inputDescription">Description</label>
-  <div class="controls">
-  	<textarea id="inputDescription" name="description" class="textbox" rows="5"><?php echo scrub_out($site->description); ?></textarea>
+</div><div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class('description'); ?>">
+    <label class="col-md-2 control-label" for="inputDescription">Description</label>
+    <div class="col-md-2">
+    	<textarea class="form-control" id="inputDescription" name="description" class="textbox" rows="5"><?php \UI\form_value(array('post'=>'description','var'=>$site->description)); ?></textarea>
+    </div>
+    </div>
+    <div class="<?php Error::form_class('partners'); ?>">
+    <label class="col-md-2 control-label" for="inputPartners">Partners</label>
+    <div class="col-md-2">
+      <textarea class="form-control" id="inputPartners" name="partners" class="textbox" rows="5"><?php \UI\form_value(array('post'=>'partners','var'=>$site->partners)); ?></textarea>
+    </div>
+    </div>
   </div>
-</div>
-<div class="control-group span4 offset1<?php Error::display_class('partners'); ?>">
-  <label class="control-label" for="inputPartners">Partners</label>
-  <div class="controls">
-  	<textarea id="inputPartners" name="partners" class="textbox" rows="5"><?php \UI\form_value(array('post'=>'partners','var'=>$site->partners)); ?></textarea>
+</div><div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class('elevation'); ?>">
+    <label class="col-md-2 control-label" for="inputElevation">Elevation</label>
+    <div class="col-md-2">
+      <input class="form-control" id="inputElevation" name="elevation" type="text" value="<?php \UI\form_value(array('post'=>'elevation','var'=>$site->elevation)); ?>" />
+    </div>
+    </div>
+    <div class="<?php Error::form_class('northing'); ?>">
+    <label class="col-md-2 control-label" for="inputNorthing">Northing</label>
+    <div class="col-md-2">
+      <input id="inputNorthing" name="northing" type="text" value="<?php \UI\form_value(array('post'=>'northing','var'=>$site->northing)); ?>" />
+    </div>
+    </div>
   </div>
-</div>
-<div class="control-group span4<?php Error::display_class('elevation'); ?>">
-  <label class="control-label" for="inputElevation">Elevation</label>
-  <div class="controls">
-    <input id="inputElevation" name="elevation" type="text" value="<?php \UI\form_value(array('post'=>'elevation','var'=>$site->elevation)); ?>" />
+</div><div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class('easting'); ?>">
+    <label class="col-md-2 control-label" for="inputEasting">Easting</label>
+    <div class="col-md-2">
+      <input class="form-control" id="inputEasting" name="easting" type="text" value="<?php \UI\form_value(array('post'=>'easting','var'=>$site->easting)); ?>" />
+    </div>
+    </div>
+    <div class="<?php Error::form_class('excavation_start'); ?>">
+    <label class="col-md-2 control-label" for="inputExcavationStart">Excavation Start</label>
+    <div class="col-md-2">
+      <input class="form-control" id="inputExcavationStart" name="excavation_start" type="text" value="<?php \UI\form_value(array('post'=>'excavation_start','var'=>$site->excavation_start_date)); ?>" />
+    </div>
+    </div>
   </div>
-</div>
-<div class="control-group span4 offset1<?php Error::display_class('northing'); ?>">
-  <label class="control-label" for="inputNorthing">Northing</label>
-  <div class="controls">
-    <input id="inputNorthing" name="northing" type="text" value="<?php \UI\form_value(array('post'=>'northing','var'=>$site->northing)); ?>" />
+</div><div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class('excavation_end'); ?>">
+    <label class="col-md-2 control-label" for="inputExcavationEnd">Excavation End</label>
+    <div class="col-md-2">
+      <input id="inputExcavationEnd" name="excavation_end" type="text" value="<?php \UI\form_value(array('post'=>'excavation_end','var'=>$site->excavation_end_date)); ?>" />
+    </div>
+    </div>
   </div>
-</div>
-<div class="control-group span4<?php Error::display_class('easting'); ?>">
-  <label class="control-label" for="inputEasting">Easting</label>
-  <div class="controls">
-    <input id="inputEasting" name="easting" type="text" value="<?php \UI\form_value(array('post'=>'easting','var'=>$site->easting)); ?>" />
-  </div>
-</div>
-<div class="control-group span4 offset1<?php Error::display_class('excavation_start'); ?>">
-  <label class="control-label" for="inputExcavationStart">Excavation Start</label>
-  <div class="controls">
-    <input id="inputExcavationStart" name="excavation_start" type="text" value="<?php \UI\form_value(array('post'=>'excavation_start','var'=>$site->excavation_start_date)); ?>" />
-  </div>
-</div>
-<div class="control-group span4<?php Error::display_class('excavation_end'); ?>">
-  <label class="control-label" for="inputExcavationEnd">Excavation End</label>
-  <div class="controls">
-    <input id="inputExcavationEnd" name="excavation_end" type="text" value="<?php \UI\form_value(array('post'=>'excavation_end','var'=>$site->excavation_end_date)); ?>" />
-  </div>
-</div>
-<div class="control-group span8">
-  <div class="controls">
-    <input type="hidden" name="site_uid" value="<?php echo scrub_out($site->uid); ?>" />
+</div><div class="row">
+  <div class="form-group">
+  <div class="col-md-2 col-md-offset-2">
+    <input type="hidden" name="site_uid" value="<?php $site->_print('uid'); ?>" />
     <button class="btn btn-primary" type="submit">Update</button>
   </div>
 </div>
 </form>
-</fieldset>
 <?php
   include \UI\template('/site/modal_set_project');
   include \UI\template('/site/modal_set_accession');

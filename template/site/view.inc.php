@@ -8,9 +8,9 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
   <h4><?php echo scrub_out($site->name); ?> Site</h4>
 </div>
 <p class="pull-right text-right">
-  <a class="btn btn-primary " role="button" data-toggle="modal" href="#set_project_<?php echo $site->uid; ?>">Set Project</a>
-  <a class="btn btn-primary " role="button" data-toggle="modal" href="#set_accession_<?php echo $site->uid; ?>">Set Accession</a>
-  <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/site/edit/<?php echo scrub_out($site->uid); ?>">Edit</a>
+  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#set_project_<?php $site->_print('uid'); ?>">Set Project</button>
+  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#set_accession_<?php $site->_print('uid'); ?>">Set Accession</button>
+  <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/manage/site/edit/<?php $site->_print('uid'); ?>">Edit</a>
 </p>
 <table class="table table-hover table-bordered table-white">
 <tr>
@@ -78,7 +78,7 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
 <tr>
   <td><?php echo scrub_out(ucfirst($key)); ?></td>
   <td><?php \UI\print_var($site->$key); ?></td>
-  <td><a href="#editsetting<?php echo scrub_out($key); ?>" role="button" data-toggle="modal" class="btn">Edit</a>
+  <td><button type="button" data-target="#editsetting<?php echo scrub_out($key); ?>" data-toggle="modal" class="btn btn-primary">Edit</button>
     <?php include \UI\template('/site/modal_edit_setting'); ?>
   </td>
 </tr>
