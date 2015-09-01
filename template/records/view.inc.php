@@ -19,7 +19,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
 
-<table class="table table-hover table-bordered table-white">
+<table class="table table-hover table-white">
 <tr>
   <th>Unit</th><td><?php echo scrub_out($record->level->unit); ?></em></td>
   <th>Catalog ID</th><td><?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></td>
@@ -59,8 +59,10 @@ if (INIT_LOADED != '1') { exit; }
   <th>Quanity</th><td><?php echo scrub_out($record->quanity); ?></td>
 </tr>
 <tr>
-  <th>Accession</th><td><?php echo $record->_print('accession'); ?></td>
-  <th>Notes</th><td><?php echo scrub_out($record->notes); ?></td>
+  <th>Accession</th><td colspan="3"><?php echo $record->_print('accession'); ?></td>
+</tr>
+<tr>
+  <th>Notes</th><td colspan="3"><?php echo scrub_out($record->notes); ?></td>
 </tr>
   
 </table>

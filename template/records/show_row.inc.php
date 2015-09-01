@@ -40,7 +40,12 @@ if (INIT_LOADED != '1') { exit; }
     <div class="panel-body">
       <em>Created by <?php echo scrub_out($record->user->username); ?> on <?php echo scrub_out(date('d-M-Y',$record->created)); ?>
       <?php if ($record->updated) { ?>last updated on <?php echo scrub_out(date('d-M-Y',$record->updated)); ?><?php } ?></em>
-      <blockquote><?php echo scrub_out($record->notes); ?></blockquote>
+      <div class="panel panel-default">
+        <div class="panel-heading">Notes</div>
+        <div class="panel-body">
+          <?php $record->_print('notes'); ?>
+        </div>
+      </div>
     </div>
   </div>
   </td>
