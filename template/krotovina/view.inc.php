@@ -15,18 +15,16 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<table class="table table-hover table-bordered table-white">
-<tbody>
-<tr>
-  <th>Description</th><td><?php $krotovina->_print('description'); ?></td>
-</tr>
-<tr>
-  <th>Other Notes</th><td><?php $krotovina->_print('keywords'); ?></td>
-</tr>
-</tbody>
-</table>
+<div class="panel panel-default">
+  <div class="panel-heading">Description</div>
+  <div class="panel-body"><?php $krotovina->_print('description'); ?></div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Keywords</div>
+  <div class="panel-body"><?php $krotovina->_print('keywords'); ?></div>
+</div>
 <h4>Krotovina Spatial Information</h4>
-<table class="table table-hover table-bordered table-white">
+<table class="table table-hover">
 <tr>
   <th>Station Index (RN)</th>
   <th>Northing</th>
@@ -47,9 +45,9 @@ foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']);
   <td><?php $spatialdata->_print('note'); ?></td>
   <td>
     <button type="button" data-target="#editspatial<?php $spatialdata->_print('uid'); ?>" class="btn btn-primary" data-toggle="modal">Edit</button>
+    <?php include \UI\template('/krotovina/modal_edit_point'); ?>
     <button type="button" data-target="#confirmdel_<?php $spatialdata->_print('uid'); ?>" class="btn btn-danger" data-toggle="modal">Remove</button>
     <?php include \UI\template('/krotovina/modal_confirmdel_point'); ?>
-    <?php include \UI\template('/krotovina/modal_edit_point'); ?>
   </td>
 </tr>
 <?php } ?>

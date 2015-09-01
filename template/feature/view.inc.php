@@ -15,14 +15,16 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<table class="table table-hover table-bordered table-white">
-<tr>
-  <th>Description</th><td colspan="3"><?php $feature->_print('description'); ?></td>
-  <th>Other Notes?</th><td><?php $feature->_print('keywords'); ?></em></td>
-</tr>
-</table>
+<div class="panel panel-default">
+  <div class="panel-heading">Description</div>
+  <div class="panel-body"><?php $feature->_print('description'); ?></div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Other Notes?</div>
+  <div class="panel-body"><?php $feature->_print('keywords'); ?></div>
+</div>
 <h4>Feature Spatial Information</h4>
-<table class="table table-hover table-bordered table-white">
+<table class="table table-hover">
 <tr>
   <th>Station Index (RN)</th>
   <th>Northing</th>
