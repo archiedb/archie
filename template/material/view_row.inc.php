@@ -5,20 +5,20 @@ $material_count = Stats::material_records('material',$material->uid);
 ?>
 <tr>
   <td>
-    <?php echo scrub_out($material->name); ?>
+    <?php $material->_print('name'); ?>
   </td>
   <td><?php echo scrub_out($material_count['count']); ?></td>
 	<td><?php echo \UI\boolean_word($material->enabled); ?></td>
   <td>
-		<div class="btn-group">
+		<div class="btn-group pull-right">
       <?php if ($material->enabled) { ?>
-      <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/material/disable/<?php echo scrub_out($material->uid); ?>">Disable</a>
+      <a class="btn btn-danger" href="<?php echo Config::get('web_path'); ?>/manage/material/disable/<?php echo scrub_out($material->uid); ?>">Disable</a>
       <?php } else { ?>
-      <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/material/enable/<?php echo scrub_out($material->uid); ?>">Enable</a>
+      <a class="btn btn-success" href="<?php echo Config::get('web_path'); ?>/manage/material/enable/<?php echo scrub_out($material->uid); ?>">Enable</a>
       <?php } ?>
-      <a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+      <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
        <ul class="dropdown-menu">
-        <li><a href="<?php echo Config::get('web_path'); ?>/manage/material/edit/<?php echo scrub_out($material->uid); ?>">Edit</a></li>
+        <li><a href="<?php echo Config::get('web_path'); ?>/manage/material/edit/<?php $material->_print('uid'); ?>">Edit</a></li>
        </ul>
 		</div>
   </td>

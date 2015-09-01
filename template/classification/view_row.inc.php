@@ -10,11 +10,11 @@ $classification_count = Stats::classification_records('classification',$classifi
   <td><?php echo scrub_out($classification_count['count']); ?></td>
 	<td><?php echo \UI\boolean_word($classification->enabled); ?></td>
   <td>
-		<div class="btn-group">
+		<div class="btn-group pull-right">
       <?php if ($classification->enabled) { ?>
-      <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/classification/disable/<?php echo scrub_out($classification->uid); ?>">Disable</a>
+      <a class="btn btn-danger" href="<?php echo Config::get('web_path'); ?>/manage/classification/disable/<?php echo scrub_out($classification->uid); ?>">Disable</a>
       <?php } else { ?>
-      <a class="btn" href="<?php echo Config::get('web_path'); ?>/manage/classification/enable/<?php echo scrub_out($classification->uid); ?>">Enable</a>
+      <a class="btn btn-success" href="<?php echo Config::get('web_path'); ?>/manage/classification/enable/<?php echo scrub_out($classification->uid); ?>">Enable</a>
       <?php } ?>
 		</div>
   </td>
