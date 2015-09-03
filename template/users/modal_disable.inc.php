@@ -10,7 +10,7 @@ if (INIT_LOADED != '1') { exit; }
         <h3 id="myModalLabel">Confirm Disable User</h3>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to disable the user <?php $user->_print('name'); ?>(<?php $user->_print('username'); ?>). They will be unable to login.</p>
+        <p>Are you sure you want to disable the user <code><?php $user->_print('name'); ?>(<?php $user->_print('username'); ?>)</code>. They will be unable to login.</p>
       </div>
       <div class="modal-footer">
       <form method="post" action="<?php echo Config::get('web_path'); ?>/users/disable">

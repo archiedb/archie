@@ -71,8 +71,11 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <td><?php echo scrub_out($group->name); ?></td>
   <td><?php echo scrub_out($group->description); ?></td>
-  <td><button type="button" data-target="#del_group<?php $group->_print('uid'); ?>" data-toggle="modal" class="btn btn-danger">Remove</button>
-  <?php include \UI\template('/users/permissions/modal_del_group'); ?>
+  <td>
+    <div class="pull-right">
+      <button type="button" data-target="#del_group<?php $group->_print('uid'); ?>" data-toggle="modal" class="btn btn-danger">Remove</button>
+      <?php include \UI\template('/users/permissions/modal_del_group'); ?>
+    </div>
   </td>
 </tr>
 <?php } ?>

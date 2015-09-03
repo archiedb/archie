@@ -8,7 +8,7 @@ if (INIT_LOADED != '1') { exit; }
   </p>
 
   <h3>
-    Add Material<small>Material Names must be unique, and all new materials will be added in a disabled state</small>
+    Add Material<small> Material Names must be unique, and all new materials will be added in a disabled state</small>
   </h3>
 </div>
 <?php Event::display('errors'); ?>
