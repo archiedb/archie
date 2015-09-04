@@ -51,6 +51,7 @@ foreach ($images as $uid) {
       ?>
       <?php } ?>
       </p>
+      </div>
     </div>
   </div>
 <?php } ?>

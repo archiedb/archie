@@ -104,5 +104,19 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo scrub_out($level->notes); ?></td>
 </tr>
 </table>
-<h5>Images</h5>
-<?php require_once \UI\template('/level/images'); ?>
+<ul class="nav nav-tabs" id="media_nav">
+  <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>
+  <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>
+  <li><a href="#media" data-toggle="tab">Other Media</a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane active" id="picture">
+    <?php require_once \UI\template('/level/images'); ?>
+  </div>
+  <div class="tab-pane" id="3dmodel">
+    <?php require_once \UI\template('/level/3dmodel'); ?>
+  </div>
+  <div class="tab-pane" id="media">
+    <?php require_once \UI\template('/level/media'); ?>
+  </div>
+</div>

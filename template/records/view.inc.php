@@ -67,7 +67,7 @@ if (INIT_LOADED != '1') { exit; }
   
 </table>
 <ul class="nav nav-tabs" id="media_nav">
-  <li class="active"><a href="#picture" data-toggle="tab">Pictures</a></li>
+  <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>
   <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>
   <li><a href="#media" data-toggle="tab">Other Media</a></li>
 </ul>
