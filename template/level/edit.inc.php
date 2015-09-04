@@ -284,6 +284,7 @@ if (INIT_LOADED != '1') { exit; }
         <input type="file" name="media" class="filestyle" data-buttonText="" data-buttonbefore="true">
     </div>
     <div class="col-md-2">
+      <input type="hidden" name="return" value="/level/edit/<?php $level->_print('uid'); ?>" />
       <button class="btn btn-primary" type="submit">Upload</button>
     </div>
   </div>
