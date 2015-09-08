@@ -3,20 +3,23 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
+<div class="page-header">
 <p class="pull-right">
   <a target="_blank" href="<?php echo Config::get('web_path'); ?>/records/print/<?php echo scrub_out($record->uid); ?>/ticket" class="btn btn-success">Print Ticket</a>
-  <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn">Edit Record</a>
+  <a href="<?php echo Config::get('web_path'); ?>/records/edit/<?php echo scrub_out($record->uid); ?>" class="btn btn-primary">Edit Record</a>
   <?php if (Access::has('record','delete')) { ?>
-  <a href="#confirmdel_<?php echo scrub_out($record->uid); ?>" role="button" data-toggle="modal" class="btn btn-danger">Delete</a>
+  <button type="button" data-target="#confirmdel_<?php echo scrub_out($record->uid); ?>" data-toggle="modal" class="btn btn-danger">Delete</button>
   <?php } ?>
-</p>
   <?php if (Access::has('record','delete')) { include \UI\template('/records/modal_delete_record');  } ?>
+</p>
 <h3><?php echo $record->site->name . '-' . $record->catalog_id; ?>
   <small>Entered by <?php echo $record->user->username; ?> on <?php echo date("d-M-Y H:i:s",$record->created); ?></small>
 </h3>
+</div>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<table class="table table-hover table-bordered table-white">
+
+<table class="table table-hover table-white">
 <tr>
   <th>Unit</th><td><?php echo scrub_out($record->level->unit); ?></em></td>
   <th>Catalog ID</th><td><?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?></td>
@@ -56,13 +59,15 @@ if (INIT_LOADED != '1') { exit; }
   <th>Quanity</th><td><?php echo scrub_out($record->quanity); ?></td>
 </tr>
 <tr>
-  <th>Accession</th><td><?php echo $record->_print('accession'); ?></td>
-  <th>Notes</th><td><?php echo scrub_out($record->notes); ?></td>
+  <th>Accession</th><td colspan="3"><?php echo $record->_print('accession'); ?></td>
+</tr>
+<tr>
+  <th>Notes</th><td colspan="3"><?php echo scrub_out($record->notes); ?></td>
 </tr>
   
 </table>
 <ul class="nav nav-tabs" id="media_nav">
-  <li class="active"><a href="#picture" data-toggle="tab">Pictures</a></li>
+  <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>
   <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>
   <li><a href="#media" data-toggle="tab">Other Media</a></li>
 </ul>

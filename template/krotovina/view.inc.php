@@ -3,26 +3,28 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
+<div class="page-header">
 <p class="pull-right">
-  <a href="<?php echo Config::get('web_path'); ?>/krotovina/edit/<?php echo scrub_out($krotovina->uid); ?>" class="btn">Edit Krotovina</a>
-  <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/records/search/krotovina/<?php echo scrub_out($krotovina->catalog_id); ?>">View Records</a>
-  <a class="btn btn-success" href="#addspatial" role="button" data-toggle="modal">Add Spatial Point</a>
+  <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/krotovina/<?php $krotovina->_print('catalog_id'); ?>">View Records</a>
+  <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/krotovina/edit/<?php $krotovina->_print('uid'); ?>">Edit Krotovina</a>
+  <button type="button" class="btn btn-success" data-target="#addspatial" data-toggle="modal">Add Spatial Point</button>
 </p>
 <h3><?php echo $krotovina->site->name . ' ' . $krotovina->record; ?>
   <small>Entered by <?php echo $krotovina->user->username; ?> on <?php echo date("d-M-Y H:i:s",$krotovina->created); ?></small>
 </h3>
+</div>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
-<table class="table table-hover table-bordered table-white">
-<tr>
-  <th>Description</th><td><?php echo scrub_out($krotovina->description); ?></td>
-</tr>
-<tr>
-  <th>Other Notes</th><td><?php echo scrub_out($krotovina->keywords); ?></em></td>
-</tr>
-</table>
-<h5>Krotovina Spatial Information</h5>
-<table class="table table-hover table-bordered table-white">
+<div class="panel panel-default">
+  <div class="panel-heading">Description</div>
+  <div class="panel-body"><?php $krotovina->_print('description'); ?></div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Keywords</div>
+  <div class="panel-body"><?php $krotovina->_print('keywords'); ?></div>
+</div>
+<h4>Krotovina Spatial Information</h4>
+<table class="table table-hover">
 <tr>
   <th>Station Index (RN)</th>
   <th>Northing</th>
@@ -36,16 +38,16 @@ $spatialdata = SpatialData::get_record_data($krotovina->uid,'krotovina');
 foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']); 
 ?>
 <tr>
-  <td><?php echo scrub_out($spatialdata->station_index); ?></td>
-  <td><?php echo scrub_out($spatialdata->northing); ?></td>
-  <td><?php echo scrub_out($spatialdata->easting); ?></td>
-  <td><?php echo scrub_out($spatialdata->elevation); ?></td>
-  <td><?php echo scrub_out($spatialdata->note); ?></td>
+  <td><?php $spatialdata->_print('station_index'); ?></td>
+  <td><?php $spatialdata->_print('northing'); ?></td>
+  <td><?php $spatialdata->_print('easting'); ?></td>
+  <td><?php $spatialdata->_print('elevation'); ?></td>
+  <td><?php $spatialdata->_print('note'); ?></td>
   <td>
-    <a href="#editspatial<?php $spatialdata->_print('uid'); ?>" class="btn btn-success" role="button" data-toggle="modal">Edit</a>
-    <a href="#confirmdel_<?php $spatialdata->_print('uid'); ?>" class="btn btn-danger" role="button" data-toggle="modal">Remove</a>
-    <?php include \UI\template('/krotovina/modal_confirmdel_point'); ?>
+    <button type="button" data-target="#editspatial<?php $spatialdata->_print('uid'); ?>" class="btn btn-primary" data-toggle="modal">Edit</button>
     <?php include \UI\template('/krotovina/modal_edit_point'); ?>
+    <button type="button" data-target="#confirmdel_<?php $spatialdata->_print('uid'); ?>" class="btn btn-danger" data-toggle="modal">Remove</button>
+    <?php include \UI\template('/krotovina/modal_confirmdel_point'); ?>
   </td>
 </tr>
 <?php } ?>

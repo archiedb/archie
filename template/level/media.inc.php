@@ -4,7 +4,7 @@ if (INIT_LOADED != '1') { exit; }
 $items = Content::level($level->uid,'media'); 
 if (count($items)) { 
 ?>
-<table class="table table-bordered table-hover">
+<table class="table table-hover">
 <thead>
 <tr>
   <th>Description</th>
@@ -28,10 +28,10 @@ foreach ($items as $item) {
       <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/<?php echo scrub_out($extension); ?>/<?php echo scrub_out($media->uid); ?>">3d View</a>
       <?php } ?>
       <?php if (Access::has('media','download',$media->uid)) { ?>
-      <a href="<?php echo Config::get('web_path'); ?>/media/media/<?php echo scrub_out($media->uid); ?>" class="btn btn-small">Download</a>
+      <a href="<?php echo Config::get('web_path'); ?>/media/media/<?php echo scrub_out($media->uid); ?>" class="btn btn-info btn-small">Download</a>
       <?php } ?>
       <?php if (Access::has('media','delete',$media->uid)) { ?>
-      <a href="#confirm_delete_media_<?php echo scrub_out($media->uid); ?>" role="button" data-toggle="modal" class="btn btn-small btn-danger">Delete</a>
+      <button type="button" data-target="#confirm_delete_media_<?php echo scrub_out($media->uid); ?>" data-toggle="modal" class="btn btn-small btn-danger">Delete</button>
       <?php require \UI\template('/level/modal_delete_media'); ?>
       <?php } ?>
   </td>
@@ -39,4 +39,6 @@ foreach ($items as $item) {
 <?php } ?>
 </tbody>
 </table>
+<?php } else { ?>
+<div class="row"><h3 class="text-center">No Media Items</h3></div>
 <?php } ?>

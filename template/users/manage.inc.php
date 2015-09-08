@@ -4,12 +4,12 @@ if (INIT_LOADED != '1') { exit; }
 $active_name = $filter . '_active';
 ${$active_name} = ' class="active"';
 ?>
-<div class="pull-left">
-<h4>Users</h4>
-</div>
+<div class="page-header">
 <p class="pull-right text-right">
   <a class="btn btn-success" href="<?php echo Config::get('web_path'); ?>/users/add">Add User</a>
 </p>
+<h3>Manage Users</h3>
+</div>
 <div class="clear-float"></div>
 <ul class="nav nav-tabs">
   <li<?php echo $enabled_active; ?>>

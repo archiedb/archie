@@ -6,7 +6,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="page-header">
   <small class="pull-right">
   <div class="btn-group">
-    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Sort Krotovina By <span class="caret"></span></a>
+    <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">Sort Krotovina By <span class="caret"></span></a>
       <ul class="dropdown-menu">
       <?php 
         foreach (View::get_allowed_sorts('krotovina') as $field) { 

@@ -30,9 +30,9 @@ $name = strlen($model->notes) ? $model->notes : basename($model->filename);
       thingiview.setObjectColor('#0066FF');
       thingiview.initScene();
 <?php if ($model->extension == 'stl') { ?>
-      thingiview.loadSTL('<?php echo Config::get('web_prefix'); ?>/media/3dmodel/<?php echo scrub_out($model->uid); ?>');
+      thingiview.loadSTL('<?php echo Config::get('web_prefix'); ?>/media/3dmodel/<?php echo $model->record_type; ?>/<?php echo scrub_out($model->uid); ?>');
 <?php } elseif ($model->extension == 'ply') { ?>
-      thingiview.loadPLY('<?php echo Config::get('web_prefix'); ?>/media/3dmodel/<?php echo scrub_out($model->uid); ?>');
+      thingiview.loadPLY('<?php echo Config::get('web_prefix'); ?>/media/3dmodel/<?php echo $model->record_type; ?>/<?php echo scrub_out($model->uid); ?>');
 <?php } ?>
       thingiview.setShowPlane(true);
       thingiview.setRotation(false);
@@ -47,7 +47,7 @@ $name = strlen($model->notes) ? $model->notes : basename($model->filename);
     }    
   </script>
 <p class="pull-right">
-  <a href="<?php echo Config::get('web_path'); ?>/records/view/<?php echo scrub_out($model->parentuid); ?>" class="btn">Record</a>
+  <a href="<?php echo Config::get('web_path'); ?>/<?php $model->_print('record_type'); ?>/view/<?php echo scrub_out($model->parentuid); ?>" class="btn btn-info">View <?php echo ucfirst($model->record_type); ?></a>
 </p>
 <div class="page-header">
   <h3>3d Model View - <?php echo scrub_out($name); ?></h3>

@@ -1,4 +1,5 @@
 </div> <!-- Content Div End --> 
-<p class="muted text-center"><small>Archie v.<?php echo \update\Code::version(); ?></small></p>
+<hr />
+<p class="muted text-center"><small><a href="http://archiedb.com">Archie v.<?php echo \update\Code::version(); ?></a></small></p>
 </body>
 </html>

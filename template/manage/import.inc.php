@@ -10,31 +10,25 @@ if (INIT_LOADED != '1') { exit; }
   <h3>Data Imports</h3>
     <em>You must indicate the type of data you are updating. If the data type selected does not match the uploaded file it will be rejected.</em>
 </div>
-<div class="row">
-<div class="span4">
 <form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/manage/run_import">
   <input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
-<div class="fileupload fileupload-new" data-provides="fileupload">
-  <div class="input-append">
-    <div class="uneditable-input span3">
-      <i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span>
+<div class="row">
+  <div class="form-group">
+    <div class="col-md-4 col-md-offset-2">
+      <input type="file" name="media" class="filestyle" data-buttonText="" data-buttonbefore="true">
     </div>
-    <span class="btn btn-file"><span class="fileupload-new">Select</span>
-    <span class="fileupload-exists">Change</span><input name="import" type="file" /></span>
-    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+    <div class="col-md-2">
+      <select class="form-control" name="type">
+        <option value="xyz_station">XYZ Station</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary" type="submit">Import</button>
+    </div>
   </div>
 </div>
-</div>
-<div class="span3 offset1">
-  <select name="type">
-      <option value="xyz_station">XYZ Station</option>
-  </select>
-</div>
-<div class="span1">
-  <button class="btn btn-primary" type="submit">Import</button>
-</div>
-</div>
 </form>
+<hr />
 <p>Expected import file formats are listed below:</p>
 <dl class="dl-horizontal">
   <dt>INT</dt>
@@ -56,27 +50,27 @@ if (INIT_LOADED != '1') { exit; }
 </dl>
 <hr />
 <div class="row">
-  <div class="span2"><strong>Import Type</strong></div>
-  <div class="span10"><strong>Field(s)</strong></div>
+  <div class="col-md-2"><strong>Import Type</strong></div>
+  <div class="col-md-10"><strong>Field(s)</strong></div>
 </div>
 <!-- XYZ Station Import -->
 <div class="row">
-  <div class="span2">XYZ Station</div>
-  <div class="span10">UNIQUE('RN'),DECIMAL('Northing'),DECIMAL('Easting'),DECIMAL('Elevation'),STRING('Notes')</div>
+  <div class="col-md-2">XYZ Station</div>
+  <div class="col-md-10">UNIQUE('RN'),DECIMAL('Northing'),DECIMAL('Easting'),DECIMAL('Elevation'),STRING('Notes')</div>
 </div>
 <div class="row">
-  <div class="span2">Feature Info</div>
-  <div class="span10">INT('CATALOGID),STRING(KEYWORDS),STRING(DESCRIPTION),STRING(USERNAME),DATE(mm/dd/yy)</div>
+  <div class="col-md-2">Feature Info</div>
+  <div class="col-md-10">INT('CATALOGID),STRING(KEYWORDS),STRING(DESCRIPTION),STRING(USERNAME),DATE(mm/dd/yy)</div>
 </div>
 <div class="row">
-  <div class="span2">Krotovina Info</div>
-  <div class="span10">INT('CATALOGID),STRING(KEYWORDS),STRING(DESCRIPTION),STRING(USERNAME),DATE(mm/dd/yy)</div>
+  <div class="col-md-2">Krotovina Info</div>
+  <div class="col-md-10">INT('CATALOGID),STRING(KEYWORDS),STRING(DESCRIPTION),STRING(USERNAME),DATE(mm/dd/yy)</div>
 </div>
 <div class="row">
-  <div class="span2">Feature XYZ</div>
-  <div class="span10">INT('CATALOGID'),**INDEX('RN'),**DECIMAL('Northing'),**DECIMAL('Easting'),**DECIMAL('Elevation')</div>
+  <div class="col-md-2">Feature XYZ</div>
+  <div class="col-md-10">INT('CATALOGID'),**INDEX('RN'),**DECIMAL('Northing'),**DECIMAL('Easting'),**DECIMAL('Elevation')</div>
 </div>
 <div class="row">
-  <div class="span2">Krotovina XYZ</div>
-  <div class="span10">INT('CATALOGID'),**INDEX('RN'),**DECIMAL('Northing'),**DECIMAL('Easting'),**DECIMAL('Elevation')</div>
+  <div class="col-md-2">Krotovina XYZ</div>
+  <div class="col-md-10">INT('CATALOGID'),**INDEX('RN'),**DECIMAL('Northing'),**DECIMAL('Easting'),**DECIMAL('Elevation')</div>
 </div>

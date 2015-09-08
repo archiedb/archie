@@ -1,43 +1,45 @@
 <?php 
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
-?>
-<ul class="thumbnails">
-<?php
 $images = Content::level($level->uid,'3dmodel'); 
 $i=0; 
+?>
+<div class="row">
+<?php if (count($images) == 0) { ?>
+  <h3 class="text-center">No 3d Models</h3>
+<?php } ?>
+<?php
 foreach ($images as $uid) {
   $model = new Content($uid,'3dmodel','level'); 
-  if ($i/4 == floor($i/4)) {
-      echo '</ul><ul class="thumbnails">';
+  if ($i/3 == floor($i/3)) {
+      echo '</div><div class="row">';
   }
   $info = pathinfo($model->filename);
   $extension = $info['extension'];
   $name = strlen($model->notes) ? $model->notes : basename($model->filename);
   $i++; 
 ?>
-  <li class="span3">
+  <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
-      <p class="text-center">
       <?php if ($extension == 'stl') { ?>
       <a href="<?php echo Config::get('web_path'); ?>/viewer/stl/level/<?php echo scrub_out($model->uid); ?>" title="3D View"><img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/level/<?php echo scrub_out($model->uid);?>/thumb" /></a>
       <?php } else { ?>
       <img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/level/<?php echo scrub_out($model->uid);?>/thumb" />
       <?php } ?>
-      <br />
-      <?php echo scrub_out($name); ?>
-      </p>
-      <hr />
-      <p class="text-center">
+      <div class="caption">
+        <p>
+          <?php echo scrub_out($name); ?>
+        </p>
+        <p class="text-center">
       <?php if (\UI\sess::location('action') != 'view') { ?>
-      <?php if (Access::has('media','delete',$model->uid)) { ?>
-        <a class="btn btn-small" href="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid); ?>" title="Download">Download</a>
+      <?php if (Access::has('media','read',$model->uid)) { ?>
+          <a class="btn btn-info btn-small" href="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid); ?>" title="Download">Download</a>
       <?php } ?>
       <?php if (Access::has('media','write',$model->uid)) { ?>
-        <a class="btn btn-small" href="#confirm_edit_3dmodel_<?php echo scrub_out($model->uid); ?>" role="button" data-toggle="modal">Edit</a>
+          <button type="button" class="btn btn-primary btn-small" data-target="#confirm_edit_3dmodel_<?php echo scrub_out($model->uid); ?>" data-toggle="modal">Edit</button>
       <?php } ?>
       <?php if (Access::has('media','delete',$model->uid)) { ?>
-        <a class="btn btn-danger btn-small" href="#confirm_delete_3dmodel_<?php echo scrub_out($model->uid); ?>" role="button" data-toggle="modal">Delete</a>
+          <button type="button" class="btn btn-danger btn-small" data-target="#confirm_delete_3dmodel_<?php echo scrub_out($model->uid); ?>" data-toggle="modal">Delete</button>
       <?php } ?>
       <?php 
       if (Access::has('media','delete',$model->uid)) { 
@@ -49,7 +51,8 @@ foreach ($images as $uid) {
       ?>
       <?php } ?>
       </p>
+      </div>
     </div>
-  </li>
+  </div>
 <?php } ?>
-</ul>
+</div>

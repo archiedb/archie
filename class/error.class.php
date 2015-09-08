@@ -200,6 +200,32 @@ class Error {
 
 	} // display_class
 
+  /**
+   * form_class
+   * returns CSS class for forms
+   */
+  public static function form_class($name,$severity='') {
+
+    if (!isset(Error::$errors[$name])) { return false; }
+
+    switch ($severity) {
+      case 'optional':
+        echo 'has-warning';
+      break;
+      default;
+      case 'required':
+        echo 'has-error';
+      break;
+      case 'info':
+      case 'success':
+        echo 'has-success';
+      break;
+    }
+
+    return false;
+
+  } // form_class
+
 	/**
 	 * display
 	 * This prints the error out with a standard Error class span

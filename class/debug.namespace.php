@@ -12,7 +12,7 @@ function check_gd_support() {
   }
 
   $info = gd_info(); 
-print_r($info);
+
   // Make sure we have JPEG and PNG support
   if (!$info['PNG Support']) {
     return false; 

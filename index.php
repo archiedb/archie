@@ -25,7 +25,6 @@ switch (\UI\sess::location('page')) {
   case 'feature':
     if (!Access::has('feature')) { \UI\access_denied(); }
     require_once 'feature.php';
-
   break;
   case 'krotovina':
     if (!Access::has('krotovina')) { \UI\access_denied(); }
@@ -34,6 +33,7 @@ switch (\UI\sess::location('page')) {
   default:
     require_once \UI\template('/header'); 
     require_once \UI\template('/index');
+    require_once \UI\template('/footer');
   break; 
   case 'reports':
     if (!Access::has('report')) { \UI\access_denied(); }

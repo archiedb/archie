@@ -1,36 +1,47 @@
 <?php 
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
-?>
-<ul class="thumbnails">
-<?php
+
 $images = Content::level($level->uid,'image'); 
 $i=0; 
+?>
+<div class="row">
+<?php if (count($images) == 0) { ?>
+  <h3 class="text-center">No Images</h3>
+<?php } ?>
+<?php
 foreach ($images as $uid) {
   $image = new Content($uid,'image','level'); 
-  if ($i/4 == floor($i/4)) {
-      echo '</ul><ul class="thumbnails">';
+  if ($i/3 == floor($i/3)) {
+      echo '</div><div class="row">';
   }
   $i++; 
 ?>
-  <li class="span3">
-    <div class="thumbnail">
-      <p class="text-center">
-      <?php if ($level->image == $image->uid) { ?><span class="label label-success"><?php } ?>
-      <a href="<?php echo Config::get('web_path'); ?>/media/image/level/<?php echo scrub_out($image->uid); ?>" target="_blank"><img src="<?php echo Config::get('web_path'); ?>/media/image/level/<?php echo scrub_out($image->uid);?>/thumb" alt="Image <?php echo $i; ?>" /></a><br />
+<div class="col-sm-6 col-md-4">
+  <div class="thumbnail">
+    <a href="<?php echo Config::get('web_path'); ?>/media/image/level/<?php echo scrub_out($image->uid); ?>" target="_blank">
+      <img src="<?php echo Config::get('web_path'); ?>/media/image/level/<?php echo scrub_out($image->uid);?>/thumb" alt="Image <?php echo $i; ?>" />
+    </a>
+    <div class="caption">
+        <?php if ($level->image == $image->uid) { ?>
+        <p class="text-center">
+          <span class="label label-success">Primary Image</span> 
+        </p>
+        <?php } else { ?>
+        <p><br /></p>
+        <?php } ?>
+        <p>
         <?php echo scrub_out($image->notes); ?>
-      <?php if ($level->image == $image->uid) { ?></span><?php } ?>
-      </p>
-      <hr />
-      <p class="text-center">
+        </p>
+        <p class="text-center">
       <?php if (\UI\sess::location('action') != 'view') { ?>
       <?php if (Access::has('media','write',$image->uid)) { ?>
-        <a class="btn btn-small" href="#confirm_edit_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Edit</a>
+        <button type="button" class="btn btn-primary btn-xs" data-target="#confirm_edit_image_<?php echo scrub_out($image->uid); ?>" data-toggle="modal">Edit</button>
       <?php } ?>
       <?php if (Access::has('media','delete',$image->uid)) { ?>
-        <a class="btn btn-danger btn-small" href="#confirm_delete_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Delete</a>
+        <button type="button" class="btn btn-danger btn-xs" data-target="#confirm_delete_image_<?php echo scrub_out($image->uid); ?>" data-toggle="modal">Delete</button>
       <?php } ?>
-        <a class="btn btn-success btn-small" href="#confirm_primary_image_<?php echo scrub_out($image->uid); ?>" role="button" data-toggle="modal">Primary</a>
+        <button type="button" class="btn btn-success btn-xs" data-target="#confirm_primary_image_<?php echo scrub_out($image->uid); ?>" data-toggle="modal">Primary</button>
       <?php 
       if (Access::has('media','delete',$image->uid)) { 
         require \UI\template('/level/modal_delete_image'); 
@@ -43,6 +54,7 @@ foreach ($images as $uid) {
       <?php } ?>
       </p>
     </div>
-  </li>
+  </div>
+</div>
 <?php } ?>
-</ul>
+</div>

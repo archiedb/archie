@@ -54,7 +54,7 @@ function access_denied($msg='') {
   include_once template('/menu');
   $header = '<h4>Error: Insufficient Access</h4>';
   $size = ' alert-block';
-  $css_class = ' alert-error';
+  $css_class = ' alert-error alert-danger';
   $message = strlen($msg) ? $msg : 'Unable to continue you do not have sufficient access to perform this action';
   require template('/event');
   include_once template('/footer');
@@ -72,6 +72,7 @@ function record_link($uid,$type,$text='') {
   $type_map = array(
     'record'=>'records',
     'level'=>'level',
+    'user'=>'users',
     'feature'=>'feature',
     'krotovina'=>'krotovina',
   );
@@ -82,7 +83,7 @@ function record_link($uid,$type,$text='') {
 
   $url = \Config::get('web_path') . '/' . $type_map[$type] . '/view/' . scrub_out($uid);
 
-  $return = scrub_out($text) . ' <a class="pull-right" href="' . $url . '" title="View Record" alt="View Record"><i class="icon-eye-open"></i></a>';
+  $return = '<a href="' . $url . '" title="View Record" alt="View Record">' . scrub_out($text) . '</a>';
 
   return $return;
 
@@ -154,10 +155,10 @@ function sort_icon($sort) {
   if (!$sort) { return ''; }
 
   if ($sort == 'ASC') { 
-    $return = '<i class="icon-chevron-down"></i>';
+    $return = '<span class="glyphicon glyphicon-chevron-down"></span>';
   }
   else { 
-    $return = '<i class="icon-chevron-up"></i>';
+    $return = '<span class="glyphicon glyphicon-chevron-up"></span>';
   }
 
   return $return;

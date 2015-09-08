@@ -3,13 +3,14 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
+<div class="page-header">
 <p class="pull-right">
-  <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/records/search/level/<?php echo scrub_out($level->uid); ?>">View Records</a>
+  <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/level/<?php echo scrub_out($level->uid); ?>">View Records</a>
   <?php if (Access::has('level','reopen') AND $level->closed) { ?>
-  <a href="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" role="button" data-toggle="modal">Re-Open Level</a>
+  <button type="button" data-target="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" data-toggle="modal">Re-Open Level</button>
   <?php } ?>
   <?php if (Access::has('level','edit')) { ?>
-  <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn">Edit Level</a>
+  <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn btn-primary">Edit Level</a>
   <?php } ?>
   <?php if (!$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
@@ -22,25 +23,26 @@ if (INIT_LOADED != '1') { exit; }
 <?php } ?>
 <h3>Level: <?php echo scrub_out($level->site->name); ?><?php echo scrub_out($level->record); ?>
   <?php if ($level->closed) { ?><span class="label label-important">CLOSED</span><?php } ?>
-  <small>Entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>
+  <small>entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>
 </h3>
+</div>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
 <table class="table table-hover table-bordered table-white">
 <tr>
-  <th>UNIT</th><td><?php echo scrub_out($level->unit); ?></td>
-  <th>QUAD</th><td><?php echo scrub_out($level->quad->name); ?></td>
+  <th>Unit</th><td><?php echo scrub_out($level->unit); ?></td>
+  <th>Quad</th><td><?php echo scrub_out($level->quad->name); ?></td>
 </tr>
 <tr>
-  <th>LEVEL</th><td><?php echo scrub_out($level->catalog_id); ?></td>
+  <th>Level</th><td><?php echo scrub_out($level->catalog_id); ?></td>
   <th><abbr title="Lithostratoigraphic Unit">L. U.</abbr></th><td><?php echo scrub_out($level->lsg_unit->name); ?></td>
 </tr>
 <tr>
-  <th>NORTHING</th><td><?php echo scrub_out($level->northing); ?></td>
+  <th>Northing</th><td><?php echo scrub_out($level->northing); ?></td>
   <th>EASTING</th><td><?php echo scrub_out($level->easting); ?></td>
 </tr>
 </table>
-<h5>Elevations<h5>
+<h5>Elevations</h5>
 <table class="table table-hover table-bordered table-white">
 <tr>
   <th>NW Start</th><td><?php echo scrub_out($level->elv_nw_start); ?></td>
@@ -63,7 +65,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>Center Finish</th><td><?php echo scrub_out($level->elv_center_finish); ?></td>
 </tr>
 </table>
-<h5>Excavators<h5>
+<h5>Excavators</h5>
 <?php 
   // Setup the users
   $ex_one = new User($level->excavator_one); 
@@ -102,5 +104,19 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo scrub_out($level->notes); ?></td>
 </tr>
 </table>
-<h5>Images</h5>
-<?php require_once \UI\template('/level/images'); ?>
+<ul class="nav nav-tabs" id="media_nav">
+  <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>
+  <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>
+  <li><a href="#media" data-toggle="tab">Other Media</a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane active" id="picture">
+    <?php require_once \UI\template('/level/images'); ?>
+  </div>
+  <div class="tab-pane" id="3dmodel">
+    <?php require_once \UI\template('/level/3dmodel'); ?>
+  </div>
+  <div class="tab-pane" id="media">
+    <?php require_once \UI\template('/level/media'); ?>
+  </div>
+</div>

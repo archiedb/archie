@@ -844,11 +844,10 @@ class content extends database_object {
 			return false; 
 		} 
 
-		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
-		$uid = Dba::escape($uid); 
-    $description = Dba::escape($description); 
-    $user_id = Dba::escape(\UI\sess::$user->uid); 
-    $sql = "INSERT INTO `media` (`filename`,`type`,`record`,`notes`,`user`,'record_type') VALUES (?,?,?,?,?,?)";
+    // Strip the data_root off of the filename
+		$filename = ltrim($filename,Config::get('data_root')); 
+
+    $sql = "INSERT INTO `media` (`filename`,`type`,`record`,`notes`,`user`,`record_type`) VALUES (?,?,?,?,?,?)";
     $db_results = Dba::write($sql,array($filename,'3dmodel',$uid,$description,\UI\sess::$user->uid,$record_type)); 
 
     $media_uid = Dba::insert_id(); 

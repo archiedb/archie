@@ -60,7 +60,7 @@ switch (\UI\sess::location('action')) {
   case 'disable':
     if (!Access::has('user','manage')) { \UI\access_denied(); }
     // You aren't allowed to disable yourself - sorry!
-    if ($_POST['uid'] == \UI\sess::$user->uid) { header('Location:' . Config::get('web_path')); exit; }
+    if ($_POST['uid'] == \UI\sess::$user->uid) { \UI\access_denied('Unable to disable yourself'); }
     $user = new User($_POST['uid']); 
     $user->disable(); 
     $user->refresh(); 
@@ -88,7 +88,7 @@ switch (\UI\sess::location('action')) {
     $uid = User::create($_POST);  
     if (!$uid) { 
       require_once \UI\template('/users/add'); 
-      exit; 
+      break;
     }
     $user = new User($uid); 
     require_once \UI\template('/users/view'); 
