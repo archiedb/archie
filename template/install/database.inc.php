@@ -70,7 +70,7 @@ if (INIT_LOADED != '1') { exit; }
     administrative access to the database server as well as a username and password for the initial user.
   </p>
 </div>
-<?php Error::display('general'); ?>
+<?php Event::display('errors'); ?>
 <form class="form-horizontal" id="insert_db" method="post" action="install.php?action=insertdb">
 <h4>Database Connection Information</h4>
 <div class="form-group">

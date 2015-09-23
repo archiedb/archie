@@ -53,7 +53,7 @@ function run($info) {
 function delete_htaccess() {
  
   $dir = dirname(__FILE__);
-  $prefx = realpath($dir,"/../");
+  $prefix = realpath($dir . "/../");
   unlink($prefix . '/.htaccess');
 
   return true; 
@@ -67,7 +67,7 @@ function delete_htaccess() {
 function delete_config() { 
 
   $dir = dirname(__FILE__);
-  $prefx = realpath($dir,"/../");
+  $prefix = realpath($dir . '/../');
   unlink($prefix . '/config/settings.php');
 
   return true; 
