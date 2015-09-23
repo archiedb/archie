@@ -446,7 +446,7 @@ class User extends database_object {
       Error::add('username','Username is a required field'); 
     }
 
-    if (preg_match("^[0-9A-Za-z_]+$",$input['username']) == 0) {
+    if (preg_match("/[^0-9A-Za-z_]/",$input['username']) != 0) {
       Error::add('username','Invalid Username, must only contain A-Z,a-z,0-9,_');
     }
 

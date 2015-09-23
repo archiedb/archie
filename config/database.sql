@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.33, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: archie
 -- ------------------------------------------------------
--- Server version	5.5.42-1
+-- Server version	5.5.44-0+deb7u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -60,7 +60,7 @@ CREATE TABLE `app_info` (
 
 LOCK TABLES `app_info` WRITE;
 /*!40000 ALTER TABLE `app_info` DISABLE KEYS */;
-INSERT INTO `app_info` VALUES ('db_version','0018');
+INSERT INTO `app_info` VALUES ('db_version','0019');
 /*!40000 ALTER TABLE `app_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,16 +101,13 @@ DROP TABLE IF EXISTS `feature`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature` (
   `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `site` int(11) unsigned DEFAULT NULL,
+  `site` int(11) unsigned NOT NULL,
   `catalog_id` int(11) unsigned DEFAULT NULL,
   `keywords` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `user` int(11) unsigned NOT NULL,
   `created` int(10) unsigned NOT NULL,
-  `updated` int(10) unsigned NOT NULL,
-  `closed` int(1) unsigned NOT NULL,
-  `closed_date` int(10) unsigned DEFAULT NULL,
-  `closed_user` int(10) unsigned DEFAULT NULL,
+  `updated` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`uid`),
   KEY `site` (`site`),
   KEY `record` (`catalog_id`),
@@ -217,16 +214,13 @@ DROP TABLE IF EXISTS `krotovina`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `krotovina` (
   `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `site` int(11) unsigned DEFAULT NULL,
+  `site` int(11) unsigned NOT NULL,
   `catalog_id` int(11) unsigned DEFAULT NULL,
   `keywords` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `user` int(11) unsigned NOT NULL,
-  `created` int(10) unsigned NOT NULL,
-  `updated` int(10) unsigned NOT NULL,
-  `closed` int(1) unsigned NOT NULL,
-  `closed_date` int(10) unsigned DEFAULT NULL,
-  `closed_user` int(10) unsigned DEFAULT NULL,
+  `created` int(11) unsigned NOT NULL,
+  `updated` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`uid`),
   KEY `record` (`catalog_id`),
   KEY `site` (`site`),
@@ -258,20 +252,20 @@ CREATE TABLE `level` (
   `quad` varchar(255) CHARACTER SET utf8 NOT NULL,
   `lsg_unit` int(10) unsigned NOT NULL,
   `user` int(11) unsigned NOT NULL,
-  `created` int(10) unsigned NOT NULL,
-  `updated` int(10) unsigned NOT NULL,
+  `created` int(11) unsigned NOT NULL,
+  `updated` int(11) unsigned DEFAULT NULL,
   `northing` decimal(8,3) NOT NULL,
   `easting` decimal(8,3) NOT NULL,
   `elv_nw_start` decimal(8,3) NOT NULL,
-  `elv_nw_finish` decimal(8,3) NOT NULL,
+  `elv_nw_finish` decimal(8,3) DEFAULT NULL,
   `elv_ne_start` decimal(8,3) NOT NULL,
-  `elv_ne_finish` decimal(8,3) NOT NULL,
+  `elv_ne_finish` decimal(8,3) DEFAULT NULL,
   `elv_sw_start` decimal(8,3) NOT NULL,
-  `elv_sw_finish` decimal(8,3) NOT NULL,
+  `elv_sw_finish` decimal(8,3) DEFAULT NULL,
   `elv_se_start` decimal(8,3) NOT NULL,
-  `elv_se_finish` decimal(8,3) NOT NULL,
+  `elv_se_finish` decimal(8,3) DEFAULT NULL,
   `elv_center_start` decimal(8,3) NOT NULL,
-  `elv_center_finish` decimal(8,3) NOT NULL,
+  `elv_center_finish` decimal(8,3) DEFAULT NULL,
   `excavator_one` int(11) unsigned DEFAULT NULL,
   `excavator_two` int(11) unsigned DEFAULT NULL,
   `excavator_three` int(11) unsigned DEFAULT NULL,
@@ -279,7 +273,7 @@ CREATE TABLE `level` (
   `description` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `difference` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
   `notes` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image` int(11) unsigned NOT NULL,
+  `image` int(11) unsigned DEFAULT NULL,
   `closed` int(1) unsigned DEFAULT NULL,
   `closed_date` int(10) unsigned DEFAULT NULL,
   `closed_user` int(10) unsigned DEFAULT NULL,
@@ -391,7 +385,7 @@ DROP TABLE IF EXISTS `record`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `record` (
   `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `site` int(11) unsigned DEFAULT NULL,
+  `site` int(11) unsigned NOT NULL,
   `catalog_id` int(10) unsigned NOT NULL,
   `level` int(11) unsigned NOT NULL,
   `feature` int(11) unsigned DEFAULT NULL,
@@ -402,7 +396,7 @@ CREATE TABLE `record` (
   `height` decimal(8,3) DEFAULT NULL,
   `width` decimal(8,3) DEFAULT NULL,
   `thickness` decimal(8,3) DEFAULT NULL,
-  `quanity` int(10) unsigned NOT NULL,
+  `quanity` int(11) unsigned NOT NULL DEFAULT '1',
   `material` int(10) unsigned NOT NULL,
   `classification` int(10) unsigned NOT NULL,
   `notes` varchar(1024) DEFAULT NULL,
@@ -410,7 +404,7 @@ CREATE TABLE `record` (
   `accession` varchar(1024) DEFAULT NULL,
   `user` int(11) NOT NULL,
   `created` int(10) unsigned NOT NULL,
-  `updated` int(10) unsigned NOT NULL,
+  `updated` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`uid`),
   KEY `user` (`user`),
   KEY `lsg_unit` (`lsg_unit`),
@@ -528,8 +522,8 @@ CREATE TABLE `site` (
   `elevation` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
   `principal_investigator` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `partners` varchar(5000) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `excavation_start` int(11) unsigned NOT NULL,
-  `excavation_end` int(11) unsigned NOT NULL,
+  `excavation_start` int(11) unsigned DEFAULT NULL,
+  `excavation_end` int(11) unsigned DEFAULT NULL,
   `settings` text COLLATE utf8_unicode_ci,
   `enabled` int(1) unsigned NOT NULL,
   PRIMARY KEY (`uid`)
@@ -617,7 +611,7 @@ CREATE TABLE `temp_data` (
   `uid` int(13) NOT NULL AUTO_INCREMENT,
   `sid` varchar(128) CHARACTER SET utf8 NOT NULL,
   `data` longtext COLLATE utf8_unicode_ci NOT NULL,
-  `objects` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `objects` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`sid`,`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -657,6 +651,16 @@ LOCK TABLES `user_group` WRITE;
 UNLOCK TABLES;
 
 --
+-- Temporary table structure for view `user_permission_view`
+--
+
+DROP TABLE IF EXISTS `user_permission_view`;
+/*!50001 DROP VIEW IF EXISTS `user_permission_view`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `users`
 --
 
@@ -687,10 +691,6 @@ LOCK TABLES `users` WRITE;
 UNLOCK TABLES;
 
 --
--- Dumping routines for database 'archie'
---
-
---
 -- Final view structure for view `user_permission_view`
 --
 
@@ -712,7 +712,5 @@ UNLOCK TABLES;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 
--- Dump completed on 2015-07-16 15:48:43
+-- Dump completed on 2015-09-23 13:51:04
