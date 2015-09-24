@@ -9,6 +9,11 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('krotovina','create')) { \UI\access_denied(); } 
     require_once \UI\template('/krotovina/new'); 
   break;
+  case 'upload':
+    if (!Access::has('media','create')) { \UI\access_denied(); }
+    Content::upload($_POST['krotovina_id'],$_POST,$_FILES,'krotovina');
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
+  break; 
   case 'create':
     if (!Access::has('krotovina','create')) { \UI\access_denied(); } 
     $krotovina_id = Krotovina::create($_POST);

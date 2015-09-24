@@ -53,3 +53,19 @@ foreach ($spatialdata as $data) { $spatialdata = new Spatialdata($data['uid']);
 <?php } ?>
 </table>
 <?php require_once \UI\template('/krotovina/modal_add_point'); ?>
+<ul class="nav nav-tabs" id="media_nav">
+  <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>
+  <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>
+  <li><a href="#media" data-toggle="tab">Other Media</a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane active" id="picture">
+    <?php require_once \UI\template('/krotovina/images'); ?>
+  </div>
+  <div class="tab-pane" id="3dmodel">
+    <?php require_once \UI\template('/krotovina/3dmodel'); ?>
+  </div>
+  <div class="tab-pane" id="media">
+    <?php require_once \UI\template('/krotovina/media'); ?>
+  </div>
+</div>

@@ -32,6 +32,7 @@ switch (\UI\sess::location('page')) {
   break;
   default:
     require_once \UI\template('/header'); 
+    require_once \UI\template('/menu');
     require_once \UI\template('/index');
     require_once \UI\template('/footer');
   break; 

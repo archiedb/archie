@@ -1,3 +1,21 @@
+ FIX - 3d Model / Media views on Level:View
+ FIX - 3d Model upload wasn't working with new record_type
+ REFACTOR - Final migration for Bootstrap 3.x
+ CHANGE - feature and krotovina view to panels instead of tables
+ CHANGE - change record -> more to panel with title, and fix single view formating with notes
+ REFACTOR - Migrate materials and classification to bootstrap 3.x
+ CHANGE - change the row content on level
+ FIX - extranious debug statement
+ FIX - missing footers
+ REFACTOR - Migrate to Bootstrap 3.x, and standardize interface
+ ADD - validation for username, be a little more strict on allowed characters
+ REFACTOR - Bootstrap 3.x
+ REFACTOR - Bootstrap 3.x
+ REFACTOR - To bootstrap-3.x
+ ADD - form_class() error function, bootstrap 3.x uses different names
+ ADD - error message if no DB connection
+ ADD - minimum password strength requirements
+ FIX - parse error in newer PHP due to use of ini_get+empty()
  VERSION - Aug 20th, 2015
  FIX - no error checking on Northing/Easting/Elevation on site
  FIX - media view/edit/delete
@@ -28,6 +46,8 @@
  FIX - view
  ADD - db update and adjust krotovina create
  ADD - krotovina transactions
+ MAYBE FIX?
+ BLAH
  ADD - remaining non-null
  FIX - level create error on some versions of PHP-PDO
  ADD - support for default location of convert in Darwin (MacOS)
@@ -60,6 +80,7 @@
  ADD - Database installer portion
  ADD - Installer (prelim)
  FIX - php error when site is invalid
+ FIX
  FIX - installer sql file
  ADD - manual check for admin
  CHANGE - Allow reset-password to work without db update (RISKY) - might want to add a warning
