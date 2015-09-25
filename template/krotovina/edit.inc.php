@@ -45,6 +45,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 <div>
 </form>
+<hr />
 <ul class="nav nav-tabs" id="media_nav">
   <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>
   <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>

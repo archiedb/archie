@@ -16,7 +16,7 @@ foreach ($images as $uid) {
   }
   $i++; 
 ?>
-  <li class="col-sm-6 col-md-4">
+  <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
       <a href="<?php echo Config::get('web_path'); ?>/media/image/krotovina/<?php $image->_print('uid'); ?>" target="_blank">
         <img src="<?php echo Config::get('web_path'); ?>/media/image/krotovina/<?php $image->_print('uid'); ?>/thumb" alt="Image <?php echo $i; ?>" />
@@ -44,8 +44,8 @@ foreach ($images as $uid) {
       ?>
       <?php } ?>
       </p>
+      </div>
     </div>
   </div>
-</div>
 <?php } ?>
-</div>
+</div> <!-- Row -->

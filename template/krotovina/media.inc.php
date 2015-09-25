@@ -1,10 +1,10 @@
 <?php 
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
-$items = Content::krotovina($record->uid,'media'); 
+$items = Content::krotovina($krotovina->uid,'media'); 
 if (count($items)) { 
 ?>
-<table class="table table-bordered table-hover">
+<table class="table table-hover">
 <thead>
 <tr>
   <th>Description</th>
@@ -28,7 +28,7 @@ foreach ($items as $item) {
       <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/<?php echo scrub_out($extension); ?>/<?php echo scrub_out($media->uid); ?>">3d View</a>
       <?php } ?>
       <?php if (Access::has('media','download',$media->uid)) { ?>
-      <a href="<?php echo Config::get('web_path'); ?>/media/media/<?php $media->_print('uid'); ?>" class="btn btn-small">Download</a>
+      <a href="<?php echo Config::get('web_path'); ?>/media/media/<?php $media->_print('uid'); ?>" class="btn btn-primary btn-small">Download</a>
       <?php } ?>
       <?php if (Access::has('media','delete',$media->uid)) { ?>
       <button type="button" data-target="#confirm_delete_media_<?php $media->_print('uid'); ?>" data-toggle="modal" class="btn btn-small btn-danger">Delete</button>
