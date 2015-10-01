@@ -1140,6 +1140,29 @@ class content extends database_object {
   } // krotovina
 
   /**
+   * feature
+   * Return the content for the specified krotovina
+   */
+  public static function feature($uid,$type) { 
+
+    $retval = array();
+
+    switch ($type) { 
+      case 'image':
+        $retval = self::get_image($uid,'feature');
+      break;
+      case 'media':
+      case '3dmodel':
+        $retval = self::get_media($uid,$type,'feature');
+      break;
+    }
+
+    return $retval;
+
+  } // feature;
+
+
+  /**
    * get_media
    * Return an array of media of type assoicated with the $record_type
    */

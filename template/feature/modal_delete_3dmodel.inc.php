@@ -10,10 +10,10 @@ if (INIT_LOADED != '1') { exit; }
   <div class="modal-body">
     <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>/thumb" /></p>
     <p class="text-center"><?php echo scrub_out($model->notes); ?></p>
-    <p>Are you sure you want to delete this 3D Model from <?php echo $record->site . '-' . $record->catalog_id; ?>? This operation can not be reversed.</p>
+    <p>Are you sure you want to delete this 3D Model from <?php echo $feature->site . '-' . $feature->catalog_id; ?>? This operation can not be reversed.</p>
   </div>
   <div class="modal-footer">
-  <form method="post" action="<?php echo Config::get('web_path'); ?>/record/3dmodel_delete">
+  <form method="post" action="<?php echo Config::get('web_path'); ?>/feature/3dmodel_delete">
     <button type="submit" class="btn btn-danger">Delete 3D Model</a>
     <input type="hidden" name="uid" value="<?php echo scrub_out($model->uid); ?>">
     <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">

@@ -10,12 +10,12 @@ if (INIT_LOADED != '1') { exit; }
         <h3 id="myModalLabel">Confirm Delete Record Image</h3>
       </div>
       <div class="modal-body">
-        <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/image/krotovina/<?php $image->_print('uid'); ?>/thumb" /></p>
+        <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/image/feature/<?php $image->_print('uid'); ?>/thumb" /></p>
         <p class="text-center"><?php $image->_print('notes'); ?></p>
-        <p>Are you sure you want to delete this image from <?php echo $krotovina->site->name . '-' . $krotovina->catalog_id; ?>? This operation can not be reversed.</p>
+        <p>Are you sure you want to delete this image from <?php echo $record->site->name . '-' . $record->catalog_id; ?>? This operation can not be reversed.</p>
       </div>
       <div class="modal-footer">
-        <form method="post" action="<?php echo Config::get('web_path'); ?>/krotovina/image_delete">
+        <form method="post" action="<?php echo Config::get('web_path'); ?>/records/image_delete">
           <button type="submit" class="btn btn-danger">Delete Image</a>
           <input type="hidden" name="uid" value="<?php $image->_print('uid'); ?>">
           <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">

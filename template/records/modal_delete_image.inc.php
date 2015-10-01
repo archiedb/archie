@@ -15,7 +15,7 @@ if (INIT_LOADED != '1') { exit; }
         <p>Are you sure you want to delete this image from <?php echo $record->site->name . '-' . $record->catalog_id; ?>? This operation can not be reversed.</p>
       </div>
       <div class="modal-footer">
-        <form method="post" action="<?php echo Config::get('web_path'); ?>/records/image_delete">
+        <form method="post" action="<?php echo Config::get('web_path'); ?>/record/image_delete"
           <button type="submit" class="btn btn-danger">Delete Image</a>
           <input type="hidden" name="uid" value="<?php $image->_print('uid'); ?>">
           <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">

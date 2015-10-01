@@ -9,6 +9,11 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('feature','create')) { \UI\access_denied(); }
     require_once \UI\template('/feature/new'); 
   break;
+  case 'upload':
+    if (!Access::has('media','create')) { \UI\access_denied(); }
+    Content::upload($_POST['feature_id'],$_POST,$_FILES,'feature');
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
+  break;
   case 'create':
     if (!Access::has('feature','create')) { \UI\access_denied(); }
     $feature_id = Feature::create($_POST);
