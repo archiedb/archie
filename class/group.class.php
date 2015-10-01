@@ -61,6 +61,16 @@ class Group extends database_object {
 	} // refresh
 
   /**
+   * _display
+   * User friendly display
+   */
+  public function _display($variable) { 
+
+
+
+  } // _display
+
+  /**
    * get_all
    * Return all of the groups
    */

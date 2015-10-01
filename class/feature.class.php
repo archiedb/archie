@@ -74,6 +74,16 @@ class Feature extends database_object {
 	} // refresh
 
   /**
+   * _display
+   * Output friendly stuff
+   */
+  public function _display($variable) { 
+
+
+
+  } // _display
+
+  /**
    * update
    * Update an existing feature, this is only related to the description and keywords
    * this doesn't deal with the location/media information

@@ -81,6 +81,15 @@ class content extends database_object {
 
   } // refresh
 
+  /**
+   * _display
+   * User friendly display
+   */
+  public function _display($variable) { 
+
+
+  } // _display
+
 	/**
 	 * load_image_data
 	 * This loads a record image from its UID
