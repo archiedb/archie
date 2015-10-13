@@ -66,15 +66,6 @@ class SpatialData extends database_object {
 
   } //build_cache
 
-  /**
-   * _display
-   */
-  public function _display($variable) { 
-
-
-
-  } // display
-
 	/**
 	 * refresh
 	 */

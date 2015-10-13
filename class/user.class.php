@@ -185,15 +185,6 @@ class User extends database_object {
 
   } // get_sites
 
-  /**
-   * _display
-   */
-  public function _display($variable) { 
-
-    return true;
-
-  } // _display
-
 	/**
 	 * refresh
 	 */
