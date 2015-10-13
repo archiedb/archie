@@ -48,6 +48,14 @@ class Material extends database_object {
 
 	} // build_cache
 
+  /**
+   * _display
+   */
+  public function _display($variable) { 
+
+
+  } // _display
+
 	/**
 	 * refresh
 	 * Refreshes the object from the db

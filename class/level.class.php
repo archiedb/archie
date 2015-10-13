@@ -104,11 +104,12 @@ class Level extends database_object {
   /**
    * _display
    * Show the pretty version of things
+   * Display function
    */
   public function _display($variable) { 
 
 
-  } // display
+  } // _display
 
   /**
    * create

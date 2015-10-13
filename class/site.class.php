@@ -202,6 +202,14 @@ class Site extends database_object {
 
   } // get_from_name
 
+  /**
+   * _display
+   */ 
+  public function _display($variable) { 
+
+
+  } // _display
+
 	/**
 	 * refresh
 	 */
