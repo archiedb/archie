@@ -48,6 +48,14 @@ class Role extends database_object {
   
   } // build_cache
 
+  /**
+   * _display
+   */
+  public function _display($variable) { 
+
+
+  } // _display
+
 	/**
 	 * refresh
 	 * Refresh the object
