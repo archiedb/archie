@@ -33,13 +33,13 @@ foreach ($images as $uid) {
         <p class="text-center">
         <?php if (\UI\sess::location('action') != 'view') { ?>
         <?php if (Access::has('media','read')) { ?>
-          <a class="btn btn-info btn-small" href="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php $model->_print('uid'); ?>" title="Download">Download</a>
+          <a class="btn btn-info btn-small" href="<?php echo Config::get('web_path'); ?>/media/3dmodel/record/<?php $model->_print('uid'); ?>" title="Download">Download</a>
         <?php } ?>
         <?php if (Access::has('media','write')) { ?>
           <button type="button" class="btn btn-primary btn-small" data-target="#confirm_edit_3dmodel_<?php $model->_print('uid'); ?>" data-toggle="modal">Edit</button>
         <?php } ?>
         <?php if (Access::has('media','delete')) { ?>
-          <button class="btn btn-danger btn-small" data-target="#confirm_delete_3dmodel_<?php $model->_print('uid'); ?>" data-toggle="modal">Delete</button>
+          <button type="button" class="btn btn-danger btn-small" data-target="#confirm_delete_3dmodel_<?php $model->_print('uid'); ?>" data-toggle="modal">Delete</button>
         <?php } ?>
         <?php 
         if (Access::has('media','delete')) { 
