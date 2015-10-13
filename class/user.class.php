@@ -190,6 +190,7 @@ class User extends database_object {
    */
   public function _display($variable) { 
 
+    return true;
 
   } // _display
 

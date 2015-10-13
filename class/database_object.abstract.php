@@ -50,9 +50,6 @@ abstract class database_object {
 	// There must be a refresh function
 	abstract protected function refresh(); 
 
-	// There must be a _display function for outputting pretty things
-	abstract protected function _display();
-
 	/**
 	 * get_info
 	 * retrieves the info from the database and puts it in the cache
