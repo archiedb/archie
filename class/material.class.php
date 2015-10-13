@@ -59,6 +59,15 @@ class Material extends database_object {
 	} 
 
   /**
+   * _display
+   * Show the pretty version of things
+   */
+  public function _display($variable) { 
+
+
+  } // _display
+
+  /**
    * has_classification
    * Return true if classification is assoicated with this material and enabled
    */

@@ -197,6 +197,15 @@ class User extends database_object {
 
 	} // refresh
 
+  /**
+   * _display
+   * Show me the pretty version
+   */
+  public function _display($variable) { 
+
+
+  } // _display
+
 	// Return the user based on the username
 	public static function get_from_username($username) { 
 

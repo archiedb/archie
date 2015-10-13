@@ -215,6 +215,15 @@ class Site extends database_object {
 	} // refresh
 
   /**
+   * _display
+   * Show the pretty version of things
+   */
+  public function _display($variable) { 
+
+
+  } // _display
+
+  /**
    * get_all_data
    */
   public function get_all_data($field) {

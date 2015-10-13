@@ -76,6 +76,15 @@ class SpatialData extends database_object {
 	} // refresh
 
   /**
+   * _display
+   * Show me the pretty version
+   */
+  public function _display($variable) { 
+
+
+  } //_display
+
+  /**
    * remove
    * Delete a record
    * Input should be uid

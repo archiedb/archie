@@ -60,6 +60,15 @@ class Role extends database_object {
 	} // refresh
 
   /**
+   * _display
+   * Show the pretty version of things
+   */
+  public function _display($variable) { 
+
+  
+  } // _display
+
+  /**
    * name_to_id
    * This returns an ID from a name
    */
