@@ -9,6 +9,9 @@ switch (\UI\sess::location('page')) {
     if (!Access::has('record')) { \UI\access_denied(); }
     require_once 'records.php';
   break;
+  case 'content':
+    require_once 'content.php';
+  break;
   case 'media':
     require_once 'image.php';
   break; 

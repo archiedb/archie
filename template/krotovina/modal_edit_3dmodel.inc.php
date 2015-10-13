@@ -10,8 +10,8 @@ if (INIT_LOADED != '1') { exit; }
         <h3 id="myModalLabel">Update 3D Model Notes</h3>
       </div>
       <div class="modal-body">
-        <form method="post" action="<?php echo Config::get('web_path'); ?>/records/3dmodel_edit">
-        <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php $model->_print('uid'); ?>/thumb" /></p>
+        <form method="post" action="<?php echo Config::get('web_path'); ?>/content/update/3dmodel">
+        <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/3dmodel/krotovina/<?php $model->_print('uid'); ?>/thumb" /></p>
         <p class="text-center"><input class="form-control" type="text" class="span4" name="description" value="<?php $model->_print('notes'); ?>" /></p>
       </div>
       <div class="modal-footer">

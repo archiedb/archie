@@ -322,6 +322,7 @@ class sess {
         return isset(self::$location['1']) ? self::$location['1'] : false;
       break;
       case '2':
+      case 'object':
       case 'objectid':
         return isset(self::$location['2']) ? self::$location['2'] : false;
       break;
