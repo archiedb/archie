@@ -11,7 +11,7 @@ if (INIT_LOADED != '1') { exit; }
       </div>
       <div class="modal-body">
         <p class="text-center"><?php $media->_print('notes'); ?></p>
-        <p>Are you sure you want to delete <span class="muted">(<?php echo scrub_out(basename($media->filename)); ?>)</span> from <?php echo $record->site->name . '-' . $record->catalog_id; ?>? This operation can not be reversed.</p>
+        <p>Are you sure you want to delete <code>(<?php echo scrub_out(basename($media->filename)); ?>)</code> from <?php echo $record->site->name . '-' . $record->catalog_id; ?>? This operation can not be reversed.</p>
       </div>
       <div class="modal-footer">
         <form method="post" action="<?php echo Config::get('web_path'); ?>/records/media_delete">

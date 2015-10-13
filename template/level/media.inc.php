@@ -28,7 +28,7 @@ foreach ($items as $item) {
       <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/<?php echo scrub_out($extension); ?>/<?php echo scrub_out($media->uid); ?>">3d View</a>
       <?php } ?>
       <?php if (Access::has('media','download',$media->uid)) { ?>
-      <a href="<?php echo Config::get('web_path'); ?>/media/media/<?php echo scrub_out($media->uid); ?>" class="btn btn-info btn-small">Download</a>
+      <a href="<?php echo Config::get('web_path'); ?>/media/media/level/<?php echo scrub_out($media->uid); ?>" class="btn btn-info btn-small">Download</a>
       <?php } ?>
       <?php if (Access::has('media','delete',$media->uid)) { ?>
       <button type="button" data-target="#confirm_delete_media_<?php echo scrub_out($media->uid); ?>" data-toggle="modal" class="btn btn-small btn-danger">Delete</button>
