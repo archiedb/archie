@@ -102,6 +102,16 @@ class Level extends database_object {
 	} // refresh
 
   /**
+   * _display
+   * Show the pretty version of things
+   * Display function
+   */
+  public function _display($variable) { 
+
+
+  } // _display
+
+  /**
    * create
    * Create a new level entry
    */

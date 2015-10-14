@@ -1,7 +1,7 @@
 <?php 
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
-$items = Content::level($level->uid,'media'); 
+$items = Content::feature($feature->uid,'media'); 
 if (count($items)) { 
 ?>
 <table class="table table-hover">
@@ -15,7 +15,7 @@ if (count($items)) {
 <tbody>
 <?php
 foreach ($items as $item) {
-  $media = new Content($item,'media','level'); 
+  $media = new Content($item,'media','feature'); 
   $info = pathinfo($media->filename); 
   $extension = $info['extension']; 
   $name = strlen($media->notes) ? $media->notes : basename($media->filename); 
@@ -28,11 +28,11 @@ foreach ($items as $item) {
       <a class="btn btn-small btn-info" href="<?php echo Config::get('web_path'); ?>/viewer/<?php echo scrub_out($extension); ?>/<?php echo scrub_out($media->uid); ?>">3d View</a>
       <?php } ?>
       <?php if (Access::has('media','download',$media->uid)) { ?>
-      <a href="<?php echo Config::get('web_path'); ?>/media/media/level/<?php echo scrub_out($media->uid); ?>" class="btn btn-info btn-small">Download</a>
+      <a href="<?php echo Config::get('web_path'); ?>/media/media/feature/<?php $media->_print('uid'); ?>" class="btn btn-primary btn-small">Download</a>
       <?php } ?>
       <?php if (Access::has('media','delete',$media->uid)) { ?>
-      <button type="button" data-target="#confirm_delete_media_<?php echo scrub_out($media->uid); ?>" data-toggle="modal" class="btn btn-small btn-danger">Delete</button>
-      <?php require \UI\template('/level/modal_delete_media'); ?>
+      <button type="button" data-target="#confirm_delete_media_<?php $media->_print('uid'); ?>" data-toggle="modal" class="btn btn-small btn-danger">Delete</button>
+      <?php require \UI\template('/feature/modal_delete_media'); ?>
       <?php } ?>
   </td>
 </tr>

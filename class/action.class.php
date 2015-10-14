@@ -60,6 +60,15 @@ class Action extends database_object {
 	} // refresh
 
   /**
+   * _display
+   * Required function, user friendly display
+   */
+  public function _display($variable) {
+
+
+  } // _display
+
+  /**
    * name_to_id
    * This returns an ID from a name
    */

@@ -29,10 +29,10 @@ foreach ($images as $uid) {
       <p class="text-center">
       <?php if (\UI\sess::location('action') != 'view') { ?>
       <?php if (Access::has('media','edit')) { ?>
-        <button type="button" class="btn btn-primary btn-xs" data-target="#confirm_edit_image_<?php echo scrub_out($image->uid); ?>" data-toggle="modal">Edit</button>
+        <button type="button" class="btn btn-primary btn-xs" data-target="#confirm_edit_image_<?php $image->_print('uid'); ?>" data-toggle="modal">Edit</button>
       <?php } ?>
       <?php if (Access::has('media','delete')) { ?>
-        <button class="btn btn-danger btn-xs" data-target="#confirm_delete_image_<?php echo scrub_out($image->uid); ?>" data-toggle="modal">Delete</button>
+        <button type="button" class="btn btn-danger btn-xs" data-target="#confirm_delete_image_<?php $image->_print('uid'); ?>" data-toggle="modal">Delete</button>
       <?php } ?>
       <?php 
       if (Access::has('media','delete')) { 
@@ -46,6 +46,5 @@ foreach ($images as $uid) {
       </p>
     </div>
   </div>
-</div>
 <?php } ?>
-</div>
+</div> <!-- / Row -->

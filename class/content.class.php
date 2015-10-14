@@ -81,6 +81,15 @@ class content extends database_object {
 
   } // refresh
 
+  /**
+   * _display
+   * User friendly display
+   */
+  public function _display($variable) { 
+
+
+  } // _display
+
 	/**
 	 * load_image_data
 	 * This loads a record image from its UID
@@ -321,6 +330,16 @@ class content extends database_object {
 				$extension = self::get_extension($mime_type); 
         $filename = self::generate_filename($level->site->name . '-level-' . $level->record,$extension);
       break;
+      case 'krotovina':
+        $krotovina = new Krotovina($uid);
+				$extension = self::get_extension($mime_type); 
+        $filename = self::generate_filename($krotovina->site->name . '-krotovina-' . $krotovina->catalog_id,$extension);
+      break;
+      case 'feature':
+        $feature = new Feature($uid);
+				$extension = self::get_extension($mime_type); 
+        $filename = self::generate_filename($feature->site->name . '-feature-' . $feature->catalog_id,$extension);
+      break;
       case 'record':
       default:
     		$record = new Record($uid); 
@@ -333,17 +352,17 @@ class content extends database_object {
 		switch ($type) { 
 			case 'qrcode':
 				// If data is passed, use that as filename
-				$filename = strlen($data) ? $data : self::generate_filename($record->site->name . '-qrcode-' . $record->catalog_id,'png'); 
+				$filename = empty($data) ? $data : self::generate_filename($record->site->name . '-qrcode-' . $record->catalog_id,'png'); 
 				$results = self::write_qrcode($uid,$filename,$data); 
 			break; 
 			case 'ticket': 
 				// If data is passed, use that as filename
-				$filename = strlen($data) ? $data : self::generate_filename($record->site->name . '-ticket-' . $record->catalog_id,'pdf');
+				$filename = empty($data) ? $data : self::generate_filename($record->site->name . '-ticket-' . $record->catalog_id,'pdf');
 				$results = self::write_ticket($record,$filename,$data); 
 			break; 
       case 'level': 
         // If data is passed, use that as a filename
-        $filename = strlen($data) ? $data : self::generate_filename($level->site->name . '-level-' . $level->unit . '-' . $level->quad->name . '-' . $level->record,'pdf');
+        $filename = empty($data) ? $data : self::generate_filename($level->site->name . '-level-' . $level->unit . '-' . $level->quad->name . '-' . $level->record,'pdf');
         $results = self::write_level($level,$filename,$data); 
       break;
       case '3dmodel':
@@ -1108,8 +1127,53 @@ class content extends database_object {
   } // level
 
   /**
-   * get_3dmodels
-   * Return an array of 3dmodels assoicated with the $record_type
+   * krotovina
+   * Return the content for the specified krotovina
+   */
+  public static function krotovina($uid,$type) { 
+
+    $retval = array();
+
+    switch ($type) { 
+      case 'image':
+        $retval = self::get_image($uid,'krotovina');
+      break;
+      case 'media':
+      case '3dmodel':
+        $retval = self::get_media($uid,$type,'krotovina');
+      break;
+    }
+
+    return $retval;
+
+  } // krotovina
+
+  /**
+   * feature
+   * Return the content for the specified krotovina
+   */
+  public static function feature($uid,$type) { 
+
+    $retval = array();
+
+    switch ($type) { 
+      case 'image':
+        $retval = self::get_image($uid,'feature');
+      break;
+      case 'media':
+      case '3dmodel':
+        $retval = self::get_media($uid,$type,'feature');
+      break;
+    }
+
+    return $retval;
+
+  } // feature;
+
+
+  /**
+   * get_media
+   * Return an array of media of type assoicated with the $record_type
    */
   private static function get_media($record_uid,$type,$record_type) {
 
@@ -1171,6 +1235,26 @@ class content extends database_object {
     return $results; 
 
   } // record_media
+
+  /** 
+   * get_image
+   * Return an image of the specified type and uid
+   */
+  private static function get_image($uid,$type) { 
+
+    $sql = "SELECT * FROM `image` WHERE `record`=? AND `type`=? ORDER BY `uid`";
+    $db_results = Dba::read($sql,array($uid,$type));
+
+    $results = array();
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      parent::add_to_cache('image',$row['uid'],$row);
+      $results[] = $row['uid'];
+    }
+
+    return $results; 
+
+  } // get_image
 
   /**
    * record_image

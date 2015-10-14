@@ -9,6 +9,28 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('krotovina','create')) { \UI\access_denied(); } 
     require_once \UI\template('/krotovina/new'); 
   break;
+  case 'upload':
+    if (!Access::has('media','create')) { \UI\access_denied(); }
+    Content::upload($_POST['krotovina_id'],$_POST,$_FILES,'krotovina');
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
+  break; 
+  case 'image_edit':
+    if (!Access::has('media','edit')) { \UI\access_denied(); }
+    Content::update('image',$_POST['uid'],$_POST);
+   header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
+  break;    
+  case 'image_delete':
+    if (!Access::has('media','delete')) { \UI\access_denied(); }
+    $image = new Content($_POST['uid'],'image','krotovina');
+    if (!$image->delete()) {
+      Error::add('delete','Unable to perform image deletion request, please contact administrator');
+    }
+    else {
+      Event::add('success','Image Deleted','small');
+    }
+    // Return to whence we came,
+    header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
+  break;
   case 'create':
     if (!Access::has('krotovina','create')) { \UI\access_denied(); } 
     $krotovina_id = Krotovina::create($_POST);

@@ -34,3 +34,39 @@ if (INIT_LOADED != '1') { exit; }
   	<input type="submit" class="btn btn-primary" value="Update" />
 </div>
 </form>
+<h4>Upload</h4><hr />
+<form enctype="multipart/form-data" method="post" action="<?php echo Config::get('web_path'); ?>/feature/upload">
+  <input type="hidden" name="feature_id" value="<?php $feature->_print('uid'); ?>" />
+  <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
+<div class="row">
+  <div class="form-group">
+    <label class="col-md-2 control-label" for="inputDescription">Description</label>
+    <div class="col-md-4">
+      <input type="text" class="form-control" name="description" />
+    </div>
+    <div class="col-md-4">
+      <input type="file" name="media" class="filestyle" data-buttonText="" data-buttonbefore="true">
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary" type="submit">Upload</button>
+    </div>
+  </div>
+<div>
+</form>
+<hr />
+<ul class="nav nav-tabs" id="media_nav">
+  <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>
+  <li><a href="#3dmodel" data-toggle="tab">3D Models</a></li>
+  <li><a href="#media" data-toggle="tab">Other Media</a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane active" id="picture">
+    <?php require_once \UI\template('/feature/images'); ?>
+  </div>
+  <div class="tab-pane" id="3dmodel">
+    <?php require_once \UI\template('/feature/3dmodel'); ?>
+  </div>
+  <div class="tab-pane" id="media">
+    <?php require_once \UI\template('/feature/media'); ?>
+  </div>
+</div>

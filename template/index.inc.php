@@ -2,7 +2,6 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
-<?php require_once 'template/menu.inc.php'; ?>
 <table class="table table-striped">
 <thead>
   <tr>
@@ -51,16 +50,13 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 </tbody>
 </table>
-<div class="page-header">
-  <h4>Hello <?php echo \UI\sess::$user->name; ?>, you are currently working on <?php echo scrub_out(\UI\sess::$user->site->name); ?></h4>
-</div>
 <!-- Records -->
 <?php if (Access::has('record','read')) { ?>
 <div class="row">
   <div>
   <?php if (Access::has('record','create')) { ?>
     <p class="pull-right">
-        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/records/new">Open New Record</a>
+        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/records/new">New Record</a>
     </p>
   <?php } ?>
     <strong>Your last five records</strong>
@@ -112,7 +108,7 @@ if (INIT_LOADED != '1') { exit; }
   <div>
     <?php if (Access::has('level','create')) { ?>
     <p class="pull-right">
-        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/level/new">Open New Level</a>
+        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/level/new">New Level</a>
     </p>
     <?php } ?>
     <strong>Your Open Levels</strong>
@@ -157,7 +153,7 @@ if (INIT_LOADED != '1') { exit; }
   <div>
     <?php if (Access::has('krotovina','create')) { ?>
     <p class="pull-right">
-       <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/krotovina/new">Open New Krotovina</a>
+       <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/krotovina/new">New Krotovina</a>
     </p>
     <?php } ?>
     <strong>Your last three Krotovina</strong>
@@ -190,7 +186,7 @@ if (INIT_LOADED != '1') { exit; }
   <div>
     <?php if (Access::has('feature','create')) { ?>
     <p class="pull-right">
-       <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/feature/new">Open New Feature</a>
+       <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/feature/new">New Feature</a>
     </p>
     <?php } ?>
     <strong>Your last three Features</strong>

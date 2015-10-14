@@ -58,6 +58,14 @@ class Classification extends database_object {
 
 	} // refresh
 
+  /**
+   * _display
+   * Display items publically 
+   */
+  public function _display($variable) {
+
+  } // _display
+
 	public static function get_from_material($material) { 
 
 		$material = Dba::escape($material); 
