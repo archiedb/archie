@@ -12,7 +12,7 @@ if (INIT_LOADED != '1') { exit; }
       <div class="modal-body">
         <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/image/feature/<?php $image->_print('uid'); ?>/thumb" /></p>
         <p class="text-center"><?php $image->_print('notes'); ?></p>
-        <p>Are you sure you want to delete this image from <?php echo $record->site->name . '-' . $record->catalog_id; ?>? This operation can not be reversed.</p>
+        <p>Are you sure you want to delete this image from <?php $feature->site->_print('name'); ?>-<?php $feature->_print('record'); ?> This operation can not be reversed.</p>
       </div>
       <div class="modal-footer">
         <form method="post" action="<?php echo Config::get('web_path'); ?>/records/image_delete">
