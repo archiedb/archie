@@ -22,7 +22,7 @@ foreach ($images as $uid) {
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
       <?php if ($extension == 'stl') { ?>
-      <a href="<?php echo Config::get('web_path'); ?>/viewer/stl/krotovina/<?php echo scrub_out($model->uid); ?>" title="3D View"><img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/<?php echo scrub_out($model->uid);?>/thumb" /></a>
+      <a href="<?php echo Config::get('web_path'); ?>/viewer/stl/krotovina/<?php echo scrub_out($model->uid); ?>" title="3D View"><img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/krotovina/<?php echo scrub_out($model->uid);?>/thumb" /></a>
       <?php } else { ?>
       <img src="<?php echo Config::get('web_path'); ?>/media/3dmodel/krotovina/<?php echo scrub_out($model->uid);?>/thumb" />
       <?php } ?>

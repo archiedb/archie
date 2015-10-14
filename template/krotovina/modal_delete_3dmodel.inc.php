@@ -12,7 +12,7 @@ if (INIT_LOADED != '1') { exit; }
       <div class="modal-body">
         <p class="text-center"><img class="text-center" src="<?php echo Config::get('web_path'); ?>/media/3dmodel/krotovina/<?php $model->_print('uid');?>/thumb" /></p>
         <p class="text-center"><?php echo scrub_out($model->notes); ?></p>
-        <p>Are you sure you want to delete this 3D Model from <?php echo $krotovina->site . '-' . $krotovina->catalog_id; ?>? This operation can not be reversed.</p>
+        <p>Are you sure you want to delete this 3D Model from <?php echo $krotovina->site->name . '-' . $krotovina->record; ?>? This operation can not be reversed.</p>
       </div>
       <div class="modal-footer">
         <form method="post" action="<?php echo Config::get('web_path'); ?>/content/delete/3dmodel">

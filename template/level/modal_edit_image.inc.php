@@ -10,7 +10,7 @@ if (INIT_LOADED != '1') { exit; }
         <h3 id="myModalLabel">Update Image Notes</h3>
       </div>
       <div class="modal-body">
-        <form method="post" action="<?php echo Config::get('web_path'); ?>/level/image_edit">
+        <form method="post" action="<?php echo Config::get('web_path'); ?>/content/update/image">
         <p class="text-center">
           <img src="<?php echo Config::get('web_path'); ?>/media/image/level/<?php $image->_print('uid');?>/thumb" />
         </p>
