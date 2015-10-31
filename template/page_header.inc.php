@@ -6,7 +6,7 @@ $limit = $view->get_offset();
 $start = $view->get_start(); 
 $total = $view->get_total(); 
 $type  = strtolower($view->get_type());
-$sides = 5; 
+$sides = 6; 
 
 
 // Next and Prev
@@ -62,8 +62,9 @@ if ($pages > 1) {
   ksort($page_data['up']); 
   ksort($page_data['down']); 
 ?>
-<div class="pagination pagination-centered">
-  <ul>
+<div class="text-center">
+<nav>
+  <ul class="pagination">
   <li><a href="<?php echo Config::get('web_path'); ?>/<?php echo $type; ?>/offset/<?php echo $prev_offset; ?>">&laquo;</a></li>
 <?php 
   $current_page++; // Also starts at 1 not zero
@@ -91,5 +92,6 @@ if ($pages > 1) {
 <?php } }?>
   <li><a href="<?php echo Config::get('web_path'); ?>/<?php echo $type; ?>/offset/<?php echo $next_offset; ?>">&raquo;</a></li>
   </ul>
+</nav>
 </div>
 <?php } // if we have pages at all ?>

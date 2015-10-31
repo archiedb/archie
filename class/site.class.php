@@ -5,6 +5,7 @@ class Site extends database_object {
 
   public $uid; 
   public $name;
+  public $settings;
   public $description;
   public $northing; 
   public $easting;
