@@ -436,6 +436,12 @@ class content extends database_object {
       return false;
     }
 
+    if (empty($filename)) { 
+      Error::add('general','QRCode generation failure');
+      Event::error('Content::write_qrcode','No filename specified for UID:'. $uid);
+      return false;
+    }
+
 		$qrcode_data = Config::get('web_path') . '/records/view/' . $uid;
 		QRcode::png($qrcode_data,$filename,'H','2',2); 
 		

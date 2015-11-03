@@ -67,6 +67,12 @@ class Genpdf {
     // We need the QRcode filename here
     $qrcode = new Content($record->uid,'qrcode','record');
 
+    // If there is no filename on this qrcode re-do it
+    if (empty($qrcode->filename)) {
+      Content::write($record->uid,'qrcode');
+      $qrcode->refresh();
+    }
+
     // There are some edge cases where the QRCode might not exist, check and re-gen if needed
     if (!is_file($qrcode->filename)) {
      Content::write_qrcode($record->uid,$qrcode->filename,true);
