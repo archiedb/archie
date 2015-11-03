@@ -4,11 +4,11 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <tr>
 	<td><?php $level->_print('unit'); ?></td>
-	<td><?php scrub_out($level->quad->name); ?></td>
+	<td><?php echo scrub_out($level->quad->name); ?></td>
   <td>
       <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php $level->_print('uid'); ?>"><?php $level->_print('record'); ?></a>
   </td>
-  <td><?php scrub_out($level->lsg_unit->name); ?></td>
+  <td><?php echo scrub_out($level->lsg_unit->name); ?></td>
   <td><?php echo \UI\boolean_word($level->closed); ?></td>
   <td>
     <div class="btn-group pull-right">
