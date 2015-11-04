@@ -25,16 +25,16 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('description'); ?>">
-    <label class="col-md-2 control-label" for="inputDescription">Description</label>
-    <div class="col-md-2">
-    	<textarea class="form-control" id="inputDescription" name="description" class="textbox" rows="5"><?php \UI\form_value(array('post'=>'description','var'=>$site->description)); ?></textarea>
-    </div>
-    </div>
     <div class="<?php Error::form_class('partners'); ?>">
     <label class="col-md-2 control-label" for="inputPartners">Partners</label>
     <div class="col-md-2">
       <textarea class="form-control" id="inputPartners" name="partners" class="textbox" rows="5"><?php \UI\form_value(array('post'=>'partners','var'=>$site->partners)); ?></textarea>
+    </div>
+    </div>
+    <div class="<?php Error::form_class('easting'); ?>">
+    <label class="col-md-2 control-label" for="inputEasting">Easting</label>
+    <div class="col-md-2">
+      <input class="form-control" id="inputEasting" name="easting" type="text" value="<?php \UI\form_value(array('post'=>'easting','var'=>$site->easting)); ?>" />
     </div>
     </div>
   </div>
@@ -55,10 +55,10 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('easting'); ?>">
-    <label class="col-md-2 control-label" for="inputEasting">Easting</label>
+    <div class="<?php Error::form_class('excavation_end'); ?>">
+    <label class="col-md-2 control-label" for="inputExcavationEnd">Excavation End</label>
     <div class="col-md-2">
-      <input class="form-control" id="inputEasting" name="easting" type="text" value="<?php \UI\form_value(array('post'=>'easting','var'=>$site->easting)); ?>" />
+      <input id="inputExcavationEnd" name="excavation_end" type="text" value="<?php \UI\form_value(array('post'=>'excavation_end','var'=>$site->excavation_end_date)); ?>" />
     </div>
     </div>
     <div class="<?php Error::form_class('excavation_start'); ?>">
@@ -70,13 +70,13 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('excavation_end'); ?>">
-    <label class="col-md-2 control-label" for="inputExcavationEnd">Excavation End</label>
-    <div class="col-md-2">
-      <input id="inputExcavationEnd" name="excavation_end" type="text" value="<?php \UI\form_value(array('post'=>'excavation_end','var'=>$site->excavation_end_date)); ?>" />
+    <div class="<?php Error::form_class('description'); ?>">
+    <label class="col-md-2 control-label" for="inputDescription">Description</label>
+    <div class="col-md-6">
+    	<textarea class="form-control" id="inputDescription" name="description" class="textbox" rows="5"><?php \UI\form_value(array('post'=>'description','var'=>$site->description)); ?></textarea>
     </div>
     </div>
-  </div>
+      </div>
 </div><div class="row">
   <div class="form-group">
   <div class="col-md-2 col-md-offset-2">
