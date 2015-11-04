@@ -362,6 +362,7 @@ class Database {
                     '- Drop Krotovina and Feature closed,closed_date & closed_user fields.<br />';
     $versions[] = array('version'=>'0019','description'=>$update_string);
     $update_string = '- Change LU fields to VARCHAR to allow them to change over time.<br />' .
+                        '- Correct Level Quad values allowing them to change over time.<br />' .
                     '- Force all users to have a site, is based on their permission group.<br />';
     $versions[] = array('version'=>'0020','description'=>$update_string);
 
@@ -1668,14 +1669,14 @@ class Database {
     // Itterate over sites, and update quads for levels
     while ($row = \Dba::fetch_assoc($db_results)) { 
       $settings = json_decode($row['settings'],true);
-      if (empty($settings['quads'])) {
-        $settings['quads'] = fgetcsv(fopen(Config::get('prefix') . '/config/quads.csv.dist','r'));
+      if (!is_array($settings['quads'])) {
+        $settings['quads'] = fgetcsv(fopen(\Config::get('prefix') . '/config/quads.csv.dist','r'));
       }
       // Have to load all, and then replace to avoid over-writting
       foreach ($settings['quads'] as $key=>$value) {
         $sql = "SELECT `uid` FROM `level` WHERE `site`=? AND `quad`=?";
         $db_lvlquads = \Dba::read($sql,array($row['uid'],$key));
-        while ($lvlquads = \Dba::fetch_assoc($db_results)) {
+        while ($lvlquads = \Dba::fetch_assoc($db_lvlquads)) {
           $lvl_quad_map[$lvlquads['uid']] = $value;
         }
       }
@@ -1683,7 +1684,7 @@ class Database {
 
     // Foreach quad map and update
     foreach ($lvl_quad_map as $uid=>$quad) {
-      $sql = "UDPATE `level` SET `quad`=? WHERE `uid`=?";
+      $sql = "UPDATE `level` SET `quad`=? WHERE `uid`=?";
       $retval = \Dba::write($sql,array($quad,$uid));
     }
 
