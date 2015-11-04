@@ -36,11 +36,11 @@ if (INIT_LOADED != '1') { exit; }
     <label class="col-md-2 control-label" for="inputQuad">Quad</label>
     <div class="col-md-2">
       <select id="inputQuad" name="quad" class="form-control">
-        <?php foreach (quad::$values as $key=>$value) {
+        <?php foreach (Quad::get_values() as $value) {
           $is_selected = '';
-          if ($level->quad->uid == $key) { $is_selected=" selected=\"selected\""; }
+          if ($level->quad->name == $value) { $is_selected=" selected=\"selected\""; }
         ?>
-        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
+        <option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
        <?php } ?>
      </select>
     </div>
@@ -51,18 +51,18 @@ if (INIT_LOADED != '1') { exit; }
     <div class="<?php Error::form_class('level'); ?>">
     <label class="col-md-2 control-label" for="inputLevel">Level</label>
     <div class="col-md-2">
-    	<input class="form-control" id="inputLevel" name="catalog_id" type="text" value="<?php \UI\form_value(array('post'=>'catalog_id','var',$level->catalog_id)); ?>" />
+    	<input class="form-control" id="inputLevel" name="catalog_id" type="text" value="<?php \UI\form_value(array('post'=>'catalog_id','var'=>$level->catalog_id)); ?>" />
     </div>
     </div> 
     <div class="<?php Error::form_class('lsg_unit'); ?>">
     <label class="col-md-2 control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
     <div class="col-md-2">
     	<select name="lsg_unit" class="form-control">
-    	<?php foreach (lsgunit::$values as $key=>$name) { 
+    	<?php foreach (lsgunit::get_values() as $name) { 
     		$is_selected = ''; 
-    		if ($level->lsg_unit->uid == $key) { $is_selected=" selected=\"selected=\""; }
+    		if ($level->lsg_unit->name == $name) { $is_selected=" selected=\"selected=\""; }
     	?>
-        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
+        <option value="<?php echo scrub_out($name); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
     	<?php } ?>
   	  </select>
     </div>

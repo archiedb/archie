@@ -133,6 +133,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php 
   // Current valid users
   $excavators = User::get('enabled'); 
+  $onedisabled='';
 ?>
   <div class="form-group">
     <div class="<?php Error::form_class('excavator_one'); ?>">

@@ -55,7 +55,7 @@ require_once 'template/menu.inc.php';
     <label class="col-md-2 control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
     <div class="col-md-2">
 	    <select class="form-control" name="lsg_unit">
-        <?php foreach (lsgunit::$values as $name) {
+        <?php foreach (lsgunit::get_values() as $name) {
   	      $is_selected = '';
           if (isset($_POST['lsg_unit'])) { 
             if ($_POST['lsg_unit'] == $name) { $is_selected=" selected=\"selected=\""; }

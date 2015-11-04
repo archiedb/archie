@@ -198,53 +198,51 @@ class Level extends database_object {
       return false;
     }
 
-    $uid      = Dba::escape($this->uid); 
-    $catalog_id   = Dba::escape($input['catalog_id']); 
-    $unit     = Dba::escape($input['unit']);
-    $quad     = Dba::escape($input['quad']); 
-    $lsg_unit = Dba::escape($input['lsg_unit']);
-    $user     = Dba::escape(\UI\sess::$user->uid);
-    $updated  = time();
-    $northing = Dba::escape($input['northing']);
-    $easting  = Dba::escape($input['easting']);
-    $elv_nw_start   = Dba::escape($input['elv_nw_start']);
-    $elv_nw_finish  = Dba::escape($input['elv_nw_finish']);
-    $elv_ne_start   = Dba::escape($input['elv_ne_start']);
-    $elv_ne_finish  = Dba::escape($input['elv_ne_finish']);
-    $elv_sw_start   = Dba::escape($input['elv_sw_start']);
-    $elv_sw_finish  = Dba::escape($input['elv_sw_finish']);
-    $elv_se_start   = Dba::escape($input['elv_se_start']);
-    $elv_se_finish  = Dba::escape($input['elv_se_finish']); 
-    $elv_center_start = Dba::escape($input['elv_center_start']);
-    $elv_center_finish  = Dba::escape($input['elv_center_finish']); 
-    $excavator_one  = Dba::escape($input['excavator_one']); 
-    $excavator_two  = Dba::escape($input['excavator_two']); 
-    $excavator_three  = Dba::escape($input['excavator_three']);
-    $excavator_four = Dba::escape($input['excavator_four']); 
-    $description    = Dba::escape($input['description']);
-    $difference     = Dba::escape($input['difference']);
-    $notes          = Dba::escape($input['notes']);
+    $uid          = $this->uid; 
+    $catalog_id   = $input['catalog_id']; 
+    $unit         = $input['unit'];
+    $quad         = $input['quad']; 
+    $lsg_unit     = $input['lsg_unit'];
+    $user         = \UI\sess::$user->uid;
+    $updated      = time();
+    $northing     = $input['northing'];
+    $easting      = $input['easting'];
+    $elv_nw_start   = $input['elv_nw_start'];
+    $elv_nw_finish  = $input['elv_nw_finish'];
+    $elv_ne_start   = $input['elv_ne_start'];
+    $elv_ne_finish  = $input['elv_ne_finish'];
+    $elv_sw_start   = $input['elv_sw_start'];
+    $elv_sw_finish  = $input['elv_sw_finish'];
+    $elv_se_start   = $input['elv_se_start'];
+    $elv_se_finish  = $input['elv_se_finish']; 
+    $elv_center_start   = $input['elv_center_start'];
+    $elv_center_finish  = $input['elv_center_finish']; 
+    $excavator_one    = empty($input['excavator_one']) ? NULL : $input['excavator_one'];
+    $excavator_two    = empty($input['excavator_two']) ? NULL : $input['excavator_two'];
+    $excavator_three  = empty($input['excavator_three']) ? NULL : $input['excavator_three'];
+    $excavator_four   = empty($input['excavator_four']) ? NULL : $input['excavator_four'];
+    $description      = $input['description'];
+    $difference       = $input['difference'];
+    $notes            = $input['notes'];
 
-    $sql = "UPDATE `level` SET `catalog_id`='$catalog_id', `unit`='$unit', `quad`='$quad', `lsg_unit`='$lsg_unit', " . 
-          "`user`='$user', `updated`='$updated', `northing`='$northing', `easting`='$easting', " . 
-          "`elv_nw_start`='$elv_nw_start', `elv_nw_finish`='$elv_nw_finish', `elv_ne_start`='$elv_ne_start', " . 
-          "`elv_ne_finish`='$elv_ne_finish', `elv_sw_start`='$elv_sw_start', `elv_sw_finish`='$elv_sw_finish', " .
-          "`elv_se_start`='$elv_se_start', `elv_se_finish`='$elv_se_finish', `elv_center_start`='$elv_center_start', " . 
-          "`elv_center_start`='$elv_center_start', `elv_center_finish`='$elv_center_finish', " . 
-          "`excavator_one`='$excavator_one', `excavator_two`='$excavator_two', `excavator_three`='$excavator_three', " . 
-          "`excavator_four`='$excavator_four', `description`='$description', `difference`='$difference', `notes`='$notes' " . 
-          "WHERE `level`.`uid`='$uid' LIMIT 1";
-    $retval = Dba::write($sql);
+    $sql = "UPDATE `level` SET `catalog_id`=?,`unit`=?,`quad`=?,`lsg_unit`=?,`user`=?,`updated`=?," .
+          "`northing`=?,`easting`=?,`elv_nw_start`=?, `elv_nw_finish`=?, `elv_ne_start`=?,`elv_ne_finish`=?,".
+          "`elv_sw_start`=?, `elv_sw_finish`=?,`elv_se_start`=?,`elv_se_finish`=?,`elv_center_start`=?," . 
+          "`elv_center_finish`=?,`excavator_one`=?, `excavator_two`=?, `excavator_three`=?,`excavator_four`=?,".
+          "`description`=?, `difference`=?, `notes`=? WHERE `level`.`uid`=? LIMIT 1";
+    $retval = Dba::write($sql,array($catalog_id,$unit,$quad,$lsg_unit,$user,$updated,$northing,$easting,$elv_nw_start,
+      $elv_nw_finish,$elv_ne_start,$elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start,
+      $elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$description,$difference,$notes,$uid));
 
     if (!$retval) { 
       Error::add('database','Database update failed, please contact administrator');
       return false;
     }
 
-    $log_line = "$uid,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_nw_finish,$elv_ne_start," .
-      "$elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start," . 
-      "$elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four," . \UI\sess::$user->username . ",\"" . date('r',$updated) . "\""; 
-    Event::record('LEVEL-UPDATE',$log_line);
+    $log_line = json_encode(array($uid,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_nw_finish,$elv_ne_start,
+        $elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start,$elv_center_finish,
+        $excavator_one,$excavator_two,$excavator_three,$excavator_four,\UI\sess::$user->username,date('r',$updated))); 
+    Event::record('level::update',$log_line);
 
     // Refresh record
     $this->refresh();

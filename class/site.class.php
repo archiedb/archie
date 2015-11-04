@@ -123,9 +123,10 @@ class Site extends database_object {
 
     // Setup the new array
     $settings = array();
-    $settings['quads'] = isset($input['quads']) ? explode(',',$input['quads']) : $this->get_setting('quads'); 
-    $settings['units'] = isset($input['units']) ? explode(',',$input['units']) : $this->get_setting('units'); 
+    $settings['quads']  = isset($input['quads']) ? explode(',',$input['quads']) : $this->get_setting('quads'); 
+    $settings['units']  = isset($input['units']) ? explode(',',$input['units']) : $this->get_setting('units'); 
     $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->get_setting('ticket'); 
+    $settings['lus']    = isset($input['lus']) ? explode(',',$input['lus']) : $this->get_setting('lus');
 
     $sql = "UPDATE `site` SET `settings`=? WHERE `uid`=?";
     $db_results = Dba::write($sql,array(json_encode($settings),$this->uid));
@@ -162,6 +163,19 @@ class Site extends database_object {
         if (!$retval) { Error::add('units','Invalid Units, only A-Z,0-9,_,- allowed, Invalid Unit(s) - ' . $invalid_units); }
         return $retval; 
       break;
+      case 'lus':
+        $invalid_lus = '';
+        $retval = true;
+        $lus = explode(',',$input['lus']);
+        foreach ($lus as $lu) {
+          if (preg_match('/[^a-z_\-0-9]/i',$lu)) {
+            $retval = false;
+            $invalid_lus .= $lu . ' :: ';
+          }
+        }
+        if (!$retval) { Error::add('lus','Invalid LUs - ' . $invalid_lus); }
+        return $retval;
+      break;
       case 'quads':
         // Must be a csv, and only A-Z,0-9,_,-?
         $invalid_quads = '';
@@ -170,7 +184,7 @@ class Site extends database_object {
         foreach ($quads as $quad) {
           if (preg_match('/[^a-z_\-0-9]/i',$quad)) {
             $retval = false;
-            $invalid_quads = $quad . ' :: ';
+            $invalid_quads .= $quad . ' :: ';
           }
         } 
         if (!$retval) { Error::add('quads','Invalid Quads, only A-Z,0-9,_,- allowed, Invalid Quad(s) - '. $invalid_quads); }
