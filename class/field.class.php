@@ -37,7 +37,8 @@ class Field {
           $retval = true;
           break;
         }
-        if (!is_numeric($value) OR round($value,3) != $value OR $value <= 0) {
+        // Allow the fields to be 0, just not lower
+        if (!is_numeric($value) OR round($value,3) != $value OR $value < 0) {
           $retval = false;
         }
       break;
