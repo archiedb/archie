@@ -168,9 +168,22 @@ if (INIT_LOADED != '1') { exit; }
 <?php 
   // Current valid users
   if (Access::has('user','manage')) { 
-    $excavators = User::get('all');
+    $excavators = User::get('all',\UI\sess::$user->site->uid);
   } else {
-    $excavators = User::get('enabled'); 
+    $excavators = User::get('enabled',\UI\sess::$user->site->uid); 
+  }
+  // Make sure all of the existing excavators are in here
+  if (!empty($level->excavator_one) AND !array_key_exists($level->excavator_one,$excavators)) {
+    $excavators[$level->excavator_one] = new User($level->excavator_one);
+  }
+  if (!empty($level->excavator_two) AND !array_key_exists($level->excavator_two,$excavators)) {
+    $excavators[$level->excavator_two] = new User($level->excavator_two);
+  }
+  if (!empty($level->excavator_three) AND !array_key_exists($level->excavator_three,$excavators)) {
+    $excavators[$level->excavator_three] = new User($level->excavator_three);
+  }
+  if (!empty($level->excavator_four) AND !array_key_exists($level->excavator_four,$excavators)) {
+    $excavators[$level->excavator_four] = new User($level->excavator_four);
   }
 ?>
 <div class="row">

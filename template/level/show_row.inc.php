@@ -69,7 +69,7 @@ if (INIT_LOADED != '1') { exit; }
           Describe the differences and similaraities compared to the last level.
         </div>
         <div class="panel-body">
-          <?php $level->_print('differences'); ?>
+          <?php $level->_print('difference'); ?>
         </div>
       </div>
       <div class="panel panel-default">

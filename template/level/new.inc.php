@@ -132,7 +132,7 @@ if (INIT_LOADED != '1') { exit; }
 <div class="row">
 <?php 
   // Current valid users
-  $excavators = User::get('enabled'); 
+  $excavators = User::get('enabled',\UI\sess::$user->site->uid); 
   $onedisabled='';
 ?>
   <div class="form-group">

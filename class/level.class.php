@@ -192,6 +192,7 @@ class Level extends database_object {
 
     // Site is unchangeable!
     $input['site'] = $this->site->uid;
+    $input['level_id'] = $this->uid;
 
     if (!Level::validate($input)) { 
       Error::add('general','Invalid field values, please check input');
@@ -315,6 +316,11 @@ class Level extends database_object {
    */
   public static function validate($input) { 
 
+    // If we've got an existing record
+    if (!empty($input['level_id'])) {
+      $level = new Level($input['level_id']);
+    }
+
     // If closed is specified
     if (isset($input['closed'])) {
       if ($input['closed'] == 1 AND !Access::is_admin()) {
@@ -342,14 +348,27 @@ class Level extends database_object {
     }
 
 		// Unit A-Z
-		if (!Unit::is_valid($input['unit'])) { 
-			Error::add('unit','UNIT specified not valid'); 
-		}
-    if (!Lsgunit::is_valid($input['lsg_unit'])) {
-      Error::add('lsg_unit','Invalid LU');
+    if (empty($input['level_id'])) {
+  		if (!Unit::is_valid($input['unit'])) { 
+  			Error::add('unit','UNIT specified not valid'); 
+  		}
+      if (!Lsgunit::is_valid($input['lsg_unit'])) {
+        Error::add('lsg_unit','Invalid LU');
+      }
+      if (!Quad::is_valid($input['quad'])) {
+        Error::add('quad','Invalid Quad selected');
+      }
     }
-    if (!Quad::is_valid($input['quad'])) {
-      Error::add('quad','Invalid Quad selected');
+    else {
+      if (!Unit::is_valid($input['unit']) AND $input['unit'] != $level->unit->name) {
+        Error::add('unit','Unit specified not valid');
+      }
+      if (!Lsgunit::is_valid($input['lsg_unit']) AND $input['lsg_unit'] != $level->lsg_unit->name) {
+        Error::add('lsg_unit','Invalid LU');
+      }
+      if (!Quad::is_valid($input['quad']) AND $input['quad'] != $level->quad->name) {
+        Error::add('quad','Invalid Quad selected');
+      }
     }
 
     // Check the 'start' values 
