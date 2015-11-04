@@ -27,12 +27,12 @@ class Record extends database_object {
   public $northing; // Northing from station info
   public $easting; // Easting from station info
   public $elevation; // Elevation from station info
-	public $user; // The Object 
-	public $created; 
-	public $updated; 
+  public $user; // The Object 
+  public $created; 
+  public $updated; 
 
 	// Constructor
-	public function __construct($uid='') { 
+  public function __construct($uid='') { 
 
 		if (!is_numeric($uid)) { return false; } 
 		

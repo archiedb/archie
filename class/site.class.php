@@ -14,9 +14,6 @@ class Site extends database_object {
   public $partners; // text field
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
-  public $units; // from Settings
-  public $quads; // from Settings
-  public $ticket; // from Settings
   public $enabled; 
 
 	// Constructor takes a uid
@@ -105,10 +102,8 @@ class Site extends database_object {
       $settings['ticket'] = Config::get('ticket_size');
     }
 
-    // Set
-    $this->quads = $settings['quads'];
-    $this->units = $settings['units'];
-    $this->ticket = $settings['ticket'];
+    // Re-assign
+    $this->settings = $settings;
 
     return true; 
 
@@ -186,6 +181,22 @@ class Site extends database_object {
     return false;
 
   } // validate_settings
+
+  /**
+   * get_setting
+   * Return a setting from this site of the name specified
+   */
+  public function get_setting($name) { 
+
+      if (isset($this->settings[$name])) {
+        return $this->settings[$name];
+      }
+      else {
+        Event::error('Site::get_setting','Invalid Setting ' . $name . ' requested');
+        return false;
+      }
+
+  } // get_setting
 
   /**
    * get_from_name

@@ -51,12 +51,12 @@ class Level extends database_object {
 		} 
 
     // Build the user object, its useful
-    $this->user = new User($this->user);
-    $this->quad = new Quad($this->quad);
+    $this->user     = new User($this->user);
+    $this->quad     = new Quad($this->quad);
     $this->lsg_unit = new Lsgunit($this->lsg_unit);
-    $this->site = new site($this->site);
-    $this->record = 'L-' . $this->catalog_id;
-    $this->name = $this->unit . ':' . $this->quad->name . ':' . $this->catalog_id;
+    $this->site     = new Site($this->site);
+    $this->record   = 'L-' . $this->catalog_id;
+    $this->name     = $this->unit . ':' . $this->quad->name . ':' . $this->catalog_id;
 
 		return true; 
 

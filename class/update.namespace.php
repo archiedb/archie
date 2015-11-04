@@ -361,9 +361,9 @@ class Database {
                     '- Set record_type to Record on media.<br />' . 
                     '- Drop Krotovina and Feature closed,closed_date & closed_user fields.<br />';
     $versions[] = array('version'=>'0019','description'=>$update_string);
-
-
-
+    $update_string = '- Change LU fields to VARCHAR to allow them to change over time.<br />' .
+                    '- Force all users to have a site, is based on their permission group.<br />';
+    $versions[] = array('version'=>'0020','description'=>$update_string);
 
     return $versions; 
 
@@ -1630,6 +1630,76 @@ class Database {
     return $retval;
 
   } //update_0019
+
+  /**
+   * update_0020
+   * Switch LU to varchar to allow modification of list
+   * Assign all users to a site, if none set pick one from their permission list!
+   */
+  public static function update_0020() {
+
+    $retval = true;
+    
+    $values = array('1'=>'','2'=>'Fill','3'=>'1','4'=>'2','5'=>'3','6'=>'4','7'=>'5','8'=>'6','9'=>'7','10'=>'8','11'=>'Other');
+
+    // Alter the tables first
+    $sql = "ALTER TABLE `record` CHANGE `lsg_unit` `lsg_unit` VARCHAR(255) NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` CHANGE `lsg_unit` `lsg_unit` VARCHAR(255) NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    // Itterate over the old values and give them the new ones
+    foreach ($values as $uid=>$value) {
+      $sql = "UPDATE `record` SET `lsg_unit`=? WHERE `lsg_unit`=?";
+      $retval = \Dba::write($sql,array($value,$uid));
+
+      $sql = "UPDATE `level` SET `lsg_unit`=? WHERE `lsg_unit`=?";
+      $retval = \Dba::write($sql,array($value,$uid));
+
+    }
+
+    // Itterate over the quads and correct them, have to look them up in the site settings
+    $sql = 'SELECT `uid`,`settings` FROM `site`';
+    $db_results = \Dba::read($sql);
+
+    $lvl_quad_map = array();
+
+    // Itterate over sites, and update quads for levels
+    while ($row = \Dba::fetch_assoc($db_results)) { 
+      $settings = json_decode($row['settings'],true);
+      if (empty($settings['quads'])) {
+        $settings['quads'] = fgetcsv(fopen(Config::get('prefix') . '/config/quads.csv.dist','r'));
+      }
+      // Have to load all, and then replace to avoid over-writting
+      foreach ($settings['quads'] as $key=>$value) {
+        $sql = "SELECT `uid` FROM `level` WHERE `site`=? AND `quad`=?";
+        $db_lvlquads = \Dba::read($sql,array($row['uid'],$key));
+        while ($lvlquads = \Dba::fetch_assoc($db_results)) {
+          $lvl_quad_map[$lvlquads['uid']] = $value;
+        }
+      }
+    }
+
+    // Foreach quad map and update
+    foreach ($lvl_quad_map as $uid=>$quad) {
+      $sql = "UDPATE `level` SET `quad`=? WHERE `uid`=?";
+      $retval = \Dba::write($sql,array($quad,$uid));
+    }
+
+    // Force all users to have a defined site!
+    $sql = "SELECT `users`.`uid`,`user_group`.`site` FROM `users` JOIN `user_group` ON `users`.`uid`=`user_group`.`user`";
+    $db_results = \Dba::read($sql);
+
+    while ($row = \Dba::fetch_assoc($db_results)) {
+      // Only update users who don't have it set
+      $sql = "UPDATE `users` SET `site`=? WHERE `uid`=? AND `site` IS NULL";
+      $retval = \Dba::write($sql,array($row['site'],$row['uid'])) ? $retval : false;
+    }
+
+    return $retval;
+
+  } // update_0020
 
 } // \Update\Database class
 

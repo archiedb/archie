@@ -476,7 +476,7 @@ class content extends database_object {
 	 */
 	private static function write_ticket(&$record,$filename,$update_record) {
 
-    $type = \UI\sess::$user->site->ticket;
+    $type = \UI\sess::$user->site->get_setting('ticket');
     $record_type = 'record';
 
     //FIXME: BROKEN BROKEN BROKEN
