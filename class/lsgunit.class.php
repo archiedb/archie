@@ -5,9 +5,7 @@ class lsgunit extends sitesetting {
 
   public function __construct($name) { 
 
-    if (self::is_valid($name)) {
-        $this->name = $name;
-    }
+    $this->name = $name;
 
   }
 

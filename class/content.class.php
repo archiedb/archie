@@ -113,7 +113,7 @@ class content extends database_object {
     $info = pathinfo($row['data']); 
 
     $this->extension    = empty($info['extension']) ? '' : $info['extension'];
-    $this->filename     = Config::get('data_root') . '/' . $row['data'];
+    $this->filename     = empty($row['data']) ? false : Config::get('data_root') . '/' . $row['data'];
     $this->thumbnail    = Config::get('data_root') . '/' . $row['data'] . '.thumb';
     $this->mime         = $row['mime'];
     $this->parentuid    = $row['record'];
@@ -141,7 +141,7 @@ class content extends database_object {
 		// We didn't find anything :(
 		if (empty($row['uid'])) { return false; }
 
-		$this->filename     = Config::get('data_root') . '/' . $row['filename'];
+		$this->filename     = empty($row['filename']) ? false : Config::get('data_root') . '/' . $row['filename'];
 		$this->uid	        = $row['uid'];
 		$this->parentuid    = $row['record']; 
 		$this->mime	        = 'image/png'; 
@@ -439,6 +439,11 @@ class content extends database_object {
     if (empty($filename)) { 
       Error::add('general','QRCode generation failure');
       Event::error('Content::write_qrcode','No filename specified for UID:'. $uid);
+      return false;
+    }
+    elseif (!is_writeable($filename)) {
+      Error::add('general','QRCode generation failure, Permission Denied');
+      Event::error('Content::write_qrcode',$filename . ' is not writeable');
       return false;
     }
 

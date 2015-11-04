@@ -78,6 +78,12 @@ class Genpdf {
      Content::write_qrcode($record->uid,$qrcode->filename,true);
     }
 
+    // Verify permissions
+    if (!is_readable($qrcode->filename) OR !is_writeable($filename)) {
+      Event::error('genpdf::ticket_88x25mm','Error creating ticket, ' . $filename . ' is not writeable and or ' . $qrcode->filename . ' is not readable');
+      return false;
+    }
+
     $pdf->Image($qrcode->filename,'0','0','25.4','25.4');
     $pdf->SetFont('Times','B');
     $pdf->SetFontSize('8');

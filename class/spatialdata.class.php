@@ -307,6 +307,11 @@ class SpatialData extends database_object {
       return true;
     }
 
+    // If N/E/Elv = 0 and no RN then also ok
+    if ($input['northing'] == '0.000' AND $input['easting'] == '0.000' AND $input['elevation'] == '0.000' AND !strlen($input['station_index'])) {
+      return true;
+    }
+
     $query = array();
     $station_index_sql = '';
     $cord_sql = '';

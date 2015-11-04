@@ -55,6 +55,9 @@ if (INIT_LOADED != '1') { exit; }
     <label class="col-md-2 control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
     <div class="col-md-2">
     	<select class="form-control" name="lsg_unit">
+      <?php if (!lsgunit::is_valid($record->lsg_unit->name)) { ?>
+        <option value="<?php $record->lsg_unit->_print('name'); ?>"><?php $record->lsg_unit->_print('name'); ?></option>
+      <?php } ?>
     	<?php foreach (lsgunit::get_values() as $name) { 
     		$is_selected = ''; 
     		if ($record->lsg_unit->name == $name) { $is_selected=" selected=\"selected=\""; }

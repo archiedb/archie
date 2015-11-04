@@ -361,9 +361,17 @@ class Record extends database_object {
     if ($record_id) { $record = new Record($record_id); }
 		
 
-    if (!Lsgunit::is_valid($input['lsg_unit'])) {
-			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
-		}
+    // Allow old stuff to remain behind
+    if (empty($record_id)) {
+      if (!Lsgunit::is_valid($input['lsg_unit'])) {
+  			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
+      }
+    }
+    else { 
+      if (!Lsgunit::is_valid($input['lsg_unit']) AND $record->lsg_unit->name != $input['lsg_unit']) {
+        Error::add('lsg_unit','Invalid Lithostratigraphic Unit');
+      }
+    }
 
     if (!isset($input['station_index'])) { $input['station_index'] = null; }
 
