@@ -13,9 +13,11 @@ from __future__ import division
 import sys,time,os.path,magic
 import atom.data
 import gdata.client,gdata.docs.client,gdata.docs.data
+import ConfigParser
 
-"""
- Read Settings from Backup Config, Default is
- ./backup.cfg
-"""
+if __name__ == '__main__':
+	global Config
+	""" Load the Config file """
+	Config = Configparser.ConfigParser()
+	Config.read(os.path.dirname(os.path.abspath(__file__)) + '/backup.cfg.php')
 
