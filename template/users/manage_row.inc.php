@@ -7,7 +7,7 @@ if (INIT_LOADED != '1') { exit; }
     <a href="<?php echo Config::get('web_path'); ?>/users/view/<?php $user->_print('uid'); ?>"><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)</a>
   </td>
   <td><?php echo scrub_out($user->email); ?></td>
-	<td><?php $date = ($user->last_login > 0) ? date('m-d-Y',$user->last_login) : 'Never';echo $date; ?></td>
+	<td><?php $date = ($user->last_login > 0) ? date('m-d-Y H:s',$user->last_login) : 'Never';echo $date; ?></td>
   <td>
 		<div class="btn-group pull-right">
       <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/users/edit/<?php $user->_print('uid'); ?>">Edit</a>

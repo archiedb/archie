@@ -5,43 +5,49 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
 ?>
 <?php Event::display('errors'); ?>
 <div class="pull-left">
-  <h4><?php echo scrub_out($site->name); ?> Site</h4>
+  <h4><?php echo scrub_out($site->name); ?> Site
+  <?php echo \UI\boolean_word($site->enabled,'Enabled'); ?></h4>
 </div>
 <p class="pull-right text-right">
   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#set_project_<?php $site->_print('uid'); ?>">Set Project</button>
   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#set_accession_<?php $site->_print('uid'); ?>">Set Accession</button>
   <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/manage/site/edit/<?php $site->_print('uid'); ?>">Edit</a>
 </p>
-<table class="table table-hover table-bordered table-white">
+<div class="clearfix"></div>
+<div class="panel panel-default">
+  <div class="panel-heading"><strong>Description</strong></div>
+  <div class="panel-body"><?php echo scrub_out($site->description); ?></div>
+</div>
+
+<table class="table table-hover">
 <tr>
   <th>Name</th>
   <td>
     <?php echo scrub_out($site->name); ?>
   </td>
-  <th>Current Project</th>
-  <td>
-    <?php echo $site->_print('project'); ?>
-  </td>
-</tr><tr>
-  <th>Current Accession</th>
-  <td>
-    <?php echo $site->_print('accession'); ?>
-  </td>
-  <th>Description</th>
-  <td>
-      <?php echo scrub_out($site->description); ?>
-  </td>
-</tr><tr>
   <th>Principal Investigator</th>
   <td>
       <?php echo scrub_out($site->principal_investigator); ?>
   </td>
+</tr><tr>
+  <th>Current Project</th>
+  <td>
+    <?php echo $site->_print('project'); ?>
+  </td>
+  <th>Current Accession</th>
+  <td>
+    <?php echo $site->_print('accession'); ?>
+  </td>
+</tr><tr>
   <th>Partners</th>
   <td>
       <?php echo scrub_out($site->partners); ?>
   </td>
-</tr>
-<tr>
+  <th>Easting</th>
+  <td>
+    <?php echo scrub_out($site->easting); ?>
+  </td>
+</tr><tr>
   <th>Elevation</th>
   <td>
       <?php echo scrub_out($site->elevation); ?>
@@ -50,16 +56,7 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
   <td>
     <?php echo scrub_out($site->northing); ?>
   </td>
-</tr>
-<tr>
-  <th>Easting</th>
-  <td>
-    <?php echo scrub_out($site->easting); ?>
-  </td>
-  <th>Enabled</th>
-  <td><?php echo \UI\boolean_word($site->enabled); ?>
-</tr>
-<tr>
+</tr><tr>
   <th>Excavation Start</th>
   <td><?php echo $site->excavation_start > 0 ? date('d-M-Y',$site->excavation_start) : 'N/A'; ?></td>
   <th>Excavation End</th>

@@ -101,6 +101,7 @@ switch (\UI\sess::location('action')) {
   break;
   case 'print': 
     // For now its just tickets
+    ob_clean();
     $ticket = new Content(\UI\sess::location('objectid'),'ticket','record'); 
     $record = new Record(\UI\sess::location('objectid')); 
     if (!$ticket->filename OR filemtime($ticket->filename) < $record->updated) { 

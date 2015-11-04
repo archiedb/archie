@@ -352,17 +352,17 @@ class content extends database_object {
 		switch ($type) { 
 			case 'qrcode':
 				// If data is passed, use that as filename
-				$filename = empty($data) ? $data : self::generate_filename($record->site->name . '-qrcode-' . $record->catalog_id,'png'); 
+				$filename = !empty($data) ? $data : self::generate_filename($record->site->name . '-qrcode-' . $record->catalog_id,'png'); 
 				$results = self::write_qrcode($uid,$filename,$data); 
 			break; 
 			case 'ticket': 
 				// If data is passed, use that as filename
-				$filename = empty($data) ? $data : self::generate_filename($record->site->name . '-ticket-' . $record->catalog_id,'pdf');
+				$filename = !empty($data) ? $data : self::generate_filename($record->site->name . '-ticket-' . $record->catalog_id,'pdf');
 				$results = self::write_ticket($record,$filename,$data); 
 			break; 
       case 'level': 
         // If data is passed, use that as a filename
-        $filename = empty($data) ? $data : self::generate_filename($level->site->name . '-level-' . $level->unit . '-' . $level->quad->name . '-' . $level->record,'pdf');
+        $filename = !empty($data) ? $data : self::generate_filename($level->site->name . '-level-' . $level->unit . '-' . $level->quad->name . '-' . $level->record,'pdf');
         $results = self::write_level($level,$filename,$data); 
       break;
       case '3dmodel':
@@ -433,6 +433,12 @@ class content extends database_object {
 
     if (!is_writeable(Config::get('prefix') . '/lib/cache')) {
       Error::add('general','QRCode tmp directory unwriteable, unable to create QRCode for record ticket');
+      return false;
+    }
+
+    if (empty($filename)) { 
+      Error::add('general','QRCode generation failure');
+      Event::error('Content::write_qrcode','No filename specified for UID:'. $uid);
       return false;
     }
 
