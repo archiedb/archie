@@ -101,6 +101,9 @@ class Site extends database_object {
     if (!isset($settings['ticket'])) { 
       $settings['ticket'] = Config::get('ticket_size');
     }
+    if (!isset($settings['lus'])) {
+      $settings['lus'] = fgetcsv(fopen(Config::get('prefix') . '/config/lus.csv.dist','r'));
+    }
 
     // Re-assign
     $this->settings = $settings;
