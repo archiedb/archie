@@ -8,6 +8,7 @@ abstract class sitesetting {
 
   // Individual _auto_init functions
   abstract public static function _auto_init();
+  abstract public static function get_values();
 
 	// Constructor
 	public function __construct($name) { 
@@ -21,6 +22,10 @@ abstract class sitesetting {
 
 	} // uid
 
+  public static function is_valid($name) {
+    return false;
+  }
+
   /**
    * _print
    * Output the value
@@ -33,19 +38,5 @@ abstract class sitesetting {
 
   } // _print
 
-  /**
-   * is_valid
-   * returns true/false if the name is a valid value
-   */
-  public static function is_valid($name) { 
-
-    if (in_array($name,self::$values)) { 
-      return true;
-    }
-
-    return false; 
-
-  } // is_valid
-	
 } // sitesetting
 ?>

@@ -23,9 +23,9 @@ if (INIT_LOADED != '1') { exit; }
     <label class="col-md-2 control-label" for="inputUnit">Unit</label>
     <div class="col-md-2">
   	  <select name="unit" class="form-control">
-    	<?php foreach (unit::$values as $value) { 
+    	<?php foreach (Unit::get_values() as $value) { 
   	  	$is_selected = ''; 
-    		if ($level->unit == $value) { $is_selected=" selected=\"selected\""; } 
+    		if ($level->unit->name == $value) { $is_selected=" selected=\"selected\""; } 
     	?>
     		<option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option> 
     	<?php } ?>

@@ -14,7 +14,7 @@ if (INIT_LOADED != '1') { exit; }
     <div class="col-md-2">
   	  <select id="inputUnit" class="form-control" name="unit">
       	<option value="-1">&nbsp;</option> 
-  	    <?php foreach (unit::$values as $value) {
+  	    <?php foreach (unit::get_values() as $value) {
   	        $is_selected = '';
             if (isset($_POST['unit'])) { 
     	        if ($_POST['unit'] == $value) { $is_selected=" selected=\"selected\""; }
@@ -29,13 +29,13 @@ if (INIT_LOADED != '1') { exit; }
     <label class="col-md-2 control-label" for="inputQuad">Quad</label>
     <div class="col-md-2">
   	  <select id="inputQuad" class="form-control" name="quad"> 
-        <?php foreach (quad::$values as $key=>$value) { 
+        <?php foreach (quad::get_values() as $value) { 
           $is_selected = '';
           if (isset($_POST['quad'])) { 
-            if ($_POST['quad'] == $key) { $is_selected=" selected=\"selected\""; }
+            if ($_POST['quad'] == $value) { $is_selected=" selected=\"selected\""; }
           }
         ?>
-        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
+        <option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
         <?php } ?>
       </select>
     </div>
@@ -53,13 +53,13 @@ if (INIT_LOADED != '1') { exit; }
     <label class="col-md-2 control-label" for="inputLsgUnit">L. U.</label>
     <div class="col-md-2">
   	  <select name="lsg_unit" class="form-control">
-        <?php foreach (lsgunit::$values as $key=>$name) {
+        <?php foreach (lsgunit::get_values() as $name) {
   	      $is_selected = '';
           if (isset($_POST['lsg_unit'])) { 
-            if ($_POST['lsg_unit'] == $key) { $is_selected=" selected=\"selected=\""; }
+            if ($_POST['lsg_unit'] == $name) { $is_selected=" selected=\"selected=\""; }
           } 
         ?>
-        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
+        <option value="<?php echo scrub_out($name); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
         <?php } ?>
       </select>
     </div>

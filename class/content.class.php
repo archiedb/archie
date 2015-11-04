@@ -362,7 +362,7 @@ class content extends database_object {
 			break; 
       case 'level': 
         // If data is passed, use that as a filename
-        $filename = !empty($data) ? $data : self::generate_filename($level->site->name . '-level-' . $level->unit . '-' . $level->quad->name . '-' . $level->record,'pdf');
+        $filename = !empty($data) ? $data : self::generate_filename($level->site->name . '-level-' . $level->unit->name . '-' . $level->quad->name . '-' . $level->record,'pdf');
         $results = self::write_level($level,$filename,$data); 
       break;
       case '3dmodel':
@@ -549,9 +549,9 @@ class content extends database_object {
     $close_user = new User($level->closed_user);
 
     # Metadata Information
-    $pdf->SetTitle('UNIT:' . $level->unit . ' QUAD:' . $level->quad->name . ' LEVEL:' . $level->record);
+    $pdf->SetTitle('UNIT:' . $level->unit->name . ' QUAD:' . $level->quad->name . ' LEVEL:' . $level->record);
     $pdf->SetSubject('EXCAVATION LEVEL FORM'); 
-    $pdf->SetKeywords(date('d-M-Y',$level->created) . ' ' . $level->quad->name . ' ' . $level->unit . ' ' . $level->record . ' ' . $level->site->name); 
+    $pdf->SetKeywords(date('d-M-Y',$level->created) . ' ' . $level->quad->name . ' ' . $level->unit->name . ' ' . $level->record . ' ' . $level->site->name); 
 
     
     # Default font settings
@@ -572,7 +572,7 @@ class content extends database_object {
     $pdf->Rect('5','27','94','49');
     $pdf->Line('41','27','41','76');
     $pdf->Text('7','32','UNIT'); 
-    $pdf->Text('43','32',$level->unit);
+    $pdf->Text('43','32',$level->unit->name);
     $pdf->Line('5','33','99','33');
     $pdf->Text('7','37','QUAD');
     $pdf->Text('43','37',$level->quad->name); 
@@ -642,7 +642,7 @@ class content extends database_object {
 
     # Footer
     $pdf->SetFontSize('24');
-    $pdf->Text('52','270','Unit ' . $level->unit . ' ' . $level->quad->name . ' - Level ' . $level->record . ' - LU ' . $level->lsg_unit->name); 
+    $pdf->Text('52','270','Unit ' . $level->unit->name . ' ' . $level->quad->name . ' - Level ' . $level->record . ' - LU ' . $level->lsg_unit->name); 
 
     # This might kersplode, but try to build the scatterplots for this level
     # On the fly

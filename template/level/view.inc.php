@@ -30,7 +30,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php Event::display('errors'); ?>
 <table class="table table-hover table-bordered table-white">
 <tr>
-  <th>Unit</th><td><?php echo scrub_out($level->unit); ?></td>
+  <th>Unit</th><td><?php echo scrub_out($level->unit->name); ?></td>
   <th>Quad</th><td><?php echo scrub_out($level->quad->name); ?></td>
 </tr>
 <tr>

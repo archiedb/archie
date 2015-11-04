@@ -8,7 +8,7 @@ if (INIT_LOADED != '1') { exit; }
       <?php echo scrub_out($record->record); ?></a>
   </td>
   <td><?php echo scrub_out($record->station_index); ?></td>
-	<td><?php echo scrub_out($record->level->unit); ?></td>
+	<td><?php echo scrub_out($record->level->unit->name); ?></td>
 	<td><?php echo scrub_out($record->level->quad->name); ?></td>
 	<td><?php echo \UI\record_link($record->level->uid,'level',$record->level->record); ?></td>
 	<td><?php echo \UI\record_link($record->feature->uid,'feature',$record->feature->catalog_id); ?></td>

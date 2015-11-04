@@ -337,7 +337,7 @@ class Record extends database_object {
     $site = $this->site->name; 
     $level = new Level($input['level']);
 
-		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,
+		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit->name,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,
         'Station Index'=>$station_index,'XRFMatrix'=>$xrf_matrix_index,'Weight'=>$weight,'Height'=>$height,'Width'=>$width,
         'Thickness'=>$thickness,'Quanity'=>$quanity,'Material'=>$material,'Classification'=>$classification,'Feature'=>$input['feature'],
         'Notes'=>$notes,'User'=>\UI\sess::$user->username,'Update'=>date("r",$updated)));

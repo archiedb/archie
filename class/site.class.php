@@ -123,9 +123,9 @@ class Site extends database_object {
 
     // Setup the new array
     $settings = array();
-    $settings['quads'] = isset($input['quads']) ? explode(',',$input['quads']) : $this->quads; 
-    $settings['units'] = isset($input['units']) ? explode(',',$input['units']) : $this->units; 
-    $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->ticket; 
+    $settings['quads'] = isset($input['quads']) ? explode(',',$input['quads']) : $this->get_setting('quads'); 
+    $settings['units'] = isset($input['units']) ? explode(',',$input['units']) : $this->get_setting('units'); 
+    $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->get_setting('ticket'); 
 
     $sql = "UPDATE `site` SET `settings`=? WHERE `uid`=?";
     $db_results = Dba::write($sql,array(json_encode($settings),$this->uid));

@@ -53,10 +53,11 @@ class Level extends database_object {
     // Build the user object, its useful
     $this->user     = new User($this->user);
     $this->quad     = new Quad($this->quad);
+    $this->unit     = new Unit($this->unit);
     $this->lsg_unit = new Lsgunit($this->lsg_unit);
     $this->site     = new Site($this->site);
     $this->record   = 'L-' . $this->catalog_id;
-    $this->name     = $this->unit . ':' . $this->quad->name . ':' . $this->catalog_id;
+    $this->name     = $this->unit->name . ':' . $this->quad->name . ':' . $this->catalog_id;
 
 		return true; 
 
@@ -346,16 +347,12 @@ class Level extends database_object {
 		if (!Unit::is_valid($input['unit'])) { 
 			Error::add('unit','UNIT specified not valid'); 
 		}
-
-		// lsg_unit, numeric less then 50
-		if (!in_array($input['lsg_unit'],array_keys(lsgunit::$values)) OR $input['lsg_unit'] > 50 OR $input['lsg_unit'] < 2) { 
-			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
-		}
-
-		// The quad has to exist
-		if (!in_array($input['quad'],array_keys(quad::$values))) { 
-			Error::add('quad','Invalid Quad selected'); 
-		} 
+    if (!Lsgunit::is_valid($input['lsg_unit'])) {
+      Error::add('lsg_unit','Invalid LU');
+    }
+    if (!Quad::is_valid($input['quad'])) {
+      Error::add('quad','Invalid Quad selected');
+    }
 
     // Check the 'start' values 
     $field_check = array('northing','easting','elv_nw_start','elv_ne_start','elv_sw_start','elv_se_start','elv_center_start');

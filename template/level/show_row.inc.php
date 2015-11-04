@@ -3,8 +3,8 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <tr>
-	<td><?php $level->_print('unit'); ?></td>
-	<td><?php echo scrub_out($level->quad->name); ?></td>
+	<td><?php $level->unit->_print('name'); ?></td>
+	<td><?php $level->quad->_print('name'); ?></td>
   <td>
       <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php $level->_print('uid'); ?>"><?php $level->_print('record'); ?></a>
   </td>

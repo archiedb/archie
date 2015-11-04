@@ -413,7 +413,7 @@ class Report {
       $record = new Record($record_uid); 
       $record->notes = str_replace(array("\r\n", "\n", "\r"),' ',$record->notes);
 
-      $data[] = array($site->name,$site->accession,$record->catalog_id,$record->level->unit,$record->level->record,$record->lsg_unit->name,
+      $data[] = array($site->name,$site->accession,$record->catalog_id,$record->level->unit->name,$record->level->record,$record->lsg_unit->name,
         $record->station_index,$record->xrf_matrix_index,$record->weight,$record->height,$record->width,$record->thickness,$record->quanity,
         $record->material->name,trim($record->classification->name),$record->level->quad->name,$record->feature->record,$record->krotovina->record,
         $record->notes,date("m-d-Y h:i:s",$record->created),$record->northing,$record->easting,$record->elevation,$record->user->username);
@@ -527,7 +527,7 @@ class Report {
       $closed_date = $level->closed_date > 0 ? date("m-d-Y h:i:s",$level->closed_date) : "NA";
       $ex = new User($level->user); $open_user = $ex->name; 
 
-      $data[] = array($level->catalog_id,$level->site->name,$level->unit,$level->quad->name,$level->lsg_unit->name,
+      $data[] = array($level->catalog_id,$level->site->name,$level->unit->name,$level->quad->name,$level->lsg_unit->name,
         $level->northing,$level->easting,$level->elv_nw_start,$level->elv_nw_finish,$level->elv_ne_start,$level->elv_ne_finish,
         $level->elv_se_start,$level->elv_se_finish,$level->elv_sw_start,$level->elv_sw_finish,$level->elv_center_start,$level->elv_center_finish,
         $ex_one,$ex_two,$ex_three,$ex_four,$level->description,$level->difference,$level->notes,date("m-d-Y h:i:s",$level->created),
