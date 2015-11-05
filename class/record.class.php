@@ -318,6 +318,9 @@ class Record extends database_object {
         OR $easting != $spatialdata->easting OR $elevation != $spatialdata->elevation) {
           $return = $spatialdata->update(array('station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
       }
+      else {
+        $return = true;
+      }
     }
     elseif ($station_index OR $northing OR $easting OR $elevation) { 
       $return = Spatialdata::Create(array('record'=>$record_uid,'station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation,'type'=>'record'));
