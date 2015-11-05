@@ -1,28 +1,53 @@
 <?php 
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
-class lsgunit { 
+class lsgunit extends sitesetting { 
 
-	public $uid; 
-	public $name; 
-	public static $values = array('1'=>'','2'=>'Fill','3'=>'1','4'=>'2','5'=>'3','6'=>'4','7'=>'5','8'=>'6','9'=>'7','10'=>'8','11'=>'Other'); 
+  public function __construct($name) { 
 
-	// Constructor
-	public function __construct($uid) { 
-		$this->uid = intval($uid); 
-		$this->name = isset(lsgunit::$values[$uid]) ? lsgunit::$values[$uid] : null;
-		
-		return true; 
+    $this->name = $name;
 
-	} // uid
+  }
 
-	// Get the ID from the name
-	public static function name_to_id($name) { 
+  /**
+   * is_valid
+   * Returns if the name is valid
+   */
+  public static function is_valid($name) { 
 
-		$uid = array_search($name,lsgunit::$values); 
-		return $uid; 
+    if (in_array($name,self::$values['lus'])) {
+      return true;
+    }
 
-	} // name_to_id
+    return false;
+
+  } // is_valid
+
+  /**
+   * get_values
+   * Return all of the values for this
+   */
+  public static function get_values() {
+
+    return self::$values['lus'];
+
+  } // get_values
+
+  /**
+   * This is called when the class is included, we want to load up the
+   * allowed LUs from the users site
+   */
+  public static function _auto_init() { 
+
+    if (isset(\UI\sess::$user)) {
+      self::$values['lus'] = \UI\sess::$user->site->get_setting('lus');
+    }
+    if (empty(self::$values['lus'])) {
+      $fhandle = fopen(Config::get('prefix') . '/config/lus.csv.dist','r');
+      self::$values['lus'] = fgetcsv($fhandle);
+    }
+
+  } // _auto_init
 
 }
 ?>

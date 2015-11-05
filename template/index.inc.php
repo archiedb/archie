@@ -129,7 +129,7 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <div class="row">
   <div class="col-sm-1">
-    <?php echo scrub_out($level->unit); ?>
+    <?php echo scrub_out($level->unit->name); ?>
   </div>
   <div class="col-sm-1">
     <?php echo scrub_out($level->quad->name); ?>

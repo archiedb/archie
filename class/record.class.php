@@ -27,12 +27,12 @@ class Record extends database_object {
   public $northing; // Northing from station info
   public $easting; // Easting from station info
   public $elevation; // Elevation from station info
-	public $user; // The Object 
-	public $created; 
-	public $updated; 
+  public $user; // The Object 
+  public $created; 
+  public $updated; 
 
 	// Constructor
-	public function __construct($uid='') { 
+  public function __construct($uid='') { 
 
 		if (!is_numeric($uid)) { return false; } 
 		
@@ -337,7 +337,7 @@ class Record extends database_object {
     $site = $this->site->name; 
     $level = new Level($input['level']);
 
-		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,
+		$log_line = json_encode(array('Site'=>$site,'Name'=>$level->unit->name,'Level'=>$input['level'],'LSGUnit'=>$lsg_unit,
         'Station Index'=>$station_index,'XRFMatrix'=>$xrf_matrix_index,'Weight'=>$weight,'Height'=>$height,'Width'=>$width,
         'Thickness'=>$thickness,'Quanity'=>$quanity,'Material'=>$material,'Classification'=>$classification,'Feature'=>$input['feature'],
         'Notes'=>$notes,'User'=>\UI\sess::$user->username,'Update'=>date("r",$updated)));
@@ -360,10 +360,18 @@ class Record extends database_object {
     // If we were given the record for which these values are assoicated
     if ($record_id) { $record = new Record($record_id); }
 		
-		// lsg_unit, numeric less then 50
-		if ((!in_array($input['lsg_unit'],array_keys(lsgunit::$values)) OR $input['lsg_unit'] > 50) AND strlen($input['lsg_unit'])) { 
-			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
-		}
+
+    // Allow old stuff to remain behind
+    if (empty($record_id)) {
+      if (!Lsgunit::is_valid($input['lsg_unit'])) {
+  			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
+      }
+    }
+    else { 
+      if (!Lsgunit::is_valid($input['lsg_unit']) AND $record->lsg_unit->name != $input['lsg_unit']) {
+        Error::add('lsg_unit','Invalid Lithostratigraphic Unit');
+      }
+    }
 
     if (!isset($input['station_index'])) { $input['station_index'] = null; }
 

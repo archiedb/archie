@@ -51,12 +51,13 @@ class Level extends database_object {
 		} 
 
     // Build the user object, its useful
-    $this->user = new User($this->user);
-    $this->quad = new Quad($this->quad);
+    $this->user     = new User($this->user);
+    $this->quad     = new Quad($this->quad);
+    $this->unit     = new Unit($this->unit);
     $this->lsg_unit = new Lsgunit($this->lsg_unit);
-    $this->site = new site($this->site);
-    $this->record = 'L-' . $this->catalog_id;
-    $this->name = $this->unit . ':' . $this->quad->name . ':' . $this->catalog_id;
+    $this->site     = new Site($this->site);
+    $this->record   = 'L-' . $this->catalog_id;
+    $this->name     = $this->unit->name . ':' . $this->quad->name . ':' . $this->catalog_id;
 
 		return true; 
 
@@ -191,59 +192,58 @@ class Level extends database_object {
 
     // Site is unchangeable!
     $input['site'] = $this->site->uid;
+    $input['level_id'] = $this->uid;
 
     if (!Level::validate($input)) { 
       Error::add('general','Invalid field values, please check input');
       return false;
     }
 
-    $uid      = Dba::escape($this->uid); 
-    $catalog_id   = Dba::escape($input['catalog_id']); 
-    $unit     = Dba::escape($input['unit']);
-    $quad     = Dba::escape($input['quad']); 
-    $lsg_unit = Dba::escape($input['lsg_unit']);
-    $user     = Dba::escape(\UI\sess::$user->uid);
-    $updated  = time();
-    $northing = Dba::escape($input['northing']);
-    $easting  = Dba::escape($input['easting']);
-    $elv_nw_start   = Dba::escape($input['elv_nw_start']);
-    $elv_nw_finish  = Dba::escape($input['elv_nw_finish']);
-    $elv_ne_start   = Dba::escape($input['elv_ne_start']);
-    $elv_ne_finish  = Dba::escape($input['elv_ne_finish']);
-    $elv_sw_start   = Dba::escape($input['elv_sw_start']);
-    $elv_sw_finish  = Dba::escape($input['elv_sw_finish']);
-    $elv_se_start   = Dba::escape($input['elv_se_start']);
-    $elv_se_finish  = Dba::escape($input['elv_se_finish']); 
-    $elv_center_start = Dba::escape($input['elv_center_start']);
-    $elv_center_finish  = Dba::escape($input['elv_center_finish']); 
-    $excavator_one  = Dba::escape($input['excavator_one']); 
-    $excavator_two  = Dba::escape($input['excavator_two']); 
-    $excavator_three  = Dba::escape($input['excavator_three']);
-    $excavator_four = Dba::escape($input['excavator_four']); 
-    $description    = Dba::escape($input['description']);
-    $difference     = Dba::escape($input['difference']);
-    $notes          = Dba::escape($input['notes']);
+    $uid          = $this->uid; 
+    $catalog_id   = $input['catalog_id']; 
+    $unit         = $input['unit'];
+    $quad         = $input['quad']; 
+    $lsg_unit     = $input['lsg_unit'];
+    $user         = \UI\sess::$user->uid;
+    $updated      = time();
+    $northing     = $input['northing'];
+    $easting      = $input['easting'];
+    $elv_nw_start   = $input['elv_nw_start'];
+    $elv_nw_finish  = $input['elv_nw_finish'];
+    $elv_ne_start   = $input['elv_ne_start'];
+    $elv_ne_finish  = $input['elv_ne_finish'];
+    $elv_sw_start   = $input['elv_sw_start'];
+    $elv_sw_finish  = $input['elv_sw_finish'];
+    $elv_se_start   = $input['elv_se_start'];
+    $elv_se_finish  = $input['elv_se_finish']; 
+    $elv_center_start   = $input['elv_center_start'];
+    $elv_center_finish  = $input['elv_center_finish']; 
+    $excavator_one    = empty($input['excavator_one']) ? NULL : $input['excavator_one'];
+    $excavator_two    = empty($input['excavator_two']) ? NULL : $input['excavator_two'];
+    $excavator_three  = empty($input['excavator_three']) ? NULL : $input['excavator_three'];
+    $excavator_four   = empty($input['excavator_four']) ? NULL : $input['excavator_four'];
+    $description      = $input['description'];
+    $difference       = $input['difference'];
+    $notes            = $input['notes'];
 
-    $sql = "UPDATE `level` SET `catalog_id`='$catalog_id', `unit`='$unit', `quad`='$quad', `lsg_unit`='$lsg_unit', " . 
-          "`user`='$user', `updated`='$updated', `northing`='$northing', `easting`='$easting', " . 
-          "`elv_nw_start`='$elv_nw_start', `elv_nw_finish`='$elv_nw_finish', `elv_ne_start`='$elv_ne_start', " . 
-          "`elv_ne_finish`='$elv_ne_finish', `elv_sw_start`='$elv_sw_start', `elv_sw_finish`='$elv_sw_finish', " .
-          "`elv_se_start`='$elv_se_start', `elv_se_finish`='$elv_se_finish', `elv_center_start`='$elv_center_start', " . 
-          "`elv_center_start`='$elv_center_start', `elv_center_finish`='$elv_center_finish', " . 
-          "`excavator_one`='$excavator_one', `excavator_two`='$excavator_two', `excavator_three`='$excavator_three', " . 
-          "`excavator_four`='$excavator_four', `description`='$description', `difference`='$difference', `notes`='$notes' " . 
-          "WHERE `level`.`uid`='$uid' LIMIT 1";
-    $retval = Dba::write($sql);
+    $sql = "UPDATE `level` SET `catalog_id`=?,`unit`=?,`quad`=?,`lsg_unit`=?,`user`=?,`updated`=?," .
+          "`northing`=?,`easting`=?,`elv_nw_start`=?, `elv_nw_finish`=?, `elv_ne_start`=?,`elv_ne_finish`=?,".
+          "`elv_sw_start`=?, `elv_sw_finish`=?,`elv_se_start`=?,`elv_se_finish`=?,`elv_center_start`=?," . 
+          "`elv_center_finish`=?,`excavator_one`=?, `excavator_two`=?, `excavator_three`=?,`excavator_four`=?,".
+          "`description`=?, `difference`=?, `notes`=? WHERE `level`.`uid`=? LIMIT 1";
+    $retval = Dba::write($sql,array($catalog_id,$unit,$quad,$lsg_unit,$user,$updated,$northing,$easting,$elv_nw_start,
+      $elv_nw_finish,$elv_ne_start,$elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start,
+      $elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$description,$difference,$notes,$uid));
 
     if (!$retval) { 
       Error::add('database','Database update failed, please contact administrator');
       return false;
     }
 
-    $log_line = "$uid,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_nw_finish,$elv_ne_start," .
-      "$elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start," . 
-      "$elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four," . \UI\sess::$user->username . ",\"" . date('r',$updated) . "\""; 
-    Event::record('LEVEL-UPDATE',$log_line);
+    $log_line = json_encode(array($uid,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_nw_finish,$elv_ne_start,
+        $elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start,$elv_center_finish,
+        $excavator_one,$excavator_two,$excavator_three,$excavator_four,\UI\sess::$user->username,date('r',$updated))); 
+    Event::record('level::update',$log_line);
 
     // Refresh record
     $this->refresh();
@@ -316,6 +316,11 @@ class Level extends database_object {
    */
   public static function validate($input) { 
 
+    // If we've got an existing record
+    if (!empty($input['level_id'])) {
+      $level = new Level($input['level_id']);
+    }
+
     // If closed is specified
     if (isset($input['closed'])) {
       if ($input['closed'] == 1 AND !Access::is_admin()) {
@@ -343,19 +348,28 @@ class Level extends database_object {
     }
 
 		// Unit A-Z
-		if (!Unit::is_valid($input['unit'])) { 
-			Error::add('unit','UNIT specified not valid'); 
-		}
-
-		// lsg_unit, numeric less then 50
-		if (!in_array($input['lsg_unit'],array_keys(lsgunit::$values)) OR $input['lsg_unit'] > 50 OR $input['lsg_unit'] < 2) { 
-			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
-		}
-
-		// The quad has to exist
-		if (!in_array($input['quad'],array_keys(quad::$values))) { 
-			Error::add('quad','Invalid Quad selected'); 
-		} 
+    if (empty($input['level_id'])) {
+  		if (!Unit::is_valid($input['unit'])) { 
+  			Error::add('unit','UNIT specified not valid'); 
+  		}
+      if (!Lsgunit::is_valid($input['lsg_unit'])) {
+        Error::add('lsg_unit','Invalid LU');
+      }
+      if (!Quad::is_valid($input['quad'])) {
+        Error::add('quad','Invalid Quad selected');
+      }
+    }
+    else {
+      if (!Unit::is_valid($input['unit']) AND $input['unit'] != $level->unit->name) {
+        Error::add('unit','Unit specified not valid');
+      }
+      if (!Lsgunit::is_valid($input['lsg_unit']) AND $input['lsg_unit'] != $level->lsg_unit->name) {
+        Error::add('lsg_unit','Invalid LU');
+      }
+      if (!Quad::is_valid($input['quad']) AND $input['quad'] != $level->quad->name) {
+        Error::add('quad','Invalid Quad selected');
+      }
+    }
 
     // Check the 'start' values 
     $field_check = array('northing','easting','elv_nw_start','elv_ne_start','elv_sw_start','elv_se_start','elv_center_start');

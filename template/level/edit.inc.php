@@ -23,9 +23,9 @@ if (INIT_LOADED != '1') { exit; }
     <label class="col-md-2 control-label" for="inputUnit">Unit</label>
     <div class="col-md-2">
   	  <select name="unit" class="form-control">
-    	<?php foreach (unit::$values as $value) { 
+    	<?php foreach (Unit::get_values() as $value) { 
   	  	$is_selected = ''; 
-    		if ($level->unit == $value) { $is_selected=" selected=\"selected\""; } 
+    		if ($level->unit->name == $value) { $is_selected=" selected=\"selected\""; } 
     	?>
     		<option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option> 
     	<?php } ?>
@@ -36,11 +36,11 @@ if (INIT_LOADED != '1') { exit; }
     <label class="col-md-2 control-label" for="inputQuad">Quad</label>
     <div class="col-md-2">
       <select id="inputQuad" name="quad" class="form-control">
-        <?php foreach (quad::$values as $key=>$value) {
+        <?php foreach (Quad::get_values() as $value) {
           $is_selected = '';
-          if ($level->quad->uid == $key) { $is_selected=" selected=\"selected\""; }
+          if ($level->quad->name == $value) { $is_selected=" selected=\"selected\""; }
         ?>
-        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
+        <option value="<?php echo scrub_out($value); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($value); ?></option>
        <?php } ?>
      </select>
     </div>
@@ -51,18 +51,21 @@ if (INIT_LOADED != '1') { exit; }
     <div class="<?php Error::form_class('level'); ?>">
     <label class="col-md-2 control-label" for="inputLevel">Level</label>
     <div class="col-md-2">
-    	<input class="form-control" id="inputLevel" name="catalog_id" type="text" value="<?php \UI\form_value(array('post'=>'catalog_id','var',$level->catalog_id)); ?>" />
+    	<input class="form-control" id="inputLevel" name="catalog_id" type="text" value="<?php \UI\form_value(array('post'=>'catalog_id','var'=>$level->catalog_id)); ?>" />
     </div>
     </div> 
     <div class="<?php Error::form_class('lsg_unit'); ?>">
     <label class="col-md-2 control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
     <div class="col-md-2">
     	<select name="lsg_unit" class="form-control">
-    	<?php foreach (lsgunit::$values as $key=>$name) { 
+      <?php if (!lsgunit::is_valid($level->lsg_unit->name)) { ?>
+        <option value="<?php $level->lsg_unit->_print('name'); ?>"><?php $level->lsg_unit->_print('name'); ?></option>
+      <?php } ?>
+    	<?php foreach (lsgunit::get_values() as $name) { 
     		$is_selected = ''; 
-    		if ($level->lsg_unit->uid == $key) { $is_selected=" selected=\"selected=\""; }
+    		if ($level->lsg_unit->name == $name) { $is_selected=" selected=\"selected=\""; }
     	?>
-        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
+        <option value="<?php echo scrub_out($name); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
     	<?php } ?>
   	  </select>
     </div>
@@ -165,9 +168,22 @@ if (INIT_LOADED != '1') { exit; }
 <?php 
   // Current valid users
   if (Access::has('user','manage')) { 
-    $excavators = User::get('all');
+    $excavators = User::get('all',\UI\sess::$user->site->uid);
   } else {
-    $excavators = User::get('enabled'); 
+    $excavators = User::get('enabled',\UI\sess::$user->site->uid); 
+  }
+  // Make sure all of the existing excavators are in here
+  if (!empty($level->excavator_one) AND !array_key_exists($level->excavator_one,$excavators)) {
+    $excavators[$level->excavator_one] = new User($level->excavator_one);
+  }
+  if (!empty($level->excavator_two) AND !array_key_exists($level->excavator_two,$excavators)) {
+    $excavators[$level->excavator_two] = new User($level->excavator_two);
+  }
+  if (!empty($level->excavator_three) AND !array_key_exists($level->excavator_three,$excavators)) {
+    $excavators[$level->excavator_three] = new User($level->excavator_three);
+  }
+  if (!empty($level->excavator_four) AND !array_key_exists($level->excavator_four,$excavators)) {
+    $excavators[$level->excavator_four] = new User($level->excavator_four);
   }
 ?>
 <div class="row">

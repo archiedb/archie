@@ -5,6 +5,7 @@ class Site extends database_object {
 
   public $uid; 
   public $name;
+  public $settings;
   public $description;
   public $northing; 
   public $easting;
@@ -13,9 +14,6 @@ class Site extends database_object {
   public $partners; // text field
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
-  public $units; // from Settings
-  public $quads; // from Settings
-  public $ticket; // from Settings
   public $enabled; 
 
 	// Constructor takes a uid
@@ -103,11 +101,12 @@ class Site extends database_object {
     if (!isset($settings['ticket'])) { 
       $settings['ticket'] = Config::get('ticket_size');
     }
+    if (!isset($settings['lus'])) {
+      $settings['lus'] = fgetcsv(fopen(Config::get('prefix') . '/config/lus.csv.dist','r'));
+    }
 
-    // Set
-    $this->quads = $settings['quads'];
-    $this->units = $settings['units'];
-    $this->ticket = $settings['ticket'];
+    // Re-assign
+    $this->settings = $settings;
 
     return true; 
 
@@ -127,9 +126,10 @@ class Site extends database_object {
 
     // Setup the new array
     $settings = array();
-    $settings['quads'] = isset($input['quads']) ? explode(',',$input['quads']) : $this->quads; 
-    $settings['units'] = isset($input['units']) ? explode(',',$input['units']) : $this->units; 
-    $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->ticket; 
+    $settings['quads']  = isset($input['quads']) ? explode(',',$input['quads']) : $this->get_setting('quads'); 
+    $settings['units']  = isset($input['units']) ? explode(',',$input['units']) : $this->get_setting('units'); 
+    $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->get_setting('ticket'); 
+    $settings['lus']    = isset($input['lus']) ? explode(',',$input['lus']) : $this->get_setting('lus');
 
     $sql = "UPDATE `site` SET `settings`=? WHERE `uid`=?";
     $db_results = Dba::write($sql,array(json_encode($settings),$this->uid));
@@ -166,6 +166,19 @@ class Site extends database_object {
         if (!$retval) { Error::add('units','Invalid Units, only A-Z,0-9,_,- allowed, Invalid Unit(s) - ' . $invalid_units); }
         return $retval; 
       break;
+      case 'lus':
+        $invalid_lus = '';
+        $retval = true;
+        $lus = explode(',',$input['lus']);
+        foreach ($lus as $lu) {
+          if (preg_match('/[^a-z_\-0-9]/i',$lu)) {
+            $retval = false;
+            $invalid_lus .= $lu . ' :: ';
+          }
+        }
+        if (!$retval) { Error::add('lus','Invalid LUs - ' . $invalid_lus); }
+        return $retval;
+      break;
       case 'quads':
         // Must be a csv, and only A-Z,0-9,_,-?
         $invalid_quads = '';
@@ -174,7 +187,7 @@ class Site extends database_object {
         foreach ($quads as $quad) {
           if (preg_match('/[^a-z_\-0-9]/i',$quad)) {
             $retval = false;
-            $invalid_quads = $quad . ' :: ';
+            $invalid_quads .= $quad . ' :: ';
           }
         } 
         if (!$retval) { Error::add('quads','Invalid Quads, only A-Z,0-9,_,- allowed, Invalid Quad(s) - '. $invalid_quads); }
@@ -185,6 +198,22 @@ class Site extends database_object {
     return false;
 
   } // validate_settings
+
+  /**
+   * get_setting
+   * Return a setting from this site of the name specified
+   */
+  public function get_setting($name) { 
+
+      if (isset($this->settings[$name])) {
+        return $this->settings[$name];
+      }
+      else {
+        Event::error('Site::get_setting','Invalid Setting ' . $name . ' requested');
+        return false;
+      }
+
+  } // get_setting
 
   /**
    * get_from_name

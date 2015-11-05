@@ -16,7 +16,7 @@ if (INIT_LOADED != '1') { exit; }
         <div class="col-md-6">
       <?php // Adjust based on what setting 
         if ($key == 'ticket') { 
-          $name = 'selected_' . $site->$key;
+          $name = 'selected_' . $site->get_setting($key);
           ${$name} = ' selected="selected"';
         ?>
           <select class="form-control" id="inputKey" name="<?php echo $key; ?>">
@@ -24,7 +24,7 @@ if (INIT_LOADED != '1') { exit; }
             <option value="57x32mm"<?php echo $selected_57x32mm; ?>>57x32mm Label</option>
           </select>
       <?php } else { ?>
-          <textarea class="form-control" id="inputKey" name="<?php echo $key; ?>"><?php echo \UI\print_var($site->$key); ?></textarea>
+          <textarea class="form-control" id="inputKey" name="<?php echo $key; ?>"><?php echo \UI\print_var($site->get_setting($key)); ?></textarea>
         <?php } ?>
         </div>
       </div>

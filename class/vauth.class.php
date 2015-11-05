@@ -360,10 +360,8 @@ class vauth {
 	 */
 	public static function session_exists($key, $data=array()) {
 
-		$key = Dba::escape($key);
-		$time = time();
-		$sql = "SELECT * FROM `session` WHERE `id`='$key' AND `expire` > '$time'";
-		$db_results = Dba::read($sql);
+		$sql = "SELECT * FROM `session` WHERE `id`=? AND `expire` > ?";
+		$db_results = Dba::read($sql,array($key,time()));
 
 		if (Dba::num_rows($db_results)) {
 			return true;

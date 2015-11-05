@@ -1,45 +1,37 @@
 <?php 
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
-class unit { 
+class unit extends sitesetting { 
 
-  public $uid; 
-  public $name; 
-  public static $values = array();
+  public function __construct($name) {
 
-	// Constructor
-	public function __construct($uid) { 
+    $this->name = $name;
 
-		$this->uid = $uid; 
-		$this->name = $uid; 
-
-		return true; 
-
-	} // uid
-
-  /**
-   * name_to_id
-   */
-  public static function name_to_id($name) { 
-
-    $uid = array_search($name,self::$values); 
-    return $uid; 
-
-  } // name_to_id
+  } // constructor
 
   /**
    * is_valid
-   * Returns true/false if the UNIT is a valid unit value
+   * Return if it's valid or not
    */
   public static function is_valid($name) { 
 
-    if (in_array($name,self::$values)) { 
+    if (in_array($name,self::$values['units'])) {
       return true;
     }
 
     return false;
 
   } // is_valid
+
+  /**
+   * get_values
+   * Return all of the values
+   */
+  public static function get_values() { 
+
+    return self::$values['units'];
+
+  } // get_values
 
   /**
    * This is called when the class is included, we want
@@ -49,12 +41,11 @@ class unit {
 
     // Read in the units.csv
     if (isset(\UI\sess::$user)) {
-      self::$values = \UI\sess::$user->site->units;
+      self::$values['units'] = \UI\sess::$user->site->get_setting('units');
     }
     else { 
       $fhandle = fopen(Config::get('prefix') . '/config/units.csv.dist','r');
-      $units = fgetcsv($fhandle);
-      self::$values = $units;
+      self::$values['units'] = fgetcsv($fhandle);
     }
 
   } // _auto_init

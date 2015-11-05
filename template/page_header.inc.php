@@ -62,7 +62,8 @@ if ($pages > 1) {
   ksort($page_data['up']); 
   ksort($page_data['down']); 
 ?>
-<nav class="text-center">
+<div class="text-center">
+<nav>
   <ul class="pagination">
   <li><a href="<?php echo Config::get('web_path'); ?>/<?php echo $type; ?>/offset/<?php echo $prev_offset; ?>">&laquo;</a></li>
 <?php 
@@ -92,4 +93,5 @@ if ($pages > 1) {
   <li><a href="<?php echo Config::get('web_path'); ?>/<?php echo $type; ?>/offset/<?php echo $next_offset; ?>">&raquo;</a></li>
   </ul>
 </nav>
+</div>
 <?php } // if we have pages at all ?>

@@ -5,7 +5,7 @@ require_once 'class/init.php';
 // Pull the content from the URL 
 $content = new Content(\UI\sess::location('3'),\UI\sess::location('1'),\UI\sess::location('2')); 
 
-if (!$content->filename) { 
+if (!$content->filename OR !is_readable($content->filename)) { 
   // We have no file, nothing to display
   exit; 
 }

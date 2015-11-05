@@ -55,13 +55,13 @@ require_once 'template/menu.inc.php';
     <label class="col-md-2 control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
     <div class="col-md-2">
 	    <select class="form-control" name="lsg_unit">
-        <?php foreach (lsgunit::$values as $key=>$name) {
+        <?php foreach (lsgunit::get_values() as $name) {
   	      $is_selected = '';
           if (isset($_POST['lsg_unit'])) { 
-            if ($_POST['lsg_unit'] == $key) { $is_selected=" selected=\"selected=\""; }
+            if ($_POST['lsg_unit'] == $name) { $is_selected=" selected=\"selected=\""; }
           } 
         ?>
-        <option value="<?php echo scrub_out($key); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
+        <option value="<?php echo scrub_out($name); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
       <?php } ?>
         </select>
     </div>

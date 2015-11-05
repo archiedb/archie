@@ -36,13 +36,13 @@ class Genpdf {
 
     $pdf->SetFontSize('8.5');
     $pdf->SetFont('Times','B');
-    $pdf->Text('9','4',$record->accession . ' - ' . $site_abv . ' - ' . $record->level->unit . '/' . $record->level->quad->name . ' - ' . $record->level->catalog_id . ' - ' . $record->catalog_id);
+    $pdf->Text('9','4',$record->accession . ' - ' . $site_abv . ' - ' . $record->level->unit->name . '/' . $record->level->quad->name . ' - ' . $record->level->catalog_id . ' - ' . $record->catalog_id);
     $pdf->Text('1','8','Catalog #:' . $record->catalog_id);
     $pdf->Text('33','8','Site:'. $record->site->name);
     $pdf->Text('1','12','Proj:' . $record->site->project);
     $pdf->Text('33','12','Acc#:' . $record->accession);
     $pdf->Text('1','16','Date:'.date('m/d/Y',$record->created));
-    $pdf->Text('33','16','Unit:'. $record->level->unit);
+    $pdf->Text('33','16','Unit:'. $record->level->unit->name);
     $pdf->Text('1','20','Name:' . $record->user->name); 
     $pdf->Text('33','20','Level:'. $record->level->catalog_id);
     $pdf->Text('1','23','Item(s):' . $record->material->name);
@@ -78,11 +78,17 @@ class Genpdf {
      Content::write_qrcode($record->uid,$qrcode->filename,true);
     }
 
+    // Verify permissions
+    if (!is_readable($qrcode->filename) OR !is_writeable($filename)) {
+      Event::error('genpdf::ticket_88x25mm','Error creating ticket, ' . $filename . ' is not writeable and or ' . $qrcode->filename . ' is not readable');
+      return false;
+    }
+
     $pdf->Image($qrcode->filename,'0','0','25.4','25.4');
     $pdf->SetFont('Times','B');
     $pdf->SetFontSize('8');
     $pdf->Text('25','4','SITE:' . $record->site->name);
-    $pdf->Text('52','4','UNIT:' . $record->level->unit);
+    $pdf->Text('52','4','UNIT:' . $record->level->unit->name);
     $pdf->Text('25','8','LVL:' . $record->level->record);
     $pdf->Text('52','8','QUAD:' . $record->level->quad->name);
     $pdf->Text('25','12','MAT:' . $record->material->name);

@@ -24,18 +24,19 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('description'); ?>">
-    <label class="control-label col-md-2" for="inputDescription">Description</label>
-    <div class="col-md-2">
-      <textarea class="form-control" id="inputDescription" name="description" class="textbox" rows="5"><?php \UI\form_value('description'); ?></textarea>
-   </div>
-   </div>
     <div class="<?php Error::form_class('partners'); ?>">
     <label class="control-label col-md-2" for="inputPartners">Partners</label>
     <div class="col-md-2">
       <textarea class="form-control" id="inputPartners" name="partners" class="textbox" rows="5"><?php \UI\form_value('partners'); ?></textarea>
    </div>
    </div>
+    <div class="<?php Error::form_class('easting'); ?>">
+    <label class="control-label col-md-2" for="inputEasting">Easting</label>
+    <div class="col-md-2">
+      <input class="form-control" id="inputEasting" name="easting" type="text" value="<?php \UI\form_value('easting'); ?>" />
+    </div>
+    </div>
+
   </div>
 </div><div class="row">
   <div class="form-group">
@@ -54,15 +55,6 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('easting'); ?>">
-    <label class="control-label col-md-2" for="inputEasting">Easting</label>
-    <div class="col-md-2">
-      <input class="form-control" id="inputEasting" name="easting" type="text" value="<?php \UI\form_value('easting'); ?>" />
-    </div>
-    </div>
-  </div>
-</div><div class="row">
-  <div class="form-group">
     <div class="<?php Error::form_class('excavation_start'); ?>">
     <label class="control-label col-md-2" for="inputExcavationStart">Excavation Start</label>
     <div class="col-md-2">
@@ -74,6 +66,15 @@ if (INIT_LOADED != '1') { exit; }
     <div class="col-md-2">
       <input class="form-control" id="inputExcavationEnd" name="excavation_end" type="text" value="<?php \UI\form_value('excavation_end'); ?>" />
     </div>
+    </div>
+  </div>
+</div><div class="row">
+  <div class="form-group">
+      <div class="<?php Error::form_class('description'); ?>">
+      <label class="control-label col-md-2" for="inputDescription">Description</label>
+      <div class="col-md-6">
+        <textarea class="form-control" id="inputDescription" name="description" class="textbox" rows="5"><?php \UI\form_value('description'); ?></textarea>
+      </div>
     </div>
   </div>
 </div><div class="row">

@@ -59,6 +59,7 @@ $configfile = "$prefix/config/settings.php";
 require_once $prefix . '/class/general.php';
 require_once $prefix . '/class/config.class.php';
 require_once $prefix . '/class/database_object.abstract.php';
+require_once $prefix . '/class/sitesetting.abstract.php';
 require_once $prefix . '/lib/phpqrcode/qrlib.php';
 require_once $prefix . '/lib/fpdf/fpdf.php';
 require_once $prefix . '/class/ui.namespace.php'; 

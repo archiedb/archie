@@ -230,9 +230,10 @@ class User extends database_object {
 	 * This returns an array of user objects for every user as
 	 * defined by the constraint
 	 */
-	public static function get($constraint='') { 
+	public static function get($constraint='',$site='') { 
 	
 		$constraint_sql = ''; 
+    $joinsql = '';
 
 		switch ($constraint) { 
 			case 'enabled':
@@ -252,14 +253,20 @@ class User extends database_object {
 			break;
 		} 
 
+    if (!empty($site)) {
+      $site = Dba::escape($site);
+      $constraint_sql .= " AND `user_group`.`site`='$site'";
+      $joinsql = 'JOIN `user_group` ON `user_group`.`user`=`users`.`uid`';
+    }
+
 		$users = array(); 
 
-		$sql = 'SELECT * FROM `users` WHERE 1=1' . $constraint_sql . " ORDER BY `name`";
+		$sql = 'SELECT DISTINCT(`users`.`uid`),`users`.* FROM `users` ' . $joinsql . ' WHERE 1=1' . $constraint_sql . " ORDER BY `name`";
 		$db_results = Dba::read($sql); 
 
 		while ($row = Dba::fetch_assoc($db_results)) { 
       parent::add_to_cache('users',$row['uid'],$row);
-			$users[] = new User($row['uid']); 
+			$users[$row['uid']] = new User($row['uid']); 
 		} 
 		return $users; 
 
