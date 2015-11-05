@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 #
 #
 # Backs Archie DB and Content up to Google Drive
@@ -10,14 +11,114 @@
 #
 
 from __future__ import division
-import sys,time,os.path,magic
+import sys,time,os.path,magic,argparse
+from datetime import datetime
 import atom.data
+import subprocess
 import gdata.client,gdata.docs.client,gdata.docs.data
 import ConfigParser
 
-if __name__ == '__main__':
-	global Config
-	""" Load the Config file """
-	Config = Configparser.ConfigParser()
-	Config.read(os.path.dirname(os.path.abspath(__file__)) + '/backup.cfg.php')
+"""
+ BackupMysql
+  Runs the backups of the mysqldb, and then bzips it
+"""
+def BackupMysql(user,password,db,target):
 
+  """ Run DB Backup """
+  CmdMysqlDump = 'mysqldump -u%s -p%s --add-drop-table --allow-keywords %s > %s' % (user,password,db,target+'/mysql.backup')
+  runDump = os.system(CmdMysqlDump)
+
+  cmdZip = 'tar -C %s -cjf %s %s' % (target,target+'/mysql.bz2',target+'/mysql.backup')
+  runZip = subprocess.Popen(cmdZip.split(),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  runZip.wait()
+
+  if runZip.returncode != 0:
+    print 'MySQL Zip :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
+  else:
+    print 'MySQL Database exported and compressed...'
+  return True
+
+"""
+ BackupContent
+  Zips up all of the data_root content, this is the big one
+"""
+def BackupContent(source,target):
+  print 'Backing up %s, this can take a long time...' % (source)
+  sys.stdout.flush()
+  """ Start the backup """
+  cmdZip = 'tar -C %s -cjf %s .' % (source,target+'/content.bz2')
+  print cmdZip
+  runZip = subprocess.Popen(cmdZip.split(),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  runZip.wait()
+
+  if runZip.returncode != 0:
+    print 'Content Backup :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
+  else:
+    print 'Content Backup Completed...'
+  return True
+  
+def UploadToDrive(source,username,password,collection):
+  driveClient = gdata.docs.client.DocsClient(source='archie-auto-backup')
+  """ Attempt to login """
+  try:
+    driveClient.ClientLogin(username,password,driveClient.source)
+  except (gdata.client.BadAuthentication, gdata.client.Error), e:
+    print 'UploadToDrive :: Error: %s' % (str(e))
+    sys.exit(1)
+  except:
+    print 'UploadToDrive :: Unknown Error, exiting'
+    sys.exit(1)
+  print 'Connected to Google Drive'
+  sys.stdout.flush()
+
+  """ Make sure the collection specified exists """
+  try:
+    resources = driveClient.GetAllResources(uri='https://docs.google.com/feeds/default/private/full/-/folder?title='+collection+'&title-exact=true')
+  except:
+    print 'UploadToDrive :: Unable to retrieve %s, exiting' % (collection)
+    sys.exit(1)
+
+  if not resources:
+    print 'UploadToDrive :: Collection %s not found, exiting' % (collection)
+    sys.exit(1)
+  print "Found %s" % (collection)
+  """ Set URI to collection and prevent google from converting it """
+  uri = resources[0].get_resumable_create_media_link().href
+  uri += '?convert=false'
+
+  """ Backup the files! """
+  backupTime = datetime.now()
+
+  """ Do MySQL First """
+  mysqlfh = open(source + '/mysql.bz2','r')
+  mysqlft = magic.Magic(mime=True).from_file(mysqlfh.name)
+  mysqlfs = os.path.getsize(mysqlfh.name)
+  mysqlBackupTitle = 'Archie-MySQLDB-' + backupTime.isoformat() + '.bz2'
+  print 'Starting Upload of %s' % (mysqlBackupTitle)
+  """ Start Upload """
+  mysqlUpload = gdata.client.ResumableUploader(driveClient,mysqlfh,mysqlft,mysqlfs,chunk_size=9046,desired_class=gdata.data.GDEntry)
+  mysqlBackup = mysqlUpload.UploadFile(uri,entry=gdata.data.GDEntry(title=atom.data.Title(text=mysqlBackupTitle)))
+
+if __name__ == '__main__':
+
+  """ Check for Arguments """
+  parser = argparse.ArgumentParser(description='Backup Archie to Google Drive',prog='google-drive',epilog='(c) 2015 Karl Vollmer <karl.vollmer@gmail.com>')
+  parser.add_argument('backuptype',choices=['all','mysql','content'],nargs='?',help='Items to Backup')
+  if len(sys.argv)==1:
+    parser.print_help()
+    sys.exit(1)
+
+  """ Load the Config file """
+  Config = ConfigParser.ConfigParser()
+  Config.read(os.path.dirname(os.path.abspath(__file__)) + '/backup.cfg.php')
+  ArchieConfig = ConfigParser.ConfigParser()
+  ArchieConfig.read(os.path.dirname(os.path.abspath(__file__ + '/../../')) + '/config/settings.php')
+
+  """ Make sure the dump ran properly """
+  BackupMysql(ArchieConfig.get('main','database_username'),ArchieConfig.get('main','database_password'),ArchieConfig.get('main','database_name'),Config.get('main','tmpdir'))
+
+  """ Run Content Backup """
+  BackupContent(ArchieConfig.get('main','data_root'),Config.get('main','tmpdir'))
+
+  """ Copy to Drive """
+  UploadToDrive(Config.get('main','tmpdir'),Config.get('google','username'),Config.get('google','password'),Config.get('google','collection'))

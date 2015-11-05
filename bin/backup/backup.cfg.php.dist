@@ -1,0 +1,20 @@
+;<?php exit; ?>
+[main]
+
+; Temporary Directory
+; Where the backups should be staged
+tmpdir = /var/www/bin/backup/tmp
+
+[google]
+
+; Collection
+; The Folder/Collection that files should be uploaded into
+collection = Archie
+
+; Username
+; Your Google Account Username
+username = username
+
+; Password
+; Your Google Account Password
+password = password
