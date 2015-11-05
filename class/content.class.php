@@ -441,7 +441,7 @@ class content extends database_object {
       Event::error('Content::write_qrcode','No filename specified for UID:'. $uid);
       return false;
     }
-    elseif (!is_writeable($filename)) {
+    elseif (!is_writeable(basename($filename))) {
       Error::add('general','QRCode generation failure, Permission Denied');
       Event::error('Content::write_qrcode',$filename . ' is not writeable');
       return false;
