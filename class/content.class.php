@@ -443,7 +443,7 @@ class content extends database_object {
     }
     elseif (!is_writeable(basename($filename))) {
       Error::add('general','QRCode generation failure, Permission Denied');
-      Event::error('Content::write_qrcode',$filename . ' is not writeable');
+      Event::error('Content::write_qrcode',basename($filename) . ' is not writeable');
       return false;
     }
 
