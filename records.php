@@ -104,9 +104,12 @@ switch (\UI\sess::location('action')) {
     ob_clean();
     $ticket = new Content(\UI\sess::location('objectid'),'ticket','record'); 
     $record = new Record(\UI\sess::location('objectid')); 
-    if (!$ticket->filename OR filemtime($ticket->filename) < $record->updated) { 
+    $regen_ticket=false;
+    if (!file_exists($ticket->filename)) { $regen_ticket = true; }
+    elseif (!$ticket->filename OR filemtime($ticket->filename) < $record->updated) { $regen_ticket = true; } 
+    if ($regen_ticket) {
       Content::write(\UI\sess::location('objectid'),'ticket',$ticket->filename); 
-    } 
+    }
     header("Location:" . Config::get('web_path') . '/media/ticket/record/' . \UI\sess::location('objectid'));
   break; 
   case 'search':
