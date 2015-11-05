@@ -311,10 +311,16 @@ class Record extends database_object {
 			return false; 
 		} 
 
-    // Update the SpatialData
+    // Before we try to update anything, see if anything actually changed
     $spatialdata = SpatialData::get_record_data($record_uid,'record','single');
     if ($spatialdata->uid) { 
-      $return = $spatialdata->update(array('station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
+      if ($station_index != $spatialdata->station_index OR $northing != $spatialdata->northing 
+        OR $easting != $spatialdata->easting OR $elevation != $spatialdata->elevation) {
+          $return = $spatialdata->update(array('station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
+      }
+      else {
+        $return = true;
+      }
     }
     elseif ($station_index OR $northing OR $easting OR $elevation) { 
       $return = Spatialdata::Create(array('record'=>$record_uid,'station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation,'type'=>'record'));
