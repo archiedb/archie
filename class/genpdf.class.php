@@ -79,8 +79,8 @@ class Genpdf {
     }
 
     // Verify permissions
-    if (!is_readable($qrcode->filename) OR !is_writeable($filename)) {
-      Event::error('genpdf::ticket_88x25mm','Error creating ticket, ' . $filename . ' is not writeable and or ' . $qrcode->filename . ' is not readable');
+    if (!is_readable($qrcode->filename) OR !is_writeable(dirname($filename))) {
+      Event::error('genpdf::ticket_88x25mm','Error creating ticket :: ' . dirname($filename) . ' is not writeable and or ' . $qrcode->filename . ' is not readable');
       return false;
     }
 
