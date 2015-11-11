@@ -412,7 +412,7 @@ class Level extends database_object {
         // Make sure it's deeper then the start
         $start_name = substr($field,0,strlen($field)-6) . 'start';
         if ($input[$field] > $input[$start_name]) { 
-          Error::add($field,'Must be lower then starting elevation');
+          Error::warning($field,'Expected to be lower than start');
         }         
       }
 
