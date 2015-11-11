@@ -377,7 +377,7 @@ class Level extends database_object {
     foreach ($field_check as $field) { 
 
       // Must be set
-      if (!$input[$field]) {
+      if (!isset($input[$field])) {
         Error::add($field,'Required field');
         continue;
       }
