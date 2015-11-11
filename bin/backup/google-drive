@@ -10,17 +10,18 @@
 # magic >= 0.1 https://github.com/ahupp/python-magic
 #
 
-import sys,time,os.path,magic,argparse,httplib2
+import sys,time,os.path,magic,argparse
 import atom.data
 import subprocess
 import ConfigParser
 import magic
+import json
 
+from httplib2 import Http
 from datetime import datetime
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from oauth2client.client import SignedJwtAssertionCredentials
-from oauth2client.file import Storage
 
 """
  BackupMysql
@@ -40,6 +41,7 @@ def BackupMysql(user,password,db,target):
     print 'MySQL Zip :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
   else:
     print 'MySQL Database exported and compressed...'
+    os.remove(target+'/mysql.backup')
   return True
 
 """
@@ -61,45 +63,42 @@ def BackupContent(source,target):
     print 'Content Backup Completed...'
   return True
   
-def UploadToDrive(sourceDir,serviceEmail,privateKey,credentialsStorage,folderID=None):
+def UploadToDrive(sourceDir,credentialsStorage,folderID=None):
   serviceScope        = 'https://www.googleapis.com/auth/drive.file'
   serviceApiVersion   = 'v2'
   serviceName         = 'drive'
 
-  storage = Storage(credentialsStorage)
-  credentials = storage.get()
-  http = httplib2.Http()
+  try:
+    with open(credentialsStorage,'rb') as credHandle:
+      credData = json.load(credHandle);
+    credentials = SignedJwtAssertionCredentials(credData['client_email'],credData['private_key'],scope=serviceScope)
+  except IOError:
+    print 'UploadToDrive :: IOError No such file, or permission denied reading %s' % (credentialsStorage)
+    sys.exit(1)
 
-  if credentials is None or credentials.invalid:
-    try:
-      with open(privateKey,'rb') as privKeyHandle:
-        privKey = privKeyHandle.read()
-      credentials = SignedJwtAssertionCredentials(serviceEmail,privKey,scope=serviceScope)
-      storage.put(credentials)
-    except IOError:
-      print 'UploadToDrive :: IOError No such file, or permission denied reading %s' % (privateKey)
-      sys.exit(1)
-  else:
-    credentials.refresh(http)
-
-  http = credentials.authorize(http)
-  driveService = build(serviceName=serviceName,version=serviceApiVersion,http=http)
+  http_auth = credentials.authorize(Http())
+  driveService = build(serviceName=serviceName,version=serviceApiVersion,http=http_auth)
 
   """ Get a list of files in our tmp dir """
-  sourceFiles = [ f for f in listdir(sourceDir) if isfile(join(sourceDir,f)) ]
+  sourceFiles = []
+  for sourceFile in os.listdir(sourceDir):
+    if os.path.isfile(sourceDir+'/'+sourceFile):
+      sourceFiles.append(sourceDir+'/'+sourceFile)
+  print sourceFiles
+  print "Reading %s for files to be uploaded, found %s files" % (sourceDir,len(sourceFiles))
   uploadTime = datetime.now()
   
   for sourceFile in sourceFiles:
     mimeType = magic.Magic(mime=True).from_file(sourceFile)
     media_body = MediaFileUpload(sourceFile,mimetype=mimeType,resumable=True)
     body = {
-      'title': os.path.splitext(os.basename(sourceFile))[0] + uploadTime.isoformat() + '.bz2',
+      'title': os.path.splitext(os.path.basename(sourceFile))[0] + uploadTime.isoformat() + '.bz2',
       'mimeType': mimeType,
       'description': 'Archie Automated Backup -' + uploadTime.isoformat(),
     }
 
-    if folderID:
-      body['parents'] = [{'id':folderID},]
+    #if folderID:
+    #  body['parents'] = [{'id':folderID},]
     """ Upload! """
     result = driveService.files().insert(body=body,media_body=media_body).execute()
     print 'Uploaded %s - available at %s' % (sourceFile,result['alternateLink'])
@@ -134,5 +133,4 @@ if __name__ == '__main__':
     BackupContent(ArchieConfig.get('main','data_root'),Config.get('main','tmpdir'))
 
   """ Copy to Drive """
-  UploadToDrive(Config.get('main','tmpdir'),Config.get('google','serviceEmail'),Config.get('google','privateKey'),
-                Config.get('google','credentialsStorage'),Config.get('google','folderID'))
+  UploadToDrive(Config.get('main','tmpdir'),Config.get('google','credentialsStorage'),Config.get('google','folderID'))

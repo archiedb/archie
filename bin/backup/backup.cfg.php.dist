@@ -8,14 +8,6 @@ tmpdir = /var/www/bin/backup/tmp
 [google]
 ; Settings Relating to Google-drive backups
 
-; serviceEmail
-; E-mail address of your service account
-serviceEmail = nowhere@nobody
-
-; privateKey
-; Full path to your privateKey for the service account
-privateKey = /path/to/nowhere
-
 ; folderID
 ; ID of the folder that we should be backing up to
 folderID = 1337
