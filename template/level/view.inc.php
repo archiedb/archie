@@ -28,6 +28,7 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>
+<?php Event::display('warnings'); ?>
 <table class="table table-hover table-bordered table-white">
 <tr>
   <th>Unit</th><td><?php echo scrub_out($level->unit->name); ?></td>

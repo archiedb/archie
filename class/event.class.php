@@ -74,7 +74,7 @@ class Event {
         foreach ($warnings as $key=>$value) { 
           $message .= "<dl class=\"dl-horizontal\"><dt>" . \UI\field_name($key) . "</dt><dd>$value</dd></dl>";
         }
-        $css_class = ''; 
+        $css_class = ' alert-warning'; 
         $header = '<h4>Warning:' . $header_small . '</h4>';
         $size = ' alert-block';
         require \UI\template('/event'); 

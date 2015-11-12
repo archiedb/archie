@@ -373,11 +373,11 @@ class Level extends database_object {
 
     // Check the 'start' values 
     $field_check = array('northing','easting','elv_nw_start','elv_ne_start','elv_sw_start','elv_se_start','elv_center_start');
-
+    //FIXME: This should use field::validate()
     foreach ($field_check as $field) { 
 
       // Must be set
-      if (!$input[$field]) {
+      if (!isset($input[$field])) {
         Error::add($field,'Required field');
         continue;
       }
@@ -385,7 +385,7 @@ class Level extends database_object {
         Error::add($field,'Must be numeric');
         continue;
       }
-      if ($input[$field] <= 0 OR round($input[$field],3) != $input[$field]) { 
+      if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) { 
         Error::add($field,'Must be numeric and rounded to three decimal places'); 
       }
     } // end foreach starts 
@@ -412,7 +412,7 @@ class Level extends database_object {
         // Make sure it's deeper then the start
         $start_name = substr($field,0,strlen($field)-6) . 'start';
         if ($input[$field] > $input[$start_name]) { 
-          Error::add($field,'Must be lower then starting elevation');
+          Error::warning($field,'Expected to be lower than start');
         }         
       }
 
