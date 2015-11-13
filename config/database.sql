@@ -651,22 +651,6 @@ LOCK TABLES `user_group` WRITE;
 UNLOCK TABLES;
 
 --
--- Temporary table structure for view `user_permission_view`
---
-
-DROP TABLE IF EXISTS `user_permission_view`;
-/*!50001 DROP VIEW IF EXISTS `user_permission_view`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE TABLE `user_permission_view` (
-  `site` tinyint NOT NULL,
-  `user` tinyint NOT NULL,
-  `role` tinyint NOT NULL,
-  `action` tinyint NOT NULL
-) ENGINE=MyISAM */;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `users`
 --
 
@@ -711,17 +695,6 @@ UNLOCK TABLES;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `user_permission_view` AS select distinct `user_group`.`site` AS `site`,`user_group`.`user` AS `user`,`role`.`name` AS `role`,`action`.`name` AS `action` from (((`group` join `role`) join `action`) join (`user_group` join `group_role` on((`user_group`.`group` = `group_role`.`group`)))) where ((`group_role`.`role` = `role`.`uid`) and (`group_role`.`action` = `action`.`uid`)) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2015-11-13 17:30:19
