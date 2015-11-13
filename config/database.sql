@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.46, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: archie
 -- ------------------------------------------------------
--- Server version	5.5.44-0+deb7u1
+-- Server version	5.5.46-0+deb7u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -60,7 +60,7 @@ CREATE TABLE `app_info` (
 
 LOCK TABLES `app_info` WRITE;
 /*!40000 ALTER TABLE `app_info` DISABLE KEYS */;
-INSERT INTO `app_info` VALUES ('db_version','0019');
+INSERT INTO `app_info` VALUES ('db_version','0020');
 /*!40000 ALTER TABLE `app_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,7 +162,7 @@ CREATE TABLE `group_role` (
   `role` int(11) NOT NULL,
   `action` int(11) NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,7 +250,7 @@ CREATE TABLE `level` (
   `catalog_id` int(11) unsigned NOT NULL,
   `unit` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `quad` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `lsg_unit` int(10) unsigned NOT NULL,
+  `lsg_unit` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `user` int(11) unsigned NOT NULL,
   `created` int(11) unsigned NOT NULL,
   `updated` int(11) unsigned DEFAULT NULL,
@@ -390,7 +390,7 @@ CREATE TABLE `record` (
   `level` int(11) unsigned NOT NULL,
   `feature` int(11) unsigned DEFAULT NULL,
   `krotovina` int(11) unsigned DEFAULT NULL,
-  `lsg_unit` int(10) unsigned NOT NULL,
+  `lsg_unit` varchar(255) NOT NULL,
   `xrf_matrix_index` int(11) unsigned DEFAULT NULL,
   `weight` decimal(8,3) DEFAULT NULL,
   `height` decimal(8,3) DEFAULT NULL,
@@ -536,7 +536,7 @@ CREATE TABLE `site` (
 
 LOCK TABLES `site` WRITE;
 /*!40000 ALTER TABLE `site` DISABLE KEYS */;
-INSERT INTO `site` VALUES (1,'Initial Site','Initial Site',NULL,NULL,NULL,'Archie PI',NULL,1,2,NULL,1);
+INSERT INTO `site` VALUES (1,'Initial Site','Initial Site',NULL,NULL,NULL,'Archie PI',NULL,1,2,'{\"quads\":[\"\",\"NE\",\"SE\",\"SW\",\"NW\"],\"units\":[\"A\",\"B\",\"C\",\"D\",\"E\",\"F\",\"G\",\"H\",\"I\",\"J\",\"K\",\"L\",\"M\",\"N\",\"O\",\"P\",\"Q\",\"R\",\"S\",\"T\",\"U\",\"V\",\"W\",\"Y\",\"X\",\"Z\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\",\"14\",\"15\",\"16\",\"17\",\"18\",\"19\",\"20\"],\"ticket\":\"88x25mm\",\"lus\":[\"Fill\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"Other\"]}',1);
 /*!40000 ALTER TABLE `site` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -658,6 +658,12 @@ DROP TABLE IF EXISTS `user_permission_view`;
 /*!50001 DROP VIEW IF EXISTS `user_permission_view`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
+/*!50001 CREATE TABLE `user_permission_view` (
+  `site` tinyint NOT NULL,
+  `user` tinyint NOT NULL,
+  `role` tinyint NOT NULL,
+  `action` tinyint NOT NULL
+) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -712,5 +718,10 @@ UNLOCK TABLES;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-23 13:51:04
+-- Dump completed on 2015-11-13 17:30:19
