@@ -6,17 +6,22 @@
 # Copyright (c) 2015 Karl Vollmer <karl.vollmer@gmail.com>
 #
 # Required modules:
-# gdata >= 2.0.15 http://code.google.com/p/gdata-python-client/
+# google-api-python-client `pip install google-api-python-client`
 # magic >= 0.1 https://github.com/ahupp/python-magic
 #
 
-from __future__ import division
 import sys,time,os.path,magic,argparse
-from datetime import datetime
 import atom.data
 import subprocess
-import gdata.client,gdata.docs.client,gdata.docs.data
 import ConfigParser
+import magic
+import json
+
+from httplib2 import Http
+from datetime import datetime
+from apiclient.discovery import build
+from apiclient.http import MediaFileUpload
+from oauth2client.client import SignedJwtAssertionCredentials
 
 """
  BackupMysql
@@ -36,6 +41,7 @@ def BackupMysql(user,password,db,target):
     print 'MySQL Zip :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
   else:
     print 'MySQL Database exported and compressed...'
+    os.remove(target+'/mysql.backup')
   return True
 
 """
@@ -57,56 +63,59 @@ def BackupContent(source,target):
     print 'Content Backup Completed...'
   return True
   
-def UploadToDrive(source,username,password,collection):
-  driveClient = gdata.docs.client.DocsClient(source='archie-auto-backup')
-  """ Attempt to login """
+def UploadToDrive(sourceDir,credentialsStorage,folderID=None):
+  serviceScope        = 'https://www.googleapis.com/auth/drive.file'
+  serviceApiVersion   = 'v2'
+  serviceName         = 'drive'
+
   try:
-    driveClient.ClientLogin(username,password,driveClient.source)
-  except (gdata.client.BadAuthentication, gdata.client.Error), e:
-    print 'UploadToDrive :: Error: %s' % (str(e))
-    sys.exit(1)
-  except:
-    print 'UploadToDrive :: Unknown Error, exiting'
-    sys.exit(1)
-  print 'Connected to Google Drive'
-  sys.stdout.flush()
-
-  """ Make sure the collection specified exists """
-  try:
-    resources = driveClient.GetAllResources(uri='https://docs.google.com/feeds/default/private/full/-/folder?title='+collection+'&title-exact=true')
-  except:
-    print 'UploadToDrive :: Unable to retrieve %s, exiting' % (collection)
+    with open(credentialsStorage,'rb') as credHandle:
+      credData = json.load(credHandle);
+    credentials = SignedJwtAssertionCredentials(credData['client_email'],credData['private_key'],scope=serviceScope)
+  except IOError:
+    print 'UploadToDrive :: IOError No such file, or permission denied reading %s' % (credentialsStorage)
     sys.exit(1)
 
-  if not resources:
-    print 'UploadToDrive :: Collection %s not found, exiting' % (collection)
-    sys.exit(1)
-  print "Found %s" % (collection)
-  """ Set URI to collection and prevent google from converting it """
-  uri = resources[0].get_resumable_create_media_link().href
-  uri += '?convert=false'
+  http_auth = credentials.authorize(Http())
+  driveService = build(serviceName=serviceName,version=serviceApiVersion,http=http_auth)
 
-  """ Backup the files! """
-  backupTime = datetime.now()
+  """ Get a list of files in our tmp dir """
+  sourceFiles = []
+  for sourceFile in os.listdir(sourceDir):
+    if os.path.isfile(sourceDir+'/'+sourceFile):
+      sourceFiles.append(sourceDir+'/'+sourceFile)
+  print sourceFiles
+  print "Reading %s for files to be uploaded, found %s files" % (sourceDir,len(sourceFiles))
+  uploadTime = datetime.now()
+  
+  for sourceFile in sourceFiles:
+    mimeType = magic.Magic(mime=True).from_file(sourceFile)
+    media_body = MediaFileUpload(sourceFile,mimetype=mimeType,resumable=True)
+    body = {
+      'title': os.path.splitext(os.path.basename(sourceFile))[0] + uploadTime.isoformat() + '.bz2',
+      'mimeType': mimeType,
+      'description': 'Archie Automated Backup -' + uploadTime.isoformat(),
+    }
 
-  """ Do MySQL First """
-  mysqlfh = open(source + '/mysql.bz2','r')
-  mysqlft = magic.Magic(mime=True).from_file(mysqlfh.name)
-  mysqlfs = os.path.getsize(mysqlfh.name)
-  mysqlBackupTitle = 'Archie-MySQLDB-' + backupTime.isoformat() + '.bz2'
-  print 'Starting Upload of %s' % (mysqlBackupTitle)
-  """ Start Upload """
-  mysqlUpload = gdata.client.ResumableUploader(driveClient,mysqlfh,mysqlft,mysqlfs,chunk_size=9046,desired_class=gdata.data.GDEntry)
-  mysqlBackup = mysqlUpload.UploadFile(uri,entry=gdata.data.GDEntry(title=atom.data.Title(text=mysqlBackupTitle)))
+    #if folderID:
+    #  body['parents'] = [{'id':folderID},]
+    """ Upload! """
+    result = driveService.files().insert(body=body,media_body=media_body).execute()
+    print 'Uploaded %s - available at %s' % (sourceFile,result['alternateLink'])
+    sys.stdout.flush()
+
+  return True
 
 if __name__ == '__main__':
 
   """ Check for Arguments """
   parser = argparse.ArgumentParser(description='Backup Archie to Google Drive',prog='google-drive',epilog='(c) 2015 Karl Vollmer <karl.vollmer@gmail.com>')
   parser.add_argument('backuptype',choices=['all','mysql','content'],nargs='?',help='Items to Backup')
+  parser.add_argument('-no-upload',action='store_false',help='Backup Files but do not upload',dest='upload')
   if len(sys.argv)==1:
     parser.print_help()
     sys.exit(1)
+  args=parser.parse_args()
 
   """ Load the Config file """
   Config = ConfigParser.ConfigParser()
@@ -114,11 +123,14 @@ if __name__ == '__main__':
   ArchieConfig = ConfigParser.ConfigParser()
   ArchieConfig.read(os.path.dirname(os.path.abspath(__file__ + '/../../')) + '/config/settings.php')
 
-  """ Make sure the dump ran properly """
-  BackupMysql(ArchieConfig.get('main','database_username'),ArchieConfig.get('main','database_password'),ArchieConfig.get('main','database_name'),Config.get('main','tmpdir'))
-
-  """ Run Content Backup """
-  BackupContent(ArchieConfig.get('main','data_root'),Config.get('main','tmpdir'))
+  """ MySQL backup """
+  if args.backuptype == 'all' or args.backuptype == 'mysql':
+    BackupMysql(ArchieConfig.get('main','database_username'),ArchieConfig.get('main','database_password'),
+                                  ArchieConfig.get('main','database_name'),Config.get('main','tmpdir'))
+  
+  """ Content Backup """
+  if args.backuptype == 'all' or args.backuptype == 'content':
+    BackupContent(ArchieConfig.get('main','data_root'),Config.get('main','tmpdir'))
 
   """ Copy to Drive """
-  UploadToDrive(Config.get('main','tmpdir'),Config.get('google','username'),Config.get('google','password'),Config.get('google','collection'))
+  UploadToDrive(Config.get('main','tmpdir'),Config.get('google','credentialsStorage'),Config.get('google','folderID'))

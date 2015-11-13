@@ -6,15 +6,13 @@
 tmpdir = /var/www/bin/backup/tmp
 
 [google]
+; Settings Relating to Google-drive backups
 
-; Collection
-; The Folder/Collection that files should be uploaded into
-collection = Archie
+; folderID
+; ID of the folder that we should be backing up to
+folderID = 1337
 
-; Username
-; Your Google Account Username
-username = username
-
-; Password
-; Your Google Account Password
-password = password
+; credentialsStorage
+; Full path to the json credentials Storage you downloaded
+; From the google developers website
+credentialsStorage = /path/to/nowhere
