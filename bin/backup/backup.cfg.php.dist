@@ -16,3 +16,14 @@ folderID = 1337
 ; Full path to the json credentials Storage you downloaded
 ; From the google developers website
 credentialsStorage = /path/to/nowhere
+
+[local]
+; Settings relating to Local Backup runs
+
+; backup_dir
+; Directory to store the backups in
+backup_dir = /path/to/backups
+
+; backup_count
+; Number of backup copies to keey
+backup_count = 14
