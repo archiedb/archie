@@ -16,7 +16,6 @@ else
   exit 1
 fi
 
-
 echo -e "${Green}Backing up Existing Configuration${Off}"
 if [ ! -d ${ABS_PATH}/../config.bak ] 
 then
@@ -31,30 +30,6 @@ git pull
 if [ ! -f ${ABS_PATH}/../config/settings.php ]
 then
  echo -e "${Red}ERROR: No settings file found, it appears as though archie isn't installed.${Off}"
-fi
-
-if [ ! -f ${ABS_PATH}/../config/units.csv ]
-then
- if [ -f ${ABS_PATH}/../config.bak/units.csv ]
- then
-   echo -e "${Yello}WARNING: Restoring previous Units file, may differ from stock units file provided by Archie${Off}"
-   cp ${ABS_PATH}/../config.bak/units.csv ${ABS_PATH}/../config/units.csv
- else
-   echo -e "${Yellow}WARNING: Units config not found, copying dist into place.${Off}"
-   cp ${ABS_PATH}/../config/units.csv.dist ${ABS_PATH}/../config/units.csv
- fi
-fi
-
-if [ ! -f ${ABS_PATH}/../config/quads.csv ]
-then
-  if [ -f ${ABS_PATH}/../config.bak/quads.csv ]
-  then
-    echo -e "${Yello}WARNING: Restoring Previous Quads file, may differ from stock units file provided by Archie${Off}"
-    cp ${ABS_PATH}/../config.bak/quads.csv ${ABS_PATH}/../config/quads.csv
-  else
-    echo -e "${Yellow}WARNING: Quads config not found, copying dist into place.${Off}"
-    cp ${ABS_PATH}/../config/quads.csv.dist ${ABS_PATH}/../config/quads.csv
-  fi
 fi
 
 if id -u "www-data" > /dev/null 2>&1; then
