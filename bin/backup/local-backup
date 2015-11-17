@@ -73,7 +73,10 @@ def BackupContent(source,target):
     print 'Content compressed and backed up, final size: %s' % (sizeof_fmt(os.stat(backupFilename).st_size))
   return True
   
-def ClearOldBackups(savecount,target):
+def ClearOldBackups(savecount,target,noDelete):
+
+  """ Configured Save Count need to be multipled by 2, the number of backup files! """
+  savecount = int(savecount)*2
 
   fileData = {}
   files = [ f for f in os.listdir(target) if os.path.isfile(os.path.join(target,f)) ]
@@ -81,14 +84,19 @@ def ClearOldBackups(savecount,target):
     fileData[filename] = os.stat(target+'/'+filename).st_ctime
 
   sortedFileData = sorted(fileData.items(),key=lambda x: x[1])
-  if len(sortedFileData) <= int(savecount):
-    print 'Less than %s old backup files found, no clean-up required' % (savecount)
+  if len(sortedFileData) <= savecount:
+    print 'Less than %s old backup files found, no clean-up required' % (str(savecount/2))
     return True
 
   
-  deleteLimit = len(sortedFileData) - int(savecount)
+  deleteLimit = len(sortedFileData) - savecount
   for item in range(0,deleteLimit):
-    print 'Deleting: ' + sortedFileData[item][0]
+    if noDelete:
+      print 'Would Delete: ' + target+'/'+sortedFileData[item][0]
+    else:
+      print 'Deleting: ' + target+'/'+sortedFileData[item][0]
+      os.remove(target+'/'+sortedFileData[item][0])
+
 
   
   return True
@@ -98,7 +106,7 @@ if __name__ == '__main__':
   """ Check for Arguments """
   parser = argparse.ArgumentParser(description='Backup Archie to Google Drive',prog='google-drive',epilog='(c) 2015 Karl Vollmer <karl.vollmer@gmail.com>')
   parser.add_argument('backuptype',choices=['all','mysql','content'],nargs='?',help='Items to Backup')
-  parser.add_argument('-no-delete',action='store_false',help='Backup Files but do not upload',dest='clean')
+  parser.add_argument('--no-delete',action='store_true',help='Do not delete old backups',dest='noDelete')
   if len(sys.argv)==1:
     parser.print_help()
     sys.exit(1)
@@ -119,5 +127,4 @@ if __name__ == '__main__':
   if args.backuptype == 'all' or args.backuptype == 'content':
     BackupContent(ArchieConfig.get('main','data_root'),Config.get('local','backup_dir'))
 
-  if args.clean:
-    ClearOldBackups(Config.get('local','backup_count'),Config.get('local','backup_dir'))
+  ClearOldBackups(Config.get('local','backup_count'),Config.get('local','backup_dir'),args.noDelete)
