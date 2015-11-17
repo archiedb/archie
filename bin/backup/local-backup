@@ -1,0 +1,130 @@
+#!/usr/bin/env python
+# vim: set softtabstop=2 ts=2 sw=2 expandtab: 
+#
+#
+# Backs Archie DB and Content up to Google Drive
+# Copyright (c) 2015 Karl Vollmer <karl.vollmer@gmail.com>
+#
+# Required modules:
+# google-api-python-client `pip install google-api-python-client`
+# magic >= 0.1 https://github.com/ahupp/python-magic
+#
+
+import sys,time,os.path,argparse
+import subprocess
+import ConfigParser
+
+from datetime import datetime
+
+"""
+ sizeof_fmt
+  Helper function to give human readable size
+"""
+def sizeof_fmt(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
+
+"""
+ BackupMysql
+  Runs the backups of the mysqldb, and then bzips it
+"""
+def BackupMysql(user,password,db,target):
+
+  """ Run DB Backup """
+  CmdMysqlDump = 'mysqldump -u%s -p%s --add-drop-table --allow-keywords %s > %s' % (user,password,db,target+'/mysql.backup')
+  runDump = os.system(CmdMysqlDump)
+  backupTime = datetime.now()
+
+  backupFilename = target+'/'+backupTime.isoformat()+'-mysql.bz2'
+  print 'Starting MySQL backup...  '
+  cmdZip = 'tar -C %s -cjf %s %s' % (target,backupFilename,target+'/mysql.backup')
+  runZip = subprocess.Popen(cmdZip.split(),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  runZip.wait()
+
+  if runZip.returncode != 0:
+    print 'MySQL Zip :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
+  else:
+    print 'MySQL Database export and compressed, final size: %s' % (sizeof_fmt(os.stat(backupFilename).st_size))
+   
+    os.remove(target+'/mysql.backup')
+  return True
+
+"""
+ BackupContent
+  Zips up all of the data_root content, this is the big one
+"""
+def BackupContent(source,target):
+  print 'Backing up %s, this can take a long time...' % (source)
+  sys.stdout.flush()
+  """ Start the backup """
+  backupTime = datetime.now()
+
+  backupFilename = target+'/'+backupTime.isoformat()+'-content.bz2'
+  cmdZip = 'tar -C %s -cjf %s .' % (source,backupFilename)
+  runZip = subprocess.Popen(cmdZip.split(),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  runZip.wait()
+
+  if runZip.returncode != 0:
+    print 'Content Backup :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
+  else:
+    print 'Content compressed and backed up, final size: %s' % (sizeof_fmt(os.stat(backupFilename).st_size))
+  return True
+  
+def ClearOldBackups(savecount,target,noDelete):
+
+  """ Configured Save Count need to be multipled by 2, the number of backup files! """
+  savecount = int(savecount)*2
+
+  fileData = {}
+  files = [ f for f in os.listdir(target) if os.path.isfile(os.path.join(target,f)) ]
+  for filename in files:
+    fileData[filename] = os.stat(target+'/'+filename).st_ctime
+
+  sortedFileData = sorted(fileData.items(),key=lambda x: x[1])
+  if len(sortedFileData) <= savecount:
+    print 'Less than %s old backup files found, no clean-up required' % (str(savecount/2))
+    return True
+
+  
+  deleteLimit = len(sortedFileData) - savecount
+  for item in range(0,deleteLimit):
+    if noDelete:
+      print 'Would Delete: ' + target+'/'+sortedFileData[item][0]
+    else:
+      print 'Deleting: ' + target+'/'+sortedFileData[item][0]
+      os.remove(target+'/'+sortedFileData[item][0])
+
+
+  
+  return True
+
+if __name__ == '__main__':
+
+  """ Check for Arguments """
+  parser = argparse.ArgumentParser(description='Backup Archie to Google Drive',prog='google-drive',epilog='(c) 2015 Karl Vollmer <karl.vollmer@gmail.com>')
+  parser.add_argument('backuptype',choices=['all','mysql','content'],nargs='?',help='Items to Backup')
+  parser.add_argument('--no-delete',action='store_true',help='Do not delete old backups',dest='noDelete')
+  if len(sys.argv)==1:
+    parser.print_help()
+    sys.exit(1)
+  args=parser.parse_args()
+
+  """ Load the Config file """
+  Config = ConfigParser.ConfigParser()
+  Config.read(os.path.dirname(os.path.abspath(__file__)) + '/backup.cfg.php')
+  ArchieConfig = ConfigParser.ConfigParser()
+  ArchieConfig.read(os.path.dirname(os.path.abspath(__file__ + '/../../')) + '/config/settings.php')
+
+  """ MySQL backup """
+  if args.backuptype == 'all' or args.backuptype == 'mysql':
+    BackupMysql(ArchieConfig.get('main','database_username'),ArchieConfig.get('main','database_password'),
+                                  ArchieConfig.get('main','database_name'),Config.get('local','backup_dir'))
+  
+  """ Content Backup """
+  if args.backuptype == 'all' or args.backuptype == 'content':
+    BackupContent(ArchieConfig.get('main','data_root'),Config.get('local','backup_dir'))
+
+  ClearOldBackups(Config.get('local','backup_count'),Config.get('local','backup_dir'),args.noDelete)
