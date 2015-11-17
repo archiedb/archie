@@ -46,6 +46,7 @@ class Field {
       case 'xrf_artifact_index':
       case 'quanity':
       case 'xrf_matrix_index':
+      case 'catalog_id':
       case 'station_index':
         if (!is_numeric($value) OR $value <= 0) {
           $retval = false;

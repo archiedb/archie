@@ -328,11 +328,13 @@ class Level extends database_object {
       }
     }
 
-    if (!$input['catalog_id']) { 
-      Error::add('level','Required field');
+    // Catalog ID must be numeric, and exist
+    if (!Field::validate('catalog_id',$input['catalog_id'])) {
+      Error::add('level','Must be numeric');
     }
-    else {
-      // Make sure this isn't a duplicate level, filter on UID if passed
+
+    // Make sure this isn't a duplicate level, filter on UID if passed
+    if (isset($input['catalog_id'])) {
       $uid_sql    = isset($input['uid']) ? "AND `uid`<>'" . Dba::escape($input['uid']) . "'" : '';
 
       $sql = "SELECT `level`.`uid` FROM `level` WHERE `catalog_id`=? AND `quad`=? AND `unit`=? AND `site`=? $uid_sql";
@@ -341,10 +343,6 @@ class Level extends database_object {
       if ($row['uid']) { 
         Error::add('level','Duplicate Level for this Unit and Quad'); 
       }
-    }
-
-    if (!is_numeric($input['catalog_id'])) { 
-      Error::add('level','Level must be numeric');
     }
 
 		// Unit A-Z
