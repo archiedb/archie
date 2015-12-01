@@ -153,7 +153,7 @@ if (INIT_LOADED != '1') { exit; }
 </div><div class="row">
   <div class="form-group">
     <div class="<?php Error::form_class('quanity'); ?>">
-    <label class="col-md-2 control-label" for="inputQuanity">Quanity</label>
+    <label class="col-md-2 control-label" for="inputQuanity">Quantity</label>
     <div class="col-md-2">
     	<input class="form-control" id="inputQuanity" name="quanity" type="text" value="<?php \UI\form_value(array('post'>'quanity','var'=>$record->quanity)); ?>" />
     </div>

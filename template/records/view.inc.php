@@ -56,7 +56,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>Easting</th><td><?php echo scrub_out($record->easting); ?></td>
 <tr>
   <th>Elevation</th><td><?php echo scrub_out($record->elevation); ?></td>
-  <th>Quanity</th><td><?php echo scrub_out($record->quanity); ?></td>
+  <th>Quantity</th><td><?php echo scrub_out($record->quanity); ?></td>
 </tr>
 <tr>
   <th>Accession</th><td colspan="3"><?php echo $record->_print('accession'); ?></td>
