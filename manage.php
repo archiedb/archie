@@ -98,7 +98,7 @@ switch (\UI\sess::location('action')) {
   case 'run_import': 
     if (!Access::is_admin()) { \UI\access_denied(); }
     $import = new Import($_POST['type']);   
-    $import->run($_FILES['import']['tmp_name']);
+    $import->run($_FILES['media']['tmp_name']);
     header("Location:" . Config::get('web_path') . '/manage/import'); 
   break;
   case 'tools':
