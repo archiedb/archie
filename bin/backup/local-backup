@@ -118,6 +118,14 @@ if __name__ == '__main__':
   ArchieConfig = ConfigParser.ConfigParser()
   ArchieConfig.read(os.path.dirname(os.path.abspath(__file__ + '/../../')) + '/config/settings.php')
 
+  """ Make sure the target directory is writeable """
+  try:
+    if not os.access(Config.get('local','backup_dir'),os.W_OK):
+      print "Backup directory %s is not writeable" % (Config.get('local','backup_dir'))
+  except IOError:
+    print "IOError attempting to open %s please verify it's exists and is writeable" % (Config.get('local','backup_dir'))
+
+
   """ MySQL backup """
   if args.backuptype == 'all' or args.backuptype == 'mysql':
     BackupMysql(ArchieConfig.get('main','database_username'),ArchieConfig.get('main','database_password'),
