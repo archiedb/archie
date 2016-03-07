@@ -48,7 +48,7 @@ class Genpdf {
     $pdf->Text('1','23','Item(s):' . $record->material->name);
     $pdf->Text('33','23','N = '. $record->quanity);
     $pdf->Text('3','27',' ('. $record->classification->name . ')');
-    $pdf->Text('1','31','MASL:' . $masl);
+    $pdf->Text('1','31','Elv:' . $masl);
   
 
     $pdf->Output($filename);
