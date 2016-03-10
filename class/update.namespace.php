@@ -365,6 +365,9 @@ class Database {
                         '- Correct Level Quad values allowing them to change over time.<br />' .
                     '- Force all users to have a site, is based on their permission group.<br />';
     $versions[] = array('version'=>'0020','description'=>$update_string);
+    $update_string = '- Change for University of Oregon, makes this install incompatibile with future Archie versions';
+    $versions[] = array('version'=>'0021','description'=>$update_string);
+
 
     return $versions; 
 
@@ -1701,6 +1704,36 @@ class Database {
     return $retval;
 
   } // update_0020
+
+  /**
+   * update_0021
+   * Add excavation_count to record table per UofO request 
+   */
+  public static function update_0021() {
+
+    $retval = true;
+
+    // Alter the record table
+    $sql = "ALTER TABLE `record` ADD `excavation_count` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0' AFTER `catalog_id`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    // Populate the current value of records, try to get the order right.. :S
+    $sql = "SELECT * FROM `record` ORDER BY `uid` ASC";
+    $db_results = \Dba::read($sql);
+
+    while ($row = \Dba::fetch_assoc($db_results)) { 
+
+      $new_count = \Record::gen_excavation_count($row['level']);
+      $record = new \Record($row['uid']);
+      $record->update_excavation_count($new_count);
+      // Remove from cache once we're done so we don't run out of memory
+      \Record::remove_from_cache('record',$record->uid);
+
+    }
+
+    return $retval;
+
+  } // update_0021, invalidates this install's compatibility
 
 } // \Update\Database class
 

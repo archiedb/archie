@@ -407,13 +407,13 @@ class Report {
     $data = array();
 
     // The header
-    $data[] = array('site','accession','catalog id','unit','level','litho unit','station index','xrf matrix index','weight','height','width','thickness','quantity','material','classification','quad','feature','krotovina','notes','created','northing','easting','elevation','user');
+    $data[] = array('site','accession','catalog id','excavation count','unit','level','litho unit','station index','xrf matrix index','weight','height','width','thickness','quantity','material','classification','quad','feature','krotovina','notes','created','northing','easting','elevation','user');
 
     foreach ($results as $record_uid) {
       $record = new Record($record_uid); 
       $record->notes = str_replace(array("\r\n", "\n", "\r"),' ',$record->notes);
 
-      $data[] = array($site->name,$site->accession,$record->catalog_id,$record->level->unit->name,$record->level->record,$record->lsg_unit->name,
+      $data[] = array($site->name,$site->accession,$record->catalog_id,$record->excavation_count,$record->level->unit->name,$record->level->record,$record->lsg_unit->name,
         $record->station_index,$record->xrf_matrix_index,$record->weight,$record->height,$record->width,$record->thickness,$record->quanity,
         $record->material->name,trim($record->classification->name),$record->level->quad->name,$record->feature->record,$record->krotovina->record,
         $record->notes,date("m-d-Y h:i:s",$record->created),$record->northing,$record->easting,$record->elevation,$record->user->username);

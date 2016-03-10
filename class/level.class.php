@@ -199,6 +199,7 @@ class Level extends database_object {
       return false;
     }
 
+
     $uid          = $this->uid; 
     $catalog_id   = $input['catalog_id']; 
     $unit         = $input['unit'];
@@ -244,6 +245,20 @@ class Level extends database_object {
         $elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start,$elv_center_finish,
         $excavator_one,$excavator_two,$excavator_three,$excavator_four,\UI\sess::$user->username,date('r',$updated))); 
     Event::record('level::update',$log_line);
+
+    // If unit or quad have changed we have to rebuild the excavation_count :(
+    // This is a University of Oregon special change and makes this install incompatibile with mainline Archie
+    if ($this->quad->name != $input['quad'] OR $this->unit->name != $input['unit']) {
+      $this->refresh();
+      $sql = "SELECT `uid` FROM `record` WHERE `level`=? ORDER BY `uid` ASC";
+      $db_results = Dba::read($sql,array($this->uid));
+      while ($row = Dba::fetch_assoc($db_results)) { 
+        $new_count = Record::gen_excavation_count($this->uid);
+        $record = new Record($row['uid']);
+        $record->update_excavation_count($new_count);
+      } 
+    }
+
 
     // Refresh record
     $this->refresh();

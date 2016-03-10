@@ -6,6 +6,7 @@ class Record extends database_object {
   public $uid; // INTERNAL 
   public $site; // Site UID  
   public $catalog_id; // # of item unique to site
+  public $excavation_count; // University of Oregon specific field, makes this install incompatibile with mainline Archie
   public $inventory_id; // this is the built ID of the thingy from site + year + catalog id
   public $feature; 
   public $krotovina;
@@ -182,8 +183,11 @@ class Record extends database_object {
 
 		} 
 
+
     // We need the real UID of the following objects
     $level = new Level($input['level']);
+
+    $excavation_count = self::gen_excavation_count($input['level']);
 
     $feature_uid    = empty($input['feature']) ? NULL : Feature::get_uid_from_record($input['feature']);
     $krotovina_uid  = empty($input['krotovina']) ? NULL : Krotovina::get_uid_from_record($input['krotovina']);
@@ -212,9 +216,9 @@ class Record extends database_object {
 		$user               = \UI\sess::$user->uid; 
 		$created            = time(); 
 
-		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`level`,`lsg_unit`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`accession`,`feature`,`krotovina`,`user`,`created`) " . 
-			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
-		$db_results = Dba::write($sql,array($site,$catalog_id,$level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$accession,$feature,$krotovina,$user,$created)); 
+		$sql = "INSERT INTO `record` (`site`,`catalog_id`,`excavation_count`,`level`,`lsg_unit`,`xrf_matrix_index`,`weight`,`height`,`width`,`thickness`,`quanity`,`material`,`classification`,`notes`,`xrf_artifact_index`,`accession`,`feature`,`krotovina`,`user`,`created`) " . 
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+		$db_results = Dba::write($sql,array($site,$catalog_id,$excavation_count,$level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$accession,$feature,$krotovina,$user,$created)); 
 
 		if (!$db_results) { 
 			Error::add('general','Unable to insert record, reverting changes.'); 
@@ -227,7 +231,7 @@ class Record extends database_object {
 
 		$insert_id = Dba::insert_id(); 
 
-    $log_json = json_encode(array('Site'=>$site,'Catalog ID'=>$catalog_id,'Level'=>$input['level'],'LSG Unit'=>$lsg_unit,
+    $log_json = json_encode(array('Site'=>$site,'Catalog ID'=>$catalog_id,'Excavation Count'=>$excavation_count,'Level'=>$input['level'],'LSG Unit'=>$lsg_unit,
                   'StationIndex'=>$station_index,'XRFMatrixIndex'=>$xrf_matrix_index,'Weight'=>$weight,
                   'Height'=>$height,'Thickness'=>$thickness,'Quanity',$quanity,'Material'=>$material,
                   'Classification'=>$classification,'Feature ID'=>$feature_uid,'Krotovina ID'=>$krotovina_uid,
@@ -557,6 +561,53 @@ class Record extends database_object {
     return true; 
 
 	} // validate
+
+  /**
+   * gen_excavation_count
+   * Takes a level id and calculates the 'next' count
+   * This functions makes this install incomptabile with mainline Archie
+   * Requested specifically by University of Oregon
+   */
+  public static function gen_excavation_count($level_id) {
+
+    // Pull in the level info
+    $level = new Level($level_id); 
+
+    // If there's a quad
+    if (strlen($level->quad->name)) {
+      $sql = "SELECT `excavation_count` FROM `record` LEFT JOIN `level` ON `level`.`uid`=`record`.`level` ".
+        "WHERE `record`.`site`=? AND `level`.`catalog_id`=? AND `level`.`quad`=? ORDER BY `excavation_count` DESC LIMIT 1";
+      $field_value = $level->quad->name;
+    }
+    else {
+      $sql = "SELECT `excavation_count` FROM `record` LEFT JOIN `level` ON `level`.`uid`=`record`.`level` ".
+        "WHERE `record`.`site`=? AND `level`.`catalog_id`=? AND `level`.`unit`=? ORDER BY `excavation_count` DESC LIMIT 1";
+      $field_value = $level->unit->name;
+    }
+
+    $db_results = Dba::read($sql,array($level->site->uid,$level->catalog_id,$field_value));
+    $row = Dba::fetch_assoc($db_results);
+    $next_count = intval($row['excavation_count'])+1;
+
+    return $next_count;
+
+  } // gen_excavation_count
+
+  /**
+   * update_excavation_count
+   * This updates the excavation_count of the specified record, this is needed
+   * because when you change a level everything has to be re-numbered
+   * This function makes this install incompatibile with mainline Archie
+   * Requested specifically by University of Oregon
+   */
+  public function update_excavation_count($new_count) {
+
+    $sql = "UPDATE `record` SET `excavation_count`=? WHERE `uid`=?";
+    $db_results = Dba::write($sql,array(intval($new_count),$this->uid));
+
+    return true;
+
+  }
 
 	/** 
 	 * last_created
