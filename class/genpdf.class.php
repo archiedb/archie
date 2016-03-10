@@ -36,11 +36,11 @@ class Genpdf {
 
     $pdf->SetFontSize('8.5');
     $pdf->SetFont('Times','B');
-    $pdf->Text('9','4',$record->accession . ' - ' . $site_abv . ' - ' . $record->level->unit->name . '/' . $record->level->quad->name . ' - ' . $record->level->catalog_id . ' - ' . $record->catalog_id);
+    $pdf->Text('9','4',$record->site->accession . ' - ' . $site_abv . ' - ' . $record->level->unit->name . '/' . $record->level->quad->name . ' - ' . $record->level->catalog_id . ' - ' . $record->catalog_id);
     $pdf->Text('1','8','Catalog #:' . $record->catalog_id);
     $pdf->Text('33','8','Site:'. $record->site->name);
     $pdf->Text('1','12','Proj:' . $record->site->project);
-    $pdf->Text('33','12','Acc#:' . $record->accession);
+    $pdf->Text('33','12','Acc#:' . $record->site->accession);
     $pdf->Text('1','16','Date:'.date('m/d/Y',$record->created));
     $pdf->Text('33','16','Unit:'. $record->level->unit->name);
     $pdf->Text('1','20','Name:' . $record->user->name); 
