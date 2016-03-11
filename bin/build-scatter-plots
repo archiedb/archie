@@ -225,19 +225,19 @@ while level is not None:
 
   # Create the Easting / Elevation Graph
 ## Title should be SITE-UNIT-QUAD-LEVEL X BY Y
-  plot_title = " East by MASL"
+  plot_title = " East by Elevation"
   plot_filename = full_path+'/Level-'+locus_txt+'-EstXElv.png'
   xlabel = 'Easting (meters)'
-  ylabel = 'MASL'
+  ylabel = 'Elevation'
   xcord = 'est'
   ycord = 'elv'
   save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)
 
   # Create the Northing / Elevation Graph
-  plot_title =" North by MASL"
+  plot_title =" North by Elevation"
   plot_filename = full_path+'/Level-'+locus_txt+'-NorXElv.png'
   xlabel = 'Northing (meters)'
-  ylabel = 'MASL'
+  ylabel = 'Elevation'
   xcord = 'nor'
   ycord = 'elv'
   save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)  
@@ -265,7 +265,7 @@ while level is not None:
 
   ax.set_xlabel('Easting (meters)')
   ax.set_ylabel('Northing (meters)')
-  ax.set_zlabel('    MASL')
+  ax.set_zlabel('Elevation')
   plt.ticklabel_format(useOffset=False)
   plt.savefig(plot_filename,format='png',bbox_inches='tight')
   plt.close()
