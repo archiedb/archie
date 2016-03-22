@@ -398,11 +398,8 @@ class Feature extends database_object {
    */
   public function has_records() {
 
-    // Return true false if there are records for this feature
-    $uid = Dba::escape($this->uid);
-
-    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `feature`='$uid'";
-    $db_results = Dba::read($sql);
+    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `feature`=? AND `site`=?";
+    $db_results = Dba::read($sql,array($this->uid,$this->site->uid));
 
     $results = Dba::fetch_assoc($db_results);
 
