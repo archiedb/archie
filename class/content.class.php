@@ -20,7 +20,7 @@ class content extends database_object {
   public $type; // Type of object, most likely an image for now
   public $record_type; // Type of record (level,krotovina,image)
   public $source; // Raw data of the object
-  private $valid_types = array('image','qrcode','ticket','media','3dmodel','level','scatterplot'); 
+  private $valid_types = array('image','qrcode','ticket','media','3dmodel','level','scatterplot','feature','krotovina'); 
 
   public function __construct($uid='',$type,$record_type) {
 
@@ -223,6 +223,28 @@ class content extends database_object {
   } // load_level_data
 
   /**
+   * load_feature_data
+   * Loads up the feature report pfd
+   */
+  private function load_feature_data($uid) {
+
+    $sql = "SELECT * FROM `media` WHERE `record`=? AND `record_type`=? AND `type`='feature'";
+    $db_results = Dba::read($sql,array($uid,$this->record_type));
+    
+    $row = Dba::fetch_assoc($db_results);
+
+    if (!isset($row['uid'])) { return false; }
+
+    $this->filename = Config::get('data_root') . '/' . $row['filename'];
+    $this->uid = $row['uid'];
+    $this->parentuid = $row['record'];
+    $this->mime = 'application/pfd';
+
+    return true;
+
+  } // load_feature_data
+
+  /**
    * load_media_data
    * Placeholder
    */
@@ -323,7 +345,6 @@ class content extends database_object {
 
 	// This writes out the specified data 
 	public static function write($uid,$type,$data='',$mime_type='',$options='',$record_type='') { 
-		
     switch ($record_type) { 
       case 'level':
         $level = new Level($uid);
@@ -360,6 +381,10 @@ class content extends database_object {
 				$filename = !empty($data) ? $data : self::generate_filename($record->site->name . '-ticket-' . $record->catalog_id,'pdf');
 				$results = self::write_ticket($record,$filename,$data); 
 			break; 
+      case 'feature':
+        $filename = self::generate_filename($feature->site->name . '-feature-' . $feature->catalog_id . '-report','pdf');
+        $results = self::write_feature($feature,$filename,$data);
+      break;
       case 'level': 
         // If data is passed, use that as a filename
         $filename = !empty($data) ? $data : self::generate_filename($level->site->name . '-level-' . $level->unit->name . '-' . $level->quad->name . '-' . $level->record,'pdf');
@@ -503,6 +528,19 @@ class content extends database_object {
 		return true;  
 
 	} // write_ticket 
+
+  /**
+   * write_feature
+   * Generate the feature report form
+   */
+  private static function write_feature(&$feature,$filename) {
+
+    $pdf = new Genpdf('feature_report');
+    $pdf->feature_report($feature,$filename);
+
+    return true; 
+
+  } // write_feature
 
   /**
    * write_level
@@ -1038,7 +1076,7 @@ class content extends database_object {
 
 		return $filename; 
 
-	} // genereate_filename
+	} // generate_filename
 
 	// Make sure we've got the directories we need
 	private static function generate_directory() { 

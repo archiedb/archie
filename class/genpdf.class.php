@@ -105,5 +105,197 @@ class Genpdf {
 
   } // ticket_88x25mm
 
+  /** 
+   * feature_report
+   * Multi-page document for Features
+   */
+  public function feature_report(&$feature,$filename) {
+
+    Error::clear();
+    $current_page = 1;
+    $spatialdata = SpatialData::get_record_data($feature->uid,'feature');
+    $records = $feature->get_records();
+    $total_pages = ceil(2+(count($records)/55)+(count($spatialdata)/55));
+
+    $pdf = new FPDF();
+    $pdf->AddPage('P','A4');
+    $pdf->SetFont('Times');
+    $pdf->SetFontSize('10');
+    $pdf->Text('200','295',$current_page . '/' . $total_pages);
+    $pdf->Text('140','295',' Generated ' . date('Y-M-d H:i',time()));
+
+    //FIXME: Need to create primary image concept for Features and Krotovina and load it here
+    if (!$feature->updated) { $feature->updated = $feature->created; }
+
+    // Header 
+    $pdf->SetFont('Times','B');
+    $pdf->SetFontSize('12');
+    $pdf->Text('3','5',$feature->site->name . ' FEATURE EXCAVATION FORM');
+    $pdf->Text('3','10',$feature->site->description);
+    $pdf->Text('155','5','Started: ' . date('d-M-Y',$feature->created));
+    $pdf->Text('155','10','Updated: ' . date('d-M-Y',$feature->updated));
+    $pdf->Line('0','12','220','12');
+
+    // Answers to the questions
+    $pdf->SetFontSize('15');
+    $pdf->Text('5','18','Questions:');
+    $pdf->SetFontSize('10');
+    $pdf->Text('5','25','Q) How is the feature differentiated from the surrounding sediments?');
+    $pdf->Text('10','30','What are its defining characteristics?');
+    $pdf->SetFont('Times');
+    $pdf->SetX('0');
+    $pdf->SetY('35');
+    $pdf->Write('4',$feature->description);
+    // Figure out where we are, based on length of response
+    $start_y = $pdf->GetY();
+    $pdf->SetFont('Times','B');
+    $pdf->Text('5',$start_y+12,'Q) Other Notes?');
+    $pdf->SetX('0');
+    $pdf->SetY($start_y+14);
+    $pdf->SetFont('Times');
+    $pdf->Write('4',$feature->keywords);
+
+    # Write out the coordinates
+    while (count($spatialdata)) { 
+      
+      $pdf->AddPage();
+      $pdf->SetFontSize('15');
+      $pdf->SetFont('Times','B');
+      $pdf->Text(2,6,'Feature Spatial Information');
+      $pdf->SetFont('Times');
+      $pdf->SetFontSize('10');
+      $current_page++;
+      $pdf->Text('200','295',$current_page . '/' . $total_pages);
+
+      $row = 0;
+      $line_count = 0;
+      $start_y = 20;
+      $record_count = count($spatialdata);
+
+      foreach ($spatialdata as $data) {
+        # If we've reached the end, trim and reset
+        if ($line_count == 55) {
+          $start_y = 20;
+          $spatialdata = array_slice($spatialdata,55);
+          break;
+        }
+
+        $line_count++;
+
+        # First and 59th (2nd row) lines and we set the table
+        if ($line_count == 1) {
+          $pdf->setFont('Times','B');
+          $pdf->Line(2,'10',202,'10');
+          $pdf->Text(5,14,'Station Index (RN)');
+          $pdf->Text(50,14,'Northing');
+          $pdf->Text(74,14,'Easting');
+          $pdf->Text(95,14,'Elevation');
+          $pdf->Text(117,14,'Note');
+          $pdf->Line(2,'16',202,'16');
+
+          $pdf->SetFontSize('10');
+          $pdf->SetFont('Times');
+
+          $line_end = ($record_count > 55) ? (55 *5)+16 : ($record_count*5)+16;
+          $pdf->Line(2,'10',2,$line_end);
+          $pdf->Line(46,'10',46,$line_end);
+          $pdf->Line(71,'10',71,$line_end);
+          $pdf->Line(92,'10',92,$line_end);
+          $pdf->Line(115,'10',115,$line_end);
+          $pdf->Line(202,10,202,$line_end);
+
+        } // end initial row
+
+        $spatialdata = new Spatialdata($data['uid']);
+        $pdf->Text(3,$start_y,$spatialdata->station_index);
+        $pdf->Text(46,$start_y,$spatialdata->northing);
+        $pdf->Text(72,$start_y,$spatialdata->easting);
+        $pdf->Text(93,$start_y,$spatialdata->elevation);
+        $pdf->Text(116,$start_y,substr($spatialdata->note,0,30));
+        $pdf->Line(2,$start_y+1,202,$start_y+1);
+        $start_y += 5;
+
+      } // end foreach spatialdata
+      if ($line_count < 55) { break; }
+    } // end while
+
+    // Write out records
+    while (count($records)) {
+      $pdf->AddPage();
+      $pdf->SetFontSize('15');
+      $pdf->SetFont('Times','B');
+      $pdf->Text(2,6,'Records within Feature');
+      $pdf->SetFont('Times');
+      $pdf->SetFontSize('10');
+      $current_page++;
+      $pdf->Text('200','295',$current_page. '/' . $total_pages);
+      $row = 0;
+      $line_count = 0;
+      $start_y = 20;
+      $record_count = count($records);
+
+      foreach ($records as $record_id) {
+        # If we've reached the end, trim and reset
+        if ($line_count == 55) {
+          $start_y = 20;
+          $records = array_slice($records,55);
+          break;
+        }
+        $line_count++;
+        # First and 59th (2nd row) lines and we set the table
+        if ($line_count == 1) {
+          $pdf->SetFont('Times','B');
+          $pdf->Line(2,'10',202,'10');
+          $pdf->Text(5,14,'Catalog');
+          $pdf->Text(25,14,'RN');
+          $pdf->Text(44,14,'Material');
+          $pdf->Text(68,14,'Classification');
+          $pdf->Text(104,14,'Northing');
+          $pdf->Text(125,14,'Easting');
+          $pdf->Text(146,14,'Elevation');
+          $pdf->Text(169,14,'Entered By');
+          $pdf->Line(2,'16',202,'16');
+
+          # Itterate through the records
+          $pdf->SetFontSize('10');
+          $pdf->SetFont('Times');
+
+          $line_end = ($record_count > 55) ? (55*5)+16 : ($record_count*5)+16;
+          $pdf->Line(2,'10',2,$line_end);
+          $pdf->Line(21,'10',21,$line_end);
+          $pdf->Line(40,'10',40,$line_end);
+          $pdf->Line(66,'10',66,$line_end);
+          $pdf->Line(101,'10',101,$line_end);
+          $pdf->Line(123,10,123,$line_end);
+          $pdf->Line(144,10,144,$line_end);
+          $pdf->Line(167,10,167,$line_end);
+          $pdf->Line(202,10,202,$line_end);
+        }
+       # Load and print record record
+        $record = new Record($record_id);
+        $pdf->Text(3,$start_y,$record->catalog_id);
+        $pdf->Text(22,$start_y,$record->station_index);
+        $pdf->Text(41,$start_y,$record->material->name);
+        $pdf->Text(67,$start_y,$record->classification->name);
+        $pdf->Text(102,$start_y,$record->northing);
+        $pdf->Text(124,$start_y,$record->easting);
+        $pdf->Text(145,$start_y,$record->elevation);
+        $pdf->Text(168,$start_y,$record->user->username);
+        $pdf->Line(2,$start_y+1,202 ,$start_y+1);
+        $start_y += 5;
+
+      } // end foreach
+      if ($line_count < 55) { break; }
+
+    } // end while records
+
+
+    ob_end_clean();
+    $pdf->Output();
+
+    return true; 
+
+  } // feature_report
+
 } // end class level
 ?>

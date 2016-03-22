@@ -75,6 +75,12 @@ switch (\UI\sess::location('action')) {
       require_once \UI\template('/feature/edit');
     }
   break;
+  case 'report':
+    if (!Access::has('feature','read')) { \UI\access_denied(); }
+    $feature = new Feature(\UI\sess::location('objectid'));
+    $report = new Content(\UI\sess::location('objectid'),'feature','feature');
+    Content::write(\UI\sess::location('objectid'),'feature','','','','feature');
+  break;
   case 'offset':
     if (!Access::has('feature','read')) { \UI\access_denied(); }
     $view = new View();

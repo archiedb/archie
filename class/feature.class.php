@@ -398,11 +398,8 @@ class Feature extends database_object {
    */
   public function has_records() {
 
-    // Return true false if there are records for this feature
-    $uid = Dba::escape($this->uid);
-
-    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `feature`='$uid'";
-    $db_results = Dba::read($sql);
+    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `feature`=? AND `site`=?";
+    $db_results = Dba::read($sql,array($this->uid,$this->site->uid));
 
     $results = Dba::fetch_assoc($db_results);
 
@@ -413,6 +410,27 @@ class Feature extends database_object {
     return false; 
 
   } // has_records
+
+  /**
+   * get_records
+   * Return an array of the records assoicated with this feature
+   */
+  public function get_records() { 
+
+    $return = array();
+
+    $sql = "SELECT `uid` FROM `record` WHERE `feature`=? AND `site`=?";
+    $db_results = Dba::read($sql,array($this->uid,$this->site->uid));
+
+
+    while ($results = Dba::fetch_assoc($db_results)) {
+      $return[] = $results['uid'];
+    }
+
+    return $return; 
+
+
+  } // get_records
 
 } // end feature level
 ?>
