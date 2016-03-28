@@ -365,6 +365,9 @@ class Database {
                         '- Correct Level Quad values allowing them to change over time.<br />' .
                     '- Force all users to have a site, is based on their permission group.<br />';
     $versions[] = array('version'=>'0020','description'=>$update_string);
+    //$versions[] = array('version'=>'0021','description'=>'UofO Update');
+    $update_string = '- Add Primary Image functionality to Feature and Krotovina.<br />';
+    $versions[] = array('version'=>'0022','description'=>$update_string);
 
     return $versions; 
 
@@ -1701,6 +1704,35 @@ class Database {
     return $retval;
 
   } // update_0020
+
+  /**
+   * update_0021
+   * Empty Update
+   */
+  public static function update_0021() { 
+
+    // For UofO - they owe me
+
+  } // update_0021
+
+
+  /**
+   * update_0022
+   * Add primary image to krotovina and feature
+   */
+  public static function update_0022() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `feature` ADD `image` INT( 11 ) UNSIGNED NULL AFTER `user`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` ADD `image` INT( 11 ) UNSIGNED NULL AFTER `user`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    return $retval; 
+
+  } // update_0022
 
 } // \Update\Database class
 

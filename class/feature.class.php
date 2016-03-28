@@ -9,6 +9,7 @@ class Feature extends database_object {
   public $keywords;
   public $description;
   public $user; // FK User
+  public $image; // Primary Image (FK) 
   public $created;
   public $updated;
   public $closed;
@@ -82,6 +83,33 @@ class Feature extends database_object {
 
 
   } // _display
+
+  /**
+   * set_primary_image
+   * Sets the Primary image for the feature, takes a media.uid and
+   * sets feature.image to it
+   */
+  public function set_primary_image($image_uid) {
+
+    // Make sure it's an image
+    $images = Content::feature($this->uid,'image');
+
+    // Not in the current list of images, walk away
+    if (!in_array($image_uid,$images)) {
+      Error::add('Image','Selected Feature image not currently assoicated with feature');
+      return false;
+    }
+
+    $sql = "UPDATE `feature` SET `image`=? WHERE `uid`=?";
+    $retval = Dba::write($sql,array($image_uid,$this->uid));
+
+    if ($retval) {
+      $this->refresh();
+    }
+
+    return true;
+
+  } // set_primary_image
 
   /**
    * update

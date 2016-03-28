@@ -299,12 +299,12 @@ class Level extends database_object {
       return false; 
     }
 
-    $image  = Dba::escape($image); 
-    $uid    = Dba::escape($this->uid); 
-    $sql = "UPDATE `level` SET `image`='$image' WHERE `uid`='$uid'"; 
-    $retval = Dba::write($sql);
+    $sql = "UPDATE `level` SET `image`=? WHERE `uid`=?"; 
+    $retval = Dba::write($sql,array($image,$this->uid));
 
-    $this->refresh(); 
+    if ($retval) {
+      $this->refresh(); 
+    }
 
     return true; 
 
