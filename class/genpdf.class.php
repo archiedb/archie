@@ -117,6 +117,24 @@ class Genpdf {
     $records = $feature->get_records();
     $total_pages = ceil(2+(count($records)/55)+(count($spatialdata)/55));
 
+    // Run some tests on the feature image
+    $featureimage = new Content($feature->image,'image');
+
+    if (!is_readable($featureimage->filename)) {
+      Event:error('Feature-PDF','Feature Image ' . $featureimage->filename . ' is not readable');
+      Error::add('feature_image','Feature Image is not readable or not found');
+    }
+    if (!is_writeable(Config::get('prefix') . '/lib/cache') OR !is_readable(Config::get('prefix') . '/lib/cache')) {
+      Event::error('Feature-PDF','Cache directory unwriteable, unable to resize image');
+      Error::add('feature_image','Cache directory unwriteable, unable to resize image');
+    }
+
+    if (Error::occurred()) {
+      Error::display('feature_image');
+      require \UI\template('/footer');
+      exit;
+    }
+
     $pdf = new FPDF();
     $pdf->AddPage('P','A4');
     $pdf->SetFont('Times');
@@ -135,16 +153,19 @@ class Genpdf {
     $pdf->Text('155','5','Started: ' . date('d-M-Y',$feature->created));
     $pdf->Text('155','10','Updated: ' . date('d-M-Y',$feature->updated));
     $pdf->Line('0','12','220','12');
+   
+    $resized_file = Config::get('prefix') . '/' . \UI\resize($featureimage->filename,array('w'=>'980','h'=>'803','canvas-color'=>'#ffffff'));
+    $pdf->Image($resized_file,'10','14','190','155');
 
     // Answers to the questions
     $pdf->SetFontSize('15');
-    $pdf->Text('5','18','Questions:');
+    $pdf->Text('5','170','Questions:');
     $pdf->SetFontSize('10');
-    $pdf->Text('5','25','Q) How is the feature differentiated from the surrounding sediments?');
-    $pdf->Text('10','30','What are its defining characteristics?');
+    $pdf->Text('5','177','Q) How is the feature differentiated from the surrounding sediments?');
+    $pdf->Text('10','182','What are its defining characteristics?');
     $pdf->SetFont('Times');
     $pdf->SetX('0');
-    $pdf->SetY('35');
+    $pdf->SetY('187');
     $pdf->Write('4',$feature->description);
     // Figure out where we are, based on length of response
     $start_y = $pdf->GetY();
