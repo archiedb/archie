@@ -5,7 +5,7 @@ class Feature extends database_object {
 
 	public $uid; 
   public $site; // FK Site
-  public $catalog_id; // Per site Unique value visually displayed as F-#
+  public $catalog_id; // Per site Unique value
   public $keywords;
   public $description;
   public $user; // FK User
@@ -14,7 +14,7 @@ class Feature extends database_object {
   public $updated;
   public $closed;
   public $closed_date;
-  public $record;
+  public $record; // Displayed as F-${catalog_id}
   public $closed_user; // FK User
 
 	// Constructor takes a uid

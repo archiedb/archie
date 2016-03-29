@@ -554,13 +554,15 @@ class content extends database_object {
     $records = $level->records(); 
     $total_pages = ceil(3 + (count($records)/55)); 
     $current_page = 1; 
+    $start_time = time();
 
     $pdf = new FPDF(); 
     $pdf->AddPage('P','A4'); 
     $pdf->SetFont('Times');
     $pdf->SetFontSize('10'); 
     $pdf->Text('200','295',$current_page. '/' . $total_pages); 
-    $pdf->Text('140','295'," Generated " . date("Y-M-d H:i",time()));
+    $pdf->Text('140','295'," Generated " . date("Y-M-d H:i",$start_time));
+    $pdf->Text('3','295',$level->site->name . ' ' . $level->record . ' FORM');
 
     // Return the primary image
     $levelimage = new Content($level->image,'image'); 
@@ -727,6 +729,8 @@ class content extends database_object {
     $pdf->Image($legend_filename,'60','240','100','27');
     $pdf->SetFontSize('10');
     $pdf->Text('200','295',$current_page. '/' . $total_pages); 
+    $pdf->Text('140','295'," Generated " . date("Y-M-d H:i",$start_time));
+    $pdf->Text('3','295',$level->site->name . ' ' . $level->record . ' FORM');
 
     # Page 3, questions
     $pdf->AddPage(); 
@@ -734,6 +738,8 @@ class content extends database_object {
     $pdf->SetFont('Times');
     $current_page++; 
     $pdf->Text('200','295',$current_page. '/' . $total_pages); 
+    $pdf->Text('140','295'," Generated " . date("Y-M-d H:i",$start_time));
+    $pdf->Text('3','295',$level->site->name . ' ' . $level->record . ' FORM');
 
     # Long Answers
     $pdf->SetFontSize('13');
@@ -780,6 +786,8 @@ class content extends database_object {
       $pdf->AddPage(); 
       $current_page++; 
       $pdf->Text('200','295',$current_page. '/' . $total_pages); 
+      $pdf->Text('140','295'," Generated " . date("Y-M-d H:i",$start_time));
+      $pdf->Text('3','295',$level->site->name . ' ' . $level->record . ' FORM');
       $pdf->SetFontSize('13');
       $pdf->SetFont('Times','B'); 
       $pdf->Text(3,'9','Records'); 

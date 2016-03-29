@@ -116,12 +116,11 @@ class Genpdf {
     $spatialdata = SpatialData::get_record_data($feature->uid,'feature');
     $records = $feature->get_records();
     $total_pages = ceil(2+(count($records)/55)+(count($spatialdata)/55));
-
     // Run some tests on the feature image
     $featureimage = new Content($feature->image,'image');
 
     if (!is_readable($featureimage->filename)) {
-      Event:error('Feature-PDF','Feature Image ' . $featureimage->filename . ' is not readable');
+      Event::error('Feature-PDF','Feature Image ' . $featureimage->filename . ' is not readable');
       Error::add('feature_image','Feature Image is not readable or not found');
     }
     if (!is_writeable(Config::get('prefix') . '/lib/cache') OR !is_readable(Config::get('prefix') . '/lib/cache')) {
@@ -135,12 +134,15 @@ class Genpdf {
       exit;
     }
 
+    $start_time = time();
+
     $pdf = new FPDF();
     $pdf->AddPage('P','A4');
     $pdf->SetFont('Times');
     $pdf->SetFontSize('10');
     $pdf->Text('200','295',$current_page . '/' . $total_pages);
-    $pdf->Text('140','295',' Generated ' . date('Y-M-d H:i',time()));
+    $pdf->Text('140','295',' Generated ' . date('Y-M-d H:i',$start_time));
+    $pdf->Text('3','295',$feature->site->name . ' ' . $feature->record . ' FORM');
 
     //FIXME: Need to create primary image concept for Features and Krotovina and load it here
     if (!$feature->updated) { $feature->updated = $feature->created; }
@@ -148,7 +150,7 @@ class Genpdf {
     // Header 
     $pdf->SetFont('Times','B');
     $pdf->SetFontSize('12');
-    $pdf->Text('3','5',$feature->site->name . ' FEATURE EXCAVATION FORM');
+    $pdf->Text('3','5',$feature->site->name . ' ' . $feature->record . ' FEATURE EXCAVATION FORM');
     $pdf->Text('3','10',$feature->site->description);
     $pdf->Text('155','5','Started: ' . date('d-M-Y',$feature->created));
     $pdf->Text('155','10','Updated: ' . date('d-M-Y',$feature->updated));
@@ -187,6 +189,8 @@ class Genpdf {
       $pdf->SetFontSize('10');
       $current_page++;
       $pdf->Text('200','295',$current_page . '/' . $total_pages);
+      $pdf->Text('140','295',' Generated ' . date('Y-M-d H:i',$start_time));
+      $pdf->Text('3','295',$feature->site->name . ' ' . $feature->record . ' FORM');
 
       $row = 0;
       $line_count = 0;
@@ -250,6 +254,8 @@ class Genpdf {
       $pdf->SetFontSize('10');
       $current_page++;
       $pdf->Text('200','295',$current_page. '/' . $total_pages);
+      $pdf->Text('140','295',' Generated ' . date('Y-M-d H:i',$start_time));
+      $pdf->Text('3','295',$feature->site->name . ' ' . $feature->record . ' FORM');
       $row = 0;
       $line_count = 0;
       $start_y = 20;
