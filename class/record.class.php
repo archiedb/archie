@@ -314,7 +314,14 @@ class Record extends database_object {
     // Before we try to update anything, see if anything actually changed
     $spatialdata = SpatialData::get_record_data($record_uid,'record','single');
     if ($spatialdata->uid) { 
-      if ($station_index != $spatialdata->station_index OR $northing != $spatialdata->northing 
+      // If no longer specified delete point
+      if (empty($station_index) AND empty($northing) AND empty($easting) AND empty($elevation)) {
+        $spatialdata->delete(true); 
+        unset($spatialdata);
+        $return = true; 
+      }
+      // If it's changed, update the point
+      elseif ($station_index != $spatialdata->station_index OR $northing != $spatialdata->northing 
         OR $easting != $spatialdata->easting OR $elevation != $spatialdata->elevation) {
           $return = $spatialdata->update(array('station_index'=>$station_index,'northing'=>$northing,'easting'=>$easting,'elevation'=>$elevation));
       }
@@ -389,8 +396,10 @@ class Record extends database_object {
     //FIXME: This should be standardize on the table name
     $input['rn'] = $input['station_index'];
     // Unique Spatial Record check
-    if (!SpatialData::is_site_unique($input,$record_id)) {
-      Error::add('RN','Duplicate RN or Northing/Easting/Elevation');
+    if (!empty($input['rn'])) {
+      if (!SpatialData::is_site_unique($input,$record_id)) {
+        Error::add('RN','Duplicate RN or Northing/Easting/Elevation');
+      }
     }
 
     // If they've set a RN then we need to make sure they didn't set northing,easting,elevation

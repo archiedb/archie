@@ -379,12 +379,27 @@ class SpatialData extends database_object {
     $record = Dba::escape($record);
     $type = Dba::escape($type);
 
-    $sql = "DELETE FROM `spatial_data` WHERE `record_type`='$type' AND `record`='$record'";
+    $sql = "DELETE FROM `spatial_data` WHERE `record_type`=? AND `record`=?";
     $db_results = Dba::write($sql); 
 
     return true; 
 
   } // delete_by_record
+
+  /**
+   * delete
+   * Deletes this record
+   */
+  public function delete($really=false) { 
+
+    if (!$really) { return false; }
+
+    $sql = "DELETE FROM `spatial_data` WHERE `uid`=?";
+    $db_results = Dba::write($sql,array($this->uid));
+
+    return true; 
+
+  } // delete
 
   /**
    * get_record_data
