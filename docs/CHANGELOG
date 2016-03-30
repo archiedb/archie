@@ -1,3 +1,68 @@
+ FIX an issue where you couldn't clear an RN from a record without replacing it with a northing/easting/elevation
+ ADD [SITE] [RECORD] Form text to bottom of all report pages for feature and level
+ ADD Featuerd image to feature report
+ ADD - Feature.image and Krotovina.image ADD - Modal for Primary Image functionality on Features
+ * Add initial feature report and correct site issue with has_records() check
+ FIX - Spelling error
+ FIX - Incorrect reference to assencion in 55mm ticket
+ Change MASL to Elevation
+ FIX - name of form was incorrect for import
+ Fix missing t in quantity
+ Cleanup the ./bin directory
+ Adjust Level validation to use Field::validate() function
+ Adjust local-backup script filename to work on winders
+ Finish Local-backup script
+ Add local-backup option
+ FIX - Database dump for DB:v20
+ Update SQL DB to DB:20
+ CHANGE - Level elevation finish check to warning instead of error
+ FIX - empty() == 0
+ FIX - allow level elv to be 0
+ ADD Updated google drive backup script, it uploads... somewhere
+ FIX - wrong func() :(
+ FIX - error message
+ FIX - Overagressive error checking
+ FIX fatal error on filemtime for file that doesn't exist yet
+ FIX - Missing return true
+ FIX - Remove warning if spatialdata isn't changed, when nothing has changed? t
+ FIX - Incorrect is_writeable check making it give up too easily
+ WORK - Google drive improvements
+ ADD - Attempt to make backups upload to google drive
+ FIX - Name of LU setting
+ ADD - default LU
+ ADD - Constrain users listed on level form to those who have access to the current site
+ FIX - error when file is not readable
+ FIX - LUs in site settings
+ ADD - ability to specify LU in site settings
+ REFACTOR - working out #78 update all references to unit to unit->name
+ DB - More work to resolve #78, deals with level quads
+ REFACTOR Working on #78, correct database structure to allow LU to be modified
+ REFACTOR - Adjust the sql statement in vauth
+ CHANGE - Make site description more evident that it can be long
+ FIX - Allow zero in lenght/weight etc
+ CHANGE - Make the description field on site more evidenty that it can be long (~1 page single spaced)
+ FIX - missing echo
+ ADD hour to user last online
+ FIX - issue where qrcode lacking filename causes ticket failure
+ FIX - use of empty()
+ FIX - output data preventing re-write
+ FIX - page header for Bootstrap 3.x
+ FIX - page header, was not updated for Bootstrap 3.x
+ FIX - some display issues with STL 3dmodels
+ FIX - Feature media/3dmodel/image functionality
+ REFACTOR - start moving into unified media functions
+ Fix - Level media/image/3dmodel functions
+ FIX - Record media/image/3dmodel management
+ Remove accidently merged duplicate functions
+ _display function
+ Weird
+ Add _display functions
+ Add _display function for displaying out to the user formated data
+ ADD - missing templates for media handling on krotovina,feature and records
+ FIX - record model edit image and krotovina modal edit image pop-ups
+ Add krotovina media
+ FIX group create still using boostrap2 css
+ FIX installer, and update the database to Version 19
  FIX - 3d Model / Media views on Level:View
  FIX - 3d Model upload wasn't working with new record_type
  REFACTOR - Final migration for Bootstrap 3.x
