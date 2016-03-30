@@ -22,6 +22,13 @@ foreach ($images as $uid) {
         <img src="<?php echo Config::get('web_path'); ?>/media/image/feature/<?php $image->_print('uid'); ?>/thumb" alt="Image <?php echo $i; ?>" />
       </a>
       <div class="caption">
+      <?php if ($feature->image == $image->uid) { ?>
+      <p class="text-center">
+        <span class="label label-success">Primary Image</span>
+      </p>
+      <?php } else { ?>
+      <p><br /></p>
+      <?php } ?>
       <p>
         <?php $image->_print('notes'); ?>
       </p>
@@ -34,6 +41,7 @@ foreach ($images as $uid) {
       <?php if (Access::has('media','delete')) { ?>
         <button type="button" class="btn btn-danger btn-xs" data-target="#confirm_delete_image_<?php echo scrub_out($image->uid); ?>" data-toggle="modal">Delete</button>
       <?php } ?>
+        <button type="button" class="btn btn-success btn-xs" data-target="#confirm_primary_image_<?php echo $image->_print('uid'); ?>" data-toggle="modal">Primary</button>
       <?php 
       if (Access::has('media','delete')) { 
         require \UI\template('/feature/modal_delete_image'); 
@@ -41,6 +49,7 @@ foreach ($images as $uid) {
       if (Access::has('media','edit')) { 
         require \UI\template('/feature/modal_edit_image'); 
       } 
+      require \UI\template('/feature/modal_primary_image');
       ?>
       <?php } ?>
       </p>

@@ -367,7 +367,8 @@ class Database {
     $versions[] = array('version'=>'0020','description'=>$update_string);
     $update_string = '- Change for University of Oregon, makes this install incompatibile with future Archie versions';
     $versions[] = array('version'=>'0021','description'=>$update_string);
-
+    $update_string = '- Add Primary Image functionality to Feature and Krotovina.<br />';
+    $versions[] = array('version'=>'0022','description'=>$update_string);
 
     return $versions; 
 
@@ -1734,6 +1735,24 @@ class Database {
     return $retval;
 
   } // update_0021, invalidates this install's compatibility
+
+  /**
+   * update_0022
+   * Add primary image to krotovina and feature
+   */
+  public static function update_0022() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `feature` ADD `image` INT( 11 ) UNSIGNED NULL AFTER `user`";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `krotovina` ADD `image` INT( 11 ) UNSIGNED NULL AFTER `user`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    return $retval; 
+
+  } // update_0022
 
 } // \Update\Database class
 

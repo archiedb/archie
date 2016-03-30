@@ -1,5 +1,10 @@
- FIX - Sync fix from development
- ADD - fields asked for by University of Oregon, makes this branch incompatibile with main line Archie
+ FIX an issue where you couldn't clear an RN from a record without replacing it with a northing/easting/elevation
+ ADD [SITE] [RECORD] Form text to bottom of all report pages for feature and level
+ ADD Featuerd image to feature report
+ ADD - Feature.image and Krotovina.image ADD - Modal for Primary Image functionality on Features
+ * Add initial feature report and correct site issue with has_records() check
+ FIX - Spelling error
+ FIX - Incorrect reference to assencion in 55mm ticket
  Change MASL to Elevation
  FIX - name of form was incorrect for import
  Fix missing t in quantity

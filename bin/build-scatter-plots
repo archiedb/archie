@@ -225,10 +225,10 @@ while level is not None:
 
   # Create the Easting / Elevation Graph
 ## Title should be SITE-UNIT-QUAD-LEVEL X BY Y
-  plot_title = " East by Elvation"
+  plot_title = " East by Elevation"
   plot_filename = full_path+'/Level-'+locus_txt+'-EstXElv.png'
   xlabel = 'Easting (meters)'
-  ylabel = 'Elvation'
+  ylabel = 'Elevation'
   xcord = 'est'
   ycord = 'elv'
   save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)
