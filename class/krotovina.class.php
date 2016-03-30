@@ -9,6 +9,7 @@ class Krotovina extends database_object {
   public $keywords;
   public $description;
   public $user; // FK User
+  public $image; // Primary Image FK
   public $created;
   public $updated;
   public $closed;

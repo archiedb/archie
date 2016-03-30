@@ -8,6 +8,7 @@ if (INIT_LOADED != '1') { exit; }
   </p>
   <h3>Edit <?php echo scrub_out(\UI\sess::$user->site->name); ?> Feature - <?php $feature->_print('record'); ?></h3>
 </div>
+<?php Event::display(); ?>
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" id="new_feature" method="post" action="<?php echo Config::get('web_path'); ?>/feature/update">
 <div class="row">

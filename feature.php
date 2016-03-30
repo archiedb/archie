@@ -54,6 +54,17 @@ switch (\UI\sess::location('action')) {
     $feature->update_point($_POST);
     \UI\redirect('/feature/view/' . $feature->uid);
   break;
+  case 'image_primary':
+    if (!Access::has('feature','edit')) { \UI\access_denied(); }
+    $feature = new Feature($_POST['uid']);
+    if ($feature->set_primary_image($_POST['image'])) {
+      Event::add('success','Feature Image Selected','small');
+    }
+    else {
+      Error::add('feature_image','Unable to set Feature image');
+    }
+    require_once \UI\template('/feature/edit');
+  break;
   case 'view':
     if (!Access::has('feature','read')) { \UI\access_denied(); }
     $feature = new Feature(\UI\sess::location('2'));
@@ -74,6 +85,12 @@ switch (\UI\sess::location('action')) {
     else {
       require_once \UI\template('/feature/edit');
     }
+  break;
+  case 'report':
+    if (!Access::has('feature','read')) { \UI\access_denied(); }
+    $feature = new Feature(\UI\sess::location('objectid'));
+    $report = new Content(\UI\sess::location('objectid'),'feature','feature');
+    Content::write(\UI\sess::location('objectid'),'feature','','','','feature');
   break;
   case 'offset':
     if (!Access::has('feature','read')) { \UI\access_denied(); }

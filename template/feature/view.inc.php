@@ -5,6 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <div class="page-header">
 <p class="pull-right">
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/feature/report/<?php $feature->_print('uid'); ?>" class="btn btn-success">Generate Report</a>
   <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/feature/<?php echo scrub_out($feature->catalog_id); ?>">View Records</a>
   <a href="<?php echo Config::get('web_path'); ?>/feature/edit/<?php echo scrub_out($feature->uid); ?>" class="btn btn-primary">Edit Feature</a>
   <a class="btn btn-success" href="#addspatial" role="button" data-toggle="modal">Add Spatial Point</a>

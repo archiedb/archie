@@ -5,15 +5,16 @@ class Feature extends database_object {
 
 	public $uid; 
   public $site; // FK Site
-  public $catalog_id; // Per site Unique value visually displayed as F-#
+  public $catalog_id; // Per site Unique value
   public $keywords;
   public $description;
   public $user; // FK User
+  public $image; // Primary Image (FK) 
   public $created;
   public $updated;
   public $closed;
   public $closed_date;
-  public $record;
+  public $record; // Displayed as F-${catalog_id}
   public $closed_user; // FK User
 
 	// Constructor takes a uid
@@ -82,6 +83,33 @@ class Feature extends database_object {
 
 
   } // _display
+
+  /**
+   * set_primary_image
+   * Sets the Primary image for the feature, takes a media.uid and
+   * sets feature.image to it
+   */
+  public function set_primary_image($image_uid) {
+
+    // Make sure it's an image
+    $images = Content::feature($this->uid,'image');
+
+    // Not in the current list of images, walk away
+    if (!in_array($image_uid,$images)) {
+      Error::add('Image','Selected Feature image not currently assoicated with feature');
+      return false;
+    }
+
+    $sql = "UPDATE `feature` SET `image`=? WHERE `uid`=?";
+    $retval = Dba::write($sql,array($image_uid,$this->uid));
+
+    if ($retval) {
+      $this->refresh();
+    }
+
+    return true;
+
+  } // set_primary_image
 
   /**
    * update
@@ -398,11 +426,8 @@ class Feature extends database_object {
    */
   public function has_records() {
 
-    // Return true false if there are records for this feature
-    $uid = Dba::escape($this->uid);
-
-    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `feature`='$uid'";
-    $db_results = Dba::read($sql);
+    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `feature`=? AND `site`=?";
+    $db_results = Dba::read($sql,array($this->uid,$this->site->uid));
 
     $results = Dba::fetch_assoc($db_results);
 
@@ -413,6 +438,27 @@ class Feature extends database_object {
     return false; 
 
   } // has_records
+
+  /**
+   * get_records
+   * Return an array of the records assoicated with this feature
+   */
+  public function get_records() { 
+
+    $return = array();
+
+    $sql = "SELECT `uid` FROM `record` WHERE `feature`=? AND `site`=?";
+    $db_results = Dba::read($sql,array($this->uid,$this->site->uid));
+
+
+    while ($results = Dba::fetch_assoc($db_results)) {
+      $return[] = $results['uid'];
+    }
+
+    return $return; 
+
+
+  } // get_records
 
 } // end feature level
 ?>
