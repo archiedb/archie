@@ -1,0 +1,196 @@
+#!/usr/bin/env python
+# vim: set softtabstop=2 ts=2 sw=2 expandtab: 
+
+import MySQLdb
+import os, errno, csv, sys
+import numpy as np
+import matplotlib
+import ConfigParser
+matplotlib.use('Agg') 
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+
+
+def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel):
+  """
+  Save a scatterplot to the specified filename 
+  """
+  print "Building:" + plottitle + " saving to " + plotfilename
+  fig = plt.figure()
+  plt.title(plottitle)
+  plt.rcParams.update({'font.size': 10})
+  plt.ticklabel_format(useOffset=False)
+  plt.xlabel(xlabel)
+  plt.ylabel(ylabel)
+  ax1 = fig.add_subplot(111)
+  if (len(plot_cords['other'][xcord]) > 0):
+    ax1.scatter(plot_cords['other'][xcord],plot_cords['other'][ycord],s=25,marker='*',color=plot_cords['other']['colors'],alpha=1)
+    
+    
+  plt.savefig(plotfilename,format='png',bbox_inches='tight')
+  plt.close()
+def ensure_dir(dirname):
+    """
+    Ensure that a named directory exists; if it does not, attempt to create it.
+    """
+    try:
+        os.makedirs(dirname)
+    except OSError, e:
+        if e.errno != errno.EEXIST:
+            raise
+def is_number(s):
+  try:
+    float(s)
+    return True
+  except ValueError:
+    return False
+class switch(object):
+    def __init__(self, value):
+        self.value = value
+        self.fall = False
+
+    def __iter__(self):
+        """Return the match method once, then stop"""
+        yield self.match
+        raise StopIteration
+    
+    def match(self, *args):
+        """Indicate whether or not to enter a case suite"""
+        if self.fall or not args:
+            return True
+        elif self.value in args: # changed for v1.5, see below
+            self.fall = True
+            return True
+        else:
+            return False
+
+# Load in the config from ../config/settings.php
+# And then use those to connect to the database and set the data_root
+Config = ConfigParser.ConfigParser()
+Config.read(os.path.dirname(os.path.abspath(__file__)) + '/../config/settings.php')
+
+archiedb=MySQLdb.connect(host=Config.get('main','database_hostname'),user=Config.get('main','database_username'),passwd=Config.get('main','database_password'),db=Config.get('main','database_name'))
+data_root=Config.get('main','data_root')
+units = ()
+
+# Look for an ARGV, if not Level.UID is passed then just get everything
+sqlwhere = ''
+if len(sys.argv) > 1:
+  sqlwhere = ' WHERE `feature`.`uid`=\'' + sys.argv[1] + '\''
+
+features=archiedb.cursor()
+featurequery = "SELECT `feature`.`uid`,`site`.`name` FROM `feature` LEFT JOIN `site` ON `site`.`uid`=`feature`.`site`" + sqlwhere + " ORDER BY `feature`.`uid`"
+features.execute(featurequery)
+
+feature=features.fetchone()
+while feature is not None:
+
+  locus_txt = str(feature[0])
+  cursor=archiedb.cursor()
+  cursor.execute("""SELECT `northing`,`easting`,`elevation` FROM `spatial_data` WHERE `record`='%s' AND `record_type`='feature' AND (`northing`>0 AND `easting`>0 AND `elevation`>0)""",int(feature[0]))
+
+  # Set the sitename
+  site=feature[1]
+
+  # Distinct cords per catagory, this is not sustabiable
+  # FIXME
+  plot_cords = dict()
+  plot_cords['other'] = {'est': (),'nor': (),'elv':(),'colors':() }
+
+  cord_count = 0
+
+  # Easting on the XY plot
+  est = ();
+  # Northing on the XY plot
+  nor = ();
+  # Elevation (Y) / Easting (X)
+  elv = ();
+  # Blank colors tuple
+  colors = ();
+
+  cords = cursor.fetchone()
+  while cords is not None:
+    obj_type = 'other'
+    color = 'black'
+
+    plot_cords[obj_type]['est'] = plot_cords[obj_type]['est'] + (float(cords[1]),)
+    plot_cords[obj_type]['nor'] = plot_cords[obj_type]['nor'] + (float(cords[0]),)
+    plot_cords[obj_type]['elv'] = plot_cords[obj_type]['elv'] + (float(cords[2]),)
+    plot_cords[obj_type]['colors'] = plot_cords[obj_type]['colors'] + (color,)
+
+    cord_count = cord_count + 1
+
+    colors = colors + (color,)
+    est = est + (float(cords[1]),)
+    nor = nor + (float(cords[0]),)
+    elv = elv + (float(cords[2]),)
+  
+    cords = cursor.fetchone()
+
+  # If we didn't find anything then just move on
+  if (cord_count < 1):
+    print "Insufficient cordinates, skipping feature UID:"+locus_txt
+    # Fetch the next level
+    feature = features.fetchone()
+    continue
+  print "Found Est:"+str(len(est))+" Nor:"+str(len(nor))+" Elv:"+str(len(elv))+" records"
+
+  # Create the 
+  full_path=data_root+'/'+site+'/plots'
+  # Create the directory(s)
+  ensure_dir(full_path)
+
+  # Create the Easting / Northing Graph 
+  plot_title = " East by North"
+  plot_filename = full_path+'/Feature-'+locus_txt+'-EstXNor.png'
+  xlabel = 'Easting (meters)'
+  ylabel = 'Northing (meters)'
+  xcord = 'est'
+  ycord = 'nor'
+  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)
+
+  # Create the Easting / Elevation Graph
+  ## Title should be SITE-UNIT-QUAD-LEVEL X BY Y
+  plot_title = " East by Elevation"
+  plot_filename = full_path+'/Feature-'+locus_txt+'-EstXElv.png'
+  xlabel = 'Easting (meters)'
+  ylabel = 'Elevation'
+  xcord = 'est'
+  ycord = 'elv'
+  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)
+
+  # Create the Northing / Elevation Graph
+  plot_title =" North by Elevation"
+  plot_filename = full_path+'/Feature-'+locus_txt+'-NorXElv.png'
+  xlabel = 'Northing (meters)'
+  ylabel = 'Elevation'
+  xcord = 'nor'
+  ycord = 'elv'
+  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)  
+
+  if (cord_count < 3):
+    print "Insufficient cordinates to create surface plot, skipping"
+    feature = features.fetchone()
+    continue
+
+  # make 3d plot, different from a normal one so it's not using save_scatterplot
+  plot_filename = full_path+'/Feature-'+locus_txt+'-3D.png'
+  print "Building: Feature-" + locus_txt + "-3D saving to " + plot_filename
+  fig = plt.figure()
+  ax = fig.gca(projection='3d')
+  ax.plot_trisurf(est,nor,elv)
+  if (len(plot_cords['other'][xcord]) > 0):
+    ax.plot_trisurf(plot_cords['other']['est'],plot_cords['other']['nor'],plot_cords['other']['elv'])
+
+  ax.set_xlabel('Easting (meters)')
+  ax.set_ylabel('Northing (meters)')
+  ax.set_zlabel('Elevation')
+
+  plt.ticklabel_format(useOffset=False)
+  plt.savefig(plot_filename,format='png',bbox_inches='tight')
+  plt.close()
+
+
+  # Fetch the next level
+  feature = features.fetchone()
