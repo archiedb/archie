@@ -9,6 +9,10 @@ switch (\UI\sess::location('action')) {
   if (!Access::is_admin()) { \UI\access_denied(); } 
     // Regenerate what!?
     switch (\UI\sess::location('2')) {
+      case 'ticket':
+        $cron = new Cron('ticket');
+        $cron->request('all');
+      break;
       case 'qrcode':
         $cron = new Cron('qrcode'); 
         $cron->request('all'); 
