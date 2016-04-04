@@ -138,6 +138,8 @@ class Genpdf {
 
     $pdf = new FPDF();
     $pdf->AddPage('P','A4');
+    $pdf->SetTitle('Feature-' . $feature->site->name . '-' . $feature->record . '-Form');
+    $pdf->SetSubject('Feature Form');
     $pdf->SetFont('Times');
     $pdf->SetFontSize('10');
     $pdf->Text('200','295',$current_page . '/' . $total_pages);
@@ -211,6 +213,7 @@ class Genpdf {
 
     }
 
+    $pdf->Image(Config::get('prefix') . '/images/archie_legend.png','60','240','100','27');
     $pdf->SetFontSize('10');
     $pdf->Text('200','295',$current_page. '/' . $total_pages);
     $pdf->Text('140','295'," Generated " . date("Y-M-d H:i",$start_time));

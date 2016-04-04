@@ -25,7 +25,7 @@ def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel
   plt.ylabel(ylabel)
   ax1 = fig.add_subplot(111)
   if (len(plot_cords['tool'][xcord]) > 0):
-    ax1.scatter(plot_cords['tool'][xcord],plot_cords['tool'][ycord],s=25,color='black',alpha=1)
+    ax1.scatter(plot_cords['tool'][xcord],plot_cords['tool'][ycord],s=25,color='black',alpha=1,marker='|')
     
     
   plt.savefig(plotfilename,format='png',bbox_inches='tight')
