@@ -24,8 +24,8 @@ def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
   ax1 = fig.add_subplot(111)
-  if (len(plot_cords['other'][xcord]) > 0):
-    ax1.scatter(plot_cords['other'][xcord],plot_cords['other'][ycord],s=25,marker='*',color=plot_cords['other']['colors'],alpha=1)
+  if (len(plot_cords['tool'][xcord]) > 0):
+    ax1.scatter(plot_cords['tool'][xcord],plot_cords['tool'][ycord],s=25,marker='*',color=plot_cords['tool']['colors'],alpha=1)
     
     
   plt.savefig(plotfilename,format='png',bbox_inches='tight')
@@ -96,7 +96,7 @@ while feature is not None:
   # Distinct cords per catagory, this is not sustabiable
   # FIXME
   plot_cords = dict()
-  plot_cords['other'] = {'est': (),'nor': (),'elv':(),'colors':() }
+  plot_cords['tool'] = {'est': (),'nor': (),'elv':(),'colors':() }
 
   cord_count = 0
 
@@ -111,14 +111,7 @@ while feature is not None:
 
   cords = cursor.fetchone()
   while cords is not None:
-    obj_type = 'other'
-    color = 'black'
-
-    plot_cords[obj_type]['est'] = plot_cords[obj_type]['est'] + (float(cords[1]),)
-    plot_cords[obj_type]['nor'] = plot_cords[obj_type]['nor'] + (float(cords[0]),)
-    plot_cords[obj_type]['elv'] = plot_cords[obj_type]['elv'] + (float(cords[2]),)
-    plot_cords[obj_type]['colors'] = plot_cords[obj_type]['colors'] + (color,)
-
+  
     cord_count = cord_count + 1
 
     colors = colors + (color,)
@@ -128,6 +121,23 @@ while feature is not None:
   
     cords = cursor.fetchone()
 
+  """ Now get the records spatial data that have this feature """
+  cursor = archiedb.cursor()
+  cursor.execute("SELECT `northing`,`easting`,`elevation` FROM `spatial_data` JOIN `record` ON `record`.`uid`=`spatial_data`.`record` WHERE `spatial_data`.`record_type`='record' AND `record`.`feature`=%s",int(feature[0]))
+
+  cords = cursor.fetchone()
+  while cords is not None:
+    obj_type = 'tool'
+    color = 'green'
+
+    plot_cords[obj_type]['est'] = plot_cords[obj_type]['est'] + (float(cords[1]),)
+    plot_cords[obj_type]['nor'] = plot_cords[obj_type]['nor'] + (float(cords[0]),)
+    plot_cords[obj_type]['elv'] = plot_cords[obj_type]['elv'] + (float(cords[2]),)
+    plot_cords[obj_type]['colors'] = plot_cords[obj_type]['colors'] + (color,)
+
+    cord_count = cord_count + 1
+
+    cords = cursor.fetchone()
   # If we didn't find anything then just move on
   if (cord_count < 1):
     print "Insufficient cordinates, skipping feature UID:"+locus_txt
@@ -169,19 +179,14 @@ while feature is not None:
   ycord = 'elv'
   save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)  
 
-  if (cord_count < 3):
-    print "Insufficient cordinates to create surface plot, skipping"
-    feature = features.fetchone()
-    continue
-
   # make 3d plot, different from a normal one so it's not using save_scatterplot
   plot_filename = full_path+'/Feature-'+locus_txt+'-3D.png'
   print "Building: Feature-" + locus_txt + "-3D saving to " + plot_filename
   fig = plt.figure()
-  ax = fig.gca(projection='3d')
-  ax.plot_trisurf(est,nor,elv)
-  if (len(plot_cords['other'][xcord]) > 0):
-    ax.plot_trisurf(plot_cords['other']['est'],plot_cords['other']['nor'],plot_cords['other']['elv'])
+  ax = fig.add_subplot(111,projection='3d')
+  ax.scatter(est,nor,elv,color='black')
+  if (len(plot_cords['tool'][xcord]) > 0):
+    ax.scatter(plot_cords['tool']['est'],plot_cords['tool']['nor'],plot_cords['tool']['elv'],plot_cords['tool']['colors'],marker='d')
 
   ax.set_xlabel('Easting (meters)')
   ax.set_ylabel('Northing (meters)')
