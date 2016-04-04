@@ -159,16 +159,23 @@ class content extends database_object {
    */
   private function load_scatterplot_data($uid) {
 
-    $level = new Level($uid);
-
-    $this->filename = array();
-
-    $base = Config::get('data_root') . '/' .  $level->site->name . '/plots/Level-'  .$level->uid;
+    switch ($this->record_type) {
+      case 'feature':
+        $feature = new Feature($uid);
+        $base = Config::get('data_root') . '/' . $feature->site->name . '/plots/Feature-' . $feature->uid;
+      break;
+      default:
+      case 'level':
+        $level = new Level($uid);
+        $base = Config::get('data_root') . '/' .  $level->site->name . '/plots/Level-'  .$level->uid;
+      break;
+    }
 
     if (!file_exists($base . '-3D.png')) { 
       return false;
     }
 
+    $this->filename = array();
     $this->filename['3D'] = $base . '-3D.png';
     $this->filename['EstXElv'] = $base . '-EstXElv.png';
     $this->filename['EstXNor'] = $base . '-EstXNor.png';
