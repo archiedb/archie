@@ -1602,6 +1602,25 @@ class content extends database_object {
 	} // regenerate_qrcodes
 
   /**
+   * regenerate_ticket
+   * Rebuild the tickets
+   */
+  public static function regenerate_ticket() {
+
+    set_time_limit(0);
+
+    $sql = "SELECT `record`.`uid`,`media`.`filename` FROM `record` LEFT JOIN `media` ON `media`.`record`=`record`.`uid` AND `media`.`record_type`='record' AND `media`.`type`='ticket'";
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      Content::write($row['uid'],'ticket',$row['filename']);
+    }
+
+    return true;
+
+  } // regenerate_ticket
+
+  /**
    * regenerate_thumb
    * Rebuild thumbnails, can pass an option to rebuild all or just requested
    */

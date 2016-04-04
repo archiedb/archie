@@ -215,6 +215,18 @@ class Cron {
     return true;  
 
   } // run_thumb
+
+  /**
+   * run_ticket
+   * Regen tickets
+   */
+  public function run_ticket($options) {
+
+    Content::regenerate_ticket();
+
+    return true;
+
+  } // run_ticket
   
   /**
    * run_qrcode
