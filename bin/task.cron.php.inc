@@ -2,7 +2,6 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab:
 
 define('CLI',true); 
-define('NO_LOG',true); 
 $file_path = dirname(__FILE__);
 $prefix = realpath($file_path . "/../");
 require_once $prefix . '/class/init.php';
