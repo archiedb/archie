@@ -115,7 +115,7 @@ class Genpdf {
     $current_page = 1;
     $spatialdata = SpatialData::get_record_data($feature->uid,'feature');
     $records = $feature->get_records();
-    $total_pages = ceil(3+(count($records)/55)+(count($spatialdata)/55));
+    $total_pages = ceil(2+(count($records)/55)+(count($spatialdata)/55));
     // Run some tests on the feature image
     $featureimage = new Content($feature->image,'image');
 
