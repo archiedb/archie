@@ -159,16 +159,23 @@ class content extends database_object {
    */
   private function load_scatterplot_data($uid) {
 
-    $level = new Level($uid);
-
-    $this->filename = array();
-
-    $base = Config::get('data_root') . '/' .  $level->site->name . '/plots/Level-'  .$level->uid;
+    switch ($this->record_type) {
+      case 'feature':
+        $feature = new Feature($uid);
+        $base = Config::get('data_root') . '/' . $feature->site->name . '/plots/Feature-' . $feature->uid;
+      break;
+      default:
+      case 'level':
+        $level = new Level($uid);
+        $base = Config::get('data_root') . '/' .  $level->site->name . '/plots/Level-'  .$level->uid;
+      break;
+    }
 
     if (!file_exists($base . '-3D.png')) { 
       return false;
     }
 
+    $this->filename = array();
     $this->filename['3D'] = $base . '-3D.png';
     $this->filename['EstXElv'] = $base . '-EstXElv.png';
     $this->filename['EstXNor'] = $base . '-EstXNor.png';
@@ -1593,6 +1600,25 @@ class content extends database_object {
 		return true; 
 
 	} // regenerate_qrcodes
+
+  /**
+   * regenerate_ticket
+   * Rebuild the tickets
+   */
+  public static function regenerate_ticket() {
+
+    set_time_limit(0);
+
+    $sql = "SELECT `record`.`uid`,`media`.`filename` FROM `record` LEFT JOIN `media` ON `media`.`record`=`record`.`uid` AND `media`.`record_type`='record' AND `media`.`type`='ticket'";
+    $db_results = Dba::read($sql); 
+
+    while ($row = Dba::fetch_assoc($db_results)) { 
+      Content::write($row['uid'],'ticket',$row['filename']);
+    }
+
+    return true;
+
+  } // regenerate_ticket
 
   /**
    * regenerate_thumb

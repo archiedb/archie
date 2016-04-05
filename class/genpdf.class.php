@@ -138,6 +138,8 @@ class Genpdf {
 
     $pdf = new FPDF();
     $pdf->AddPage('P','A4');
+    $pdf->SetTitle('Feature-' . $feature->site->name . '-' . $feature->record . '-Form');
+    $pdf->SetSubject('Feature Form');
     $pdf->SetFont('Times');
     $pdf->SetFontSize('10');
     $pdf->Text('200','295',$current_page . '/' . $total_pages);
@@ -177,6 +179,45 @@ class Genpdf {
     $pdf->SetY($start_y+14);
     $pdf->SetFont('Times');
     $pdf->Write('4',$feature->keywords);
+
+    // Show the graphs, this is a little dangerous, and might be slow
+    $plotcmd = Config::get('prefix') . '/bin/build-feature-plots ' . escapeshellarg($feature->uid);
+    $output = exec($plotcmd);
+
+    $plot = new Content($feature->uid,'scatterplot','feature');
+
+    $pdf->AddPage();
+    $pdf->SetFontSize('18');
+    $pdf->SetFont('Times');
+    $current_page++;
+
+    $pdf->Text('80','13','Feature Points & Contained Records');
+    
+    # Make sure we have all 4 plots
+    if (count($plot->filename) == 4) {
+
+
+      $pdf->image($plot->filename['EstXNor'],'2','15','104','104');
+      $pdf->image($plot->filename['EstXElv'],'105','15','104','104');
+      $pdf->image($plot->filename['NorXElv'],'2','125','104','104');
+      $pdf->image($plot->filename['3D'],'105','125','104','104');
+
+
+    } // end if 4 files found
+    // Tell em its empty
+    else {
+
+      $pdf->SetFontSize('25');
+      $pdf->Text('35','135','No scatterplots available for this feature');
+      $pdf->SetFontSize('10');
+
+    }
+
+    $pdf->Image(Config::get('prefix') . '/images/archie_legend.png','60','240','100','27');
+    $pdf->SetFontSize('10');
+    $pdf->Text('200','295',$current_page. '/' . $total_pages);
+    $pdf->Text('140','295'," Generated " . date("Y-M-d H:i",$start_time));
+    $pdf->Text('3','295',$feature->site->name . ' ' . $feature->record . ' FORM');
 
     # Write out the coordinates
     while (count($spatialdata)) { 

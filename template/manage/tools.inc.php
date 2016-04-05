@@ -25,6 +25,16 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div>
 <div class="row">
+  <?php $cron = new Cron('ticket'); ?>
+  <div class="col-md-2">Tickets</div>
+  <div class="col-md-3"><?php echo $cron->state(); ?></div>
+  <div class="col-md-4">
+    <p class="text-right">
+      <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/manage/regenerate/ticket">Regenerate</a>
+    </p>
+  </div>
+</div>
+<div class="row">
   <?php $cron = new Cron('thumb'); ?>
   <div class="col-md-2">Image Thumbs</div>
   <div class="col-md-3"><?php echo $cron->state(); ?></div>
