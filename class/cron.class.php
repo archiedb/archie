@@ -184,8 +184,15 @@ class Cron {
     $run_file = $this->running_filename();
 
     if (file_exists($run_file)) { 
-      Event::error('RUN','Attempted to double run ' . $task . ' aborting second run'); 
-      return false; 
+      // Figure out if it's old, if it is trash it and go ahead and run, allow 2 hours
+      if (filemtime($run_file) > (time()-6400)) {
+        Event::error('RUN','Attempted to double run ' . $this->task . ' aborting second run'); 
+        return false; 
+      }
+      else {
+        Event::error('RUN','Stale run found for ' . $this->task . ' unlinking file and starting run');
+        unlink($run_file);
+      }
     }
 
     // Indicate this task is in progress
