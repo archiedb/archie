@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="<?php echo Config::get('web_path'); ?>/template/base.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<?php echo Config::get('web_path'); ?>/lib/bootstrap-3/css/bootstrap.min.css" type="text/css" media="screen" />
 	<script src="<?php echo Config::get('web_path'); ?>/template/ajax.js" language="javascript" type="text/javascript"></script>
-	<script src="<?php echo Config::get('web_path'); ?>/lib/javascript/jquery-1.11.3.min.js" language="javascript" type="text/javascript"></script>
+	<script src="<?php echo Config::get('web_path'); ?>/lib/javascript/jquery-1.12.3.min.js" language="javascript" type="text/javascript"></script>
 	<script src="<?php echo Config::get('web_path'); ?>/lib/bootstrap-3/js/bootstrap.min.js" language="javascript" type="text/javascript"></script>
 <title> Archie :: Login </title>
    <style type="text/css">
