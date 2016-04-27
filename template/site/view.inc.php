@@ -85,6 +85,30 @@ foreach ($site->settings as $key=>$value) { ?>
 <?php } ?>
 </tbody>
 </table>
+<?php $fields = array('1'); ?>
+<?php if (count($fields)) { ?>
+<h4>Additional Fields</h4>
+<table class="table table-hover table-striped">
+<tbody>
+<tr>
+  <th>Type</th>
+  <th>Field Name</th>
+  <th>Field Type</th>
+  <th>Field Validation</th>
+  <th>Enabled</th>
+</tr>
+<?php foreach ($fields as $field) { ?>
+<tr>
+  <td>Record</td>
+  <td><?php ucfirst($field['name']); ?></td>
+  <td><?php ucfirst($field['type']); ?></td>
+  <td><?php ucfirst($field['validation']); ?></td>
+  <td><?php \UI\boolean_word($field['enabled'],'Enabled'); ?></td>
+</tr>
+<?php } // end foreach fields ?>
+</tbody>
+</table>
+<?php } // end fields if ?>
 <?php $accessions = $site->get_all_data('accession'); ?>
 <?php array_shift($accessions); ?>
 <?php if (count($accessions)) { ?>
@@ -102,10 +126,10 @@ foreach ($site->settings as $key=>$value) { ?>
   <td><?php echo date('m-d-Y h:i',$row['created']); ?></td>
   <td><?php echo ($row['closed'] > 0) ? date('m-d-Y',$row['closed']) : 'ACTIVE'; ?></td>
 </tr>
-<?php } ?>
+<?php } // end foreach accessions ?>
 </tbody>
 </table>
-<?php } ?>
+<?php } // end if count accessions ?>
 <?php $projects = $site->get_all_data('project'); ?>
 <?php array_shift($projects); ?>
 <?php if (count($projects)) { ?>
