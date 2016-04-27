@@ -9,6 +9,7 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
   <?php echo \UI\boolean_word($site->enabled,'Enabled'); ?></h4>
 </div>
 <p class="pull-right text-right">
+  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_field">Add Field</button>
   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#set_project_<?php $site->_print('uid'); ?>">Set Project</button>
   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#set_accession_<?php $site->_print('uid'); ?>">Set Accession</button>
   <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/manage/site/edit/<?php $site->_print('uid'); ?>">Edit</a>
@@ -154,4 +155,5 @@ foreach ($site->settings as $key=>$value) { ?>
 <?php 
   include \UI\template('/site/modal_set_project');
   include \UI\template('/site/modal_set_accession');
+  include \UI\template('/site/modal_add_field'); 
 ?>

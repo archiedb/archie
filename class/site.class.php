@@ -5,7 +5,7 @@ class Site extends database_object {
 
   public $uid; 
   public $name;
-  public $settings;
+  public $settings; // JSON encoded settings, includes fields[] array 
   public $description;
   public $northing; 
   public $easting;
@@ -104,6 +104,9 @@ class Site extends database_object {
     if (!isset($settings['lus'])) {
       $settings['lus'] = fgetcsv(fopen(Config::get('prefix') . '/config/lus.csv.dist','r'));
     }
+    if (!isset($settings['fields'])) { 
+      $settings['fields'] = array();
+    }
 
     // Re-assign
     $this->settings = $settings;
@@ -130,6 +133,7 @@ class Site extends database_object {
     $settings['units']  = isset($input['units']) ? explode(',',$input['units']) : $this->get_setting('units'); 
     $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->get_setting('ticket'); 
     $settings['lus']    = isset($input['lus']) ? explode(',',$input['lus']) : $this->get_setting('lus');
+    $settings['fields'] = isset($input['fields']) ? $input['fields'] : $this->get_setting('fields');
 
     $sql = "UPDATE `site` SET `settings`=? WHERE `uid`=?";
     $db_results = Dba::write($sql,array(json_encode($settings),$this->uid));
