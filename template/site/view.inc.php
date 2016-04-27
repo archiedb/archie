@@ -87,6 +87,7 @@ foreach ($site->settings as $key=>$value) { ?>
 </table>
 <?php $accessions = $site->get_all_data('accession'); ?>
 <?php array_shift($accessions); ?>
+<?php if (count($accessions)) { ?>
 <h4>Accession #'s</h4>
 <table class="table table-hover table-striped">
 <tbody>
@@ -104,8 +105,10 @@ foreach ($site->settings as $key=>$value) { ?>
 <?php } ?>
 </tbody>
 </table>
+<?php } ?>
 <?php $projects = $site->get_all_data('project'); ?>
 <?php array_shift($projects); ?>
+<?php if (count($projects)) { ?>
 <h4>Projects</h4>
 <table class="table table-hover table-striped">
 <tbody>
@@ -123,7 +126,7 @@ foreach ($site->settings as $key=>$value) { ?>
 <?php } ?>
 </tbody>
 </table>
-
+<?php } ?>
 <?php 
   include \UI\template('/site/modal_set_project');
   include \UI\template('/site/modal_set_accession');
