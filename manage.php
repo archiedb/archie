@@ -54,6 +54,12 @@ switch (\UI\sess::location('action')) {
         $site->set_data($_POST['uid'],'accession',$_POST['accession']);
         \UI\redirect('/manage/site/view/' . $site->uid);
       break;
+      case 'addfield':
+        $site = new Site($_POST['uid']); 
+        $field['fields'] = $_POST;
+        $site->update_settings($field);
+        \UI\redirect('/manage/site/view/' . $site->uid);
+      break;
       case 'add':
         if (!Access::has('site','create')) { \UI\access_denied(); }
         require_once \UI\template('/site/new');

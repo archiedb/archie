@@ -149,6 +149,10 @@ class Site extends database_object {
   public function validate_settings($input) { 
 
     switch ($input['key']) {
+      case 'fields':
+        // Look for existing field with this name
+
+      break;
       case 'ticket':
         // only allow valid tickets
         $tickets = get_class_methods('genpdf');

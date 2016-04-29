@@ -97,6 +97,7 @@ foreach ($site->settings as $key=>$value) { ?>
   <th>Field Type</th>
   <th>Field Validation</th>
   <th>Enabled</th>
+  <th>&nbsp;</th>
 </tr>
 <?php foreach ($fields as $field) { ?>
 <tr>
@@ -105,6 +106,8 @@ foreach ($site->settings as $key=>$value) { ?>
   <td><?php ucfirst($field['type']); ?></td>
   <td><?php ucfirst($field['validation']); ?></td>
   <td><?php \UI\boolean_word($field['enabled'],'Enabled'); ?></td>
+  <td>
+  </td>
 </tr>
 <?php } // end foreach fields ?>
 </tbody>

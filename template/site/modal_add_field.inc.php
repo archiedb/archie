@@ -7,7 +7,7 @@ if (INIT_LOADED != '1') { exit; }
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Add Field to <?php $site->_print('name'); ?></h3>
+        <h3 id="myModalLabel">Add Field to <?php $site->_print('name'); ?> site</h3>
       </div>
       <div class="modal-body">
         <form method="post" action="<?php echo Config::get('web_path'); ?>/manage/site/addfield">
@@ -35,9 +35,8 @@ if (INIT_LOADED != '1') { exit; }
             <label class="col-md-4 control-label" for="fieldType">Field Type</label>
             <div class="col-md-4">
               <select id="fieldType" name="fieldtype">
-                <option value="string">Text</option>
-                <option value="integer">Whole Numbers</option>
-                <option value="decimal">Number with decimals</option>
+                <option value="string">Short Answer</option>
+                <option value="text">Long Answer</option>
                 <option value="boolean">True/False</option>
               </select>
             </div>
@@ -48,8 +47,10 @@ if (INIT_LOADED != '1') { exit; }
             <label class="col-md-4 control-label" for="fieldValidation">Validation</label>
             <div class="col-md-4">
               <select id="fieldValidation" name="fieldvalidation">
-                <option value="1">True</option>
-                <option value="0">False</option>
+                <option value="string">Words</option>
+                <option value="integers">Whole Numbers</option>
+                <option value="decimal">Numbers with Decimals</option>
+                <option value="boolean">True/False</option>
               </select>
             </div>
           </div>
@@ -69,6 +70,7 @@ if (INIT_LOADED != '1') { exit; }
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Set Project</a>
         <input type="hidden" name="uid" value="<?php echo $site->_print('uid'); ?>">
+        <input type="hidden" name="key" value="fields">
         <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
         </form>
