@@ -84,21 +84,24 @@ class Genpdf {
       return false;
     }
 
-    $pdf->Image($qrcode->filename,'0','0','25.4','25.4');
+    $quad = empty($record->level->quad->name) ? '' : '-' . $record->level->quad->name;
+
+    $pdf->Image($qrcode->filename,'0','1','22.4','23.4');
     $pdf->SetFont('Times','B');
     $pdf->SetFontSize('8');
-    $pdf->Text('25','4','SITE:' . $record->site->name);
-    $pdf->Text('52','4','UNIT:' . $record->level->unit->name);
-    $pdf->Text('25','8','LVL:' . $record->level->record);
-    $pdf->Text('52','8','QUAD:' . $record->level->quad->name);
-    $pdf->Text('25','12','MAT:' . $record->material->name);
-    $pdf->Text('52','12','CLASS:' . $record->classification->name);
-    $pdf->Text('25','16','L.U.:' . $record->lsg_unit->name);
-    $pdf->Text('52','16','FEAT/KROT:' . $feat_krot);
-    $pdf->Text('25','20','CAT#:' . $record->catalog_id);
-    $pdf->Text('52','20','RN:' . $record->station_index);
-    $pdf->Text('25','24',date('d-M-Y',$record->created));
-    $pdf->Text('52','24','USER:' . $record->user->username);
+    $pdf->Text('24','3.5','SITE:' . $record->site->name);
+    $pdf->Text('50','3.5','UNIT:' . $record->level->unit->name);
+    $pdf->Text('24','7','LVL:' . $record->level->record . $quad);
+    $pdf->Text('50','7','QUANITY:' . $record->quanity);
+    $pdf->Text('24','10.5','MAT:' . $record->material->name);
+    $pdf->Text('50','10.5','CLASS:' . $record->classification->name);
+    $pdf->Text('24','14','L.U.:' . $record->lsg_unit->name);
+    $pdf->Text('50','14','FEAT/KROT:' . $feat_krot);
+    $pdf->Text('24','17.5','CAT#:' . $record->catalog_id);
+    $pdf->Text('50','17.5','RN:' . $record->station_index);
+    $pdf->Text('24','21',date('d-M-Y',$record->created));
+    $pdf->Text('50','21','TECH:' .  $record->user->username);
+    $pdf->Text('24','24.5','LOC:N' . $record->northing . ' E' . $record->easting . ' Z' . $record->elevation);
     $pdf->Output($filename);
 
     return true; 
