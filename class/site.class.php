@@ -16,6 +16,9 @@ class Site extends database_object {
   public $excavation_end; // timestamp
   public $enabled; 
 
+  // Current allowed settings
+  private $allowed_settings = array('catalog_offset'=>'Catalog Start','lus'=>'L.U','units'=>'Unit','quads'=>'Quad','ticket'=>'Ticket Format');
+
 	// Constructor takes a uid
 	public function __construct($uid='') { 
 
@@ -92,6 +95,9 @@ class Site extends database_object {
     $settings = json_decode($this->settings,true); 
 
     // Check for some defaults, load from dist file if none set
+    if (!isset($settings['catalog_offset'])) {
+      $settings['catalog_offset'] = '0';
+    }
     if (!isset($settings['units'])) { 
       $settings['units'] = fgetcsv(fopen(Config::get('prefix') . '/config/units.csv.dist','r'));
     }
@@ -126,6 +132,7 @@ class Site extends database_object {
 
     // Setup the new array
     $settings = array();
+    $settings['catalog_offset'] = isset($input['catalog_offset']) ? intval($input['catalog_offset']) : $this->get_setting('catalog_offset');
     $settings['quads']  = isset($input['quads']) ? explode(',',$input['quads']) : $this->get_setting('quads'); 
     $settings['units']  = isset($input['units']) ? explode(',',$input['units']) : $this->get_setting('units'); 
     $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->get_setting('ticket'); 
@@ -145,6 +152,14 @@ class Site extends database_object {
   public function validate_settings($input) { 
 
     switch ($input['key']) {
+      case 'catalog_offset':
+        // Just needs to be a positive number
+        if ($input['catalog_offset'] < 0 OR intval($input['catalog_offset']) != $input['catalog_offset']) {
+          Error::add('general','Catalog Offset must be a postive whole number');
+          return false;
+        }
+        return true;
+      break;
       case 'ticket':
         // only allow valid tickets
         $tickets = get_class_methods('genpdf');
@@ -198,6 +213,16 @@ class Site extends database_object {
     return false;
 
   } // validate_settings
+
+  /**
+   * get_valid_settings
+   * returns a key'd array of valid settings
+   */
+  public function get_valid_settings() { 
+
+    return $this->allowed_settings;
+
+  } // get_valid_settings
 
   /**
    * get_setting
