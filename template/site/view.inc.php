@@ -74,7 +74,7 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
 </tr>
 <?php 
   // FIXME: Do this a better way?
-  $title = array('lus'=>'L.U','units'=>'Unit','quads'=>'Quad','ticket'=>'Ticket Format');
+  $title = $site->get_valid_settings();
 foreach ($site->settings as $key=>$value) { ?>
 <tr>
   <td><?php echo scrub_out(ucfirst($title[$key])); ?></td>
