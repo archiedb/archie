@@ -166,21 +166,24 @@ class Record extends database_object {
 			$row = Dba::fetch_assoc($db_results); 	
 			$catalog_id = $row['catalog_id']+1; 
 		} 
-		// Else we need to make sure it isn't a duplicate
-		else { 
-			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? AND `catalog_id`=? LIMIT 1 FOR UPDATE"; 
-			$db_results = Dba::read($catalog_sql,array($input['site'],$intput['catalog_id'])); 
-      if (!$db_results) {
-        Error::add('general','Database timeout reached, please re-submit'); 
-        return false;
-      }
-			$row = Dba::fetch_assoc($db_results); 
-			if ($row['catalog_id']) { 
-				Error::add('general','Database Failure - Duplicate CatalogID - ' . $catalog_id); 
-        Dba::commit();
-				return false; 
-			} 
 
+    // Make sure it's bigger then the catalog_offset site setting
+    if ($catalog_id < \UI\sess::$user->site->settings['catalog_offset']) {
+      $catalog_id = \UI\sess::$user->site->settings['catalog_offset'];
+    }
+
+    // No matter what make sure this isn't a duplicate
+		$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? AND `catalog_id`=? LIMIT 1 FOR UPDATE"; 
+		$db_results = Dba::read($catalog_sql,array($input['site'],$input['catalog_id'])); 
+    if (!$db_results) {
+      Error::add('general','Database timeout reached, please re-submit'); 
+      return false;
+    }
+		$row = Dba::fetch_assoc($db_results); 
+		if ($row['catalog_id']) { 
+			Error::add('general','Database Failure - Duplicate CatalogID - ' . $catalog_id); 
+      Dba::commit();
+			return false; 
 		} 
 
 

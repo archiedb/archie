@@ -474,7 +474,7 @@ class content extends database_object {
       return false;
     }
     elseif (!is_writeable(dirname($filename))) {
-      Error::add('general','QRCode generation failure, Permission Denied');
+      //Error::add('general','QRCode generation failure, Permission Denied');
       Event::error('Content::write_qrcode',dirname($filename) . ' is not writeable');
       return false;
     }
@@ -822,10 +822,11 @@ class content extends database_object {
           $pdf->Text(25,14,'RN');
           $pdf->Text(44,14,'Material');
           $pdf->Text(68,14,'Classification'); 
-          $pdf->Text(104,14,'Northing');
-          $pdf->Text(125,14,'Easting');
-          $pdf->Text(146,14,'Elevation');
-          $pdf->Text(169,14,'Entered By');
+          $pdf->Text(102,14,'Northing');
+          $pdf->Text(119,14,'Easting');
+          $pdf->Text(135,14,'Elevation');
+          $pdf->Text(155,14,'Quanity');
+          $pdf->Text(179,14,'Entered By');
           $pdf->Line(2,'16',202,'16');
 
           # Itterate through the records
@@ -838,9 +839,10 @@ class content extends database_object {
           $pdf->Line(40,'10',40,$line_end);
           $pdf->Line(66,'10',66,$line_end);
           $pdf->Line(101,'10',101,$line_end);
-          $pdf->Line(123,10,123,$line_end);
-          $pdf->Line(144,10,144,$line_end);
-          $pdf->Line(167,10,167,$line_end);
+          $pdf->Line(118,10,118,$line_end);
+          $pdf->Line(133,10,133,$line_end);
+          $pdf->Line(153,10,153,$line_end);
+          $pdf->Line(177,10,177,$line_end);
           $pdf->Line(202,10,202,$line_end);
         } 
 
@@ -851,9 +853,10 @@ class content extends database_object {
         $pdf->Text(41,$start_y,$record->material->name); 
         $pdf->Text(67,$start_y,$record->classification->name);
         $pdf->Text(102,$start_y,$record->northing);
-        $pdf->Text(124,$start_y,$record->easting);
-        $pdf->Text(145,$start_y,$record->elevation);
-        $pdf->Text(168,$start_y,$record->user->username);
+        $pdf->Text(119,$start_y,$record->easting);
+        $pdf->Text(134,$start_y,$record->elevation);
+        $pdf->Text(154,$start_y,$record->quanity);
+        $pdf->Text(178,$start_y,$record->user->username);
         $pdf->Line(2,$start_y+1,202 ,$start_y+1);
         $start_y += 5;
 

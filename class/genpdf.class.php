@@ -84,21 +84,27 @@ class Genpdf {
       return false;
     }
 
-    $pdf->Image($qrcode->filename,'0','0','25.4','25.4');
+    $quad = empty($record->level->quad->name) ? '' : '-' . $record->level->quad->name;
+    $nor = empty($record->northing) ? '' : 'N' . $record->northing . ' ';
+    $est = empty($record->easting) ? '' : 'E' . $record->easting . ' ';
+    $elv = empty($record->elevation) ? '' : 'Z' . $record->elevation;
+
+    $pdf->Image($qrcode->filename,'0','0','24.4','24.4');
     $pdf->SetFont('Times','B');
     $pdf->SetFontSize('8');
-    $pdf->Text('25','4','SITE:' . $record->site->name);
-    $pdf->Text('52','4','UNIT:' . $record->level->unit->name);
-    $pdf->Text('25','8','LVL:' . $record->level->record);
-    $pdf->Text('52','8','QUAD:' . $record->level->quad->name);
-    $pdf->Text('25','12','MAT:' . $record->material->name);
-    $pdf->Text('52','12','CLASS:' . $record->classification->name);
-    $pdf->Text('25','16','L.U.:' . $record->lsg_unit->name);
-    $pdf->Text('52','16','FEAT/KROT:' . $feat_krot);
-    $pdf->Text('25','20','CAT#:' . $record->catalog_id);
-    $pdf->Text('52','20','RN:' . $record->station_index);
-    $pdf->Text('25','24',date('d-M-Y',$record->created));
-    $pdf->Text('52','24','USER:' . $record->user->username);
+    $pdf->Text('25','3.5','SITE:' . $record->site->name);
+    $pdf->Text('51','3.5','UNIT-QUAD:' . $record->level->unit->name . $quad);
+    $pdf->Text('25','7','LVL:' . $record->level->record );
+    $pdf->Text('51','7','QUANITY:' . $record->quanity);
+    $pdf->Text('25','10.5','MAT:' . $record->material->name);
+    $pdf->Text('51','10.5','CLASS:' . $record->classification->name);
+    $pdf->Text('25','14','L.U.:' . $record->lsg_unit->name);
+    $pdf->Text('51','14','FEAT/KROT:' . $feat_krot);
+    $pdf->Text('25','17.5','CAT#:' . $record->catalog_id);
+    $pdf->Text('51','17.5','RN:' . $record->station_index);
+    $pdf->Text('25','21',date('d-M-Y',$record->created));
+    $pdf->Text('51','21','TECH:' .  $record->user->username);
+    $pdf->Text('25','24.5','LOC:' . $nor . $est . $elv);
     $pdf->Output($filename);
 
     return true; 
@@ -318,10 +324,11 @@ class Genpdf {
           $pdf->Text(25,14,'RN');
           $pdf->Text(44,14,'Material');
           $pdf->Text(68,14,'Classification');
-          $pdf->Text(104,14,'Northing');
-          $pdf->Text(125,14,'Easting');
-          $pdf->Text(146,14,'Elevation');
-          $pdf->Text(169,14,'Entered By');
+					$pdf->Text(102,14,'Northing');
+          $pdf->Text(119,14,'Easting');
+          $pdf->Text(135,14,'Elevation');
+          $pdf->Text(155,14,'Quanity');
+          $pdf->Text(179,14,'Entered By');
           $pdf->Line(2,'16',202,'16');
 
           # Itterate through the records
@@ -334,21 +341,24 @@ class Genpdf {
           $pdf->Line(40,'10',40,$line_end);
           $pdf->Line(66,'10',66,$line_end);
           $pdf->Line(101,'10',101,$line_end);
-          $pdf->Line(123,10,123,$line_end);
-          $pdf->Line(144,10,144,$line_end);
-          $pdf->Line(167,10,167,$line_end);
+          $pdf->Line(118,10,118,$line_end);
+          $pdf->Line(133,10,133,$line_end);
+          $pdf->Line(153,10,153,$line_end);
+          $pdf->Line(177,10,177,$line_end);
           $pdf->Line(202,10,202,$line_end);
         }
-       # Load and print record record
+
+        # Load and print record record
         $record = new Record($record_id);
         $pdf->Text(3,$start_y,$record->catalog_id);
         $pdf->Text(22,$start_y,$record->station_index);
         $pdf->Text(41,$start_y,$record->material->name);
         $pdf->Text(67,$start_y,$record->classification->name);
         $pdf->Text(102,$start_y,$record->northing);
-        $pdf->Text(124,$start_y,$record->easting);
-        $pdf->Text(145,$start_y,$record->elevation);
-        $pdf->Text(168,$start_y,$record->user->username);
+        $pdf->Text(119,$start_y,$record->easting);
+        $pdf->Text(134,$start_y,$record->elevation);
+        $pdf->Text(154,$start_y,$record->quanity);
+				$pdf->Text(178,$start_y,$record->user->username);
         $pdf->Line(2,$start_y+1,202 ,$start_y+1);
         $start_y += 5;
 
