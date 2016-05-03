@@ -86,6 +86,42 @@ class Site extends database_object {
   } //build_cache
 
   /**
+   * add_field
+   * This adds a custom field to the site, for now it's only for records
+   */
+  public function add_field($input) { 
+    // FIXME: Allow this to change
+    $input['type'] = 'record';
+
+    // Validate the field
+    if (!$this->validate_field($input)) {
+      Error::add('general','Invalid field specified');
+      return false;
+    }
+
+
+    // Add this key to the existing ones
+    $fields = $this->get_setting('fields');
+    $fielduid = $input['type'] . $input['fieldname'];
+
+    // Make sure there's no overlap
+    if (isset($fields[$fielduid])) {
+      Error::add('general','Duplicate Field, unable to add');
+      return false;
+    }
+
+    $fields[$fielduid] = array('object'=>$input['type'],
+                          'name'=>$input['fieldname'],
+                          'type'=>$input['fieldtype'],
+                          'validation'=>$input['fieldvalidation'],
+                          'enabled'=>$input['enabled']);
+    $this->update_settings(array('key'=>'field','fields'=>$fields));
+
+    return true;
+
+  } // add_field
+
+  /**
    * decode_settings
    * This takes the ->settings field from the DB
    * runs a json_decode() and does what it needs to
@@ -129,7 +165,7 @@ class Site extends database_object {
 
     // Validate settings
     if (!$this->validate_settings($input)) {
-      Error::add('general','Invalid Settings specified');
+      Error::add('general','Invalid settings specified');
       return false;
     }
 
@@ -150,12 +186,50 @@ class Site extends database_object {
   } // update_settings
 
   /**
+   * validate_field
+   * Validate a new custom field
+   */
+  public function validate_field($input) {
+
+    $retval = true;
+
+    // Name must be A-Z0,9
+    if (!preg_match('/[a-zA-Z0-9 ]/',$input['fieldname'])) {
+      Error::add('general','Field name must be A-Z,0-9 and spaces only');
+      $retval = false;
+    }
+
+    // Type must be short, text, boolean
+    if (!in_array($input['fieldtype'],array('string','text','boolean'))) {
+      Error::add('general','Invalid Field type, please try again');
+      $retval = false;
+    }
+
+    // Validation must be words whole numbers decimal or boolean
+    if (!in_array($input['fieldvalidation'],array('string','integer','decimal','boolean'))) {
+      Error::add('general','Invalid Validation method, please try again');
+      $retval = false;
+    }
+    // Enabled must be true/false
+    if ($input['enabled'] != 0 AND $input['enabled'] != 1) {
+      Error::add('general','Invalid Field state, please try again');
+      $retval = false;
+    }
+
+    return $retval; 
+
+  } // validate_field
+
+  /**
    * validate_settings
    * validate the settings
    */
   public function validate_settings($input) { 
 
     switch ($input['key']) {
+      case 'field':
+        return true;
+      break;
       case 'catalog_offset':
         // Just needs to be a positive number
         if ($input['catalog_offset'] < 0 OR intval($input['catalog_offset']) != $input['catalog_offset']) {

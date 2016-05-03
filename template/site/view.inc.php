@@ -75,7 +75,9 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
 <?php 
   // FIXME: Do this a better way?
   $title = $site->get_valid_settings();
-foreach ($site->settings as $key=>$value) { ?>
+foreach ($site->settings as $key=>$value) { 
+  if ($key == 'fields') { continue; }
+?>
 <tr>
   <td><?php echo scrub_out(ucfirst($title[$key])); ?></td>
   <td><?php \UI\print_var($site->get_setting($key)); ?></td>
@@ -86,7 +88,7 @@ foreach ($site->settings as $key=>$value) { ?>
 <?php } ?>
 </tbody>
 </table>
-<?php $fields = array('1'); ?>
+<?php $fields = $site->get_setting('fields'); ?>
 <?php if (count($fields)) { ?>
 <h4>Additional Fields</h4>
 <table class="table table-hover table-striped">
@@ -99,13 +101,13 @@ foreach ($site->settings as $key=>$value) { ?>
   <th>Enabled</th>
   <th>&nbsp;</th>
 </tr>
-<?php foreach ($fields as $field) { ?>
+<?php foreach ($fields as $fielduid=>$field) { ?>
 <tr>
   <td>Record</td>
-  <td><?php ucfirst($field['name']); ?></td>
-  <td><?php ucfirst($field['type']); ?></td>
-  <td><?php ucfirst($field['validation']); ?></td>
-  <td><?php \UI\boolean_word($field['enabled'],'Enabled'); ?></td>
+  <td><?php echo ucfirst($field['name']); ?></td>
+  <td><?php echo ucfirst($field['type']); ?></td>
+  <td><?php echo ucfirst($field['validation']); ?></td>
+  <td><?php echo \UI\boolean_word($field['enabled'],'Enabled'); ?></td>
   <td>
   </td>
 </tr>

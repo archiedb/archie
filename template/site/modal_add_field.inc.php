@@ -18,7 +18,7 @@ if (INIT_LOADED != '1') { exit; }
           <div class="form-group">
             <label class="col-md-4 control-label" for="inputType">Type</label>
             <div class="col-md-4">
-              <input class="form-control" id="inputType" type="text" name="type" value="Record" disabled />
+              <input class="form-control" id="inputType" type="text" name="type" value="record" disabled />
             </div>
           </div>
         </div>
@@ -48,7 +48,7 @@ if (INIT_LOADED != '1') { exit; }
             <div class="col-md-4">
               <select id="fieldValidation" name="fieldvalidation">
                 <option value="string">Words</option>
-                <option value="integers">Whole Numbers</option>
+                <option value="integer">Whole Numbers</option>
                 <option value="decimal">Numbers with Decimals</option>
                 <option value="boolean">True/False</option>
               </select>
@@ -68,7 +68,7 @@ if (INIT_LOADED != '1') { exit; }
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Set Project</a>
+        <button type="submit" class="btn btn-primary">Add Custom Field</a>
         <input type="hidden" name="uid" value="<?php echo $site->_print('uid'); ?>">
         <input type="hidden" name="key" value="fields">
         <input type="hidden" name="return" value="<?php echo scrub_out(\UI\sess::location('absolute')); ?>">

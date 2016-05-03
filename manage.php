@@ -56,8 +56,7 @@ switch (\UI\sess::location('action')) {
       break;
       case 'addfield':
         $site = new Site($_POST['uid']); 
-        $field['fields'] = $_POST;
-        $site->update_settings($field);
+        $site->add_field($_POST);
         \UI\redirect('/manage/site/view/' . $site->uid);
       break;
       case 'add':
