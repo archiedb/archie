@@ -2,7 +2,6 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 class Record extends database_object { 
 
-
   public $uid; // INTERNAL 
   public $site; // Site UID  
   public $catalog_id; // # of item unique to site
@@ -30,6 +29,8 @@ class Record extends database_object {
   public $user; // The Object 
   public $created; 
   public $updated; 
+
+  private $extra; // Additional custom field information (JSON encoded in DB, decoded in object) not directly accessible
 
 	// Constructor
   public function __construct($uid='') { 
@@ -61,6 +62,7 @@ class Record extends database_object {
     $this->krotovina = new Krotovina($this->krotovina);
     $this->level = new Level($this->level);
 		$this->user = new User($this->user); 
+    $this->extra = json_decode($this->extra,true); // Decode and reassign extra JSON crap
 
 		return true; 
 
@@ -629,6 +631,20 @@ class Record extends database_object {
 
 		return true; 
 	} // delete 
+
+  /**
+    * get_custom_field
+    * return the current value of the custom field
+    */
+  public function get_custom_field($name) { 
+
+    if (isset($this->extra[$name])) {
+      return $this->extra[$name];
+    }
+
+    return '';
+
+  } // get_custom_field
 
 	/**
 	 * get_images

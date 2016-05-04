@@ -214,6 +214,43 @@ if (INIT_LOADED != '1') { exit; }
     </div>
   </div>
 </div>
+<?php if (count($fields)) { ?>
+<div class="row">
+  <div class="form-group">
+    <div class="col-md-10">
+      <em>Custom Fields for <?php $record->site->_print('name'); ?></em>
+    </div>
+  </div>
+</div>
+<?php foreach ($fields as $field) { ?>
+<div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class($field['name']); ?>">
+    <label class="col-md-2 control-label" for="input<?php echo $field['name']; ?>"><?php echo ucfirst(str_replace('_',' ',$field['name'])); ?></label>
+    <div class="col-md-8">
+      <?php if ($field['type'] == 'string') { ?>
+      <input class="form-control" id="input<?php echo $field['name']; ?>" name="<?php echo $field['name']; ?>" value="<?php \UI\form_value(array('post'=>$field['name'],'var'=>$record->get_custom_field($field['name']))); ?>" />
+      <?php } elseif ($field['type'] == 'text') { ?>
+      <textarea name="<?php echo $field['name']; ?>" class="form-control" rows="5"><?php \UI\form_value(array('post'=>$field['name'],'var'=>$record->get_custom_field($field['name']))); ?></textarea>
+      <?php } elseif ($field['type'] == 'boolean') { ?>
+      <?php 
+        $current = $record->get_custom_field($field['name']);
+        $trueenabled = '';$falseenabled='';
+        if ($current == '1') { $trueenabled = ' selected="selected"'; }
+        elseif ($current = '0') { $falseenabled = ' selected="selected"'; }
+      ?>
+      <select name="<?php echo $field['name']; ?>">
+        <option value="">&nbsp;</option>
+        <option value="1"<?php echo $trueenabled; ?>>True</option>
+        <option value="0"<?php echo $falseenabled; ?>>False</option>
+      </select>
+      <?php } ?>
+    </div>
+    </div>
+  </div>
+</div>
+<?php } // end foreach fields ?>
+<?php } // if count fields ?>
 <div class="row">
   <div class="form-group">
     <div class="col-md-10 col-md-offset-2">

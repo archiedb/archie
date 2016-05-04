@@ -69,6 +69,7 @@ switch (\UI\sess::location('action')) {
   case 'edit':
     if (!Access::has('record','edit')) { \UI\access_denied(); }
 		$record = new Record(\UI\sess::location('objectid')); 
+    $fields = $record->site->get_setting('fields');
     require_once \UI\template('/records/edit'); 
 	break; 
   case 'view':

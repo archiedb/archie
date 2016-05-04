@@ -104,7 +104,7 @@ foreach ($site->settings as $key=>$value) {
 <?php foreach ($fields as $fielduid=>$field) { ?>
 <tr>
   <td>Record</td>
-  <td><?php echo ucfirst($field['name']); ?></td>
+  <td><?php echo ucfirst(str_replace('_',' ',$field['name'])); ?></td>
   <td><?php echo ucfirst($field['type']); ?></td>
   <td><?php echo ucfirst($field['validation']); ?></td>
   <td><?php echo \UI\boolean_word($field['enabled'],'Enabled'); ?></td>

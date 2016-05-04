@@ -90,6 +90,7 @@ class Site extends database_object {
    * This adds a custom field to the site, for now it's only for records
    */
   public function add_field($input) { 
+
     // FIXME: Allow this to change
     $input['type'] = 'record';
 
@@ -99,6 +100,8 @@ class Site extends database_object {
       return false;
     }
 
+    // Spaces are the devil
+    $input['fieldname'] = str_replace(' ','_',$input['fieldname']);
 
     // Add this key to the existing ones
     $fields = $this->get_setting('fields');
@@ -192,6 +195,27 @@ class Site extends database_object {
   public function validate_field($input) {
 
     $retval = true;
+
+    // Make sure we're not using a reserved name for the record type
+    switch ($input['type']) {
+      default:
+      case 'record':
+        $sql = "DESCRIBE `record`";
+        $db_results = Dba::read($sql);
+        while ($row = Dba::fetch_assoc($db_results)) { 
+          if ($row['Field'] == $input['fieldname']) {
+            $retval = false; 
+            Error::add('general','Field names must be unique');
+          }
+        }
+
+      break;
+    }
+
+    if (strlen($input['fieldname']) > 18) {
+      Error::add('general','Field names must be less than 18 characters'); 
+      $retval = false;
+    }
 
     // Name must be A-Z0,9
     if (!preg_match('/[a-zA-Z0-9 ]/',$input['fieldname'])) {
