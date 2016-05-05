@@ -237,7 +237,7 @@ if (INIT_LOADED != '1') { exit; }
         $current = $record->get_custom_field($field['name']);
         $trueenabled = '';$falseenabled='';
         if ($current == '1') { $trueenabled = ' selected="selected"'; }
-        elseif ($current = '0') { $falseenabled = ' selected="selected"'; }
+        elseif ($current == '0') { $falseenabled = ' selected="selected"'; }
       ?>
       <select name="<?php echo $field['name']; ?>">
         <option value="">&nbsp;</option>

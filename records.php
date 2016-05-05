@@ -59,6 +59,7 @@ switch (\UI\sess::location('action')) {
     $_POST['user'] = \UI\sess::$user->uid;
 		// Attempt to update this!
 		if (!$record->update($_POST)) { 
+      $fields = $record->site->get_setting('fields');
       require_once \UI\template('/records/edit'); 
 		} 
 		else { 

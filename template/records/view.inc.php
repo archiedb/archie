@@ -64,7 +64,29 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <th>Notes</th><td colspan="3"><?php echo scrub_out($record->notes); ?></td>
 </tr>
-  
+<?php if (count($record->extra)) { 
+      $site_fields = $record->site->get_setting('fields');
+?>
+<tr>
+  <th colspan="4">
+    <em>Custom Fields for <?php $record->site->_print('name'); ?></em>
+  </th>
+</tr>
+<?php foreach ($record->extra as $name=>$field) { ?>
+<tr>
+  <th><?php echo scrub_out(str_replace('_',' ',$name)); ?></th>
+  <td colspan="3">
+    <?php // Format this based on the type of field... really just for boolean
+      if ($site_fields['record' . $name]['type'] == 'boolean') {
+        echo \UI\boolean_word($field);
+      } else {
+        echo scrub_out($field); 
+      } 
+    ?>
+  </td>
+</tr>
+<?php } // end foreach fields ?>
+<?php } // if count fields ?>
 </table>
 <ul class="nav nav-tabs" id="media_nav">
   <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>

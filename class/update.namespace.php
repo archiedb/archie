@@ -369,7 +369,7 @@ class Database {
     $update_string = '- Add Primary Image functionality to Feature and Krotovina.<br />';
     $versions[] = array('version'=>'0022','description'=>$update_string);
     $update_string = '- Add Field.Extra for custom site field storage, JSON encoded.<br />';
-    //$versions[] = array('version'=>'0023','description'=>$update_string);
+    $versions[] = array('version'=>'0023','description'=>$update_string);
 
     return $versions; 
 
