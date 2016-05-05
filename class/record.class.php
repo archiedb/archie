@@ -278,6 +278,11 @@ class Record extends database_object {
     $retval = true;
     foreach ($site_fields as $field) { 
       if (isset($_POST[$field['name']])) {
+        // If it's blank no error checking
+        if (empty($_POST[$field['name']])) { 
+          $extra[$field['name']] = $_POST[$field['name']];
+          continue; 
+        }
         // Do the validation 
         switch ($field['validation']) {
           case 'boolean':
@@ -287,13 +292,13 @@ class Record extends database_object {
             }
           break;
           case 'integer':
-            if (floor($_POST[$field['name']]) != $_POST[$field['name']] OR !is_int($_POST[$field['name']])) {
+            if (floor($_POST[$field['name']]) != $_POST[$field['name']] OR preg_match('/[^0-9]/',$_POST[$field['name']])) {
               Error::add($field['name'],'Must be a whole number with no decimals');
               $retval = false;
             }
           break;
           case 'decimal':
-            if (floatval($_POST[$field['name']]) != $_POST[$field['name']] OR !is_float($_POST[$field['name']])) {
+            if (floatval($_POST[$field['name']]) != $_POST[$field['name']] OR !preg_match('/^[0-9](\.[0-9]+)?$/',$_POST[$field['name']])) {
               Error::add($field['name'],'Must be a number');
               $retval = false; 
             }
