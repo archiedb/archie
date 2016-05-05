@@ -228,6 +228,9 @@ if (INIT_LOADED != '1') { exit; }
     <div class="<?php Error::form_class($field['name']); ?>">
     <label class="col-md-2 control-label" for="input<?php echo $field['name']; ?>"><?php echo ucfirst(str_replace('_',' ',$field['name'])); ?></label>
     <div class="col-md-8">
+      <?php if ($field['enabled'] == 0) { ?>
+      <?php echo scrub_out($record->get_custom_field($field['name'])); ?>
+      <?php } else { ?>
       <?php if ($field['type'] == 'string') { ?>
       <input class="form-control" id="input<?php echo $field['name']; ?>" name="<?php echo $field['name']; ?>" value="<?php \UI\form_value(array('post'=>$field['name'],'var'=>$record->get_custom_field($field['name']))); ?>" />
       <?php } elseif ($field['type'] == 'text') { ?>
@@ -244,6 +247,7 @@ if (INIT_LOADED != '1') { exit; }
         <option value="1"<?php echo $trueenabled; ?>>True</option>
         <option value="0"<?php echo $falseenabled; ?>>False</option>
       </select>
+      <?php } ?>
       <?php } ?>
     </div>
     </div>

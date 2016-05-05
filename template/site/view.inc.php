@@ -81,7 +81,8 @@ foreach ($site->settings as $key=>$value) {
 <tr>
   <td><?php echo scrub_out(ucfirst($title[$key])); ?></td>
   <td><?php \UI\print_var($site->get_setting($key)); ?></td>
-  <td><button type="button" data-target="#editsetting<?php echo scrub_out($key); ?>" data-toggle="modal" class="btn btn-primary">Edit</button>
+  <td>
+    <button type="button" data-target="#editsetting<?php echo scrub_out($key); ?>" data-toggle="modal" class="btn btn-primary">Edit</button>
     <?php include \UI\template('/site/modal_edit_setting'); ?>
   </td>
 </tr>
@@ -107,8 +108,13 @@ foreach ($site->settings as $key=>$value) {
   <td><?php echo ucfirst(str_replace('_',' ',$field['name'])); ?></td>
   <td><?php echo ucfirst($field['type']); ?></td>
   <td><?php echo ucfirst($field['validation']); ?></td>
-  <td><?php echo \UI\boolean_word($field['enabled'],'Enabled'); ?></td>
+  <td><?php echo \UI\boolean_word($field['enabled']); ?></td>
   <td>
+    <?php if ($field['enabled'] == 1) { ?>
+    <a href="<?php echo Config::get('web_path'); ?>/manage/site/disablefield/<?php $site->_print('uid'); ?>/<?php echo $fielduid; ?>" class="btn btn-danger">Disable</a>
+    <?php } else { ?>
+    <a href="<?php echo Config::get('web_path'); ?>/manage/site/enablefield/<?php $site->_print('uid'); ?>/<?php echo $fielduid; ?>" class="btn btn-success">Enable</a>
+    <?php } ?>
   </td>
 </tr>
 <?php } // end foreach fields ?>

@@ -406,17 +406,35 @@ class Report {
 
     $data = array();
 
+    $header = array('site','accession','catalog id','unit','level','litho unit','station index','xrf matrix index','weight','height','width','thickness','quantity','material','classification','quad','feature','krotovina','notes','created','northing','easting','elevation','user');
+
+    // Load in the site settings, and add those
+    $fields = $site->get_setting('fields');
+    foreach ($fields as $field) {
+      $header[] = str_replace('_',' ',$field['name']);
+    }
+
     // The header
-    $data[] = array('site','accession','catalog id','unit','level','litho unit','station index','xrf matrix index','weight','height','width','thickness','quantity','material','classification','quad','feature','krotovina','notes','created','northing','easting','elevation','user');
+    $data[] = $header; 
+
 
     foreach ($results as $record_uid) {
       $record = new Record($record_uid); 
       $record->notes = str_replace(array("\r\n", "\n", "\r"),' ',$record->notes);
 
-      $data[] = array($site->name,$site->accession,$record->catalog_id,$record->level->unit->name,$record->level->record,$record->lsg_unit->name,
+      $record_data = array($site->name,$site->accession,$record->catalog_id,$record->level->unit->name,$record->level->record,$record->lsg_unit->name,
         $record->station_index,$record->xrf_matrix_index,$record->weight,$record->height,$record->width,$record->thickness,$record->quanity,
         $record->material->name,trim($record->classification->name),$record->level->quad->name,$record->feature->record,$record->krotovina->record,
         $record->notes,date("m-d-Y h:i:s",$record->created),$record->northing,$record->easting,$record->elevation,$record->user->username);
+
+      // Append the custom fields
+      foreach ($fields as $field) {
+        if (isset($record->extra[$field['name']])) {
+          $record_data[] = $record->extra[$field['name']];
+        }
+      }
+
+      $data[] = $record_data;
      } // end foreach 
 
     return $data; 

@@ -7,7 +7,7 @@
 
 ```build-scatter-plots [LEVEL UID]```
 
-  PREREQ - python-matplotlib, python-mysqldb, imagemagick (convert)
+  PREREQ - python-matplotlib, python-numpy, python-mysqldb, imagemagick (convert)
 
   Using matplotlib this script takes the cords entered for the objects located in the level and
   creates 3 scatterplots of the data (X,Y) (X,Z) (Y,Z). These images are generated and saved

@@ -125,6 +125,44 @@ class Site extends database_object {
   } // add_field
 
   /**
+   * disable_field
+   * Disable a custom field
+   */
+  public function disable_field($fielduid) { 
+
+    $fields = $this->get_setting('fields');
+
+    // Disable the fielduid if it exists
+    if (isset($fields[$fielduid])) {
+      $fields[$fielduid]['enabled'] = 0;
+    }
+    
+    $this->update_settings(array('key'=>'field','fields'=>$fields));
+
+    return true; 
+
+  } // disable_field
+
+  /**
+   * enable_field
+   * Enable a custom field
+   */
+  public function enable_field($fielduid) { 
+
+      $fields = $this->get_setting('fields');
+
+      // Enable the fielduid if it exists
+      if (isset($fields[$fielduid])) {
+        $fields[$fielduid]['enabled'] = 1;
+      }
+
+      $this->update_settings(array('key'=>'field','fields'=>$fields));
+
+      return true; 
+
+  } // enable_field
+
+  /**
    * decode_settings
    * This takes the ->settings field from the DB
    * runs a json_decode() and does what it needs to
