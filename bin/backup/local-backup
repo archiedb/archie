@@ -114,7 +114,12 @@ if __name__ == '__main__':
 
   """ Load the Config file """
   Config = ConfigParser.ConfigParser()
-  Config.read(os.path.dirname(os.path.abspath(__file__)) + '/backup.cfg.php')
+  try:
+    Config.read(os.path.dirname(os.path.abspath(__file__)) + '/backup.cfg.php')
+  except IOError:
+    print "local-backup :: Error unable to read backup.cfg.php from current directory"
+    sys.exit(1)
+
   ArchieConfig = ConfigParser.ConfigParser()
   ArchieConfig.read(os.path.dirname(os.path.abspath(__file__ + '/../../')) + '/config/settings.php')
 
