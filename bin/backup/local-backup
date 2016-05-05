@@ -46,6 +46,7 @@ def BackupMysql(user,password,db,target):
 
   if runZip.returncode != 0:
     print 'MySQL Zip :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
+    sys.exit(1)
   else:
     print 'MySQL Database export and compressed, final size: %s' % (sizeof_fmt(os.stat(backupFilename).st_size))
    
@@ -69,6 +70,7 @@ def BackupContent(source,target):
 
   if runZip.returncode != 0:
     print 'Content Backup :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
+    sys.exit(1)
   else:
     print 'Content compressed and backed up, final size: %s' % (sizeof_fmt(os.stat(backupFilename).st_size))
   return True
@@ -97,8 +99,6 @@ def ClearOldBackups(savecount,target,noDelete):
       print 'Deleting: ' + target+'/'+sortedFileData[item][0]
       os.remove(target+'/'+sortedFileData[item][0])
 
-
-  
   return True
 
 if __name__ == '__main__':
