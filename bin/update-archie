@@ -23,6 +23,14 @@ then
 fi
 cp -rf ${ABS_PATH}/../config/* ${ABS_PATH}/../config.bak/
 
+echo -e "${Green}Running Database Backup${Off}"
+if ${ABS_PATH}/backup/local-backup all; then
+  echo -e " ${Green}Local backup completed${Off}"
+else
+  echo -e " ${BRed}Backup Failure, exiting${Off}"
+  exit 1
+fi
+
 echo -e "${Green}Updating to Latest Archie version${Off}"
 cd ${ABS_PATH}/../
 git pull
