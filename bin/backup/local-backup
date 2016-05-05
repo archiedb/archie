@@ -104,7 +104,7 @@ def ClearOldBackups(savecount,target,noDelete):
 if __name__ == '__main__':
 
   """ Check for Arguments """
-  parser = argparse.ArgumentParser(description='Backup Archie to Google Drive',prog='google-drive',epilog='(c) 2015 Karl Vollmer <karl.vollmer@gmail.com>')
+  parser = argparse.ArgumentParser(description='Backup Archie to Local Drive',prog='local-backup',epilog='(c) 2015 Karl Vollmer <karl.vollmer@gmail.com>')
   parser.add_argument('backuptype',choices=['all','mysql','content'],nargs='?',help='Items to Backup')
   parser.add_argument('--no-delete',action='store_true',help='Do not delete old backups',dest='noDelete')
   if len(sys.argv)==1:
