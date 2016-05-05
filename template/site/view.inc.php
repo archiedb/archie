@@ -9,6 +9,7 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
   <?php echo \UI\boolean_word($site->enabled,'Enabled'); ?></h4>
 </div>
 <p class="pull-right text-right">
+  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_field">Add Field</button>
   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#set_project_<?php $site->_print('uid'); ?>">Set Project</button>
   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#set_accession_<?php $site->_print('uid'); ?>">Set Accession</button>
   <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/manage/site/edit/<?php $site->_print('uid'); ?>">Edit</a>
@@ -74,19 +75,55 @@ $accession = strlen($site->accession) ? '[ Acc # ' . scrub_out($site->accession)
 <?php 
   // FIXME: Do this a better way?
   $title = $site->get_valid_settings();
-foreach ($site->settings as $key=>$value) { ?>
+foreach ($site->settings as $key=>$value) { 
+  if ($key == 'fields') { continue; }
+?>
 <tr>
   <td><?php echo scrub_out(ucfirst($title[$key])); ?></td>
   <td><?php \UI\print_var($site->get_setting($key)); ?></td>
-  <td><button type="button" data-target="#editsetting<?php echo scrub_out($key); ?>" data-toggle="modal" class="btn btn-primary">Edit</button>
+  <td>
+    <button type="button" data-target="#editsetting<?php echo scrub_out($key); ?>" data-toggle="modal" class="btn btn-primary">Edit</button>
     <?php include \UI\template('/site/modal_edit_setting'); ?>
   </td>
 </tr>
 <?php } ?>
 </tbody>
 </table>
+<?php $fields = $site->get_setting('fields'); ?>
+<?php if (count($fields)) { ?>
+<h4>Additional Fields</h4>
+<table class="table table-hover table-striped">
+<tbody>
+<tr>
+  <th>Type</th>
+  <th>Field Name</th>
+  <th>Field Type</th>
+  <th>Field Validation</th>
+  <th>Enabled</th>
+  <th>&nbsp;</th>
+</tr>
+<?php foreach ($fields as $fielduid=>$field) { ?>
+<tr>
+  <td>Record</td>
+  <td><?php echo ucfirst(str_replace('_',' ',$field['name'])); ?></td>
+  <td><?php echo ucfirst($field['type']); ?></td>
+  <td><?php echo ucfirst($field['validation']); ?></td>
+  <td><?php echo \UI\boolean_word($field['enabled']); ?></td>
+  <td>
+    <?php if ($field['enabled'] == 1) { ?>
+    <a href="<?php echo Config::get('web_path'); ?>/manage/site/disablefield/<?php $site->_print('uid'); ?>/<?php echo $fielduid; ?>" class="btn btn-danger">Disable</a>
+    <?php } else { ?>
+    <a href="<?php echo Config::get('web_path'); ?>/manage/site/enablefield/<?php $site->_print('uid'); ?>/<?php echo $fielduid; ?>" class="btn btn-success">Enable</a>
+    <?php } ?>
+  </td>
+</tr>
+<?php } // end foreach fields ?>
+</tbody>
+</table>
+<?php } // end fields if ?>
 <?php $accessions = $site->get_all_data('accession'); ?>
 <?php array_shift($accessions); ?>
+<?php if (count($accessions)) { ?>
 <h4>Accession #'s</h4>
 <table class="table table-hover table-striped">
 <tbody>
@@ -101,11 +138,13 @@ foreach ($site->settings as $key=>$value) { ?>
   <td><?php echo date('m-d-Y h:i',$row['created']); ?></td>
   <td><?php echo ($row['closed'] > 0) ? date('m-d-Y',$row['closed']) : 'ACTIVE'; ?></td>
 </tr>
-<?php } ?>
+<?php } // end foreach accessions ?>
 </tbody>
 </table>
+<?php } // end if count accessions ?>
 <?php $projects = $site->get_all_data('project'); ?>
 <?php array_shift($projects); ?>
+<?php if (count($projects)) { ?>
 <h4>Projects</h4>
 <table class="table table-hover table-striped">
 <tbody>
@@ -123,8 +162,9 @@ foreach ($site->settings as $key=>$value) { ?>
 <?php } ?>
 </tbody>
 </table>
-
+<?php } ?>
 <?php 
   include \UI\template('/site/modal_set_project');
   include \UI\template('/site/modal_set_accession');
+  include \UI\template('/site/modal_add_field'); 
 ?>

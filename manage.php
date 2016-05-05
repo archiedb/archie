@@ -41,17 +41,41 @@ switch (\UI\sess::location('action')) {
   case 'site':
     switch (\UI\sess::location('2')) {
       case 'updatesettings':
+        if (!Access::has('site','edit')) { \UI\access_denied(); }
         $site = new Site($_POST['site_id']);
         $retval = $site->update_settings($_POST);
         \UI\redirect('/manage/site/view/' . $site->uid);
+      break;
+      case 'disablefield':
+        if (!Access::has('site','edit')) { \UI\access_denied(); }
+        $site = new Site(\UI\sess::location('3'));
+        $fielduid = \UI\sess::location('4');
+        $site->disable_field($fielduid);
+        \UI\redirect('/manage/site/view/' . $site->uid);
+      break;
+      case 'enablefield':
+        if (!Access::has('site','edit')) { \UI\access_denied(); }
+        $site = new Site(\UI\sess::location('3'));
+        $fielduid = \UI\sess::location('4');
+        $site->enable_field($fielduid);
+        \UI\redirect('/manage/site/view/' . $site->uid);
+      break;
       case 'setproject':
+        if (!Access::has('site','edit')) { \UI\access_denied(); }
         $site = new Site($_POST['uid']);
         $site->set_data($_POST['uid'],'project',$_POST['project']);
         \UI\redirect('/manage/site/view/' . $site->uid);
       break;
       case 'setaccession':
+        if (!Access::has('site','edit')) { \UI\access_denied(); }
         $site = new Site($_POST['uid']);
         $site->set_data($_POST['uid'],'accession',$_POST['accession']);
+        \UI\redirect('/manage/site/view/' . $site->uid);
+      break;
+      case 'addfield':
+        if (!Access::has('site','edit')) { \UI\access_denied(); }
+        $site = new Site($_POST['uid']); 
+        $site->add_field($_POST);
         \UI\redirect('/manage/site/view/' . $site->uid);
       break;
       case 'add':

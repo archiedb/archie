@@ -59,6 +59,7 @@ switch (\UI\sess::location('action')) {
     $_POST['user'] = \UI\sess::$user->uid;
 		// Attempt to update this!
 		if (!$record->update($_POST)) { 
+      $fields = $record->site->get_setting('fields');
       require_once \UI\template('/records/edit'); 
 		} 
 		else { 
@@ -69,6 +70,7 @@ switch (\UI\sess::location('action')) {
   case 'edit':
     if (!Access::has('record','edit')) { \UI\access_denied(); }
 		$record = new Record(\UI\sess::location('objectid')); 
+    $fields = $record->site->get_setting('fields');
     require_once \UI\template('/records/edit'); 
 	break; 
   case 'view':

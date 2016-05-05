@@ -2,7 +2,6 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 class Record extends database_object { 
 
-
   public $uid; // INTERNAL 
   public $site; // Site UID  
   public $catalog_id; // # of item unique to site
@@ -30,6 +29,8 @@ class Record extends database_object {
   public $user; // The Object 
   public $created; 
   public $updated; 
+
+  public $extra; // Additional custom field information (JSON encoded in DB, decoded in object) not directly accessible
 
 	// Constructor
   public function __construct($uid='') { 
@@ -61,6 +62,7 @@ class Record extends database_object {
     $this->krotovina = new Krotovina($this->krotovina);
     $this->level = new Level($this->level);
 		$this->user = new User($this->user); 
+    $this->extra = json_decode($this->extra,true); // Decode and reassign extra JSON crap
 
 		return true; 
 
@@ -268,6 +270,48 @@ class Record extends database_object {
 
     // Set the site, they can't change this
     $input['site'] = $this->site->uid;
+    // Load existing fields
+    $extra = $this->extra;
+
+    // Foreach the Site custom fields, and look for them in $_POST
+    $site_fields = $this->site->get_setting('fields');
+    $retval = true;
+    foreach ($site_fields as $field) { 
+      if (isset($_POST[$field['name']])) {
+        // If it's blank no error checking
+        if (empty($_POST[$field['name']])) { 
+          $extra[$field['name']] = $_POST[$field['name']];
+          continue; 
+        }
+        // Do the validation 
+        switch ($field['validation']) {
+          case 'boolean':
+            if ($_POST[$field['name']] != '0' AND $_POST[$field['name']] != '1') {
+              Error::add($field['name'],'Must be True or False');
+              $retval = false;
+            }
+          break;
+          case 'integer':
+            if (floor($_POST[$field['name']]) != $_POST[$field['name']] OR preg_match('/[^0-9]/',$_POST[$field['name']])) {
+              Error::add($field['name'],'Must be a whole number with no decimals');
+              $retval = false;
+            }
+          break;
+          case 'decimal':
+            if (floatval($_POST[$field['name']]) != $_POST[$field['name']] OR !preg_match('/^[0-9](\.[0-9]+)?$/',$_POST[$field['name']])) {
+              Error::add($field['name'],'Must be a number');
+              $retval = false; 
+            }
+          break;
+          default:
+          case 'string':
+            // Don't care...
+          break;
+        }
+        $extra[$field['name']] = $_POST[$field['name']];
+      }
+    } // end foreach custom fields
+
   
     // First verify the input to make sure
     // all of the fields are within acceptable tolerences 
@@ -275,6 +319,10 @@ class Record extends database_object {
       Error::add('general','Invalid Field Values - Please check your input again');
       return false;
     }
+
+    // FIXME: integrate this into validate
+    if ($retval == false) { return false; }
+
 
     // We need the real UID of the following objects
     $level              = new Level($input['level']);
@@ -303,11 +351,12 @@ class Record extends database_object {
 		$record_uid         = $this->uid; 
 		$station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
 		$level              = $input['level'];
+    $extra              = count($extra) ? json_encode($extra) : NULL;
 
 		$sql = "UPDATE `record` SET `level`=?, `lsg_unit`=?, `xrf_matrix_index`=?, `weight`=?, `height`=?, " . 
       "`width`=?, `thickness`=?, `quanity`=?, `material`=?, `classification`=?, `notes`=?, `xrf_artifact_index`=?, " . 
-			"`user`=?, `updated`=?, `feature`=?, `krotovina`=? WHERE `uid`=?"; 
-		$db_results = Dba::write($sql,array($level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$user,$updated,$feature,$krotovina,$record_uid)); 
+			"`user`=?, `updated`=?, `feature`=?, `krotovina`=?, `extra`=? WHERE `uid`=?"; 
+		$db_results = Dba::write($sql,array($level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$user,$updated,$feature,$krotovina,$extra,$record_uid)); 
 
 		if (!$db_results) { 
 			Error::add('general','Database Error, please try again'); 
@@ -629,6 +678,20 @@ class Record extends database_object {
 
 		return true; 
 	} // delete 
+
+  /**
+    * get_custom_field
+    * return the current value of the custom field
+    */
+  public function get_custom_field($name) { 
+
+    if (isset($this->extra[$name])) {
+      return $this->extra[$name];
+    }
+
+    return '';
+
+  } // get_custom_field
 
 	/**
 	 * get_images

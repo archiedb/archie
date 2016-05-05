@@ -3,9 +3,15 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <?php require_once 'template/menu.inc.php'; ?>
+<script>
+function reportRefresh() {
+  window.location = window.location.href;
+}
+setInterval('reportRefresh()',60000);
+</script>
 <div class="page-header">
 <h3>Reports for <?php echo scrub_out(\UI\sess::$user->site->name); ?></h3>
-<small>Report requests are acted on every five minutes. Once your report is complete you will receive an e-mail notification.</small>
+<small>Report requests are acted on every five minutes. Once your report is complete you will receive an e-mail notification. This page will refresh every minute.</small>
 </div>
 <?php Event::display(); ?>
 <h4>CSV Reports</h4>
