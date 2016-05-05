@@ -133,6 +133,10 @@ if __name__ == '__main__':
       print "Backup directory %s is not writeable" % (Config.get('local','backup_dir'))
   except IOError:
     print "IOError attempting to open %s please verify it's exists and is writeable" % (Config.get('local','backup_dir'))
+    sys.exit(1)
+  except:
+    print "Configuration Error, likely missing [local] section from backup.cfg.php, please verify your config"
+    sys.exit(1)
 
 
   """ MySQL backup """
