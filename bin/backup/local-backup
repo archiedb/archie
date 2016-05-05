@@ -121,7 +121,11 @@ if __name__ == '__main__':
     sys.exit(1)
 
   ArchieConfig = ConfigParser.ConfigParser()
-  ArchieConfig.read(os.path.dirname(os.path.abspath(__file__ + '/../../')) + '/config/settings.php')
+  try:
+    ArchieConfig.read(os.path.dirname(os.path.abspath(__file__ + '/../../')) + '/config/settings.php')
+  except IOError:
+    print "local-backup :: Error unable to read Archie config at config/settings.php"
+    sys.exit(1)
 
   """ Make sure the target directory is writeable """
   try:
