@@ -72,10 +72,16 @@ if (INIT_LOADED != '1') { exit; }
     <em>Custom Fields for <?php $record->site->_print('name'); ?></em>
   </th>
 </tr>
-<?php foreach ($record->extra as $name=>$field) { ?>
 <tr>
+<?php 
+$i=0;
+$total = count($record->extra);
+foreach ($record->extra as $name=>$field) { 
+if ($i/2 == intval($i/2)) { echo "</tr><tr>"; }
+$i++;
+?>
   <th><?php echo scrub_out(str_replace('_',' ',$name)); ?></th>
-  <td colspan="3">
+  <td<?php if ($i == $total AND $i/2 != intval($i/2)) { ?> colspan="3"<?php } ?>>
     <?php // Format this based on the type of field... really just for boolean
       if ($site_fields['record' . $name]['type'] == 'boolean') {
         echo \UI\boolean_word($field);
@@ -84,9 +90,9 @@ if (INIT_LOADED != '1') { exit; }
       } 
     ?>
   </td>
-</tr>
 <?php } // end foreach fields ?>
 <?php } // if count fields ?>
+</tr>
 </table>
 <ul class="nav nav-tabs" id="media_nav">
   <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>
