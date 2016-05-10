@@ -3,7 +3,8 @@
 if (INIT_LOADED != '1') { exit; }
 ?>
 <div class="page-header">
-  <h3>Edit Site - <?php echo scrub_out($site->name); ?></h3>
+  <h3>Edit Site - <?php echo scrub_out($site->name); ?>
+  <?php echo \UI\boolean_word($site->enabled,'Enabled'); ?></h3>
 </div>
 <?php Event::display(); ?>
 <?php Event::display('errors'); ?>

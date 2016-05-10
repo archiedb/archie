@@ -46,6 +46,7 @@ def BackupMysql(user,password,db,target):
 
   if runZip.returncode != 0:
     print 'MySQL Zip :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
+    sys.exit(1)
   else:
     print 'MySQL Database export and compressed, final size: %s' % (sizeof_fmt(os.stat(backupFilename).st_size))
    
@@ -69,6 +70,7 @@ def BackupContent(source,target):
 
   if runZip.returncode != 0:
     print 'Content Backup :: Non-zero exit code:%s executing: %s returned %s' % (runZip.returncode,cmdZip,runZip.stdout.read())
+    sys.exit(1)
   else:
     print 'Content compressed and backed up, final size: %s' % (sizeof_fmt(os.stat(backupFilename).st_size))
   return True
@@ -97,14 +99,12 @@ def ClearOldBackups(savecount,target,noDelete):
       print 'Deleting: ' + target+'/'+sortedFileData[item][0]
       os.remove(target+'/'+sortedFileData[item][0])
 
-
-  
   return True
 
 if __name__ == '__main__':
 
   """ Check for Arguments """
-  parser = argparse.ArgumentParser(description='Backup Archie to Google Drive',prog='google-drive',epilog='(c) 2015 Karl Vollmer <karl.vollmer@gmail.com>')
+  parser = argparse.ArgumentParser(description='Backup Archie to Local Drive',prog='local-backup',epilog='(c) 2015 Karl Vollmer <karl.vollmer@gmail.com>')
   parser.add_argument('backuptype',choices=['all','mysql','content'],nargs='?',help='Items to Backup')
   parser.add_argument('--no-delete',action='store_true',help='Do not delete old backups',dest='noDelete')
   if len(sys.argv)==1:
@@ -114,9 +114,18 @@ if __name__ == '__main__':
 
   """ Load the Config file """
   Config = ConfigParser.ConfigParser()
-  Config.read(os.path.dirname(os.path.abspath(__file__)) + '/backup.cfg.php')
+  try:
+    Config.read(os.path.dirname(os.path.abspath(__file__)) + '/backup.cfg.php')
+  except IOError:
+    print "local-backup :: Error unable to read backup.cfg.php from current directory"
+    sys.exit(1)
+
   ArchieConfig = ConfigParser.ConfigParser()
-  ArchieConfig.read(os.path.dirname(os.path.abspath(__file__ + '/../../')) + '/config/settings.php')
+  try:
+    ArchieConfig.read(os.path.dirname(os.path.abspath(__file__ + '/../../')) + '/config/settings.php')
+  except IOError:
+    print "local-backup :: Error unable to read Archie config at config/settings.php"
+    sys.exit(1)
 
   """ Make sure the target directory is writeable """
   try:
@@ -124,6 +133,10 @@ if __name__ == '__main__':
       print "Backup directory %s is not writeable" % (Config.get('local','backup_dir'))
   except IOError:
     print "IOError attempting to open %s please verify it's exists and is writeable" % (Config.get('local','backup_dir'))
+    sys.exit(1)
+  except:
+    print "Configuration Error, likely missing [local] section from backup.cfg.php, please verify your config"
+    sys.exit(1)
 
 
   """ MySQL backup """

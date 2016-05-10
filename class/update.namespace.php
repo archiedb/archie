@@ -369,6 +369,8 @@ class Database {
     $versions[] = array('version'=>'0021','description'=>$update_string);
     $update_string = '- Add Primary Image functionality to Feature and Krotovina.<br />';
     $versions[] = array('version'=>'0022','description'=>$update_string);
+    $update_string = '- Add Field.Extra for custom site field storage, JSON encoded.<br />';
+    $versions[] = array('version'=>'0023','description'=>$update_string);
 
     return $versions; 
 
@@ -1753,6 +1755,21 @@ class Database {
     return $retval; 
 
   } // update_0022
+
+  /**
+   * update_0023
+   * Add record.extra for additional custom fields...
+   */
+  public static function update_0023() { 
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `record` ADD `extra` TEXT NULL AFTER `user`";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    return $retval; 
+
+  } // update_0023
 
 } // \Update\Database class
 
