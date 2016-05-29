@@ -37,6 +37,7 @@ class Level extends database_object {
   public $closed_user; 
   public $image; // primary image for level
   public $notes;
+  public $z_order; // Z-order for elevations
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -152,14 +153,15 @@ class Level extends database_object {
     $excavator_two    = strlen($input['excavator_two']) > 0 ? $input['excavator_two'] : NULL;
     $excavator_three  = strlen($input['excavator_three']) > 0 ? $input['excavator_three'] : NULL;
     $excavator_four   = strlen($input['excavator_four']) > 0 ? $input['excavator_four'] : NULL;
+    $z_order          = 'desc';
     $user             = \UI\sess::$user->uid;
     $created          = time(); 
     
     //FIXME: Allow updated to be null in the future
     $sql = "INSERT INTO `level` (`site`,`catalog_id`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`," . 
         "`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`excavator_one`,`excavator_two`," . 
-        "`excavator_three`,`excavator_four`,`user`,`created`,`updated`,`image`,`elv_nw_finish`,`elv_ne_finish`,`elv_sw_finish`,`elv_se_finish`,`elv_center_finish`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
-    $db_results = Dba::write($sql,array($site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start,$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$user,$created,0,0,0,0,0,0,0)); 
+        "`excavator_three`,`excavator_four`,`user`,`created`,`updated`,`image`,`elv_nw_finish`,`elv_ne_finish`,`elv_sw_finish`,`elv_se_finish`,`elv_center_finish`,`z_order`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+    $db_results = Dba::write($sql,array($site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start,$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$user,$created,0,0,0,0,0,0,0,$z_order)); 
 
     if (!$db_results) { 
       Error::add('general','Unable to insert level, DB error please contact administrator'); 
@@ -171,7 +173,7 @@ class Level extends database_object {
     $log_line = json_encode(array('site'=>$site,'Catalog ID'=>$catalog_id,'Unit'=>$unit,'Quad'=>$quad,'LSG-Unit'=>$lsg_unit,'Northing'=>$northing,
           'Easting'=>$easting,'Elv-NW-S'=>$elv_nw_start,'Elv-NE-S'=>$elv_ne_start,'Elv-SW-S'=>$elv_sw_start,'Elv-SE-S'=>$elv_se_start,
           'Elv-Cent-S'=>$elv_center_start,'Exc-one'=>$excavator_one,'Exc-two'=>$excavator_two,'Exc-three'=>$excavator_three,'Exc-four'=>$excavator_four,
-          'User'=>\UI\sess::$user->username,'Date'=>date('r',$created)));
+          'User'=>\UI\sess::$user->username,'Date'=>date('r',$created),'Z-order'=>$z_order));
     Event::record('level::create',$log_line); 
 
     return $insert_id; 
@@ -225,15 +227,16 @@ class Level extends database_object {
     $description      = $input['description'];
     $difference       = $input['difference'];
     $notes            = $input['notes'];
+    $z_order          = 'desc';
 
     $sql = "UPDATE `level` SET `catalog_id`=?,`unit`=?,`quad`=?,`lsg_unit`=?,`user`=?,`updated`=?," .
           "`northing`=?,`easting`=?,`elv_nw_start`=?, `elv_nw_finish`=?, `elv_ne_start`=?,`elv_ne_finish`=?,".
           "`elv_sw_start`=?, `elv_sw_finish`=?,`elv_se_start`=?,`elv_se_finish`=?,`elv_center_start`=?," . 
           "`elv_center_finish`=?,`excavator_one`=?, `excavator_two`=?, `excavator_three`=?,`excavator_four`=?,".
-          "`description`=?, `difference`=?, `notes`=? WHERE `level`.`uid`=? LIMIT 1";
+          "`description`=?, `difference`=?, `notes`=? ,`z_order`=? WHERE `level`.`uid`=? LIMIT 1";
     $retval = Dba::write($sql,array($catalog_id,$unit,$quad,$lsg_unit,$user,$updated,$northing,$easting,$elv_nw_start,
       $elv_nw_finish,$elv_ne_start,$elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start,
-      $elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$description,$difference,$notes,$uid));
+      $elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$description,$difference,$notes,$z_order,$uid));
 
     if (!$retval) { 
       Error::add('database','Database update failed, please contact administrator');

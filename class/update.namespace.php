@@ -370,6 +370,9 @@ class Database {
     $versions[] = array('version'=>'0022','description'=>$update_string);
     $update_string = '- Add Field.Extra for custom site field storage, JSON encoded.<br />';
     $versions[] = array('version'=>'0023','description'=>$update_string);
+    $update_string = '- Increase length of notes fields for Level, Record, Feature and Krotovina.<br />' . 
+                  '- Add z_order field to Level to allow you to define how elevations are ordered in this level.<br />';
+    $versions[] = array('version'=>'0024','description'=>$update_string);
 
     return $versions; 
 
@@ -1750,6 +1753,46 @@ class Database {
     return $retval; 
 
   } // update_0023
+
+  /**
+   * update_0024
+   * Increase the varchar size of the records, levels, features, krotovina fields
+   * Add orientation to level
+   */
+  public static function update_0024() {
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `record` CHANGE `notes` `notes` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `feature` CHANGE `keywords` `keywords` TEXT NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `feature` CHANGE `description` `description` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `keywords` `keywords` TEXT NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `description` `description` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `description` `description` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `notes` `notes` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `difference` `difference` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` ADD `z_order` VARCHAR( 128 ) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    return $retval; 
+
+  } // update_0024
 
 } // \Update\Database class
 

@@ -76,13 +76,25 @@ if (INIT_LOADED != '1') { exit; }
     <div class="<?php Error::form_class('northing'); ?>">
     <label class="col-md-2 control-label" for="inputNorthing">Northing</label>
     <div class="col-md-2">
-      <input class="form-controL" id="inputNorthing" type="text" name="northing" value="<?php \UI\form_value(array('post'=>'northing','var'=>$level->northing)); ?>">
+      <input class="form-control" id="inputNorthing" type="text" name="northing" value="<?php \UI\form_value(array('post'=>'northing','var'=>$level->northing)); ?>">
     </div>
     </div>
     <div class="<?php Error::form_class('easting'); ?>">
     <label class="col-md-2 control-label" for="inputEasting">Easting</label>
     <div class="col-md-2">
       <input class="form-control" id="inputEasting" type="text" name="easting" value="<?php \UI\form_value(array('post'=>'easting','var'=>$level->easting)); ?>">
+    </div>
+    </div>
+  </div>
+</div><div class="row">
+  <div class="form-group">
+    <div class="<?php Error::form_class('z_order'); ?>">
+    <label class="col-md-2 control-label" for="inputzorder">Elevation Order</label>
+    <div class="col-md-6">
+      <select class="form-control" name="inputzorder">
+        <option value="desc">Desc</option>
+        <option value="asc">Asc</option>
+      </select>
     </div>
     </div>
   </div>

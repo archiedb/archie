@@ -23,7 +23,8 @@ if (INIT_LOADED != '1') { exit; }
 <?php } ?>
 <h3>Level: <?php echo scrub_out($level->site->name); ?><?php echo scrub_out($level->record); ?>
   <?php if ($level->closed) { ?><span class="label label-important">CLOSED</span><?php } ?>
-  <small>entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>
+  <br />
+  <small><em>entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></em></small>
 </h3>
 </div>
 <?php Event::display(); ?>
@@ -41,6 +42,9 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <th>Northing</th><td><?php echo scrub_out($level->northing); ?></td>
   <th>EASTING</th><td><?php echo scrub_out($level->easting); ?></td>
+</tr>
+<tr>
+  <th>Elevation Order</th><td colspan="3"><?php echo $level->_print('z_order'); ?></td>
 </tr>
 </table>
 <h5>Elevations</h5>
