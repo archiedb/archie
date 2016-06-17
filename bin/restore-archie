@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+# vim: set softtabstop=2 ts=2 sw=2 expandtab: 
+import sys,os,re,argparse,subprocess
+import ConfigParser
+
+def run_cmd(cmd):
+  proc = subprocess.Popen(cmd.split(),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  proc.wait()
+  if proc.returncode != 0:
+    print 'run_cmd:: Non-zero exit code:%s excuting: %s' % (proc.returncode,cmd)
+    print 'run_cmd:: s',proc.stdout.read()
+    return False
+  else:
+    print 'run_cmd:: %s executed sucessfully' % (cmd)
+  return proc.stdout
+
+if __name__ == '__main__':
+
+  Config = ConfigParser.ConfigParser()
+  Config.read(os.path.dirname(os.path.abspath(__file__)) + '/../config/settings.php')
+
+  """ Look for cli arguments """
+  optParse = argparse.ArgumentParser(description='Restore Archie from Backup',prog='restore-archie',epilog='(c) 2016 Karl Vollmer <vollmer@oregonstate.edu>')
+  optParse.add_argument('-c',nargs=1,help='Content Bz2 File',dest='contentFile')
+  optParse.add_argument('-d',nargs=1,help='Database Bz2 File',dest='databaseFile')
+  optParse.add_argument('-t',nargs=1,help='Test Run - tell me, but do nothing',dest='testRun')
+  if len(sys.argv) == 1:
+    optParse.print_help()
+    sys.exit(1)
+
+  optArgs = optParse.parse_args()
+
+  """ check to see if the content bz2 is a file """
+  if not os.path.isfile(optArgs.contentFile[0]):
+    print '%s not found or insufficient permissions' % (optArgs.contentFile[0])
+    sys.exit(1)
+  if not os.path.isfile(optArgs.databaseFile[0]):
+    print '%s not found or insufficient permissions' % (optArgs.contentFile[0])
+    sys.exit(1)
+
+  """ Make sure the data directory exists """
+  try:
+    dataRoot = Config.get('main','data_root')
+  except:
+    print 'Unable to read Archie config, file not found, unreadable or invalid'
+    sys.exit(1)
+
+  if not os.path.isdir(dataRoot):
+    print 'Data directory for Archie %s not found or unreadable' % (Config.get('main','data_root'))
+    sys.exit(1)
+
+  print 'Running Backup of any existing data...'
+  cmdReturn = run_cmd(os.path.dirname(os.path.abspath(__file__)) + '/backup/local-backup --no-delete all')
+  if not cmdReturn:
+    print 'Backup Failure, please check your backup configuration and try again, aborting restore'
+    sys.exit(1)
+  
+  print 'Clearing existing database'
+  cmdReturn = run_cmd('mysql -u%s -p%s %s -e \'drop database %s\'' % (Config.get('main','database_username'),Config.get('main','database_password'),Config.get('main','database_name'))
