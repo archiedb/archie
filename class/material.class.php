@@ -154,10 +154,10 @@ class Material extends database_object {
   public static function create($input) { 
 
     // Reset the error state
-    Error::clear(); 
+    Err::clear(); 
 
     if (!Material::validate($input)) {
-      Error::add('general','Invalid Input please check');
+      Err::add('general','Invalid Input please check');
       return false;
     }
 
@@ -167,7 +167,7 @@ class Material extends database_object {
     $db_results = Dba::write($sql); 
 
     if (!$db_results) { 
-      Error::add('general','Database Write Filaure, please resubmit'); 
+      Err::add('general','Database Write Filaure, please resubmit'); 
       return false; 
     }
 
@@ -184,16 +184,16 @@ class Material extends database_object {
     // Make sure this is a unique name
     $uid = Material::name_to_id($input['name']);
     if ($uid AND ($uid != $input['material_id'])) {
-      Error::add('name','Duplicate Material - name already exists');
+      Err::add('name','Duplicate Material - name already exists');
       return false;
     }
 
     if (!strlen($input['name'])) { 
-      Error::add('name','Name cannot be blank');
+      Err::add('name','Name cannot be blank');
       return false;
     }
 
-    if (Error::occurred()) { return false; }
+    if (Err::occurred()) { return false; }
 
     return true;
 
@@ -205,10 +205,10 @@ class Material extends database_object {
    */
   public function update($input) { 
 
-    Error::clear(); 
+    Err::clear(); 
 
     if (!Material::validate($input)) {
-      Error::add('general','Invalid Input please check');
+      Err::add('general','Invalid Input please check');
       return false;
     }
 

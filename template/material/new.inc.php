@@ -15,7 +15,7 @@ if (INIT_LOADED != '1') { exit; }
 <form class="form-horizontal" id="new_material" method="post" action="<?php echo Config::get('web_path'); ?>/manage/material/create">
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('name'); ?>">
+    <div class="<?php Err::form_class('name'); ?>">
     <label class="col-md-2 control-label" for="inputName">Name</label>
     <div class="col-md-2">
       <input class="form-control" id="inputName" name="name" type="text" value="<?php \UI\form_value('name'); ?>" />

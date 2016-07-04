@@ -91,10 +91,10 @@ class Krotovina extends database_object {
    */
   public function update($input) { 
 
-    Error::clear();
+    Err::clear();
 
     if (!Krotovina::validate($input)) {
-      Error::add('general','Invalid Field Values - please check input');
+      Err::add('general','Invalid Field Values - please check input');
       return false;
     }
 
@@ -106,7 +106,7 @@ class Krotovina extends database_object {
     $db_results = Dba::write($sql,array($updated,$keywords,$description,$uid)); 
 
     if (!$db_results) { 
-      Error::add('general','Unable to update Krotovina - please see error log');
+      Err::add('general','Unable to update Krotovina - please see error log');
       return false;
     }
 
@@ -126,19 +126,19 @@ class Krotovina extends database_object {
    */
   public static function create($input) { 
 
-    Error::clear();
+    Err::clear();
 
     // Force the site to the current users site
     $input['site'] = \UI\sess::$user->site->uid;
 
     if (!Krotovina::validate($input)) {
-      Error::add('general','Invalid Field Values - please check input');
+      Err::add('general','Invalid Field Values - please check input');
       return false;
     }
 
     // Start the transaction
     if (!Dba::begin_transaction()) { 
-      Error::add('general','Unable to start DB Transaction, please try again');
+      Err::add('general','Unable to start DB Transaction, please try again');
       return false; 
     }
 
@@ -154,7 +154,7 @@ class Krotovina extends database_object {
       $db_results = Dba::read($catalog_sql,array($input['site'],$input['catalog_id']));
       $row = Dba::fetch_assoc($db_results);
       if ($row['catalog_id']) {
-        Error::add('general','Duplicate Feature ID - ' . $catalog_id);
+        Err::add('general','Duplicate Feature ID - ' . $catalog_id);
         Dba::commit();
         return false;
       }
@@ -169,7 +169,7 @@ class Krotovina extends database_object {
     if (!$db_results) { 
       Error:add('general','Unknown Error - inserting krotovina into database');
       $retval = Dba::rollback();
-      if (!$retval) { Error::add('general','Unable to roll database changes back, please report this to your Administrator'); }
+      if (!$retval) { Err::add('general','Unable to roll database changes back, please report this to your Administrator'); }
       Dba::commit();
       return false;
     }
@@ -187,7 +187,7 @@ class Krotovina extends database_object {
                       'easting'=>$input['easting'],'elevation'=>$input['elevation']));
 
     if (!$spatialdata) { 
-      Error::add('general','Unable to insert Spatial Information, but Krotovina created, please manually add point');
+      Err::add('general','Unable to insert Spatial Information, but Krotovina created, please manually add point');
     }
 
     if (!Dba::commit()) { 
@@ -206,50 +206,50 @@ class Krotovina extends database_object {
   public static function validate($input) { 
 
     if (!strlen($input['description'])) {
-      Error::add('description','Required field');
+      Err::add('description','Required field');
     }
 
     if (!strlen($input['keywords'])) {
-      Error::add('keywords','Required field');
+      Err::add('keywords','Required field');
     }
 
     // If RN then no others
     if (strlen($input['station_index']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
-      Error::add('station_index','Initial RN and North/East/Elevation can not be specified at the same time');
+      Err::add('station_index','Initial RN and North/East/Elevation can not be specified at the same time');
       if (!Field::validate('station_index',$input['station_index'])) {
-        Error::add('station_index','Must be numeric');
+        Err::add('station_index','Must be numeric');
       }
     }
     // If no RN then all others - unless we have a krotovina_id
     if (!$input['krotovina_id'] AND strlen($input['station_index']) == 0 AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
-      Error::add('general','Northing, Easting and Elevation are all required if no Initial RN set');
+      Err::add('general','Northing, Easting and Elevation are all required if no Initial RN set');
       if (!strlen($input['easting'])) {
-        Error::add('easting','Easting Required');
+        Err::add('easting','Easting Required');
       }
       if (!strlen($input['northing'])) {
-        Error::add('northing','Northing Required');
+        Err::add('northing','Northing Required');
       }
       if (!strlen($input['elevation'])) {
-        Error::add('elevation','Elevation Required');
+        Err::add('elevation','Elevation Required');
       }
       if (!Field::validate('northing',$input['northing'])) {
-        Error::add('northing','Must be numeric and rounded to three decimals');
+        Err::add('northing','Must be numeric and rounded to three decimals');
       }
       if (!Field::validate('easting',$input['easting'])) {
-        Error::add('easting','Must be numeric and rounded to three decimals');
+        Err::add('easting','Must be numeric and rounded to three decimals');
       }
       if (!Field::validate('elevation',$input['elevation'])) {
-        Error::add('easting','Must be numeric and rounded to three decimals');
+        Err::add('easting','Must be numeric and rounded to three decimals');
       }
     } // End if No RN
 
     // Make sure the RN isn't duplicated for this site. 
     $input['rn'] = $input['station_index'];
     if (!SpatialData::is_site_unique($input,$input['krotovina_id'])) {
-      Error::add('station_index','Duplicate RN in this site');
+      Err::add('station_index','Duplicate RN in this site');
     }
 
-    if (Error::occurred()) { return false; }
+    if (Err::occurred()) { return false; }
 
     return true; 
 
@@ -261,7 +261,7 @@ class Krotovina extends database_object {
    */
   public function add_point($input) { 
 
-    Error::clear();
+    Err::clear();
 
     $station_index  = empty($input['station_index']) ? NULL : $input['station_index'];
     $northing       = empty($input['northing']) ? NULL : $input['northing'];
@@ -290,7 +290,7 @@ class Krotovina extends database_object {
    */
   public function update_point($input) { 
 
-    Error::clear();
+    Err::clear();
 
     $point = new SpatialData($input['spatialdata_id']);
 

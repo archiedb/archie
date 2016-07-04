@@ -10,15 +10,15 @@ if (INIT_LOADED != '1') { exit; }
 <form class="form-horizontal" method="post" action="<?php echo Config::get('web_path'); ?>/users/create">
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('name'); ?>">
+    <div class="<?php Err::form_class('name'); ?>">
     <label class="col-md-2 control-label" for="inputName">Name</label>
     <div class="col-md-2">
       <input class="form-control" name="name" type="text" id="inputName" placeholder="Display Name" value="<?php \UI\form_value('name'); ?>">
     </div>
     </div>
   </div>
-  <div class="form-group<?php Error::display_class('username','required'); ?>">
-    <div class="<?php Error::form_class('username'); ?>">
+  <div class="form-group<?php Err::display_class('username','required'); ?>">
+    <div class="<?php Err::form_class('username'); ?>">
     <label class="col-md-2 control-label" for="inputUsername">Username</label>
     <div class="col-md-2">
       <input class="form-control" name="username" type="text" id="inputUsername" placeholder="Username" value="<?php \UI\form_value('username'); ?>">
@@ -26,23 +26,23 @@ if (INIT_LOADED != '1') { exit; }
     </div>
   </div>
   <div class="form-group">
-    <div class="<?php Error::form_class('email'); ?>">
+    <div class="<?php Err::form_class('email'); ?>">
     <label class="col-md-2 control-label" for="inputEmail">Email</label>
     <div class="col-md-2">
       <input class="form-control" name="email" type="text" id="inputEmail" placeholder="Email Address" value="<?php \UI\form_value('email'); ?>">
     </div>
     </div>
   </div>
-  <div class="form-group<?php Error::display_class('password','required'); ?>">
-    <div class="<?php Error::form_class('password'); ?>">
+  <div class="form-group<?php Err::display_class('password','required'); ?>">
+    <div class="<?php Err::form_class('password'); ?>">
     <label class="col-md-2 control-label" for="inputPassword">Password</label>
     <div class="col-md-2">
       <input class="form-control" name="password" type="password" id="inputPassword" placeholder="Password...">
     </div>
     </div>
   </div>
-  <div class="form-group<?php Error::display_class('password','required'); ?>">
-    <div class="<?php Error::form_class('password'); ?>">
+  <div class="form-group<?php Err::display_class('password','required'); ?>">
+    <div class="<?php Err::form_class('password'); ?>">
     <label class="col-md-2 control-label" for="inputConfirmPassword">Confirm Password</label>
     <div class="col-md-2">
       <input class="form-control" name="confirmpassword" type="password" id="inputConfirmPassword" placeholder="Confirm Password...">

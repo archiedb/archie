@@ -3,6 +3,10 @@
 import sys,os,re,argparse,subprocess
 import ConfigParser
 
+""" 
+  run_cmd
+    takes a full command and runs it as a subproccess, returns false on returncode non-zero
+"""
 def run_cmd(cmd):
   proc = subprocess.Popen(cmd.split(),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
   proc.wait()
@@ -13,6 +17,28 @@ def run_cmd(cmd):
   else:
     print 'run_cmd:: %s executed sucessfully' % (cmd)
   return proc.stdout
+
+"""
+ bin_exists
+  Takes a command name, or full path and determins if the binary exists
+  and is executable by the user running the script
+"""
+def bin_exists(program):
+  def is_bin(binary):
+    return os.path.isfile(binary) and os.access(binary,ox.X_OK)
+
+  path,filename = os.path.split(program)
+  if path:
+    if is_bin(program):
+      return program
+  else:
+    """ Itterate over the env path to find this program and check it's executableness """
+    for path in os.environ['PATH'].split(o.spathsep):
+      path = path.strip('"')
+      fullPath = os.path.join(path,program)
+      if is_bin(fullPath):
+        return fullPath
+  return None
 
 if __name__ == '__main__':
 
@@ -49,6 +75,14 @@ if __name__ == '__main__':
     print 'Data directory for Archie %s not found or unreadable' % (Config.get('main','data_root'))
     sys.exit(1)
 
+  if not bin_exists('tar'):
+    print 'Unable to locate `tar` command, not in path'
+    sys.exit(1)
+
+  if not bin_exists('mysql'):
+    print 'Unable to locate `mysql` command, not in path'
+    sys.exit(1)
+
   print 'Running Backup of any existing data...'
   cmdReturn = run_cmd(os.path.dirname(os.path.abspath(__file__)) + '/backup/local-backup --no-delete all')
   if not cmdReturn:
@@ -56,4 +90,13 @@ if __name__ == '__main__':
     sys.exit(1)
   
   print 'Clearing existing database'
-  cmdReturn = run_cmd('mysql -u%s -p%s %s -e \'drop database %s\'' % (Config.get('main','database_username'),Config.get('main','database_password'),Config.get('main','database_name'))
+  cmdReturn = run_cmd('mysql -h%s -u%s -p%s %s -e \'drop database %s\'' % (Config.get('main','database_hostname'),Config.get('main','database_username'),Config.get('main','database_password'),Config.get('main','database_name'))
+  if not cmdReturn:
+    print 'Unable to drop Database %s please confirm the MySQL hostname, username, password and database are correct in your archie config' % (Config.get('main','database_name'))
+    sys.exit(1)
+
+  print 'Importing old database from Bz2 file'
+  cmdReturn = run_cmf('tar -xjf %s - | mysql -h%s -u%s -p%s %s' % (optArgs.databaseFile[0],Config.get('main','database_hostname'),Config.get('main','database_username'),Config.get('main','database_password'),Config.get('main','database_name'))
+  if not cmdReturn:
+    print 'Unable to import old database file from %s ' % (optArgs.databaseFile[0])
+    sys.exit(1)

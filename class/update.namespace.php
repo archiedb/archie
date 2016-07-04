@@ -403,7 +403,7 @@ class Database {
 
           if ($success) { self::set_version($update['version']); }
           else { 
-            \Error::add('Database','Upgrade failed on version: ' . $update['version']);
+            \Err::add('Database','Upgrade failed on version: ' . $update['version']);
             require_once \Config::get('prefix') . '/template/database_upgrade.inc.php';
             return false; 
           }
@@ -1365,29 +1365,29 @@ class Database {
     $db_results = \Dba::read($sql); 
 
     if (\Dba::num_rows($db_results)) { 
-      \Error::add('Invalid Site','One or more records has an invalid Site, please see run bin/validate-records.php.inc for more information');
+      \Err::add('Invalid Site','One or more records has an invalid Site, please see run bin/validate-records.php.inc for more information');
     }
 
     $sql = "SELECT `record`.`uid`,`level`.`uid` FROM `record` LEFT JOIN `level` ON `level`.`uid`=`record`.`level` WHERE `level`.`uid` IS NULL";
     $db_results = \Dba::read($sql); 
 
     if (\Dba::num_rows($db_results)) { 
-      \Error::add('Invalid Level','One or more records has an invalid Level, please see run bin/validate-records.php.inc for more information');
+      \Err::add('Invalid Level','One or more records has an invalid Level, please see run bin/validate-records.php.inc for more information');
     }
 
     $sql = "SELECT `krotovina`.`uid`,`site`.`uid` FROM `krotovina` LEFT JOIN `site` ON `site`.`uid`=`krotovina`.`site` WHERE `site`.`uid` IS NULL";
     $db_results = \Dba::read($sql); 
 
     if (\Dba::num_rows($db_results)) { 
-      \Error::add('Invalid Site','One or more Krotovina has an invalid Site, please see run bin/validate-records.php.inc for more information');
+      \Err::add('Invalid Site','One or more Krotovina has an invalid Site, please see run bin/validate-records.php.inc for more information');
     }
 
     $sql = "SELECT `feature`.`uid`,`site`.`uid` FROM `feature` LEFT JOIN `site` ON `site`.`uid`=`feature`.`site` WHERE `site`.`uid` IS NULL";
     if (\Dba::num_rows($db_results)) { 
-      \Error::add('Invalid Site','One or more Features has an invalid Site, please see run bin/validate-records.php.inc for more information');
+      \Err::add('Invalid Site','One or more Features has an invalid Site, please see run bin/validate-records.php.inc for more information');
     }
 
-    if (\Error::occurred()) { 
+    if (\Err::occurred()) { 
       return false; 
     }
 

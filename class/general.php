@@ -6,7 +6,7 @@
  * This function automatically loads any missing classes as they are needed so 
  * that we don't use a million include statements which load more than we need.
  */
-function __autoload($class) {
+function archie_autoloader($class) {
         // Lowercase the class
         $class = strtolower($class);
 

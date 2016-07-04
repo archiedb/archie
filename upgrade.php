@@ -26,7 +26,7 @@ switch ($_POST['action']) {
         if ($results['user'] > 0) { $is_admin = true; }
       } // end else
       if (!Access::is_admin() AND $is_admin === false) {
-        Error::add('general','Invalid Username/Password or insufficient access level'); 
+        Err::add('general','Invalid Username/Password or insufficient access level'); 
 			}
 			else { 
 				$results = \update\Database::run(); 
@@ -35,7 +35,7 @@ switch ($_POST['action']) {
       }
 		}
 		Event::error('DENIED','Authentication Failure trying to update database'); 
-    Error::add('general','Invalid Username/Password or insufficient access level'); 
+    Err::add('general','Invalid Username/Password or insufficient access level'); 
 		require_once Config::get('prefix') . '/template/database_upgrade.inc.php';
 	break;
 	default: 

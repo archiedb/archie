@@ -24,7 +24,7 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('media','delete')) { \UI\access_denied(); }
     $image = new Content($_POST['uid'],'image','record'); 
     if (!$image->delete()) { 
-      Error::add('delete','Unable to perform image deletion request, please contact administrator'); 
+      Err::add('delete','Unable to perform image deletion request, please contact administrator'); 
     }
     else { 
       Event::add('success','Image Deleted','small'); 
@@ -37,7 +37,7 @@ switch (\UI\sess::location('action')) {
     $media = new Content($_POST['uid'],'3dmodel','record'); 
     if (!$media->delete()) { 
       Event::error('DELETE','Unable to delete media item:' . $media->filename); 
-      Error::add('delete','Unable to 3D Model perform deletion request, please contact administrator'); 
+      Err::add('delete','Unable to 3D Model perform deletion request, please contact administrator'); 
     }
     
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
@@ -47,7 +47,7 @@ switch (\UI\sess::location('action')) {
     $media = new Content($_POST['uid'],'media','record'); 
     if (!$media->delete()) { 
       Event::error('DELETE','Unable to delete media item:' . $media->filename); 
-      Error::add('delete','Unable to Media perform deletion request, please contact administrator'); 
+      Err::add('delete','Unable to Media perform deletion request, please contact administrator'); 
     }
     
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return'])); 
@@ -79,7 +79,7 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template();
   break;
   case 'new':
-    Error::clear(); 
+    Err::clear(); 
     if (!Access::has('record','create')) { \UI\access_denied(); }
     require_once \UI\template(); 
   break;

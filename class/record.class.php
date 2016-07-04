@@ -133,7 +133,7 @@ class Record extends database_object {
 	public static function create($input) { 
 
     // Clear any previous errors before we do the validatation
-    Error::clear(); 
+    Err::clear(); 
 
     // Set the site based on the session users current site
     $input['site'] = \UI\sess::$user->site->uid;
@@ -141,12 +141,12 @@ class Record extends database_object {
 		// First verify the input to make sure
 		// all of the fields are within acceptable tolerences 
 		if (!Record::validate($input)) { 
-			Error::add('general','Invalid Field Values - please check input'); 
+			Err::add('general','Invalid Field Values - please check input'); 
 			return false; 
 		} 
 
     if (!Dba::begin_transaction()) {
-      Error::add('general','Unable to start DB Transaction, please try again');
+      Err::add('general','Unable to start DB Transaction, please try again');
       return false; 
     }
 
@@ -161,7 +161,7 @@ class Record extends database_object {
 			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? ORDER BY `catalog_id` DESC LIMIT 1 FOR UPDATE"; 
 			$db_results = Dba::read($catalog_sql,array($input['site'])); 
       if (!$db_results) {
-        Error::add('general','Database timeout reached, please re-submit'); 
+        Err::add('general','Database timeout reached, please re-submit'); 
         return false;
       }
 			$row = Dba::fetch_assoc($db_results); 	
@@ -177,12 +177,12 @@ class Record extends database_object {
 		$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? AND `catalog_id`=? LIMIT 1 FOR UPDATE"; 
 		$db_results = Dba::read($catalog_sql,array($input['site'],$input['catalog_id'])); 
     if (!$db_results) {
-      Error::add('general','Database timeout reached, please re-submit'); 
+      Err::add('general','Database timeout reached, please re-submit'); 
       return false;
     }
 		$row = Dba::fetch_assoc($db_results); 
 		if ($row['catalog_id']) { 
-			Error::add('general','Database Failure - Duplicate CatalogID - ' . $catalog_id); 
+			Err::add('general','Database Failure - Duplicate CatalogID - ' . $catalog_id); 
       Dba::commit();
 			return false; 
 		} 
@@ -222,10 +222,10 @@ class Record extends database_object {
 		$db_results = Dba::write($sql,array($site,$catalog_id,$level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$accession,$feature,$krotovina,$user,$created)); 
 
 		if (!$db_results) { 
-			Error::add('general','Unable to insert record, reverting changes.'); 
+			Err::add('general','Unable to insert record, reverting changes.'); 
       // Roll the transaction back
       $retval = Dba::rollback();
-      if (!$retval) { Error::add('general','Unable to roll Database changes back, please report this to your Administrator'); }
+      if (!$retval) { Err::add('general','Unable to roll Database changes back, please report this to your Administrator'); }
       Dba::commit();
 			return false; 
 		} 
@@ -266,7 +266,7 @@ class Record extends database_object {
 	public function update($input) { 
 
     // Clear any previous errors before we do the validatation
-    Error::clear(); 
+    Err::clear(); 
 
     // Set the site, they can't change this
     $input['site'] = $this->site->uid;
@@ -287,19 +287,19 @@ class Record extends database_object {
         switch ($field['validation']) {
           case 'boolean':
             if ($_POST[$field['name']] != '0' AND $_POST[$field['name']] != '1') {
-              Error::add($field['name'],'Must be True or False');
+              Err::add($field['name'],'Must be True or False');
               $retval = false;
             }
           break;
           case 'integer':
             if (floor($_POST[$field['name']]) != $_POST[$field['name']] OR preg_match('/[^0-9]/',$_POST[$field['name']])) {
-              Error::add($field['name'],'Must be a whole number with no decimals');
+              Err::add($field['name'],'Must be a whole number with no decimals');
               $retval = false;
             }
           break;
           case 'decimal':
             if (floatval($_POST[$field['name']]) != $_POST[$field['name']] OR !preg_match('/^[0-9](\.[0-9]+)?$/',$_POST[$field['name']])) {
-              Error::add($field['name'],'Must be a number');
+              Err::add($field['name'],'Must be a number');
               $retval = false; 
             }
           break;
@@ -316,7 +316,7 @@ class Record extends database_object {
     // First verify the input to make sure
     // all of the fields are within acceptable tolerences 
     if (!Record::validate($input,$this->uid)) {
-      Error::add('general','Invalid Field Values - Please check your input again');
+      Err::add('general','Invalid Field Values - Please check your input again');
       return false;
     }
 
@@ -359,7 +359,7 @@ class Record extends database_object {
 		$db_results = Dba::write($sql,array($level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$user,$updated,$feature,$krotovina,$extra,$record_uid)); 
 
 		if (!$db_results) { 
-			Error::add('general','Database Error, please try again'); 
+			Err::add('general','Database Error, please try again'); 
 			return false; 
 		} 
 
@@ -389,7 +389,7 @@ class Record extends database_object {
     }
 
     if (!$return) {
-      Error::add('spatial_data','Error updating Spatial Data, please try again');
+      Err::add('spatial_data','Error updating Spatial Data, please try again');
     }
 
 		// Remove this object from the cache so the update shows properly
@@ -429,12 +429,12 @@ class Record extends database_object {
     // Allow old stuff to remain behind
     if (empty($record_id)) {
       if (!Lsgunit::is_valid($input['lsg_unit'])) {
-  			Error::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
+  			Err::add('lsg_unit','Invalid Lithostratigraphic Unit'); 
       }
     }
     else { 
       if (!Lsgunit::is_valid($input['lsg_unit']) AND $record->lsg_unit->name != $input['lsg_unit']) {
-        Error::add('lsg_unit','Invalid Lithostratigraphic Unit');
+        Err::add('lsg_unit','Invalid Lithostratigraphic Unit');
       }
     }
 
@@ -442,7 +442,7 @@ class Record extends database_object {
 
 		// Station Index must be numeric
     if (!Field::validate('station_index',$input['station_index']) AND strlen($input['station_index'])) {
-			Error::add('station_index','Station Index must be numeric'); 
+			Err::add('station_index','Station Index must be numeric'); 
     } 
 
     //FIXME: This should be standardize on the table name
@@ -450,7 +450,7 @@ class Record extends database_object {
     // Unique Spatial Record check
     if (!empty($input['rn'])) {
       if (!SpatialData::is_site_unique($input,$record_id)) {
-        Error::add('RN','Duplicate RN or Northing/Easting/Elevation');
+        Err::add('RN','Duplicate RN or Northing/Easting/Elevation');
       }
     }
 
@@ -460,95 +460,95 @@ class Record extends database_object {
       // If we are comparing it to an existing record
       if (isset($record->uid)) {   
 		    if (strlen($input['northing']) AND $input['northing'] != $record->northing) {
-          Error::add('northing','Northing can not be changed if the record has an RN'); 
+          Err::add('northing','Northing can not be changed if the record has an RN'); 
         }
         if (strlen($input['easting']) AND $input['easting'] != $record->easting) { 
-          Error::add('easting','Easting can not be changed if the record has an RN'); 
+          Err::add('easting','Easting can not be changed if the record has an RN'); 
         }
         if (strlen($input['elevation']) AND $input['elevation'] != $record->elevation) { 
-          Error::add('elevation','Elevation can not be changed if the record has an RN'); 
+          Err::add('elevation','Elevation can not be changed if the record has an RN'); 
         }
       }
       else {
         if (strlen($input['northing'])) { 
-          Error::add('northing','Northing can not be changed if the record has an RN'); 
+          Err::add('northing','Northing can not be changed if the record has an RN'); 
         }
         if (strlen($input['easting'])) { 
-          Error::add('easting','Easting can not be changed if the record has an RN'); 
+          Err::add('easting','Easting can not be changed if the record has an RN'); 
         }
         if (strlen($input['elevation'])) { 
-          Error::add('elevation','Elevation can not be changed if the record has an RN'); 
+          Err::add('elevation','Elevation can not be changed if the record has an RN'); 
         }
       } // else no record_id
     } // if station_index
     // if no station index then just check format of northing/easting/elevation
     else { 
         if (intval($input['northing']) < 0 OR round($input['northing'],3) != $input['northing']) { 
-          Error::add('northing','Northing must be numeric'); 
+          Err::add('northing','Northing must be numeric'); 
         }
         if (intval($input['easting']) < 0 OR round($input['easting'],3) != $input['easting']) { 
-          Error::add('easting','Easting must be numeric'); 
+          Err::add('easting','Easting must be numeric'); 
         }
         if (intval($input['elevation']) < 0 OR round($input['elevation'],3) != $input['elevation']) { 
-          Error::add('elevation','Elevation must be numeric'); 
+          Err::add('elevation','Elevation must be numeric'); 
         }
     }
 
 		// XRF Matrix Index numeric
 		if (!Field::validate('xrf_matrix_index',$input['xrf_matrix_index']) AND strlen($input['xrf_matrix_index'])) { 
-			Error::add('xrf_matrix_index','XRF Matrix Index must be numeric'); 
+			Err::add('xrf_matrix_index','XRF Matrix Index must be numeric'); 
 		}
 
 		// Weight, numeric floating point
 		if (!Field::validate('weight',$input['weight'])) { 
-			Error::add('weight','Weight must be numeric to a thousandth of a gram'); 
+			Err::add('weight','Weight must be numeric to a thousandth of a gram'); 
 		} 
 
 		// Height, numeric
 		if (!Field::validate('height',$input['height'])) { 
-			Error::add('height','Height must be numeric to a thousandth of a mm'); 
+			Err::add('height','Height must be numeric to a thousandth of a mm'); 
 		} 
 
 		// Width, numeric
 		if (!Field::validate('width',$input['width'])) { 
-			Error::add('width','Width must be numeric to a thousandth of a mm'); 
+			Err::add('width','Width must be numeric to a thousandth of a mm'); 
 		} 
 
 		// Thickness
 		if (!Field::validate('thickness',$input['thickness'])) { 
-			Error::add('thickness','Thickness must be numeric'); 
+			Err::add('thickness','Thickness must be numeric'); 
 		} 
 		
 		// Quanity, numeric
 		if (!Field::validate('quanity',$input['quanity']) AND strlen($input['quanity'])) { 
-			Error::add('quanity','Quanity must be numeric'); 
+			Err::add('quanity','Quanity must be numeric'); 
 		}
  
 		// XRF Artifact Index, numeric
 		if (!Field::validate('xrf_artifact_index',$input['xrf_artifact_index']) AND strlen($input['xrf_artifact_index'])) { 
-			Error::add('xrf_artifact_index','XRF Artifact Index must be numeric'); 
+			Err::add('xrf_artifact_index','XRF Artifact Index must be numeric'); 
 		} 
 
 		// Material, must be a valid UID
     if (empty($input['material'])) { 
-      Error::add('material','Must specify material');
+      Err::add('material','Must specify material');
     }
 		if (!empty($input['material'])) { 
 			$material = new Material($input['material']); 
 			if (!$material->name) { 
-				Error::add('material','Invalid Material ID Specified, please refresh'); 
+				Err::add('material','Invalid Material ID Specified, please refresh'); 
 			} 
 
 			// Classification must be in this material
 			if (!$material->has_classification($input['classification'])) { 
-				Error::add('classification','Invalid description for this material'); 
+				Err::add('classification','Invalid description for this material'); 
 			} 
 
 
 			$classification = new Classification($input['classification']); 
 
 			if ($classification->name == "Other" AND !strlen($input['notes'])) { 
-				Error::add('notes','Other description, but no notes specified'); 
+				Err::add('notes','Other description, but no notes specified'); 
 			} 
 
 		} // end if material 
@@ -557,10 +557,10 @@ class Record extends database_object {
 			$classification = new Classification($input['classification']); 
 			
 			if ($classification->name == 'Other' AND !strlen($input['nodes'])) { 
-				Error::add('notes','Other description, but no notes specified'); 
+				Err::add('notes','Other description, but no notes specified'); 
 			} 
 			if (!$classification->name) { 
-				Error::add('classification','Invalid description');
+				Err::add('classification','Invalid description');
 			} 
 		} // end if material 
 
@@ -569,7 +569,7 @@ class Record extends database_object {
       if ($input['feature']) {
         $feature_uid = Feature::get_uid_from_record($input['feature']); 
         if (!$feature_uid) {
-    			Error::add('feature','Feature not found, please create feature record first'); 
+    			Err::add('feature','Feature not found, please create feature record first'); 
     		} 
       }
     } // if feature specified
@@ -579,7 +579,7 @@ class Record extends database_object {
       if ($input['krotovina']) {
         $krotovina_uid = Krotovina::get_uid_from_record($input['krotovina']);
         if (!$krotovina_uid) {
-          Error::add('krotovina','Krotovina not found, please create Krotovina record first');
+          Err::add('krotovina','Krotovina not found, please create Krotovina record first');
         }
       }
     }
@@ -588,32 +588,32 @@ class Record extends database_object {
     if (strlen($input['level'])) {
       $level = new Level($input['level']);
       if (!$level->catalog_id) {
-        Error::add('level','Level not found, please create level record first');
+        Err::add('level','Level not found, please create level record first');
       }
     }
     else { 
-      Error::add('level','Level must be specified for all records');
+      Err::add('level','Level must be specified for all records');
     }
 
     // Make sure they entered only one of the three (krot/level/feature)
     $items = intval(!empty($input['krotovina'])) + intval(!empty($input['feature']));
     if ($items > 1) { 
-      Error::add('association','Record must be associated with only either a feature or a krotovina');
+      Err::add('association','Record must be associated with only either a feature or a krotovina');
     }
 
 		// Notes... character limit
 		if (strlen($input['notes']) > 500) { 
-			Error::add('notes','Notes too long, this is not a novel'); 
+			Err::add('notes','Notes too long, this is not a novel'); 
 		}
 
 		// User
 		$user = new User($input['user']); 
 		if (!$user->username) { 
 			Event::error('Record::Create',$input['user'] . ' passed, but does not match a known user'); 
-			Error::add('general','User Unknown or disabled'); 
+			Err::add('general','User Unknown or disabled'); 
 		}
 		
-		if (Error::occurred()) { return false; } 
+		if (Err::occurred()) { return false; } 
 		
     return true; 
 

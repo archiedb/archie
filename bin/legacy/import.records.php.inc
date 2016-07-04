@@ -58,7 +58,7 @@ while (($raw = fgetcsv($handle)) !== FALSE) {
 		else { 
 			$bad++; 
 			print "LINE:$total\n"; 
-			print Error::dump(); 
+			print Err::dump(); 
 			print_r($input); 
 			print "------------------\n"; 
 		} 
@@ -66,7 +66,7 @@ while (($raw = fgetcsv($handle)) !== FALSE) {
 	else { 
 		$bad++; 
 		print "LINE:$total\n";
-		print Error::dump(); 
+		print Err::dump(); 
 		print_r($input); 
 		print "------------------\n"; 
 	} 

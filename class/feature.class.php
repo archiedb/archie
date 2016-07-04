@@ -96,7 +96,7 @@ class Feature extends database_object {
 
     // Not in the current list of images, walk away
     if (!in_array($image_uid,$images)) {
-      Error::add('Image','Selected Feature image not currently assoicated with feature');
+      Err::add('Image','Selected Feature image not currently assoicated with feature');
       return false;
     }
 
@@ -118,10 +118,10 @@ class Feature extends database_object {
    */
   public function update($input) { 
 
-    Error::clear();
+    Err::clear();
 
     if (!Feature::validate($input)) {
-      Error::add('general','Invalid Field Values - please check input');
+      Err::add('general','Invalid Field Values - please check input');
       return false;
     }
 
@@ -147,19 +147,19 @@ class Feature extends database_object {
    */
   public static function create($input) { 
 
-    Error::clear();
+    Err::clear();
 
     // Force the site to the current users site
     $input['site'] = \UI\sess::$user->site->uid;
 
     if (!Feature::validate($input)) {
-      Error::add('general','Invalid Field Values - please check input');
+      Err::add('general','Invalid Field Values - please check input');
       return false;
     }
 
     // Start the transaction
     if (!Dba::begin_transaction()) {
-      Error::add('general','Unable to start DB Transaction, please try again');
+      Err::add('general','Unable to start DB Transaction, please try again');
       return false;
     }
 
@@ -174,7 +174,7 @@ class Feature extends database_object {
       $db_results = Dba::read($catalog_sql,array($input['site'],$input['catalog_id']));
       $row = Dba::fetch_assoc($db_results);
       if ($row['catalog_id']) {
-        Error::add('general','Duplicate Feature ID - ' . $catalog_id);
+        Err::add('general','Duplicate Feature ID - ' . $catalog_id);
         Dba::commit();
         return false;
       }
@@ -190,7 +190,7 @@ class Feature extends database_object {
     if (!$db_results) { 
       Error:add('general','Unknown Error - inserting feature into database');
       $retval = Dba::rollback();
-      if (!$retval) { Error::add('general','Unable to roll database changes back, please report this to your Administrator'); }
+      if (!$retval) { Err::add('general','Unable to roll database changes back, please report this to your Administrator'); }
       Dba::commit();
       return false;
     }
@@ -205,7 +205,7 @@ class Feature extends database_object {
                       'easting'=>$input['easting'],'elevation'=>$input['elevation']));
 
     if (!$spatialdata) { 
-      Error::add('general','Error inserting Spatial Information - please contact your administrator');
+      Err::add('general','Error inserting Spatial Information - please contact your administrator');
     }
 
     if (!Dba::commit()) {
@@ -244,50 +244,50 @@ class Feature extends database_object {
   public static function validate($input) { 
 
     if (!Field::notempty($input['description'])) {
-      Error::add('description','Required field');
+      Err::add('description','Required field');
     }
     if (!Field::notempty($input['keywords'])) {
-      Error::add('keywords','Required field');
+      Err::add('keywords','Required field');
     }
 
     // If RN then no others
     if (strlen($input['initial_rn']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
-      Error::add('initial_rn','Initial RN and North/East/Elevation can not be specified at the same time');
+      Err::add('initial_rn','Initial RN and North/East/Elevation can not be specified at the same time');
       if (!Field::validate('rn',$input['initial_rn'])) {
-        Error::add('initial_rn','Must be numeric');
+        Err::add('initial_rn','Must be numeric');
       }
 
     }
     // If no RN then all others - unless we have a feature_id
     if (!$input['feature_id'] AND strlen($input['initial_rn']) == 0 AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
-      Error::add('general','Northing, Easting and Elevation are all required if no Initial RN set');
+      Err::add('general','Northing, Easting and Elevation are all required if no Initial RN set');
       if (!strlen($input['easting'])) {
-        Error::add('easting','Easting Required');
+        Err::add('easting','Easting Required');
       }
       if (!strlen($input['northing'])) {
-        Error::add('northing','Northing Required');
+        Err::add('northing','Northing Required');
       }
       if (!strlen($input['elevation'])) {
-        Error::add('elevation','Elevation Required');
+        Err::add('elevation','Elevation Required');
       }
       if (!Field::validate('northing',$input['northing'])) {
-        Error::add('northing','Must be numeric and rounded to three decimals');
+        Err::add('northing','Must be numeric and rounded to three decimals');
       }
       if (!Field::validate('easting',$input['easting'])) {
-        Error::add('easting','Must be numeric and rounded to three decimals');
+        Err::add('easting','Must be numeric and rounded to three decimals');
       }
       if (!Field::validate('elevation',$input['elevation'])) {
-        Error::add('easting','Must be numeric and rounded to three decimals');
+        Err::add('easting','Must be numeric and rounded to three decimals');
       }
     } // if No RUN specified
 
     // Make sure the RN isn't duplicated for this site. 
     $input['rn'] = $input['initial_rn'];
     if (!SpatialData::is_site_unique($input,$input['feature_id'])) {
-      Error::add('initial_rn','Duplicate RN in this site');
+      Err::add('initial_rn','Duplicate RN in this site');
     }
 
-    if (Error::occurred()) { return false; }
+    if (Err::occurred()) { return false; }
 
     return true; 
 
@@ -299,7 +299,7 @@ class Feature extends database_object {
    */
   public function add_point($input) { 
 
-    Error::clear(); 
+    Err::clear(); 
 
     $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
     $northing       = isset($input['northing']) ? $input['northing'] : NULL;
@@ -309,7 +309,7 @@ class Feature extends database_object {
 
     if (!$station_index AND !$northing AND !$easting AND !$elevation) { 
       // Well you have to specify something!
-      Error::add('general','Nothing entered, doing nothing');
+      Err::add('general','Nothing entered, doing nothing');
       return false;
     }
 
@@ -332,7 +332,7 @@ class Feature extends database_object {
    */
   public function update_point($input) { 
 
-    Error::clear();
+    Err::clear();
 
     $station_index  = isset($input['station_index']) ? $input['station_index'] : NULL;
     $northing       = isset($input['northing']) ? $input['northing'] : NULL;

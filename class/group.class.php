@@ -117,12 +117,12 @@ class Group extends database_object {
     if (!isset($input['group'])) { $input['grou['] = '-1'; }
 
     if (Group::name_to_id($input['name']) != $input['group']) { 
-      Error::add('general','Duplicate Group - name already exists');
+      Err::add('general','Duplicate Group - name already exists');
       $retval = false;
     }
 
     if (strlen($input['name']) < 1) {
-      Error::add('general','Name cannot be blank');
+      Err::add('general','Name cannot be blank');
       $retval = false;
     }
 
@@ -137,7 +137,7 @@ class Group extends database_object {
   public static function create($input) { 
 
     // Reset the error state
-    Error::clear();
+    Err::clear();
 
     if (!Group::validate($input)) { 
       return false;
@@ -152,7 +152,7 @@ class Group extends database_object {
     $insert_id = Dba::insert_id();
 
     if (!$insert_id) { 
-      Error::add('general','Database Error creating group, please contact administrator');
+      Err::add('general','Database Error creating group, please contact administrator');
       return false;
     }
 
@@ -166,7 +166,7 @@ class Group extends database_object {
    */
   public function update($input) { 
 
-    Error::clear();
+    Err::clear();
 
     if (!Group::validate($input)) { 
       return false;
@@ -212,20 +212,20 @@ class Group extends database_object {
     $checksql = 'SELECT * FROM `group_role` WHERE `group`=? AND `role`=? AND `action`=?';
     $db_results = Dba::read($checksql,array($input['uid'],$input['role'],$input['action']));
     if ($row = Dba::fetch_assoc($db_results)) {
-      Error::add('general','Attempted to add duplicate Role/Action');
+      Err::add('general','Attempted to add duplicate Role/Action');
       return false; 
     }
 
     // Make sure these are real roles/actions
     $action = new Action($input['action']);
     if (!$action->name) { 
-      Error::add('general','Invalid Action specified');
+      Err::add('general','Invalid Action specified');
       return false;
     }
 
     $role = new Role($input['role']);
     if (!$role->name) {
-      Error::add('general','Invalid Role specified');
+      Err::add('general','Invalid Role specified');
       return false;
     }
 
@@ -233,7 +233,7 @@ class Group extends database_object {
     $sql = "SELECT * FROM `role_action` WHERE `role`=? AND `action`=?";
     $db_results = Dba::read($sql,array($input['role'],$input['action']));
     if (!$row = Dba::fetch_assoc($db_results)) { 
-      Error::add('general','Invalid Role/Action specified');
+      Err::add('general','Invalid Role/Action specified');
       return false;
     }
 

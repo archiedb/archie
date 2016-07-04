@@ -124,7 +124,7 @@ class Cron {
     $retval = (file_put_contents($filename,$data) === false) ? false : true; 
 
     if (!$retval) { 
-      Error::add('general','Unable to create report request'); 
+      Err::add('general','Unable to create report request'); 
     }
 
     return $retval; 
