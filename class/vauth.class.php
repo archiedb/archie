@@ -117,7 +117,9 @@ class vauth {
 
 		Event::record('vauth::write', 'Writing to ' . $key . ' with expire ' . $expire . ' ' . Dba::error());
 
-		return Dba::error();
+		if (!strlen(Dba::error())) { return true; }
+
+		return false;
 
 	} // write
 
@@ -249,6 +251,8 @@ class vauth {
 		self::ungimp_ie();
 		session_start();
 
+		return true;
+
 	} // create_cookie, just watch out for the cookie monster
 
 	/**
@@ -262,6 +266,8 @@ class vauth {
 
 		Config::set('cookie_life',$remember_length,'1');
 		setcookie($session_name . '_remember',"Rappelez-vous, rappelez-vous le 27 mars", time() + $remember_length, '/');
+
+		return true;
 
 	} // create_remember_cookie
 
@@ -281,13 +287,15 @@ class vauth {
 			break;
 			case 'mysql':
 			default:
-				session_regenerate_id();
+				session_regenerate_id(true);
 
 				// Before refresh we don't have the cookie so we
 				// have to use session ID
 				$key = session_id();
 			break;
 		} // end switch on data type
+
+		if (!isset($data['value'])) { $data['value'] = ''; }
 
 		$username	= Dba::escape($data['username']);
 		$ip		= $_SERVER['REMOTE_ADDR'] 
@@ -413,6 +421,8 @@ class vauth {
 			array('vauth', 'write'),
 			array('vauth', 'destroy'),
 			array('vauth', 'gc'));
+
+		return true;
 
 	} // auto init
 
@@ -725,6 +735,7 @@ class vauth {
 	 * This auth method relies on HTTP auth from the webserver
 	 */
 	private static function http_auth($username, $password) {
+
 		if (($_SERVER['REMOTE_USER'] == $username) ||
 			($_SERVER['HTTP_REMOTE_USER'] == $username)) {
 			$results['success']	= true;
@@ -738,6 +749,7 @@ class vauth {
 			$results['error']   = 'HTTP auth login attempt failed';
 		}
 		return $results;
+
 	} // http_auth
 
 } // end of vauth class
