@@ -413,11 +413,15 @@ class Level extends database_object {
         if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) {
           Err::add($field,'Must be numeric and rounded to three decimal places'); 
         }
+        // If it's a Decending Depth, it must be deeper
         // Make sure it's deeper then the start
         $start_name = substr($field,0,strlen($field)-6) . 'start';
-        if ($input[$field] > $input[$start_name]) { 
-          Err::warning($field,'Expected to be lower than start');
-        }         
+        if ($input[$field] > $input[$start_name] AND $input['zorder'] == 'desc') { 
+          Err::add($field,'Expected to be lower than start');
+        }
+        elseif ($input[$field] < $input[$start_name] AND $input['zorder'] == 'asc') {
+          Err::add($field,'Expected to be higher than start');
+        }
       }
 
     } // end foreach ends
