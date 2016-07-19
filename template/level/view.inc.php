@@ -44,7 +44,7 @@ if (INIT_LOADED != '1') { exit; }
   <th>Easting</th><td><?php echo scrub_out($level->easting); ?></td>
 </tr>
 <tr>
-  <th>Elevation Order</th><td colspan="3"><?php echo $zorder = $level->z_order == 'desc' ? 'Descending' : 'Ascending'; ?></td>
+  <th>Elevation Order</th><td colspan="3"><?php echo $zorder = $level->z_order == 'asc' ? 'Ascending' : 'Descending'; ?></td>
 </tr>
 </table>
 <h5>Elevations</h5>
