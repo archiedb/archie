@@ -236,7 +236,7 @@ class Level extends database_object {
           "`northing`=?,`easting`=?,`elv_nw_start`=?, `elv_nw_finish`=?, `elv_ne_start`=?,`elv_ne_finish`=?,".
           "`elv_sw_start`=?, `elv_sw_finish`=?,`elv_se_start`=?,`elv_se_finish`=?,`elv_center_start`=?," . 
           "`elv_center_finish`=?,`excavator_one`=?, `excavator_two`=?, `excavator_three`=?,`excavator_four`=?,".
-          "`description`=?, `difference`=?, `notes`=? ,`z_order`=?, `other`=? WHERE `level`.`uid`=? LIMIT 1"
+          "`description`=?, `difference`=?, `notes`=? ,`z_order`=?, `other`=? WHERE `level`.`uid`=? LIMIT 1";
     $retval = Dba::write($sql,array($catalog_id,$unit,$quad,$lsg_unit,$user,$updated,$northing,$easting,$elv_nw_start,
       $elv_nw_finish,$elv_ne_start,$elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start,
       $elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$description,$difference,$notes,$z_order,$other,$uid));

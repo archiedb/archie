@@ -373,6 +373,9 @@ class Database {
     $update_string = '- Increase length of notes fields for Level, Record, Feature and Krotovina.<br />' . 
                   '- Add z_order field to Level to allow you to define how elevations are ordered in this level.<br />';
     $versions[] = array('version'=>'0024','description'=>$update_string);
+    $update_string = '- Add general notes field to level.<br />' . 
+                    '- Add type field to level preping for re-work of krotovina/feature/level functionality.<br />';
+    $versions[] = array('version'=>'0025','description'=>$update_string);
 
     return $versions; 
 
