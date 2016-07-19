@@ -108,6 +108,12 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <td><?php echo scrub_out($level->notes); ?></td>
 </tr>
+<tr>
+  <th>General Notes</th>
+</tr>
+<tr>
+  <td><?php echo scrub_out($level->other); ?></td>
+</tr>
 </table>
 <ul class="nav nav-tabs" id="media_nav">
   <li class="active"><a href="#picture" data-toggle="tab">Images</a></li>
