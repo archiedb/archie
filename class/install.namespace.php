@@ -98,7 +98,7 @@ function insert_db($info) {
     preg_match('/([^\d\w\_\-])/',$info['database'],$matches);
 
     if (count($matches)) { 
-      Error::add('general','Invalid Database name.');
+      Err::add('general','Invalid Database name.');
       return false; 
     }
     
@@ -118,7 +118,7 @@ function insert_db($info) {
     \Dba::dbh($info['database'],true);
 
     if (!$retval) { 
-      \Error::add('general','Unable to create database - ' . $info['database'] . ' - ' .\Dba::error());
+      \Err::add('general','Unable to create database - ' . $info['database'] . ' - ' .\Dba::error());
       return false;
     }
 
@@ -136,7 +136,7 @@ function insert_db($info) {
     }
 
     if (count($errors)) {
-      \Error::add('general',json_encode($errors));
+      \Err::add('general',json_encode($errors));
       $retval = false;
     }
 
@@ -159,7 +159,7 @@ function write_config($input) {
     'database_name'=>$input['database']));
 
   if (!$retval) { 
-    \Error::add('general','Unable to write out config file, please check permissions');
+    \Err::add('general','Unable to write out config file, please check permissions');
   }
 
   return $retval; 
@@ -184,7 +184,7 @@ function initial_user($input) {
   $retval = \User::create($user_data);
 
   if (!$retval) { 
-    \Error::add('general','Unable to create initial Administrative account');
+    \Err::add('general','Unable to create initial Administrative account');
     return false;
   }
 
@@ -194,7 +194,7 @@ function initial_user($input) {
   $retval = \UI\sess::$user->add_group('1');
 
   if (!$retval) { 
-    \Error::add('general','Unable to add initial Admin account to Admin group');
+    \Err::add('general','Unable to add initial Admin account to Admin group');
     return false;
   }
 
@@ -212,7 +212,7 @@ function htaccess_enable() {
   $retval = file_put_contents(\Config::get('prefix') . '/.htaccess',$data);
 
   if (!$retval) { 
-    \Error::add('general','Permission Denied installing .htaccess file');
+    \Err::add('general','Permission Denied installing .htaccess file');
   }
 
   return $retval;

@@ -154,15 +154,15 @@ class Classification extends database_object {
   public static function create($input) { 
 
     // Reset the error state
-    Error::clear();
+    Err::clear();
 
     if (Classification::name_to_id($input['name'])) { 
-      Error::add('general','Duplicate Classification - name already exists');
+      Err::add('general','Duplicate Classification - name already exists');
       return false;
     }
 
     if (strlen($input['name']) < 1) {
-      Error::add('general','Name cannot be blank');
+      Err::add('general','Name cannot be blank');
       return false;
     }
 

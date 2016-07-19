@@ -77,4 +77,21 @@ if (INIT_LOADED != '1') { exit; }
     </p>
   </div>
 </div>
+<div class="row">
+  <?php 
+    $codeCheck = \update\Code::check();
+    $gitVersion = \update\Code::git_version();
+  ?>
+  <div class="col-md-2">Update Archie</div>
+  <div class="col-md-3"><?php echo \UI\boolean_word($codeCheck,'Latest Version:' . $gitVersion); ?></div>
+  <div class="col-md-4">
+    <p class="text-right">
+<?php 
+  if (!$codeCheck) { $btn_class = ' btn-danger'; $update_needed = 'Update Needed'; } 
+  else { $btn_class = ' disabled btn-success'; $update_needed = 'Up to Date'; }
+?>
+      <a class="btn<?php echo $btn_class; ?>" href="<?php echo Config::get('web_path'); ?>/manage/updatearchie"><?php echo $update_needed; ?></a>
+    </p>
+  </div>
+</div>
 </div>

@@ -26,15 +26,15 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 		$username = $auth['username']; 
 		$user = User::get_from_username($username); 
 		if ($user->disabled) { 
-			Error::add('general','Your account is disabled, please contact the administrator for more information'); 
-			Error::display('general'); 
+			Err::add('general','Your account is disabled, please contact the administrator for more information'); 
+			Err::display('general'); 
 			unset($auth); 
 			exit; // Escape!
 		} 
 	} 
 	// They didn't get the PW right
 	else { 
-		Error::add('general','Incorrect Username or Password, please try again'); 
+		Err::add('general','Incorrect Username or Password, please try again'); 
 	} 
 
 } 

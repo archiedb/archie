@@ -12,7 +12,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 
-def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel):
+def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel,orientation):
   """
   Save a scatterplot to the specified filename 
   """
@@ -92,7 +92,7 @@ if len(sys.argv) > 1:
   sqlwhere = ' WHERE `level`.`uid`=\'' + sys.argv[1] + '\''
 
 levels=archiedb.cursor()
-levelquery = "SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`site`.`name` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site`" + sqlwhere + " ORDER BY `level`.`uid`"
+levelquery = "SELECT `level`.`uid`,`level`.`northing`,`level`.`easting`,`level`.`z_order`,`site`.`name` FROM `level` LEFT JOIN `site` ON `site`.`uid`=`level`.`site`" + sqlwhere + " ORDER BY `level`.`uid`"
 levels.execute(levelquery)
 
 level=levels.fetchone()
@@ -100,10 +100,10 @@ while level is not None:
 
   locus_txt = str(level[0])
   cursor=archiedb.cursor()
-  cursor.execute("""SELECT `northing`,`easting`,`elevation`,`material`.`name`,`classification`.`name` FROM `record` JOIN `material` ON `material`.`uid`=`record`.`material` JOIN `classification` ON `classification`.`uid`=`record`.`classification` JOIN `spatial_data` ON `spatial_data`.`record`=`record`.`uid` AND `spatial_data`.`record_type`='record' WHERE `level`='%s' AND (`northing`>0 AND `easting`>0 AND `elevation`>0)""",int(level[0]))
+  cursor.execute("""SELECT `northing`,`easting`,`elevation`,`material`.`name`,`classification`.`name` FROM `record` JOIN `material` ON `material`.`uid`=`record`.`material` JOIN `classification` ON `classification`.`uid`=`record`.`classification` JOIN `spatial_data` ON `spatial_data`.`record`=`record`.`uid` AND `spatial_data`.`record_type`='record' WHERE `level`='%s' AND (`northing`>0 AND `easting`>0 AND `elevation`>0)""" % (int(level[0])))
 
   # Set the sitename
-  site=level[3]
+  site=level[4]
 
   # Distinct cords per catagory, this is not sustabiable
   # FIXME
@@ -221,7 +221,7 @@ while level is not None:
   ylabel = 'Northing (meters)'
   xcord = 'est'
   ycord = 'nor'
-  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)
+  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel,level[3])
 
   # Create the Easting / Elevation Graph
 ## Title should be SITE-UNIT-QUAD-LEVEL X BY Y
@@ -231,7 +231,7 @@ while level is not None:
   ylabel = 'Elevation'
   xcord = 'est'
   ycord = 'elv'
-  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)
+  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel,level[3])
 
   # Create the Northing / Elevation Graph
   plot_title =" North by Elevation"
@@ -240,12 +240,13 @@ while level is not None:
   ylabel = 'Elevation'
   xcord = 'nor'
   ycord = 'elv'
-  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel)  
+  save_scatterplot(plot_title,plot_filename,plot_cords,xcord,ycord,xlabel,ylabel,level[3])  
 
   # make 3d plot, different from a normal one so it's not using save_scatterplot
   plot_filename = full_path+'/Level-'+locus_txt+'-3D.png'
   print "Building: Level-" + locus_txt + "-3D saving to " + plot_filename
   fig = plt.figure()
+
   ax = fig.add_subplot(111,projection='3d')
   ax.scatter(est,nor,elv,color=colors,marker='o')
   if (len(plot_cords['fcr'][xcord]) > 0):
@@ -266,6 +267,8 @@ while level is not None:
   ax.set_xlabel('Easting (meters)')
   ax.set_ylabel('Northing (meters)')
   ax.set_zlabel('Elevation')
+  if level[3] == "asc":
+    ax.invert_zaxis()
   plt.ticklabel_format(useOffset=False)
   plt.savefig(plot_filename,format='png',bbox_inches='tight')
   plt.close()

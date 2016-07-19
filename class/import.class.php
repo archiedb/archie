@@ -69,7 +69,7 @@ class Import {
   public function run($filename) { 
 
     if (!is_readable($filename)) { 
-      Error::add('import','Unable to read import file:' . $filename); 
+      Err::add('import','Unable to read import file:' . $filename); 
       return false; 
     }
 
@@ -94,7 +94,7 @@ class Import {
     $site = \UI\sess::$user->site->uid;
   
     if (($handle = fopen($csv_file, "r")) === false) {
-        Error::add('general','Unable to open uploaded file'); 
+        Err::add('general','Unable to open uploaded file'); 
         return false;
     }
 
@@ -108,7 +108,7 @@ class Import {
     $found = array();
     while (($data = fgetcsv($handle)) !== false) { 
       if (count($data) != 5) { 
-        Error::add('import','Invalid CSV format on line:' . $line); 
+        Err::add('import','Invalid CSV format on line:' . $line); 
         return false; 
       }
 
@@ -181,13 +181,13 @@ class Import {
   fclose($handle); 
 
     if ($warning_lines > 0) { 
-      Error::warning('general',$warning_lines . ' invalid lines found'); 
-      Error::warning('station_index','Station Indexes:' . ltrim($missing,',')); 
+      Err::warning('general',$warning_lines . ' invalid lines found'); 
+      Err::warning('station_index','Station Indexes:' . ltrim($missing,',')); 
     } 
 
     if ($error_lines > 0) { 
-      Error::add('general',$error_lines . ' invalid lines found. Aborting, nothing imported'); 
-      if (strlen($invalid)) { Error::add('Coordinate Value','Station Indexes:' . ltrim($invalid,',')); }
+      Err::add('general',$error_lines . ' invalid lines found. Aborting, nothing imported'); 
+      if (strlen($invalid)) { Err::add('Coordinate Value','Station Indexes:' . ltrim($invalid,',')); }
       return false; 
     }
 

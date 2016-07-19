@@ -7,15 +7,15 @@ if (INIT_LOADED != '1') { exit; }
 <p class="pull-right">
   <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/level/<?php echo scrub_out($level->uid); ?>">View Records</a>
   <?php if (Access::has('level','reopen') AND $level->closed) { ?>
-  <button type="button" data-target="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" data-toggle="modal">Re-Open Level</button>
+  <button type="button" data-target="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" data-toggle="modal">Re-Open</button>
   <?php } ?>
   <?php if (Access::has('level','edit')) { ?>
-  <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn btn-primary">Edit Level</a>
+  <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn btn-primary">Edit</a>
   <?php } ?>
   <?php if (!$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
   <?php } else { ?>
-  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Report</a>
   <?php } ?>
 </p>
 <?php if (Access::has('level','reopen') AND $level->closed) { ?>
@@ -23,7 +23,8 @@ if (INIT_LOADED != '1') { exit; }
 <?php } ?>
 <h3>Level: <?php echo scrub_out($level->site->name); ?><?php echo scrub_out($level->record); ?>
   <?php if ($level->closed) { ?><span class="label label-important">CLOSED</span><?php } ?>
-  <small>entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></small>
+  <br />
+  <small><em>entered by <?php echo $level->user->username; ?> on <?php echo date("d-M-Y H:i:s",$level->created); ?></em></small>
 </h3>
 </div>
 <?php Event::display(); ?>
@@ -40,7 +41,10 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 <tr>
   <th>Northing</th><td><?php echo scrub_out($level->northing); ?></td>
-  <th>EASTING</th><td><?php echo scrub_out($level->easting); ?></td>
+  <th>Easting</th><td><?php echo scrub_out($level->easting); ?></td>
+</tr>
+<tr>
+  <th>Elevation Order</th><td colspan="3"><?php echo $zorder = $level->z_order == 'desc' ? 'Descending' : 'Ascending'; ?></td>
 </tr>
 </table>
 <h5>Elevations</h5>
@@ -103,6 +107,12 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 <tr>
   <td><?php echo scrub_out($level->notes); ?></td>
+</tr>
+<tr>
+  <th>General Notes</th>
+</tr>
+<tr>
+  <td><?php echo scrub_out($level->other); ?></td>
 </tr>
 </table>
 <ul class="nav nav-tabs" id="media_nav">

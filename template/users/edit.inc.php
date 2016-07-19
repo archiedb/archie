@@ -11,17 +11,17 @@ if (INIT_LOADED != '1') { exit; }
 <form class="form-horizontal" method="post" action="<?php echo Config::get('web_path'); ?>/users/update">
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('name'); ?>">
+    <div class="<?php Err::form_class('name'); ?>">
     <label class="col-md-2 control-label" for="inputName">Name</label>
     <div class="col-md-2">
       <input class="form-control" name="name" type="text" id="inputName" placeholder="Display Name" value="<?php \UI\form_value(array('post'=>'name','var'=>$user->name)); ?>">
-      <span class="help-inline"><?php echo Error::get('name'); ?></span>
+      <span class="help-inline"><?php echo Err::get('name'); ?></span>
     </div>
     </div>
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('email'); ?>">
+    <div class="<?php Err::form_class('email'); ?>">
     <label class="col-md-2 control-label" for="inputEmail">Email</label>
     <div class="col-md-2">
       <input class="form-control" name="email" type="text" id="inputEmail" placeholder="Email" value="<?php \UI\form_value(array('post'=>'email','var'=>$user->email)); ?>">
@@ -29,7 +29,7 @@ if (INIT_LOADED != '1') { exit; }
     </div>
   </div>
   <div class="form-group">
-    <div class="<?php Error::form_class('site'); ?>">
+    <div class="<?php Err::form_class('site'); ?>">
     <label class="col-md-2 control-label" for="inputSite">Current Site</label>
     <div class="col-md-2">
       <select class="form-control" id="inputSite" name="site">
@@ -46,7 +46,7 @@ if (INIT_LOADED != '1') { exit; }
     </div>
   </div>
   <div class="form-group">
-    <div class="<?php Error::form_class('password'); ?>">
+    <div class="<?php Err::form_class('password'); ?>">
     <label class="col-md-2 control-label" for="inputPassword">Password</label>
     <div class="col-md-2">
       <input class="form-control" name="password" type="password" id="inputPassword" placeholder="Reset Password...">
@@ -54,7 +54,7 @@ if (INIT_LOADED != '1') { exit; }
     </div>
   </div>
   <div class="form-group">
-    <div class="<?php Error::form_class('password'); ?>">
+    <div class="<?php Err::form_class('password'); ?>">
     <label class="col-md-2 control-label" for="inputConfirmPassword">Confirm Password</label>
     <div class="col-md-2">
       <input class="form-control" name="confirmpassword" type="password" id="inputConfirmPassword" placeholder="Confirm Password...">

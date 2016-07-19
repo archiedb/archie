@@ -20,7 +20,7 @@ class Search {
     }
 
 		// If something went wrong getting the where
-		if (Error::occurred()) { 
+		if (Err::occurred()) { 
 			return array(); 
 		} 
 
@@ -87,7 +87,7 @@ class Search {
 		$allowed_array = array('site','catalog_id','unit','level','lsg_unit','station_index','xrf_matrix_index','weight','height','width','thickness','quanity','material','classification','notes','xrf_artifact_index','user','created','updated','quad','feature'); 
 
 		if (!in_array($field,$allowed_array)) { 
-			Error::add('general','Invalid Field specified for search'); 
+			Err::add('general','Invalid Field specified for search'); 
 			return false;  
 		} 
 
