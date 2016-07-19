@@ -91,9 +91,10 @@ if (INIT_LOADED != '1') { exit; }
     <div class="<?php Err::form_class('z_order'); ?>">
     <label class="col-md-2 control-label" for="inputzorder">Elevation Order</label>
     <div class="col-md-6">
-      <select class="form-control" name="inputzorder">
+      <select class="form-control" name="zorder">
+        <?php $asc_selected = \UI\form_value(array('post'=>'zorder','var'=>$level->z_order),true) == 'asc' ? ' selected="selected"' : ''; ?>
         <option value="desc">Descending</option>
-        <option value="asc">Ascending</option>
+        <option value="asc"<?php echo $asc_selected; ?>>Ascending</option>
       </select>
     </div>
     </div>

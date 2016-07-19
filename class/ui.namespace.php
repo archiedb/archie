@@ -107,7 +107,7 @@ function search_link($field,$value,$text='') {
  * form_value
  * Look in _POST, ${variable} or passed and output it if it exists
  */
-function form_value($name) { 
+function form_value($name,$return=false) { 
 
     $form_value = '';
 
@@ -134,11 +134,18 @@ function form_value($name) {
           break;
         }
       } // end foreach
+      if ($return) {
+        return $form_value;
+      }
       echo scrub_out($form_value);
       return true; 
     } // end if array
           
     if (empty($_POST[$name])) { echo ''; return; }
+    
+    if ($return) {
+        return $_POST[$name];
+    }
 
     echo scrub_out($_POST[$name]); 
     

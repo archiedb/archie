@@ -154,7 +154,7 @@ class Level extends database_object {
     $excavator_two    = strlen($input['excavator_two']) > 0 ? $input['excavator_two'] : NULL;
     $excavator_three  = strlen($input['excavator_three']) > 0 ? $input['excavator_three'] : NULL;
     $excavator_four   = strlen($input['excavator_four']) > 0 ? $input['excavator_four'] : NULL;
-    $z_order          = 'desc';
+    $z_order          = $input['zorder'] == 'desc' ? 'desc' : 'asc';
     $user             = \UI\sess::$user->uid;
     $type             = 'level';
     $created          = time(); 
@@ -230,7 +230,7 @@ class Level extends database_object {
     $difference       = $input['difference'];
     $notes            = $input['notes'];
     $other            = $input['other'];
-    $z_order          = 'desc';
+    $z_order          = $input['zorder'] == 'desc' ? 'desc' : 'asc';
 
     $sql = "UPDATE `level` SET `catalog_id`=?,`unit`=?,`quad`=?,`lsg_unit`=?,`user`=?,`updated`=?," .
           "`northing`=?,`easting`=?,`elv_nw_start`=?, `elv_nw_finish`=?, `elv_ne_start`=?,`elv_ne_finish`=?,".
