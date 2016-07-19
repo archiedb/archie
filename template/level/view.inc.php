@@ -41,10 +41,10 @@ if (INIT_LOADED != '1') { exit; }
 </tr>
 <tr>
   <th>Northing</th><td><?php echo scrub_out($level->northing); ?></td>
-  <th>EASTING</th><td><?php echo scrub_out($level->easting); ?></td>
+  <th>Easting</th><td><?php echo scrub_out($level->easting); ?></td>
 </tr>
 <tr>
-  <th>Elevation Order</th><td colspan="3"><?php echo $level->_print('z_order'); ?></td>
+  <th>Elevation Order</th><td colspan="3"><?php echo $zorder = $level->z_order == 'desc' ? 'Descending' : 'Ascending'; ?></td>
 </tr>
 </table>
 <h5>Elevations</h5>
