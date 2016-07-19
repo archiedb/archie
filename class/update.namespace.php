@@ -1794,6 +1794,28 @@ class Database {
 
   } // update_0024
 
+  /**
+   * update_0025
+   * Add additional text field to the Level form
+   */
+
+  public static function update_0025() { 
+
+    $retval = true;
+
+    $sql = "ALTER TABLE `level` ADD `other` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` ADD `type` VARCHAR ( 128 ) NOT NULL DEFAULT 'level'";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` ADD INDEX (`type`)";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } // update_0025
+
 } // \Update\Database class
 
 ?>

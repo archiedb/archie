@@ -5,11 +5,11 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <div class="page-header">
 <p class="pull-right">
- <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>" class="btn btn-info">View Level</a>
+ <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>" class="btn btn-info">View</a>
   <?php if (!$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
   <?php } else { ?>
-  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Report</a>
   <?php } ?>
 </p>
 <h3>Edit Level <?php echo scrub_out($level->record); ?></h3>
@@ -92,8 +92,8 @@ if (INIT_LOADED != '1') { exit; }
     <label class="col-md-2 control-label" for="inputzorder">Elevation Order</label>
     <div class="col-md-6">
       <select class="form-control" name="inputzorder">
-        <option value="desc">Desc</option>
-        <option value="asc">Asc</option>
+        <option value="desc">Descending</option>
+        <option value="asc">Ascending</option>
       </select>
     </div>
     </div>
@@ -286,6 +286,13 @@ if (INIT_LOADED != '1') { exit; }
     <label class="col-md-2 control-label" for="inputNotes">Did you find anything interesting or significant?</label>
     <div class="col-md-6">
       <textarea id="inputNotes" name="notes" class="form-control" rows="5"><?php \UI\form_value(array('post'=>'notes','var'=>$level->notes)); ?></textarea>
+    </div>
+    </div>
+  </div><div class="form-group">
+    <div class="<?php Err::form_class('other'); ?>">
+    <label class="col-md-2 control-label" for="inputOther">General Notes</label>
+    <div class="col-md-6">
+      <textarea id="inputOther" name="other" class="form-control" rows="5"><?php \UI\form_value(array('post'=>'other','var'=>$level->other)); ?></textarea>
     </div>
     </div>
   </div>

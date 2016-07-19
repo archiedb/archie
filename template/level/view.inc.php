@@ -7,15 +7,15 @@ if (INIT_LOADED != '1') { exit; }
 <p class="pull-right">
   <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/level/<?php echo scrub_out($level->uid); ?>">View Records</a>
   <?php if (Access::has('level','reopen') AND $level->closed) { ?>
-  <button type="button" data-target="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" data-toggle="modal">Re-Open Level</button>
+  <button type="button" data-target="#confirm_open_level_<?php echo scrub_out($level->uid); ?>" class="btn btn-danger" data-toggle="modal">Re-Open</button>
   <?php } ?>
   <?php if (Access::has('level','edit')) { ?>
-  <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn btn-primary">Edit Level</a>
+  <a href="<?php echo Config::get('web_path'); ?>/level/edit/<?php echo scrub_out($level->uid); ?>" class="btn btn-primary">Edit</a>
   <?php } ?>
   <?php if (!$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
   <?php } else { ?>
-  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Report</a>
   <?php } ?>
 </p>
 <?php if (Access::has('level','reopen') AND $level->closed) { ?>
