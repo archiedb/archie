@@ -13,6 +13,11 @@ if (INIT_LOADED != '1') { exit; }
         <form method="post" action="<?php echo Config::get('web_path'); ?>/manage/site/addfield">
         Add an additional field to this site. Once a field is added and at least once instance of it
         exists it cannot be removed, only disabled. 
+
+        <strong>Show Answer</strong>: any character, less than a sentence<br />
+        <strong>Long Answer</strong>: any character, less than 2 paragraphs<br />
+        <strong>True/False</strong>: Drop down, TRUE / FALSE<br />
+
         <hr />
         <div class="row">
           <div class="form-group">
