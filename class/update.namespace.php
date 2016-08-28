@@ -1819,6 +1819,48 @@ class Database {
 
   } // update_0025
 
+  /**
+   * update_0026
+   * Migrate the spatial data from feature/krotovina -> new levels
+   * Create Level records for every krotovina and feature
+   */
+  public static function update_0026() {
+
+    $retval = true;
+
+    // Load the features, and create the new levels
+    $sql = "SELECT * FROM `feature`";
+    $db_results = \Dba::read($sql);
+
+    $feat_level = array();
+
+    while ($row = \Dba::fetch_assoc($db_results)) {
+        // Build the new Level
+        $sql = "INSERT INTO `level` (`site`,`catalog_id`,`description`,`notes`,`created`,`updated`,`type`,`user`) VALUES " . 
+                "(?,?,?,?,?,?,?,?)";
+        $retval = \Dba::write($sql,array($row['site'],$row['catalog_id',$row['description'],$row['keywords'],$row['created'],$row['updated'],'feature',$row['user']));
+        $key = \Dba::insert_id();
+        // build mapping of featureUID -> new LevelUID
+        $feat_level[$row['uid'] = $key;
+
+    } // fetch assoc
+
+    // Move Feature spatial data
+
+    // Move Feature images/media
+
+    // Load the Krotovina, and create the new levels
+
+    // build mapping of krotovinaUID -> new LevelUID
+
+    // Move Kroto spatial data
+
+    // Move Kroto images/media
+
+    return $retval;
+
+  } // update_0026
+
 } // \Update\Database class
 
 ?>
