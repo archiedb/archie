@@ -1832,30 +1832,45 @@ class Database {
     $sql = "SELECT * FROM `feature`";
     $db_results = \Dba::read($sql);
 
-    $feat_level = array();
-
     while ($row = \Dba::fetch_assoc($db_results)) {
         // Build the new Level
         $sql = "INSERT INTO `level` (`site`,`catalog_id`,`description`,`notes`,`created`,`updated`,`type`,`user`) VALUES " . 
                 "(?,?,?,?,?,?,?,?)";
-        $retval = \Dba::write($sql,array($row['site'],$row['catalog_id',$row['description'],$row['keywords'],$row['created'],$row['updated'],'feature',$row['user']));
+        $retval = \Dba::write($sql,array($row['site'],$row['catalog_id'],$row['description'],$row['keywords'],$row['created'],$row['updated'],'feature',$row['user']));
         $key = \Dba::insert_id();
-        // build mapping of featureUID -> new LevelUID
-        $feat_level[$row['uid'] = $key;
+
+        // Re-assign the spatial data for the feature to the new 'level-feature' 
+        $sql = "UPDATE `spatial_data` SET `record`=? WHERE `record`=? AND `record_type`='feature'";
+        $retval = \Dba::write($sql,array($key,$row['uid']));
+
+        $sql = "UPDATE `media` SET `record`=? WHERE `record`=? AND `record_type`='feature'";
+        $retval = \Dba::write($sql,array($key,$row['uid']));
+
+        $sql = "UPDATE `image` SET `record`=? WHERE `record`=? AND `type`='feature'";
+        $retval = \Dba::write($sql,array($key,$row['uid']));
 
     } // fetch assoc
 
-    // Move Feature spatial data
+    $sql = "SELECT * FROM `krotovina`";
+    $db_results = \Dba::read($sql); 
 
+    while ($row = \Dba::fetch_assoc($db_results)) {
+      // Build the new level
+      $sql = "INSERT INTO `level` (`site`,`catalog_id`,`description`,`notes`,`created`,`updated`,`type`,`user`) VALUES " .
+            "(?,?,?,?,?,?,?,?)";
+      $retval = \Dba::write($sql,array($row['site'],$row['catalog_id'],$row['description'],$row['keywords'],$row['created'],$row['updated'],'krotovina',$row['user']));
+      $key = \Dba::insert_id();
+
+      $sql = "UPDATE `spatial_data` SET `record`=? WHERE `record`=? AND `record_type`='krotovina'";
+      $retval = \Dba::write($sql,array($key,$row['uid']));
+
+      $sql = "UPDATE `media` SET `record`=? WHERE `record`=? AND `record_type`='krotovina'";
+      $retval = \Dba::write($sql,array($key,$row['uid']));
+
+      $sql = "UPDATE `image` SET `record`=? WHERE `record`=? AND `record_type`='krotovina'";
+      $retval = \Dba::write($sql,array($key,$row['uid']));  
+    }
     // Move Feature images/media
-
-    // Load the Krotovina, and create the new levels
-
-    // build mapping of krotovinaUID -> new LevelUID
-
-    // Move Kroto spatial data
-
-    // Move Kroto images/media
 
     return $retval;
 
