@@ -376,6 +376,8 @@ class Database {
     $update_string = '- Add general notes field to level.<br />' . 
                     '- Add type field to level preping for re-work of krotovina/feature/level functionality.<br />';
     $versions[] = array('version'=>'0025','description'=>$update_string);
+    $update_string = '- Migrate Features & Krotovina to new Level methodology.<br />';
+    $versions[] = array('version'=>'0026','description'=>$update_string);
 
     return $versions; 
 
@@ -1832,11 +1834,12 @@ class Database {
     $sql = "SELECT * FROM `feature`";
     $db_results = \Dba::read($sql);
 
+
     while ($row = \Dba::fetch_assoc($db_results)) {
         // Build the new Level
-        $sql = "INSERT INTO `level` (`site`,`catalog_id`,`description`,`notes`,`created`,`updated`,`type`,`user`) VALUES " . 
-                "(?,?,?,?,?,?,?,?)";
-        $retval = \Dba::write($sql,array($row['site'],$row['catalog_id'],$row['description'],$row['keywords'],$row['created'],$row['updated'],'feature',$row['user']));
+        $sql = "INSERT INTO `level` (`site`,`catalog_id`,`description`,`notes`,`created`,`updated`,`type`,`user`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`,`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`z_order`) VALUES " . 
+                "(?,?,?,?,?,?,?,?,?,?,?,?,?,'0','0','0','0','0',?)";
+        $retval = \Dba::write($sql,array($row['site'],$row['catalog_id'],$row['description'],$row['keywords'],$row['created'],$row['updated'],'feature',$row['user'],'Feature','Feature','Feature','0','0','desc'));
         $key = \Dba::insert_id();
 
         // Re-assign the spatial data for the feature to the new 'level-feature' 
@@ -1856,9 +1859,9 @@ class Database {
 
     while ($row = \Dba::fetch_assoc($db_results)) {
       // Build the new level
-      $sql = "INSERT INTO `level` (`site`,`catalog_id`,`description`,`notes`,`created`,`updated`,`type`,`user`) VALUES " .
-            "(?,?,?,?,?,?,?,?)";
-      $retval = \Dba::write($sql,array($row['site'],$row['catalog_id'],$row['description'],$row['keywords'],$row['created'],$row['updated'],'krotovina',$row['user']));
+      $sql = "INSERT INTO `level` (`site`,`catalog_id`,`description`,`notes`,`created`,`updated`,`type`,`user`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`,`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`z_order`) VALUES " . 
+            "(?,?,?,?,?,?,?,?,?,?,?,?,?,'0','0','0','0','0',?)";
+      $retval = \Dba::write($sql,array($row['site'],$row['catalog_id'],$row['description'],$row['keywords'],$row['created'],$row['updated'],'krotovina',$row['user'],'Krotovina','Krotovina','Krotovina','0','0','desc'));
       $key = \Dba::insert_id();
 
       $sql = "UPDATE `spatial_data` SET `record`=? WHERE `record`=? AND `record_type`='krotovina'";
