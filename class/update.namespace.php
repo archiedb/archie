@@ -1867,7 +1867,7 @@ class Database {
       $sql = "UPDATE `media` SET `record`=? WHERE `record`=? AND `record_type`='krotovina'";
       $retval = \Dba::write($sql,array($key,$row['uid']));
 
-      $sql = "UPDATE `image` SET `record`=? WHERE `record`=? AND `record_type`='krotovina'";
+      $sql = "UPDATE `image` SET `record`=? WHERE `record`=? AND `type`='krotovina'";
       $retval = \Dba::write($sql,array($key,$row['uid']));  
     }
     // Move Feature images/media
