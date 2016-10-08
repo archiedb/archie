@@ -271,11 +271,11 @@ class Err {
 	 */
 	public static function auto_init() {
 
-		if (is_array($_SESSION['warnings'])) { 
+		if (isset($_SESSION['warnings'])) { 
 			self::$warnings = $_SESSION['warnings'];
 		}
 
-		if (!is_array($_SESSION['errors'])) { return false; }
+		if (!isset($_SESSION['errors'])) { return false; }
 
 		// Re-insert them
 		foreach ($_SESSION['errors'] as $key=>$error) {

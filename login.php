@@ -48,10 +48,12 @@ if (isset($auth['success'])) {
 	$_SESSION['sess_data'] = $auth; 
 
   // Check for a referrer
-  if (substr($_POST['return'],0,strlen(Config::get('web_path'))) == Config::get('web_path')) {
-    $url = \UI\return_url(substr($_POST['return'],strlen(Config::get('web_path'))));
-    header('Location: ' . Config::get('web_path') . $url);    
-    exit(); 
+  if (isset($_POST['return'])) {
+    if (substr($_POST['return'],0,strlen(Config::get('web_path'))) == Config::get('web_path')) {
+      $url = \UI\return_url(substr($_POST['return'],strlen(Config::get('web_path'))));
+      header('Location: ' . Config::get('web_path') . $url);    
+      exit(); 
+    }
   }
 
   header('Location: ' . Config::get('web_path'));
