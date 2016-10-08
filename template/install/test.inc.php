@@ -123,7 +123,7 @@ if (INIT_LOADED != '1') { exit; }
       <tr>
         <td>Apache Mod-Rewrite Enabled</td>
         <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_mod_rewrite()); ?></p></td>
-        <td>Make sure mod_rewrite is enabled in Apache</td>
+        <td>Make sure mod_rewrite is enabled in Apache, can be ignored if not using Apache webserver.</td>
       </tr>
       </tr>
     </tbody>
