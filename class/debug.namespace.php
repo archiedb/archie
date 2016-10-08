@@ -335,6 +335,7 @@ function check_imagemagick() {
  */
 function check_mod_rewrite() { 
 
+  // Try to figure out if we're using Apache
   if (function_exists('apache_get_modules')) {
     if (in_array('mod_rewrite',apache_get_modules())) {
       return true;
