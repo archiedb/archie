@@ -260,14 +260,17 @@ class View {
       case 'level':
         $this->set_select('`level`.`uid`');
         $sql = 'SELECT %%SELECT%% FROM `level` ';
+        $this->set_filter('type','level');
       break;
       case 'feature':
-        $this->set_select('`feature`.`uid`');
-        $sql = 'SELECT %%SELECT%% FROM `feature` ';
+        $this->set_select('`level`.`uid`');
+        $sql = 'SELECT %%SELECT%% FROM `level` ';
+        $this->set_filter('type','feature');
       break;
       case 'krotovina':
-        $this->set_select('`krotovina`.`uid`');
-        $sql = 'SELECT %%SELECT%% FROM `krotovina` ';
+        $this->set_select('`level`.`uid`');
+        $sql = 'SELECT %%SELECT%% FROM `level` ';
+        $this->set_filter('type','krotovina');
       break;
     }
     $this->_state['base'] = $sql; 
@@ -676,6 +679,9 @@ class View {
         $this->set_join('left','`spatial_data`','`spatial_data`.`record`','`record`.`uid`',100);
         $filter_sql = " (`spatial_data`.`record_type`='record' AND `spatial_data`.`station_index`='" . Dba::escape($value) . "') AND ";
       break;
+      case 'type':
+        $filter_sql = " `level`.`type`='" . Dba::escape($value) . "' AND ";
+      break;
       case 'item':
       case 'level':
       case 'height':
@@ -767,7 +773,7 @@ class View {
           case 'created':
           case 'updated':
           case 'user':
-            $sql = "`feature`.`$field`";
+            $sql = "`level`.`$field`";
           break;
         }
       break;
@@ -777,7 +783,7 @@ class View {
           case 'created':
           case 'updated':
           case 'user':
-            $sql = "`krotovina`.`$field`";
+            $sql = "`level`.`$field`";
           break;
         }
       break;

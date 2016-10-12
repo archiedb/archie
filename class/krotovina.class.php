@@ -22,7 +22,7 @@ class Krotovina extends database_object {
 
 		if (!is_numeric($uid) OR !$uid) { return false; } 
 
-		$row = $this->get_info($uid,'krotovina'); 
+		$row = $this->get_info($uid,'level'); 
 
 		foreach ($row as $key=>$value) { 
 			$this->$key = $value; 
