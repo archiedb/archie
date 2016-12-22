@@ -6,9 +6,9 @@ class Record extends database_object {
   public $site; // Site UID  
   public $catalog_id; // # of item unique to site
   public $inventory_id; // this is the built ID of the thingy from site + year + catalog id
-  public $feature; 
-  public $krotovina;
-  public $level; 
+  public $feature; // Optional
+  public $krotovina; // Optional
+  public $level; // Optional 
   public $lsg_unit; 
   public $station_index; // LISTED AS RN in the interface (>.<)
   public $xrf_matrix_index; 

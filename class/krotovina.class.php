@@ -6,6 +6,8 @@ class Krotovina extends database_object {
 	public $uid; 
   public $site; // FK Site
   public $catalog_id; // Per site Unique value visually displayed as F-#
+  public $lsg_unit; // Lithostratagraphic Unit
+  public $level; // FK of `Level`.`uid`
   public $keywords;
   public $description;
   public $user; // FK User
