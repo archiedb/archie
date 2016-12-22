@@ -376,7 +376,9 @@ class Database {
     $update_string = '- Add general notes field to level.<br />' . 
                     '- Add type field to level preping for re-work of krotovina/feature/level functionality.<br />';
     $versions[] = array('version'=>'0025','description'=>$update_string);
-    $update_string = '- Migrate Features & Krotovina to new Level methodology.<br />';
+    $update_string = '- Add L. U. and Level to Krotovina and Features as optional fields.<br />' . 
+                    '- Make Level an optional field on Records.<br />' . 
+                    '- Create Excavators Table for holding infinite excavator <--> Level/Feature/Krotovina mappings';
     $versions[] = array('version'=>'0026','description'=>$update_string);
 
     return $versions; 
@@ -1823,57 +1825,36 @@ class Database {
 
   /**
    * update_0026
-   * Migrate the spatial data from feature/krotovina -> new levels
-   * Create Level records for every krotovina and feature
+   * Add fields to krotovina/feature tables
+   * Add excavator table (krot/feat use it eventually level will)
    */
   public static function update_0026() {
 
     $retval = true;
 
-    // Load the features, and create the new levels
-    $sql = "SELECT * FROM `feature`";
-    $db_results = \Dba::read($sql);
+    // Create a table to keep track of people who enter shit into the krotovina/feature
+    $sql = "CREATE TABLE `excavator` (" . 
+      "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+      "`user` int(11) UNSIGNED NOT NULL," . 
+      "`record` int(11) UNSIGNED NOT NULL," .
+      "`type` int(11) UNSIGNED NOT NULL," .
+      " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval: false;
 
+    $sql = "ALTER TABLE `record` CHANGE `level` `level` INT ( 11 ) UNSIGNED NULL AFTER `catalog_id`";
+    $retval = \Dba::write($sql) ? $retval: false;
 
-    while ($row = \Dba::fetch_assoc($db_results)) {
-        // Build the new Level
-        $sql = "INSERT INTO `level` (`site`,`catalog_id`,`description`,`notes`,`created`,`updated`,`type`,`user`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`,`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`z_order`) VALUES " . 
-                "(?,?,?,?,?,?,?,?,?,?,?,?,?,'0','0','0','0','0',?)";
-        $retval = \Dba::write($sql,array($row['site'],$row['catalog_id'],$row['description'],$row['keywords'],$row['created'],$row['updated'],'feature',$row['user'],'Feature','Feature','Feature','0','0','desc'));
-        $key = \Dba::insert_id();
+    $sql = "ALTER TABLE `krotovina` ADD `lsg_unit` VARCHAR(255) NULL AFTER `catalog_id`";
+    $retval = \Dba::write($sql) ? $retval: false;
 
-        // Re-assign the spatial data for the feature to the new 'level-feature' 
-        $sql = "UPDATE `spatial_data` SET `record`=? WHERE `record`=? AND `record_type`='feature'";
-        $retval = \Dba::write($sql,array($key,$row['uid']));
+    $sql = "ALTER TABLE `feature` ADD `lsg_unit` VARCHAR(255) NULL AFTER `catalog_id`";
+    $retval = \Dba::write($sql) ? $retval: false;
 
-        $sql = "UPDATE `media` SET `record`=? WHERE `record`=? AND `record_type`='feature'";
-        $retval = \Dba::write($sql,array($key,$row['uid']));
+    $sql = "ALTER TABLE `feature` ADD `level` INT ( 11 ) UNSIGNED NULL AFTER `lsg_unit`";
+    $retval = \Dba::write($sql) ? $retval: false;
 
-        $sql = "UPDATE `image` SET `record`=? WHERE `record`=? AND `type`='feature'";
-        $retval = \Dba::write($sql,array($key,$row['uid']));
-
-    } // fetch assoc
-
-    $sql = "SELECT * FROM `krotovina`";
-    $db_results = \Dba::read($sql); 
-
-    while ($row = \Dba::fetch_assoc($db_results)) {
-      // Build the new level
-      $sql = "INSERT INTO `level` (`site`,`catalog_id`,`description`,`notes`,`created`,`updated`,`type`,`user`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`,`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`z_order`) VALUES " . 
-            "(?,?,?,?,?,?,?,?,?,?,?,?,?,'0','0','0','0','0',?)";
-      $retval = \Dba::write($sql,array($row['site'],$row['catalog_id'],$row['description'],$row['keywords'],$row['created'],$row['updated'],'krotovina',$row['user'],'Krotovina','Krotovina','Krotovina','0','0','desc'));
-      $key = \Dba::insert_id();
-
-      $sql = "UPDATE `spatial_data` SET `record`=? WHERE `record`=? AND `record_type`='krotovina'";
-      $retval = \Dba::write($sql,array($key,$row['uid']));
-
-      $sql = "UPDATE `media` SET `record`=? WHERE `record`=? AND `record_type`='krotovina'";
-      $retval = \Dba::write($sql,array($key,$row['uid']));
-
-      $sql = "UPDATE `image` SET `record`=? WHERE `record`=? AND `type`='krotovina'";
-      $retval = \Dba::write($sql,array($key,$row['uid']));  
-    }
-    // Move Feature images/media
+    $sql = "ALTER TABLE `krotovina` ADD `level` INT ( 11 ) UNSIGNED NULL AFTER `lsg_unit`";
+    $retval = \Dba::write($sql) ? $retval: false;
 
     return $retval;
 
