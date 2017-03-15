@@ -105,9 +105,11 @@ class Krotovina extends database_object {
     $uid          = $input['krotovina_id'];
     $description  = empty($input['description']) ? NULL : $input['description'];
     $keywords     = empty($input['keywords']) ? NULL : $input['keywords'];
+    $level        = empty($input['level']) ? NULL : $input['level'];
+    $lsg_unit     = empty($input['lsg_unit']) ? NULL : $input['lsg_unit'];
     $updated      = time();
-    $sql = "UPDATE `krotovina` SET `updated`=?, `keywords`=?, `description`=? WHERE `uid`=?";
-    $db_results = Dba::write($sql,array($updated,$keywords,$description,$uid)); 
+    $sql = "UPDATE `krotovina` SET `updated`=?, `keywords`=?, `description`=?, `level`=?, `lsg_unit`=? WHERE `uid`=?";
+    $db_results = Dba::write($sql,array($updated,$keywords,$description,$level,$lsg_unit,$uid)); 
 
     if (!$db_results) { 
       Err::add('general','Unable to update Krotovina - please see error log');
