@@ -116,7 +116,7 @@ class Krotovina extends database_object {
       return false;
     }
 
-    $log_json = json_encode(array('Description'=>$description,'Keywords'=>$keywords,'User'=>\UI\sess::$user->username,'Updated'=>date('r',$updated)));
+    $log_json = json_encode(array('Description'=>$description,'Keywords'=>$keywords,'Level'=>$level,'LSGUnit'=>$lsg_unit,'User'=>\UI\sess::$user->username,'Updated'=>date('r',$updated)));
     Event::record('krotovina::update',$log_json);
 
     $this->refresh();

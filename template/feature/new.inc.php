@@ -63,6 +63,47 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
+    <div class="<?php Err::form_class('level'); ?>">
+    <label class="col-md-2 control-label" for="inputLevel">Level</label>
+    <div class="col-md-2">
+      <?php
+        $user_levels = Level::get_open_user_levels();
+      ?>
+      <select id="inputLevel" class="form-control" name="level">
+        <option value="">No Level</option>
+      <?php
+      foreach ($user_levels as $level_uid) {
+          $level = new Level($level_uid);
+          $is_selected = '';
+          if (isset($_POST['level'])) {
+            if ($_POST['level'] == $level_uid) { $is_selected=' selected="selected="'; }
+          }
+      ?>
+        <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($level->name); ?></option>
+      <?php } ?>
+      </select>
+    </div>
+    </div> <!-- ERROR -->
+  </div>
+  <div class="form-group">
+    <div class="<?php Err::form_class('lsg_unit'); ?>">
+    <label class="col-md-2 control-label" for="inputLsgUnit">LSG Unit</label>
+    <div class="col-md-2">
+      <select class="form-control" name="lsg_unit">
+        <?php foreach (lsgunit::get_values() as $name) {
+          $is_selected = '';
+          if (isset($_POST['lsg_unit'])) {
+            if ($_POST['lsg_unit'] == $name) { $is_selected=" selected=\"selected=\""; }
+          }
+        ?>
+        <option value="<?php echo scrub_out($name); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
+      <?php } ?>
+        </select>
+    </div>
+    </div>
+  </div>
+</div><div class="row">
+  <div class="form-group">
     <div class="col-md-12">
   	<input type="submit" tabindex="6" class="btn btn-primary" value="Create" />
     </div>

@@ -33,6 +33,8 @@ class Feature extends database_object {
     $this->record = 'F-' . $this->catalog_id;
     $this->user = new User($this->user);
     $this->site = new Site($this->site);
+    $this->level = new Level($this->level);
+    $this->lsg_unit = new Lsgunit($this->lsg_unit);
 
 		return true; 
 
@@ -127,19 +129,27 @@ class Feature extends database_object {
       return false;
     }
 
-    $uid = Dba::escape($input['feature_id']);
-    $description = Dba::escape($input['description']);
-    $keywords = Dba::escape($input['keywords']);
-    $updated = time();
-    $sql = "UPDATE `feature` SET `updated`='$updated', `keywords`='$keywords', `description`='$description' WHERE `uid`='$uid'";
-    $db_results = Dba::write($sql); 
+    $uid          = $input['feature_id'];
+    $description  = $input['description'];
+    $keywords     = $input['keywords'];
+    $updated      = time();
+    $level        = empty($input['level']) ? NULL : $input['level'];
+    $lsg_unit     = empty($input['lsg_unit']) ? NULL : $input['lsg_unit'];
+
+    $sql = "UPDATE `feature` SET `updated`=?, `keywords`=?, `description`=?, `level`=?, `lsg_unit`=? WHERE `uid`=?";
+    $db_results = Dba::write($sql,array($updated,$keywords,$description,$level,$lsg_unit,$uid)); 
+
+    if (!$db_results) { 
+      Err::add('general','Unable to update Feature - please see error log');
+      return false;
+    }
 
     $this->refresh();
     $record = $this->record;
-    $log_line = "$site,$record,\"" . addslashes($description) . "\",\"$keywords\"," . \UI\sess::$user->username . ",\"" . date('r',$updated) . "\"";
-    Event::record('UPDATE-FEATURE',$log_line);
+    $log_json = json_encode(array('Description'=>$description,'Keywords'=>$keywords,'Level'=>$level,'LSGUnit'=>$lsg_unit,'User'=>\UI\sess::$user->username,'Updated'=>date('r',$updated)));
+    Event::record('feature::update',$log_line);
 
-    return $db_results;
+    return true;
 
   } // update
 
@@ -185,9 +195,11 @@ class Feature extends database_object {
     // Now it's safe to insert it
     $description  = empty($input['description']) ? NULL : $input['description'];
     $keywords     = empty($input['keywords']) ? NULL : $input['keywords'];
+    $level        = empty($input['level']) ? NULL : $input['level'];
+    $lsg_unit     = empty($input['lsg_unit']) ? NULL : $input['lsg_unit'];
     $created      = time();
-    $sql = "INSERT INTO `feature` (`site`,`catalog_id`,`description`,`keywords`,`user`,`created`) VALUES (?,?,?,?,?,?)";
-    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$description,$keywords,\UI\sess::$user->uid,$created));
+    $sql = "INSERT INTO `feature` (`site`,`catalog_id`,`description`,`keywords`,`level`,`lsg_unit`,`user`,`created`) VALUES (?,?,?,?,?,?,?,?)";
+    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$description,$keywords,$level,$lsg_unit,\UI\sess::$user->uid,$created));
 
     if (!$db_results) { 
       Error:add('general','Unknown Error - inserting feature into database');
@@ -199,7 +211,7 @@ class Feature extends database_object {
 
     $insert_id = Dba::insert_id();
 
-    $log_json = json_encode(array('Site'=>$input['site'],'Catalog ID'=>$input['catalog_id'],'Description'=>$input['description'],'Keywords'=>$input['keywords'],'User'=>\UI\sess::$user->username,'Created'=>$created));
+    $log_json = json_encode(array('Site'=>$input['site'],'Catalog ID'=>$input['catalog_id'],'Description'=>$input['description'],'Keywords'=>$input['keywords'],'Level'=>$input['level'],'LSGUnit'=>$input['lsg_unit'],'User'=>\UI\sess::$user->username,'Created'=>$created));
     Event::record('feature::create',$log_json);
     
     // Now we add the initial spatial data
@@ -287,6 +299,17 @@ class Feature extends database_object {
     $input['rn'] = $input['initial_rn'];
     if (!SpatialData::is_site_unique($input,$input['feature_id'])) {
       Err::add('initial_rn','Duplicate RN in this site');
+    }
+
+    if (strlen($input['level'])) {
+      $level = new Level($input['level']);
+      if (!$level->catalog_id) {
+        Err::add('level','Invalid Level Selected');
+      }
+    }
+
+    if (!Lsgunit::is_valid($input['lsg_unit'])) {
+      Err::add('lsg_unit','Invalid Lithostratigraphic Unit');
     }
 
     if (Err::occurred()) { return false; }

@@ -28,7 +28,7 @@ if (INIT_LOADED != '1') { exit; }
         $user_levels = Level::get_open_user_levels();
         if (in_array($krotovina->level->uid,$user_levels) OR Access::has('record','admin')) {
           // For Record admins add the current one even if it's not open
-          if (!in_array($krotovina->level->uid,$user_levels)) { $user_levels[] = $record->level->uid; }
+          if (!in_array($krotovina->level->uid,$user_levels)) { $user_levels[] = $krotovina->level->uid; }
         ?>
       <select class="form-control" id="inputLevel" name="level">
         <option value="">No Level</option>
@@ -38,7 +38,7 @@ if (INIT_LOADED != '1') { exit; }
           $is_selected = '';
           if ($krotovina->level->uid == $level_uid) { $is_selected=' selected="selected="'; }
       ?>
-        <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php $level->_print('name'); ?></option>
+        <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php $krotovina->_print('name'); ?></option>
       <?php } ?>
       </select>
       <?php } else { ?>
