@@ -7,8 +7,8 @@ if (INIT_LOADED != '1') { exit; }
       <a href="<?php echo Config::get('web_path'); ?>/feature/view/<?php echo scrub_out($feature->uid); ?>">
       <?php $feature->_print('record') ?></a>
   </td>
-	<td><?php $feature->_print('keywords'); ?></td>
-	<td><?php $feature->_print('description'); ?></td>
+	<td><?php $feature->_print('keywords',45); ?></td>
+	<td><?php $feature->_print('description',45); ?></td>
   <td>
     <div class="btn-group pull-right">
       <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/feature/<?php echo scrub_out($feature->catalog_id); ?>">Records</a>
