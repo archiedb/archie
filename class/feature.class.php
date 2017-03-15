@@ -24,7 +24,7 @@ class Feature extends database_object {
 
 		if (!is_numeric($uid) OR !$uid) { return false; } 
 
-		$row = $this->get_info($uid,'level'); 
+		$row = $this->get_info($uid,'feature'); 
 
 		foreach ($row as $key=>$value) { 
 			$this->$key = $value; 

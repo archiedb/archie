@@ -24,7 +24,7 @@ class Krotovina extends database_object {
 
 		if (!is_numeric($uid) OR !$uid) { return false; } 
 
-		$row = $this->get_info($uid,'level'); 
+		$row = $this->get_info($uid,'krotovina'); 
 
 		foreach ($row as $key=>$value) { 
 			$this->$key = $value; 
@@ -33,6 +33,8 @@ class Krotovina extends database_object {
     $this->record = 'K-' . $this->catalog_id;
     $this->user = new User($this->user);
     $this->site = new Site($this->site);
+    $this->level = new Level($this->level);
+    $this->lsg_unit = new Lsgunit($this->lsg_unit);
 
 		return true; 
 
@@ -164,9 +166,12 @@ class Krotovina extends database_object {
 
     //FIXME: Change to NULL once DB change is in place update_0019()
     // Now it's safe to insert it
-    $created = time();
-    $sql = "INSERT INTO `krotovina` (`site`,`catalog_id`,`description`,`keywords`,`user`,`created`) VALUES (?,?,?,?,?,?)";
-    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$input['description'],$input['keywords'],\UI\sess::$user->uid,$created));
+    $created  = time();
+    $level    = strlen($input['level']) ? $input['level'] : NULL;
+    $lsg_unit = strlen($input['lsg_unit']) ? $input['lsg_unit'] : NULL;
+
+    $sql = "INSERT INTO `krotovina` (`site`,`catalog_id`,`description`,`keywords`,`level`,`lsg_unit`,`user`,`created`) VALUES (?,?,?,?,?,?,?,?)";
+    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$input['description'],$input['keywords'],$level,$lsg_unit,\UI\sess::$user->uid,$created));
 
     if (!$db_results) { 
       Error:add('general','Unknown Error - inserting krotovina into database');
@@ -178,9 +183,9 @@ class Krotovina extends database_object {
 
     // Take the insert_id and return it
     $insert_id = Dba::insert_id();
-
+    
     $log_json = json_encode(array('Site'=>$input['site'],'Catalog ID'=>$input['catalog_id'],'Description'=>$input['description'],
-        'Keywords'=>$input['keywords'],'User'=>\UI\sess::$user->username,'Created'=>date("r",$created)));
+        'Keywords'=>$input['keywords'],'Level'=>$level,'LSG Unit'=>$lsg_unit,'User'=>\UI\sess::$user->username,'Created'=>date("r",$created)));
 
     Event::record('krotovina::create',$log_json);
     
@@ -249,6 +254,19 @@ class Krotovina extends database_object {
     $input['rn'] = $input['station_index'];
     if (!SpatialData::is_site_unique($input,$input['krotovina_id'])) {
       Err::add('station_index','Duplicate RN in this site');
+    }
+
+    // If they specified a level, it must be valid
+    if (strlen($input['level'])) {
+      $level = new Level($input['level']);
+      if (!$level->catalog_id) {
+        Err::add('level','Level not found, please create level record first');
+      }
+    }
+
+    // Make sure the LSG unit is valid
+    if (!Lsgunit::is_valid($input['lsg_unit'])) {
+      Err::add('lsg_unit','Invalid Lithostratigraphic Unit');
     }
 
     if (Err::occurred()) { return false; }
