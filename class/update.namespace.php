@@ -1838,6 +1838,7 @@ class Database {
       "`user` int(11) UNSIGNED NOT NULL," . 
       "`record` int(11) UNSIGNED NOT NULL," .
       "`type` int(11) UNSIGNED NOT NULL," .
+      "PRIMARY KEY (`uid`))" .
       " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval: false;
 
