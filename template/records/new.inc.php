@@ -33,11 +33,9 @@ require_once 'template/menu.inc.php';
     <div class="col-md-2">
       <?php 
         $user_levels = Level::get_open_user_levels(); 
-        if (!count($user_levels)) { $default_level_value = 'No Open Levels'; }
-        else { $default_level_value = '&nbsp;'; }
       ?>
       <select id="inputLevel" class="form-control" name="level">
-        <option value=""><?php echo $default_level_value; ?></option>
+        <option value="">No Level</option>
       <?php 
       foreach ($user_levels as $level_uid) {
           $level = new Level($level_uid);

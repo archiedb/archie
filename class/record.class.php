@@ -188,14 +188,14 @@ class Record extends database_object {
 		} 
 
     // We need the real UID of the following objects
-    $level = new Level($input['level']);
+    $level = $input['level'] ? new Level($input['level']) : NULL;
 
     $feature_uid    = empty($input['feature']) ? NULL : Feature::get_uid_from_record($input['feature']);
     $krotovina_uid  = empty($input['krotovina']) ? NULL : Krotovina::get_uid_from_record($input['krotovina']);
 
 		// Normalize the input, set unset variables to NULL
     $site               = \UI\sess::$user->site->uid;
-		$level              = $level->uid; 
+		$level              = strlen($input['level']) ? $level->uid : NULL;
 		$lsg_unit           = $input['lsg_unit']; 
 		$xrf_matrix_index   = empty($input['xrf_matrix_index']) ? NULL : $input['xrf_matrix_index'];
 		$xrf_artifact_index = empty($input['xrf_artifact_index']) ? NULL : $input['xrf_artifact_index'];
@@ -230,8 +230,7 @@ class Record extends database_object {
 			return false; 
 		} 
 
-		$insert_id = Dba::insert_id(); 
-
+		$insert_id = Dba::insert_id();
     $log_json = json_encode(array('Site'=>$site,'Catalog ID'=>$catalog_id,'Level'=>$input['level'],'LSG Unit'=>$lsg_unit,
                   'StationIndex'=>$station_index,'XRFMatrixIndex'=>$xrf_matrix_index,'Weight'=>$weight,
                   'Height'=>$height,'Thickness'=>$thickness,'Quanity',$quanity,'Material'=>$material,
@@ -325,8 +324,8 @@ class Record extends database_object {
 
 
     // We need the real UID of the following objects
-    $level              = new Level($input['level']);
-    $level_uid          = $level->uid;
+    $level              = strlen($input['level']) ? new Level($input['level']) : NULL;
+    $level_uid          = strlen($input['level']) ? $level->uid : NULL;
     $feature_uid        = Feature::get_uid_from_record($input['feature']);
     $krotovina_uid      = Krotovina::get_uid_from_record($input['krotovina']);
 
@@ -350,13 +349,12 @@ class Record extends database_object {
 		$updated            = time(); 
 		$record_uid         = $this->uid; 
 		$station_index      = isset($input['station_index']) ? $input['station_index'] : NULL;
-		$level              = $input['level'];
     $extra              = count($extra) ? json_encode($extra) : NULL;
 
 		$sql = "UPDATE `record` SET `level`=?, `lsg_unit`=?, `xrf_matrix_index`=?, `weight`=?, `height`=?, " . 
       "`width`=?, `thickness`=?, `quanity`=?, `material`=?, `classification`=?, `notes`=?, `xrf_artifact_index`=?, " . 
 			"`user`=?, `updated`=?, `feature`=?, `krotovina`=?, `extra`=? WHERE `uid`=?"; 
-		$db_results = Dba::write($sql,array($level,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$user,$updated,$feature,$krotovina,$extra,$record_uid)); 
+		$db_results = Dba::write($sql,array($level_uid,$lsg_unit,$xrf_matrix_index,$weight,$height,$width,$thickness,$quanity,$material,$classification,$notes,$xrf_artifact_index,$user,$updated,$feature,$krotovina,$extra,$record_uid)); 
 
 		if (!$db_results) { 
 			Err::add('general','Database Error, please try again'); 
@@ -590,9 +588,6 @@ class Record extends database_object {
       if (!$level->catalog_id) {
         Err::add('level','Level not found, please create level record first');
       }
-    }
-    else { 
-      Err::add('level','Level must be specified for all records');
     }
 
     // Make sure they entered only one of the three (krot/level/feature)

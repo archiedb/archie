@@ -16,14 +16,12 @@ if (INIT_LOADED != '1') { exit; }
     <div class="col-md-2">
       <?php
         $user_levels = Level::get_open_user_levels();
-        if (!count($user_levels)) { $default_level_value = 'No Open Levels'; }
-        else { $default_level_value = '&nbsp;'; }
         if (in_array($record->level->uid,$user_levels) OR Access::has('record','admin')) {
           // For Record admins add the current one even if it's not open
           if (!in_array($record->level->uid,$user_levels)) { $user_levels[] = $record->level->uid; }
         ?>
       <select class="form-control" id="inputLevel" name="level">
-        <option value=""><?php echo $default_level_value; ?></option>
+        <option value="">No Level</option>
       <?php
         foreach ($user_levels as $level_uid) {
           $level = new Level($level_uid);
