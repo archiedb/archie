@@ -7,8 +7,8 @@ if (INIT_LOADED != '1') { exit; }
       <a href="<?php echo Config::get('web_path'); ?>/krotovina/view/<?php $krotovina->_print('uid'); ?>">
       <?php $krotovina->_print('record'); ?></a>
   </td>
-	<td><?php $krotovina->_print('keywords'); ?></td>
-	<td><?php $krotovina->_print('description'); ?></td>
+	<td><?php $krotovina->_print('keywords',45); ?></td>
+	<td><?php $krotovina->_print('description',45); ?></td>
   <td>
     <div class="btn-group pull-right">
       <a class="btn btn-info" href="<?php echo Config::get('web_path'); ?>/records/search/krotovina/<?php $krotovina->_print('uid'); ?>">Records</a></li>

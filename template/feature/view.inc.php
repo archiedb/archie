@@ -30,7 +30,15 @@ if (INIT_LOADED != '1') { exit; }
   <th><abbr title="Lithostratoigraphic Unit">L. U.</abbr></th><td><?php echo scrub_out($feature->lsg_unit->name);?></td>
 </tr>
 </table>
-<hr />
+<p class="pull-right">
+  <button type="button" class="btn btn-success" data-target="#addexcavator" data-toggle="modal">Add Excavator</button>
+</p>
+<h4>Excavators</h4>
+<table class="table table-hover">
+<tr>
+  <th>Excavator</th><th>Date Added</th>
+</tr>
+</table>
 <h4>Feature Spatial Information</h4>
 <table class="table table-hover">
 <tr>
