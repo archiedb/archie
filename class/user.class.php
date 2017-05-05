@@ -417,8 +417,8 @@ class User extends database_object {
     } 
     // Shorter passwords need to be more complex
     else { 
-      if (strlen($password) < 6) { 
-        Err::add('password','Must be at least 6 characters long');
+      if (strlen($password) < 8) { 
+        Err::add('password','Must be at least 8 characters long');
       }
 
       if (preg_match('/^a-z$/',$password)) {
