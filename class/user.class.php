@@ -375,8 +375,7 @@ class User extends database_object {
     } 
 
     // This is here because we only check on the creation of a user 
-    if (strlen($input['password']) < 2) { 
-      Err::add('password','Password not long enough'); 
+    if (!User::validate_password($input['password'])) {
       return false; 
     }
 
