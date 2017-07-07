@@ -22,7 +22,7 @@
  */
 
 /**
- * Error class
+ * Err class
  *
  * This is the baic error class, its better now that we can use php5
  * hello static functions and variables
@@ -33,7 +33,7 @@
  * @license	http://opensource.org/licenses/gpl-2.0 GPLv2
  * @link	http://www.ampache.org/
  */
-class Error {
+class Err {
 
 	private static $state = false; // set to one when an error occurs
 	private static $errors = array(); // Errors array key'd array with errors that have occured
@@ -70,18 +70,18 @@ class Error {
 	public static function warning($name,$message,$clobber=0) { 
 
 		// Make sure its set first
-		if (!isset(Error::$warnings[$name])) {
-			Error::$warnings[$name] = $message;
+		if (!isset(Err::$warnings[$name])) {
+			Err::$warnings[$name] = $message;
 			$_SESSION['warnings'][$name] = $message;
 		}
 		// They want us to clobber it
 		elseif ($clobber) {
-			Error::$warnings[$name] = $message;
+			Err::$warnings[$name] = $message;
 			$_SESSION['warnings'][$name] = $message;
 		}
 		// They want us to append the error, add a BR\n and then the message
 		else {
-			Error::$warnings[$name] .= "<br />\n" . $message;
+			Err::$warnings[$name] .= "<br />\n" . $message;
 			$_SESSION['warnings'][$name] .=  "<br />\n" . $message;
 		}
 
@@ -94,7 +94,7 @@ class Error {
 	 */
 	public static function add($name,$message,$clobber=0) {
 	
-		Error::$error_count++; 
+		Err::$error_count++; 
 
     if (defined('UNIT_TEST') AND $name == 'general') { return false; }
 
@@ -103,21 +103,21 @@ class Error {
     }
 
 		// Make sure its set first
-		if (!isset(Error::$errors[$name])) {
-			Error::$errors[$name] = $message;
-			Error::$state = 1;
+		if (!isset(Err::$errors[$name])) {
+			Err::$errors[$name] = $message;
+			Err::$state = 1;
 			$_SESSION['errors'][$name] = $message;
 		}
 		// They want us to clobber it
 		elseif ($clobber) {
-			Error::$state = 1;
-			Error::$errors[$name] = $message;
+			Err::$state = 1;
+			Err::$errors[$name] = $message;
 			$_SESSION['errors'][$name] = $message;
 		}
 		// They want us to append the error, add a BR\n and then the message
 		else {
-			Error::$state = 1;
-			Error::$errors[$name] .= "<br />\n" . $message;
+			Err::$state = 1;
+			Err::$errors[$name] .= "<br />\n" . $message;
 			$_SESSION['errors'][$name] .=  "<br />\n" . $message;
 		}
 
@@ -141,7 +141,7 @@ class Error {
 	 */
 	public static function count() { 
 
-		return Error::$error_count; 
+		return Err::$error_count; 
 
 	} // count
 
@@ -151,9 +151,9 @@ class Error {
 	 */
 	public static function get($name) {
 
-		if (!isset(Error::$errors[$name])) { return ''; }
+		if (!isset(Err::$errors[$name])) { return ''; }
 
-		return Error::$errors[$name];
+		return Err::$errors[$name];
 
 	} // get
 
@@ -181,7 +181,7 @@ class Error {
 	 */
 	public static function display_class($name,$severity='') { 
 
-		if (!isset(Error::$errors[$name])) { return false; }
+		if (!isset(Err::$errors[$name])) { return false; }
 
 		switch ($severity) {
 			case 'optional':
@@ -206,7 +206,7 @@ class Error {
    */
   public static function form_class($name,$severity='') {
 
-    if (!isset(Error::$errors[$name])) { return false; }
+    if (!isset(Err::$errors[$name])) { return false; }
 
     switch ($severity) {
       case 'optional':
@@ -234,9 +234,9 @@ class Error {
 	public static function display($name) {
 
 		// Be smart about this, if no error don't print
-		if (!isset(Error::$errors[$name])) { return ''; }
+		if (!isset(Err::$errors[$name])) { return ''; }
 		
-		echo '<div class="alert alert-error alert-danger" role="alert">Error: ' . Error::$errors[$name] . '</div>';
+		echo '<div class="alert alert-error alert-danger" role="alert">Error: ' . Err::$errors[$name] . '</div>';
 
 	} // display
 
@@ -246,7 +246,7 @@ class Error {
 	 */
 	public static function dump() { 
 
-		$errors = print_r(Error::$errors,1); 
+		$errors = print_r(Err::$errors,1); 
 		self::clear(); 
 		return $errors; 	
 
@@ -258,8 +258,8 @@ class Error {
 	 */
 	public static function clear() { 
 
-		Error::$errors = array(); 
-		Error::$state = false; 
+		Err::$errors = array(); 
+		Err::$state = false; 
 
 		return true; 
 
@@ -271,11 +271,11 @@ class Error {
 	 */
 	public static function auto_init() {
 
-		if (is_array($_SESSION['warnings'])) { 
+		if (isset($_SESSION['warnings'])) { 
 			self::$warnings = $_SESSION['warnings'];
 		}
 
-		if (!is_array($_SESSION['errors'])) { return false; }
+		if (!isset($_SESSION['errors'])) { return false; }
 
 		// Re-insert them
 		foreach ($_SESSION['errors'] as $key=>$error) {

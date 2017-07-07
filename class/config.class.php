@@ -114,7 +114,7 @@ class Config {
 	public static function set($name, $value, $clobber = 0) {
 
 		if (isset(self::$_global[$name]) && !$clobber) {
-			Error::add('Config Global',"Trying to clobber'$name' without setting clobber");
+			Err::add('Config Global',"Trying to clobber'$name' without setting clobber");
 			return;
 		}
 		else {

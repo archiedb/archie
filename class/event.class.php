@@ -47,8 +47,8 @@ class Event {
     $message = '';
     switch ($type) { 
       case 'errors':
-        if (!Error::occurred()) { return false; }
-        $errors = Error::get_all(); 
+        if (!Err::occurred()) { return false; }
+        $errors = Err::get_all(); 
         if (isset($errors['general'])) { 
           $header_small = ' ' . scrub_out(strip_tags($errors['general']));
           unset($errors['general']); 
@@ -65,7 +65,7 @@ class Event {
         require \UI\template('/event'); 
       break; 
       case 'warnings':
-        $warnings = Error::get_all('warnings'); 
+        $warnings = Err::get_all('warnings'); 
         if (!count($warnings)) { return false; }
         if (isset($warnings['general'])) { 
           $header_small = ' ' . scrub_out($warnings['general']);

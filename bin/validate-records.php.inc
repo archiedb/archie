@@ -31,7 +31,7 @@ while ($row = Dba::fetch_assoc($db_results)) {
   // Check and see if we could close it
   // Assume boxes are check'd and shit
   $input = array('kroto_sample'=>1,'kroto_bag'=>1,'level_photo'=>1,'notes_done'=>1,'connect'=>1);
-  Error::clear();
+  Err::clear();
   $return = $level->validate_close($input); 
   if (!$return) {
     echo "[$level->uid] Level $level->name is INVALID\n";

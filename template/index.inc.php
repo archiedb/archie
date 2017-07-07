@@ -2,21 +2,23 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
-<table class="table table-striped">
-<thead>
-  <tr>
-    <th>Total records</th>
-    <th>Records entered today</th>
-    <th>Last Record Entered</th>
-    <th>Last Classification</th>
-    <th>Todays most common classification</th>
-  </tr>
-</thead>
-<tbody>
-<tr>
-  <td><?php echo Stats::total_records(); ?></td>
-  <td><?php echo Stats::total_records('today'); ?></td>
-  <td>
+<div class="row">
+  <div>
+    <p class="pull-right">&nbsp;</p>
+    <strong>Site Statistics</strong>
+  </div>
+</div>
+<div class="well">
+<div class="row">
+  <div class="col-sm-2"><strong>Total records</strong></div>
+  <div class="col-sm-3"><strong>Records entered today</strong></div>
+  <div class="col-sm-2"><strong>Last Record Entered</strong></div>
+  <div class="col-sm-2"><strong>Last Classification</strong></div>
+  <div class="col-sm-3"><strong>Todays most common classification</strong></div>
+</div><div class="row">
+  <div class="col-sm-2"><?php echo Stats::total_records(); ?></div>
+  <div class="col-sm-3"><?php echo Stats::total_records('today'); ?></div>
+  <div class="col-sm-2">
   <?php 
     $record = Record::last_created(); 
     if (!$record->uid) { 
@@ -26,17 +28,18 @@ if (INIT_LOADED != '1') { exit; }
       echo \UI\record_link($record->uid,'record',$record->record); 
     }
   ?>
-  </td>
-  <td>
+  </div>
+  <div class="col-sm-2">
     <?php
       if (!$record->uid) {
         echo "<strong class=\"text-error\">None</strong>";
       }
       else {
-        echo $record->classification->name;
+        echo \UI\search_link('classification',$record->classification->name,$record->classification->name);
       }
     ?>
-  <td>
+  </div>
+  <div class="col-sm-3">
   <?php 
       $info = Stats::classification_records('today'); 
       if ($info['count'] > 0) { 
@@ -46,10 +49,8 @@ if (INIT_LOADED != '1') { exit; }
         echo "<strong class=\"text-error\">No Data</strong>";
       }
   ?>
-  </td>
-</tr>
-</tbody>
-</table>
+  </div>
+</div></div>
 <!-- Records -->
 <?php if (Access::has('record','read')) { ?>
 <div class="row">
@@ -80,10 +81,10 @@ if (INIT_LOADED != '1') { exit; }
     <a href="<?php echo Config::get('web_path'); ?>/records/view/<?php echo scrub_out($record->uid); ?>"><?php echo scrub_out($record->record); ?></a>
   </div>
   <div class="col-sm-2">
-    <?php echo scrub_out($record->material->name); ?>
+    <?php echo \UI\search_link('material',$record->material->name,$record->material->name); ?>
   </div>
   <div class="col-sm-2">
-    <?php echo scrub_out($record->classification->name); ?>
+    <?php echo \UI\search_link('classification',$record->classification->name,$record->classification->name); ?>
   </div>
   <div class="col-sm-1">
     <?php echo \UI\record_link($record->level->uid,'level',$record->level->record); ?>

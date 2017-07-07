@@ -13,7 +13,7 @@ if (INIT_LOADED != '1') { exit; }
 <form class="form-horizontal" id="new_feature" method="post" action="<?php echo Config::get('web_path'); ?>/feature/update">
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('description'); ?>">
+    <div class="<?php Err::form_class('description'); ?>">
     <label class="control-label" for="inputDescription">How is the feature differentiated from the surrounding sediments? What are its defining characteristics?</label><br />
     <div class="col-md-10">
       <textarea class="form-control" placeholder="..." rows="4" cols="80" name="description"><?php \UI\form_value(array('post'=>'description','var'=>$feature->description)); ?></textarea>
@@ -22,13 +22,59 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('keywords'); ?>">
+    <div class="<?php Err::form_class('keywords'); ?>">
     <label class="control-label" for="inputKeywords">Additional Notes?</label><br />
     <div class="col-md-10">
       <textarea class="form-control" placeholder="..." rows="4" cols="80" name="keywords" id="inputKeywords"><?php echo scrub_out($feature->keywords); ?></textarea>
     </div>
     </div>
   </div>
+<div class="row">
+  <div class="form-group">
+    <div class="<?php Err::form_class('level'); ?>">
+    <label class="col-md-2 control-label" for="inputLevel"><abbr title="Unit:Quad:Level">Locus</abbr></label>
+    <div class="col-md-2">
+      <?php
+        $user_levels = Level::get_open_user_levels();
+        if (in_array($feature->level->uid,$user_levels) OR Access::has('record','admin')) {
+          // For Record admins add the current one even if it's not open
+          if (!in_array($feature->level->uid,$user_levels)) { $user_levels[] = $feature->level->uid; }
+        ?>
+      <select class="form-control" id="inputLevel" name="level">
+        <option value="">No Level</option>
+      <?php
+        foreach ($user_levels as $level_uid) {
+          $level = new Level($level_uid);
+          $is_selected = '';
+          if ($feature->level->uid == $level_uid) { $is_selected=' selected="selected="'; }
+      ?>
+        <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php $level->_print('name'); ?></option>
+      <?php } ?>
+      </select>
+      <?php } else { ?>
+       <input id="levelText" type="text" name="textvalue" value="<?php $feature->level->_print('name'); ?>" disabled="disabled">
+       <input id="inputLevel" name="level" type="hidden" value="<?php $feature->level->_print('uid'); ?>" />
+      <?php } ?>
+    </div>
+    </div>
+</div><div class="row">
+    <div class="<?php Err::form_class('lsg_unit'); ?>">
+    <label class="col-md-2 control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
+    <div class="col-md-2">
+      <select class="form-control" name="lsg_unit">
+      <?php if (!lsgunit::is_valid($feature->lsg_unit->name)) { ?>
+        <option value="<?php $feature->lsg_unit->_print('name'); ?>"><?php $feature->lsg_unit->_print('name'); ?></option>
+      <?php } ?>
+      <?php foreach (lsgunit::get_values() as $name) {
+        $is_selected = '';
+        if ($feature->lsg_unit->name == $name) { $is_selected=" selected=\"selected=\""; }
+      ?>
+        <option value="<?php echo scrub_out($name); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($name); ?></option>
+      <?php } ?>
+      </select>
+    </div>
+    </div>
+</div>
 </div><div class="row">
 <div class="form-group">
     <input type="hidden" name="feature_id" value="<?php echo scrub_out($feature->uid); ?>" />

@@ -96,7 +96,7 @@ class Site extends database_object {
 
     // Validate the field
     if (!$this->validate_field($input)) {
-      Error::add('general','Invalid field specified');
+      Err::add('general','Invalid field specified');
       return false;
     }
 
@@ -109,7 +109,7 @@ class Site extends database_object {
 
     // Make sure there's no overlap
     if (isset($fields[$fielduid])) {
-      Error::add('general','Duplicate Field, unable to add');
+      Err::add('general','Duplicate Field, unable to add');
       return false;
     }
 
@@ -206,7 +206,7 @@ class Site extends database_object {
 
     // Validate settings
     if (!$this->validate_settings($input)) {
-      Error::add('general','Invalid settings specified');
+      Err::add('general','Invalid settings specified');
       return false;
     }
 
@@ -243,7 +243,7 @@ class Site extends database_object {
         while ($row = Dba::fetch_assoc($db_results)) { 
           if ($row['Field'] == $input['fieldname']) {
             $retval = false; 
-            Error::add('general','Field names must be unique');
+            Err::add('general','Field names must be unique');
           }
         }
 
@@ -251,30 +251,30 @@ class Site extends database_object {
     }
 
     if (strlen($input['fieldname']) > 18) {
-      Error::add('general','Field names must be less than 18 characters'); 
+      Err::add('general','Field names must be less than 18 characters'); 
       $retval = false;
     }
 
     // Name must be A-Z0,9
     if (!preg_match('/[a-zA-Z0-9 ]/',$input['fieldname'])) {
-      Error::add('general','Field name must be A-Z,0-9 and spaces only');
+      Err::add('general','Field name must be A-Z,0-9 and spaces only');
       $retval = false;
     }
 
     // Type must be short, text, boolean
     if (!in_array($input['fieldtype'],array('string','text','boolean'))) {
-      Error::add('general','Invalid Field type, please try again');
+      Err::add('general','Invalid Field type, please try again');
       $retval = false;
     }
 
     // Validation must be words whole numbers decimal or boolean
     if (!in_array($input['fieldvalidation'],array('string','integer','decimal','boolean'))) {
-      Error::add('general','Invalid Validation method, please try again');
+      Err::add('general','Invalid Validation method, please try again');
       $retval = false;
     }
     // Enabled must be true/false
     if ($input['enabled'] != 0 AND $input['enabled'] != 1) {
-      Error::add('general','Invalid Field state, please try again');
+      Err::add('general','Invalid Field state, please try again');
       $retval = false;
     }
 
@@ -295,7 +295,7 @@ class Site extends database_object {
       case 'catalog_offset':
         // Just needs to be a positive number
         if ($input['catalog_offset'] < 0 OR intval($input['catalog_offset']) != $input['catalog_offset']) {
-          Error::add('general','Catalog Offset must be a postive whole number');
+          Err::add('general','Catalog Offset must be a postive whole number');
           return false;
         }
         return true;
@@ -318,7 +318,7 @@ class Site extends database_object {
             $retval = false;
           }
         }
-        if (!$retval) { Error::add('units','Invalid Units, only A-Z,0-9,_,- allowed, Invalid Unit(s) - ' . $invalid_units); }
+        if (!$retval) { Err::add('units','Invalid Units, only A-Z,0-9,_,- allowed, Invalid Unit(s) - ' . $invalid_units); }
         return $retval; 
       break;
       case 'lus':
@@ -331,7 +331,7 @@ class Site extends database_object {
             $invalid_lus .= $lu . ' :: ';
           }
         }
-        if (!$retval) { Error::add('lus','Invalid LUs - ' . $invalid_lus); }
+        if (!$retval) { Err::add('lus','Invalid LUs - ' . $invalid_lus); }
         return $retval;
       break;
       case 'quads':
@@ -345,7 +345,7 @@ class Site extends database_object {
             $invalid_quads .= $quad . ' :: ';
           }
         } 
-        if (!$retval) { Error::add('quads','Invalid Quads, only A-Z,0-9,_,- allowed, Invalid Quad(s) - '. $invalid_quads); }
+        if (!$retval) { Err::add('quads','Invalid Quads, only A-Z,0-9,_,- allowed, Invalid Quad(s) - '. $invalid_quads); }
         return $retval;
       break;
     }
@@ -492,10 +492,10 @@ class Site extends database_object {
   public static function create($input) { 
 
     // Clear any previous Error state
-    Error::clear(); 
+    Err::clear(); 
 
     if (!Site::validate($input)) {
-      Error::add('general','Invalid Field Values - please check input');
+      Err::add('general','Invalid Field Values - please check input');
       return false; 
     }
 
@@ -511,7 +511,7 @@ class Site extends database_object {
     $results = Dba::write($sql,array($input['name'],$description,$input['pi'],$exc_start,$exc_end,$partners,$northing,$easting,$elevation,1)); 
 
     if (!$results) { 
-      Error::add('general','Unable to add site, please see error log');
+      Err::add('general','Unable to add site, please see error log');
       return false;
     }
 
@@ -533,10 +533,10 @@ class Site extends database_object {
   public function update($input) { 
 
     // Reset the error state
-    Error::clear();
+    Err::clear();
 
     if (!Site::validate($input,$this->uid)) { 
-      Error::add('general','Invalid Field Values - Please check your input and try again');
+      Err::add('general','Invalid Field Values - Please check your input and try again');
       return false;
     }
 
@@ -553,7 +553,7 @@ class Site extends database_object {
     $db_results = Dba::write($sql,array($input['name'],$input['pi'],$description,$partners,$exc_start,$exc_end,$elevation,$northing,$easting,$this->uid));
 
     if (!$db_results) { 
-      Error::add('general','Unable to update View, please check error log.');
+      Err::add('general','Unable to update View, please check error log.');
       return false;
     }
 
@@ -574,36 +574,36 @@ class Site extends database_object {
 
     // Make sure there's a name and it's unique
     if (!Field::notempty($input['name'])) { 
-      Error::add('name','Required Field');
+      Err::add('name','Required Field');
     }
 
     // Site must be Alphanumeric
     if (!Field::validforfilename($input['name'])) {
-      Error::add('name','Name must contain only [-,_,A-Z,a-z,0-9]');
+      Err::add('name','Name must contain only [-,_,A-Z,a-z,0-9]');
     }
 
     $site_uid = Site::get_from_name($input['name']);
 
     if ($site_uid > 0 AND $site_uid != $uid) {
-      Error::add('name','Name already exists');
+      Err::add('name','Name already exists');
     }
 
     // Require a start a PI
     if (!Field::notempty($input['pi'])) {
-      Error::add('pi','Required Field');
+      Err::add('pi','Required Field');
     } 
 
     // Make sure northing/easting/elevation are numeric
     if (!Field::validate('elevation',$input['elevation'])) {
-      Error::add('elevation','Invalid Elevation');
+      Err::add('elevation','Invalid Elevation');
     }
 
     if (!Field::validate('northing',$input['northing'])) {
-      Error::add('northing','Invalid Northing');
+      Err::add('northing','Invalid Northing');
     }
 
     if (!Field::validate('easting',$input['easting'])) {
-      Error::add('easting','Invalid Easting');
+      Err::add('easting','Invalid Easting');
     }
 
     // Make sure if start and end are set that end is after start
@@ -611,18 +611,18 @@ class Site extends database_object {
     $end = strtotime($input['excavation_end']);
 
     if ($start > 0 AND $end > 0 AND $start > $end) { 
-      Error::add('excavation_end','End must be after Start');
+      Err::add('excavation_end','End must be after Start');
     }
 
     if (strlen($input['excavation_start']) AND !$start) {
-      Error::add('excavation_start','Invalid Date specified');
+      Err::add('excavation_start','Invalid Date specified');
     }
 
     if (strlen($input['excavation_end']) AND !$end) {
-      Error::add('excavation_end','Invalid Date format specified');
+      Err::add('excavation_end','Invalid Date format specified');
     }
 
-    if (Error::occurred()) { return false; }
+    if (Err::occurred()) { return false; }
 
     return true; 
 

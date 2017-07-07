@@ -5,11 +5,11 @@ if (INIT_LOADED != '1') { exit; }
 <?php require_once 'template/menu.inc.php'; ?>
 <div class="page-header">
 <p class="pull-right">
- <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>" class="btn btn-info">View Level</a>
+ <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>" class="btn btn-info">View</a>
   <?php if (!$level->closed) { ?>
   <a href="<?php echo Config::get('web_path'); ?>/level/checkclose/<?php echo scrub_out($level->uid); ?>" class="btn btn-danger">Close</a>
   <?php } else { ?>
-  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Generate Report</a>
+  <a target="_blank" href="<?php echo Config::get('web_path'); ?>/level/report/<?php echo scrub_out($level->uid) ?>" class="btn btn-success">Report</a>
   <?php } ?>
 </p>
 <h3>Edit Level <?php echo scrub_out($level->record); ?></h3>
@@ -19,7 +19,7 @@ if (INIT_LOADED != '1') { exit; }
 <form class="form-horizontal" id="update_level" method="post" action="<?php echo Config::get('web_path'); ?>/level/update">
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('unit'); ?>">
+    <div class="<?php Err::form_class('unit'); ?>">
     <label class="col-md-2 control-label" for="inputUnit">Unit</label>
     <div class="col-md-2">
   	  <select name="unit" class="form-control">
@@ -32,7 +32,7 @@ if (INIT_LOADED != '1') { exit; }
       </select>
     </div>
     </div>
-    <div class="<?php Error::form_class('quad'); ?>">
+    <div class="<?php Err::form_class('quad'); ?>">
     <label class="col-md-2 control-label" for="inputQuad">Quad</label>
     <div class="col-md-2">
       <select id="inputQuad" name="quad" class="form-control">
@@ -48,13 +48,13 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('level'); ?>">
+    <div class="<?php Err::form_class('level'); ?>">
     <label class="col-md-2 control-label" for="inputLevel">Level</label>
     <div class="col-md-2">
     	<input class="form-control" id="inputLevel" name="catalog_id" type="text" value="<?php \UI\form_value(array('post'=>'catalog_id','var'=>$level->catalog_id)); ?>" />
     </div>
     </div> 
-    <div class="<?php Error::form_class('lsg_unit'); ?>">
+    <div class="<?php Err::form_class('lsg_unit'); ?>">
     <label class="col-md-2 control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
     <div class="col-md-2">
     	<select name="lsg_unit" class="form-control">
@@ -73,16 +73,29 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('northing'); ?>">
+    <div class="<?php Err::form_class('northing'); ?>">
     <label class="col-md-2 control-label" for="inputNorthing">Northing</label>
     <div class="col-md-2">
-      <input class="form-controL" id="inputNorthing" type="text" name="northing" value="<?php \UI\form_value(array('post'=>'northing','var'=>$level->northing)); ?>">
+      <input class="form-control" id="inputNorthing" type="text" name="northing" value="<?php \UI\form_value(array('post'=>'northing','var'=>$level->northing)); ?>">
     </div>
     </div>
-    <div class="<?php Error::form_class('easting'); ?>">
+    <div class="<?php Err::form_class('easting'); ?>">
     <label class="col-md-2 control-label" for="inputEasting">Easting</label>
     <div class="col-md-2">
       <input class="form-control" id="inputEasting" type="text" name="easting" value="<?php \UI\form_value(array('post'=>'easting','var'=>$level->easting)); ?>">
+    </div>
+    </div>
+  </div>
+</div><div class="row">
+  <div class="form-group">
+    <div class="<?php Err::form_class('z_order'); ?>">
+    <label class="col-md-2 control-label" for="inputzorder">Elevation Order</label>
+    <div class="col-md-6">
+      <select class="form-control" name="zorder">
+        <?php $asc_selected = \UI\form_value(array('post'=>'zorder','var'=>$level->z_order),true) == 'asc' ? ' selected="selected"' : ''; ?>
+        <option value="desc">Descending</option>
+        <option value="asc"<?php echo $asc_selected; ?>>Ascending</option>
+      </select>
     </div>
     </div>
   </div>
@@ -90,13 +103,13 @@ if (INIT_LOADED != '1') { exit; }
   <h4>Elevations</h4><hr />
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('elv_nw_start'); ?>">
+    <div class="<?php Err::form_class('elv_nw_start'); ?>">
     <label class="col-md-2 control-label" for="inputElvNWStart">NW Start</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvNWStart" name="elv_nw_start" type="text" value="<?php \UI\form_value(array('post'=>'elv_nw_start','var'=>$level->elv_nw_start)); ?>">
     </div>
     </div>
-    <div class="<?php Error::form_class('elv_nw_finish'); ?>">
+    <div class="<?php Err::form_class('elv_nw_finish'); ?>">
     <label class="col-md-2 control-label" for="inputElvNWFinish">NW Finish</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvNWFinish" name="elv_nw_finish" type="text" value="<?php \UI\form_value(array('post'=>'elv_nw_finish','var'=>$level->elv_nw_finish)); ?>">
@@ -105,13 +118,13 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('elv_ne_start'); ?>">
+    <div class="<?php Err::form_class('elv_ne_start'); ?>">
     <label class="col-md-2 control-label" for="inputElvNEStart">NE Start</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvNEStart" name="elv_ne_start" type="text" value="<?php \UI\form_value(array('post'=>'elv_ne_start','var'=>$level->elv_ne_start)); ?>">
     </div>
     </div>
-    <div class="<?php Error::form_class('elv_ne_finish'); ?>">
+    <div class="<?php Err::form_class('elv_ne_finish'); ?>">
     <label class="col-md-2 control-label" for="inputElvNEFinish">NE Finish</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvNEFinish" name="elv_ne_finish" type="text" value="<?php \UI\form_value(array('post'=>'elv_ne_finish','var'=>$level->elv_ne_finish)); ?>">
@@ -120,13 +133,13 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('elv_sw_start'); ?>">
+    <div class="<?php Err::form_class('elv_sw_start'); ?>">
     <label class="col-md-2 control-label" for="inputElvSWStart">SW Start</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvSWStart" name="elv_sw_start" type="text" value="<?php \UI\form_value(array('post'=>'elv_sw_start','var'=>$level->elv_sw_start)); ?>">
     </div>
     </div>
-    <div class="<?php Error::form_class('elv_sw_finish'); ?>">
+    <div class="<?php Err::form_class('elv_sw_finish'); ?>">
     <label class="col-md-2 control-label" for="inputElvSWFinish">SW Finish</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvSWFinish" name="elv_sw_finish" type="text" value="<?php \UI\form_value(array('post'=>'elv_sw_finish','var'=>$level->elv_sw_finish)); ?>">
@@ -135,13 +148,13 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('elv_se_start'); ?>">
+    <div class="<?php Err::form_class('elv_se_start'); ?>">
     <label class="col-md-2 control-label" for="inputElvSEStart">SE Start</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvSEStart" name="elv_se_start" type="text" value="<?php \UI\form_value(array('post'=>'elv_se_start','var'=>$level->elv_se_start)); ?>">
     </div>
     </div>
-    <div class="<?php Error::form_class('elv_se_finish'); ?>">
+    <div class="<?php Err::form_class('elv_se_finish'); ?>">
     <label class="col-md-2 control-label" for="inputElvSEFinish">SE Finish</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvSEFinish" name="elv_se_finish" type="text" value="<?php \UI\form_value(array('post'=>'elv_se_finish','var'=>$level->elv_se_finish)); ?>">
@@ -150,13 +163,13 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('elv_center_start'); ?>">
+    <div class="<?php Err::form_class('elv_center_start'); ?>">
     <label class="col-md-2 control-label" for="inputElvCenterStart">Center Start</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvCenterStart" name="elv_center_start" type="text" value="<?php \UI\form_value(array('post'=>'elv_center_start','var'=>$level->elv_center_start)); ?>">
     </div>
     </div>
-    <div class="<?php Error::form_class('elv_center_finish'); ?>">
+    <div class="<?php Err::form_class('elv_center_finish'); ?>">
     <label class="col-md-2 control-label" for="inputElvCenterFinish">Center Finish</label>
     <div class="col-md-2">
       <input class="form-control" id="inputElvCenterFinish" name="elv_center_finish" type="text" value="<?php \UI\form_value(array('post'=>'elv_center_finish','var'=>$level->elv_center_finish)); ?>">
@@ -188,7 +201,7 @@ if (INIT_LOADED != '1') { exit; }
 ?>
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('excavator_one'); ?>">
+    <div class="<?php Err::form_class('excavator_one'); ?>">
     <label class="col-md-2 control-label" for="inputExcavatorone">First</label>
     <div class="col-md-2">
       <select class="form-control" id="inputExcavatorone" name="excavator_one">
@@ -203,7 +216,7 @@ if (INIT_LOADED != '1') { exit; }
       </select>
     </div>
     </div>
-    <div class="<?php Error::form_class('excavator_two'); ?>">
+    <div class="<?php Err::form_class('excavator_two'); ?>">
     <label class="col-md-2 control-label" for="inputExcavatortwo">Second</label>
     <div class="col-md-2">
       <select class="form-control" id="inputExcavatortwo" name="excavator_two">
@@ -221,7 +234,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('excavator_three'); ?>">
+    <div class="<?php Err::form_class('excavator_three'); ?>">
     <label class="col-md-2 control-label" for="inputExcavatorthree">Third</label>
     <div class="col-md-2">
       <select id="inputExcavatorthree" name="excavator_three" class="form-control">
@@ -236,7 +249,7 @@ if (INIT_LOADED != '1') { exit; }
       </select>
     </div>
     </div>
-    <div class="<?php Error::form_class('excavator_four'); ?>">
+    <div class="<?php Err::form_class('excavator_four'); ?>">
     <label class="col-md-2 control-label" for="inputExcavatorfour">Fourth</label>
     <div class="col-md-2">
       <select id="inputExcavatorfour" name="excavator_four" class="form-control">
@@ -256,24 +269,31 @@ if (INIT_LOADED != '1') { exit; }
   <h4>Notes</h4><hr />
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('description'); ?>">
+    <div class="<?php Err::form_class('description'); ?>">
     <label class="col-md-2 control-label" for="inputDescription">Describe: Sediment, Artifacts, Krotovina, Features </label>
     <div class="col-md-6">
   	  <textarea id="inputDescription" name="description" class="form-control" rows="5"><?php \UI\form_value(array('post'=>'description','var'=>$level->description)); ?></textarea>
     </div>
     </div>
   </div><div class="form-group">
-    <div class="<?php Error::form_class('difference'); ?>">
+    <div class="<?php Err::form_class('difference'); ?>">
     <label class="col-md-2 control-label" for="inputDifference">Describe the differences and similarities compared to the last level</label>
     <div class="col-md-6">
     	<textarea id="inputDifference" name="difference" class="form-control" rows="5"><?php \UI\form_value(array('post'=>'difference','var'=>$level->difference)); ?></textarea>
     </div>
     </div>
   </div><div class="form-group">
-    <div class="<?php Error::form_class('notes'); ?>">
+    <div class="<?php Err::form_class('notes'); ?>">
     <label class="col-md-2 control-label" for="inputNotes">Did you find anything interesting or significant?</label>
     <div class="col-md-6">
       <textarea id="inputNotes" name="notes" class="form-control" rows="5"><?php \UI\form_value(array('post'=>'notes','var'=>$level->notes)); ?></textarea>
+    </div>
+    </div>
+  </div><div class="form-group">
+    <div class="<?php Err::form_class('other'); ?>">
+    <label class="col-md-2 control-label" for="inputOther">General Notes</label>
+    <div class="col-md-6">
+      <textarea id="inputOther" name="other" class="form-control" rows="5"><?php \UI\form_value(array('post'=>'other','var'=>$level->other)); ?></textarea>
     </div>
     </div>
   </div>

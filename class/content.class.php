@@ -464,17 +464,17 @@ class content extends database_object {
 	public static function write_qrcode($uid,$filename,$update_record) { 
 
     if (!is_writeable(Config::get('prefix') . '/lib/cache')) {
-      Error::add('general','QRCode tmp directory unwriteable, unable to create QRCode for record ticket');
+      Err::add('general','QRCode tmp directory unwriteable, unable to create QRCode for record ticket');
       return false;
     }
 
     if (empty($filename)) { 
-      Error::add('general','QRCode generation failure');
+      Err::add('general','QRCode generation failure');
       Event::error('Content::write_qrcode','No filename specified for UID:'. $uid);
       return false;
     }
     elseif (!is_writeable(dirname($filename))) {
-      //Error::add('general','QRCode generation failure, Permission Denied');
+      //Err::add('general','QRCode generation failure, Permission Denied');
       Event::error('Content::write_qrcode',dirname($filename) . ' is not writeable');
       return false;
     }
@@ -555,7 +555,7 @@ class content extends database_object {
    */
   private static function write_level(&$level,$filename,$update_record) { 
 
-    Error::clear();
+    Err::clear();
 
     # We have to calc the length here
     $records = $level->records(); 
@@ -577,15 +577,15 @@ class content extends database_object {
     # Make sure the levelimage is readable, throw nasty error if not
     if (!is_readable($levelimage->filename)) { 
       Event::error('Level-PDF','Level Image ' . $levelimage->filename . ' is not readbale');
-      Error::add('level_image','Level Image is not readable or not found');
+      Err::add('level_image','Level Image is not readable or not found');
     }
     if (!is_writeable(Config::get('prefix') . '/lib/cache') OR !is_readable(Config::get('prefix') . '/lib/cache')) {
       Event::error('Level-PDF','Cache directory unwriteable, unable to resize image');
-      Error::add('level_image','Cache directory unwriteable, unable to resize level image');
+      Err::add('level_image','Cache directory unwriteable, unable to resize level image');
     }
 
-    if (Error::occurred()) { 
-      Error::display('level_image');
+    if (Err::occurred()) { 
+      Err::display('level_image');
       require \UI\template('/footer');
       exit;
     }
@@ -1406,12 +1406,12 @@ class content extends database_object {
   private static function upload_image($uid,$post,$files,$type) { 
 
     if (!isset($files['media']['name'])) { 
-      Error::add('upload','No file found, please select a file to upload');
+      Err::add('upload','No file found, please select a file to upload');
       return false; 
     } 
 
     if (empty($files['media']['tmp_name'])) { 
-      Error::add('upload','Upload failed, please try again'); 
+      Err::add('upload','Upload failed, please try again'); 
       return false; 
     } 
 
@@ -1420,7 +1420,7 @@ class content extends database_object {
 
     $allowed_types = array('png','jpg','tiff','gif'); 
     if (!in_array($path_info['extension'],$allowed_types)) { 
-      Error::add('upload','Invalid file type, only png,jpg,tiff and gif are allowed'); 
+      Err::add('upload','Invalid file type, only png,jpg,tiff and gif are allowed'); 
       return false; 
     }
 
@@ -1435,7 +1435,7 @@ class content extends database_object {
     $image_data = file_get_contents($files['media']['tmp_name']); 
 
     if (!$image_data) { 
-      Error::add('upload','unable to read uploaded file, please try again'); 
+      Err::add('upload','unable to read uploaded file, please try again'); 
       return false; 
     } 
 
@@ -1449,7 +1449,7 @@ class content extends database_object {
       Event::add('success','Image uploaded, thanks!','small'); 
     }
     else {
-      Error::add('upload','Error uploading image, please contact your administrator');
+      Err::add('upload','Error uploading image, please contact your administrator');
     }
 
     return $retval; 
@@ -1463,12 +1463,12 @@ class content extends database_object {
   private static function upload_3dmodel($uid,$post,$files,$type) { 
 
     if (!isset($files['media']['name'])) { 
-      Error::add('media','No file found, please select a file to upload');
+      Err::add('media','No file found, please select a file to upload');
       return false; 
     } 
 
     if (empty($files['media']['tmp_name'])) { 
-      Error::add('media','Upload failed, please try again'); 
+      Err::add('media','Upload failed, please try again'); 
       return false; 
     } 
 
@@ -1476,7 +1476,7 @@ class content extends database_object {
 
     $allowed_types = array('ply','stl'); 
     if (!in_array(strtolower($path_info['extension']),$allowed_types)) { 
-      Error::add('media','Invalid file type, only ply and stl are allowed'); 
+      Err::add('media','Invalid file type, only ply and stl are allowed'); 
       return false; 
     }
 
@@ -1484,7 +1484,7 @@ class content extends database_object {
     $data = file_get_contents($files['media']['tmp_name']); 
 
     if (!$data) { 
-      Error::add('media','unable to read uploaded file, please try again'); 
+      Err::add('media','unable to read uploaded file, please try again'); 
       return false; 
     } 
 
@@ -1504,12 +1504,12 @@ class content extends database_object {
   private static function upload_media($uid,$post,$files,$type) { 
 
     if (!isset($files['media']['name'])) { 
-      Error::add('media','No file found, please select a file to upload');
+      Err::add('media','No file found, please select a file to upload');
       return false; 
     } 
 
     if (empty($files['media']['tmp_name'])) { 
-      Error::add('media','Upload failed, please try again'); 
+      Err::add('media','Upload failed, please try again'); 
       return false; 
     } 
 
@@ -1519,7 +1519,7 @@ class content extends database_object {
     $data = file_get_contents($files['media']['tmp_name']); 
 
     if (!$data) { 
-      Error::add('media','unable to read uploaded file, please try again'); 
+      Err::add('media','unable to read uploaded file, please try again'); 
       return false; 
     } 
 

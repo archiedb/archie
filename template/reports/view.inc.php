@@ -15,7 +15,7 @@ setInterval('reportRefresh()',60000);
 </div>
 <?php Event::display(); ?>
 <h4>CSV Reports</h4>
-<?php Error::display('general'); ?>
+<?php Err::display('general'); ?>
 <div class="row">
   <div class="col-md-4"><strong>Report Type</strong></div>
   <div class="col-md-5 text-right"><strong>Report Date</strong></div>

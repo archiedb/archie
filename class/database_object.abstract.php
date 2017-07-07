@@ -1,5 +1,5 @@
 <?php
-/* vim:set tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab: */
+// vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 /**
  * database_object Class
  *
@@ -147,9 +147,16 @@ abstract class database_object {
 	 * _print
 	 * Prints the specified variable
 	 */
-	public function _print($variable) {
+	public function _print($variable,$trim=false) {
 
-		echo scrub_out($this->$variable);
+    if (empty($this->$variable)) { return false; }
+
+    if ($trim) {
+      echo '<span title="' . scrub_out($this->$variable) . '">' . scrub_out(substr($this->$variable,0,$trim) . '...') . '</span>';
+    }
+    else {
+  		echo scrub_out($this->$variable);
+    }
 
 	} // _print
 

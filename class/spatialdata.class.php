@@ -113,7 +113,7 @@ class SpatialData extends database_object {
    public static function create($input) { 
 
     if (!SpatialData::validate($input)) { 
-      Error::add('general','Invalid Spatial Data fields - please check input');
+      Err::add('general','Invalid Spatial Data fields - please check input');
       return false;
     }
 
@@ -137,7 +137,7 @@ class SpatialData extends database_object {
     Event::add('SpatialData::create',$json_msg);
 
     if (!$insert_id) { 
-      Error::add('general','Unable to insert Spatial Data - Please contact your administrator');
+      Err::add('general','Unable to insert Spatial Data - Please contact your administrator');
       Event::add('SpatialData::create','ERROR INSERTING');
       return false;
     }
@@ -158,7 +158,7 @@ class SpatialData extends database_object {
     $input['update'] = true; 
 
     if (!SpatialData::validate($input)) {
-      Error::add('general','Invalid Spatial Data fields - please check input');
+      Err::add('general','Invalid Spatial Data fields - please check input');
       return false;
     }
 
@@ -201,7 +201,7 @@ class SpatialData extends database_object {
 
     // They have to enter something
     if (!strlen($input['station_index']) AND !strlen($input['northing']) AND !strlen($input['easting']) AND !strlen($input['elevation'])) {
-      Error::add('station_index','Must specify Station Index (RN) or Northing, Easting & Elevation');
+      Err::add('station_index','Must specify Station Index (RN) or Northing, Easting & Elevation');
       $retval = false;
     }
 
@@ -209,7 +209,7 @@ class SpatialData extends database_object {
     if (strlen($input['station_index'])) { 
       if (!Field::validate('station_index',$input['station_index'])) { 
         Event::error('SpatialData',$input['station_index'] . ' is not a valid Station Index (RN)');
-        Error::add('Total Station Index','Invalid Station Index (RN) specified');
+        Err::add('Total Station Index','Invalid Station Index (RN) specified');
         $retval = false;
       }
     }
@@ -221,14 +221,14 @@ class SpatialData extends database_object {
       if (isset($input['update'])) { 
         $point = new SpatialData($input['spatialdata_id']);
         if ($point->northing != $input['northing'] OR $point->easting != $input['easting'] OR $point->elevation != $input['elevation'] AND strlen($input['station_index'])) {
-          Error::add('Total Station Index','Cannot update cordinates if Station Index is specified');
+          Err::add('Total Station Index','Cannot update cordinates if Station Index is specified');
           $retval = false; 
         }
 
       } // 
       else { 
         Event::error('SpatialData','Station Index' . $input['station_index'] . ' was specified in addition to easting/northing or elevation');
-        Error::add('Total Station Index','Station Index (RN) and Elevation/Northing/Easting specified, only one may be set');
+        Err::add('Total Station Index','Station Index (RN) and Elevation/Northing/Easting specified, only one may be set');
         $retval = false;
       }
     }
@@ -244,7 +244,7 @@ class SpatialData extends database_object {
       $row = Dba::fetch_assoc($db_results); 
       if (isset($row['uid']) AND !$input['update']) { 
         Event::error('SpatialData::validate','Attempted to add duplicate record - ' . $input['station_index'] . ' -> ' . $input['type'] . ' - ' . $input['record']); 
-        Error::add('Total Station Index','Station Index (RN) already exists cannot create duplicate record');
+        Err::add('Total Station Index','Station Index (RN) already exists cannot create duplicate record');
         $retval = false; 
       }
     } // end if RN
@@ -261,21 +261,21 @@ class SpatialData extends database_object {
       $row = Dba::fetch_assoc($db_results);
       if (isset($row['uid']) AND !$input['update']) {
         Event::error('SpatialData::validate','Attempted to add duplicate record - ' . $input['northing'] . ' / ' . $input['easting'], ' / ' . $input['elevation'] . ' -> ' . $input['type'] . ' / ' . $input['record']);
-        Error::add('Northing / Easting / Elevation','Point already exists cannot create duplicate record');
+        Err::add('Northing / Easting / Elevation','Point already exists cannot create duplicate record');
         $retval = false;
       }
 
       // Make sure northing/easting/elevation are valid
       if (!Field::validate('northing',$input['northing'])) {
-        Error::add('Northing','Invalid Value, must be numeric and rounded to 3 places');
+        Err::add('Northing','Invalid Value, must be numeric and rounded to 3 places');
         $retval = false;
       }
       if (!Field::validate('easting',$input['easting'])) {
-        Error::add('Easting','Invalid Value, must be numeric and rounded to 3 places');
+        Err::add('Easting','Invalid Value, must be numeric and rounded to 3 places');
         $retval = false;
       }
       if (!Field::validate('elevation',$input['elevation'])) {
-        Error::add('Elevation','Invalid Value, must be numeric and rounded to 3 places');
+        Err::add('Elevation','Invalid Value, must be numeric and rounded to 3 places');
         $retval = false;
       }
         
@@ -283,7 +283,7 @@ class SpatialData extends database_object {
 
     // Make sure it's unique to the site
     if (!SpatialData::is_site_unique($input,$input['record'])) {
-      Error::add('Spatialdata','Station Index (RN) / Northing / Easting / Elevation already exists cannot create duplicate record');
+      Err::add('Spatialdata','Station Index (RN) / Northing / Easting / Elevation already exists cannot create duplicate record');
       $retval = false;
     }
 

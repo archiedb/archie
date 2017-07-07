@@ -61,7 +61,7 @@ switch (\UI\sess::location('action')) {
       Event::add('success','Feature Image Selected','small');
     }
     else {
-      Error::add('feature_image','Unable to set Feature image');
+      Err::add('feature_image','Unable to set Feature image');
     }
     require_once \UI\template('/feature/edit');
   break;

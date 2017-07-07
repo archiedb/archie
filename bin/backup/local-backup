@@ -149,3 +149,4 @@ if __name__ == '__main__':
     BackupContent(ArchieConfig.get('main','data_root'),Config.get('local','backup_dir'))
 
   ClearOldBackups(Config.get('local','backup_count'),Config.get('local','backup_dir'),args.noDelete)
+  sys.exit(0)

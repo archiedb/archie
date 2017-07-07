@@ -23,7 +23,7 @@ switch (\UI\sess::location('action')) {
     if (!Access::has('media','delete')) { \UI\access_denied(); }
     $image = new Content($_POST['uid'],'image','krotovina');
     if (!$image->delete()) {
-      Error::add('delete','Unable to perform image deletion request, please contact administrator');
+      Err::add('delete','Unable to perform image deletion request, please contact administrator');
     }
     else {
       Event::add('success','Image Deleted','small');

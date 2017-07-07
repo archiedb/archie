@@ -57,6 +57,8 @@ $file_path = dirname(__FILE__);
 $prefix = realpath($file_path . "/../");
 $configfile = "$prefix/config/settings.php";
 require_once $prefix . '/class/general.php';
+// Init the autoloader
+spl_autoload_register('archie_autoloader');
 require_once $prefix . '/class/config.class.php';
 require_once $prefix . '/class/database_object.abstract.php';
 require_once $prefix . '/class/sitesetting.abstract.php';
@@ -67,7 +69,6 @@ require_once $prefix . '/class/update.namespace.php';
 
 // Define some base level config options
 Config::set('prefix',$prefix);
-
 /*
  Check to see if this is http or https
 */
@@ -169,8 +170,8 @@ elseif (!defined('CLI') AND !defined('NO_SESSION')) {
 	vauth::session_extend(session_id());
 
   // Load events, errors and clear old
+  Err::auto_init(); 
   Event::init(); 
-  Error::auto_init(); 
   $_SESSION['errors'] = array(); 
   $_SESSION['warnings'] = array(); 
 

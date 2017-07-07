@@ -16,7 +16,7 @@ switch (\UI\sess::location('action')) {
     $media = new Content($_POST['uid'],\UI\sess::location('object'),$_POST['parent']);
     if (!$media->delete()) {
       Event::error('DELETE','Unable to delete media item:' . $media->filename);
-      Error::add('delete','Unable to delete 3d Model');
+      Err::add('delete','Unable to delete 3d Model');
     }
     header('Location:' . Config::get('web_path') . \UI\return_url($_POST['return']));
   break;

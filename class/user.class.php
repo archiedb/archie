@@ -113,13 +113,13 @@ class User extends database_object {
     $sql = "SELECT * FROM `user_group` WHERE `user`=? AND `group`=? AND `site`=?";
     $db_results = Dba::read($sql,array($this->uid,$groupuid,\UI\sess::$user->site->uid));
     if ($row = Dba::fetch_assoc($db_results)) {
-      Error::add('general','User already in group');
+      Err::add('general','User already in group');
       return false;
     }
 
     $group = new Group($groupuid);
     if (!$group->name) {
-      Error::add('general','Invalid Group specified');
+      Err::add('general','Invalid Group specified');
       return false;
     }
 
@@ -309,11 +309,11 @@ class User extends database_object {
     $input['username'] = $this->username; 
 
     // Clear the error before we validate
-    Error::clear(); 
+    Err::clear(); 
 
     // Validate input
     if (!User::validate($input)) {
-      Error::add('general','Invalid Field Values - please check input'); 
+      Err::add('general','Invalid Field Values - please check input'); 
       return false; 
     } 
 
@@ -366,17 +366,17 @@ class User extends database_object {
 	public static function create($input) { 
 
     // Reset the error state before we start checking
-    Error::clear(); 
+    Err::clear(); 
 
     // Validate input
     if (!User::validate($input)) {
-      Error::add('general','adding new user'); 
+      Err::add('general','adding new user'); 
       return false; 
     } 
 
     // This is here because we only check on the creation of a user 
     if (strlen($input['password']) < 2) { 
-      Error::add('password','Password not long enough'); 
+      Err::add('password','Password not long enough'); 
       return false; 
     }
 
@@ -388,7 +388,7 @@ class User extends database_object {
 
     if (!$db_results) { 
       Event::error('DATABASE','Error unable to insert user into database'); 
-      Error::add('general','Unknown Error please contact Administrator'); 
+      Err::add('general','Unknown Error please contact Administrator'); 
       return false; 
     } 
     $insert_id = Dba::insert_id(); 
@@ -404,7 +404,7 @@ class User extends database_object {
   public static function validate_password($password) { 
 
     if (empty($password)) { 
-      Error::add('password','Password empty');
+      Err::add('password','Password empty');
     }
 
     // If they've specified a really long password, skip some of the other checks
@@ -412,33 +412,33 @@ class User extends database_object {
 
       // It can't be all the same character
       if (mb_substr_count($password,substr($password,0,1)) == strlen($password)) {
-        Error::add('password','Must not be all one character');
+        Err::add('password','Must not be all one character');
       }
 
     } 
     // Shorter passwords need to be more complex
     else { 
       if (strlen($password) < 6) { 
-        Error::add('password','Must be at least 6 characters long');
+        Err::add('password','Must be at least 6 characters long');
       }
 
       if (preg_match('/^a-z$/',$password)) {
-        Error::add('password','Short passwords cannot be only lower case');
+        Err::add('password','Short passwords cannot be only lower case');
       }
       if (preg_match('/^A-Z$/',$password)) { 
-        Error::add('password','Short passwords cannot be only upper case');
+        Err::add('password','Short passwords cannot be only upper case');
       }
       if (!preg_match('/[^a-zA-z]/',$password)) {
-        Error::add('password','Short passwords must have numbers or symbols');
+        Err::add('password','Short passwords must have numbers or symbols');
       }
 
     }
 
     if (preg_match('/^[0-9]+$/',$password)) {
-      Error::add('password','Must not be all numbers');
+      Err::add('password','Must not be all numbers');
     }
 
-    if (Error::occurred()) { return false; }
+    if (Err::occurred()) { return false; }
 
     return true;
 
@@ -451,28 +451,28 @@ class User extends database_object {
   public static function validate($input) { 
 
     if ($input['password'] != $input['confirmpassword']) {
-      Error::add('password','Passwords do not match'); 
+      Err::add('password','Passwords do not match'); 
     } 
 
     if (empty($input['name'])) { 
-      Error::add('name','Display Name is a required field'); 
+      Err::add('name','Display Name is a required field'); 
     }
 
     if (empty($input['username'])) { 
-      Error::add('username','Username is a required field'); 
+      Err::add('username','Username is a required field'); 
     }
 
     if (preg_match("/[^0-9A-Za-z_]/",$input['username']) != 0) {
-      Error::add('username','Invalid Username, must only contain A-Z,a-z,0-9,_');
+      Err::add('username','Invalid Username, must only contain A-Z,a-z,0-9,_');
     }
 
     // Make sure that the username doesn't already exist
     $user = User::get_from_username($input['username']); 
     if ($user->uid AND $user->uid != $input['uid']) {
-      Error::add('username','Username already exists, duplicate usernames not allowed');
+      Err::add('username','Username already exists, duplicate usernames not allowed');
     }
 
-    if (Error::occurred()) { return false; }
+    if (Err::occurred()) { return false; }
 
     return true; 
 

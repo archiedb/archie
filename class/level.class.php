@@ -37,6 +37,8 @@ class Level extends database_object {
   public $closed_user; 
   public $image; // primary image for level
   public $notes;
+  public $other;
+  public $z_order; // Z-order for elevations
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -119,7 +121,7 @@ class Level extends database_object {
   public static function create($input) { 
 
     // Reset errors before we do any validation
-    Error::clear(); 
+    Err::clear(); 
 
     // If they aren't an admin then hardcode first excavator
     if (!Access::is_admin() OR !$input['excavator_one']) {
@@ -132,7 +134,7 @@ class Level extends database_object {
     // Check the input and make sure we think they gave us 
     // what they should have
     if (!Level::validate($input)) { 
-      Error::add('general','Invalid field values please check input');
+      Err::add('general','Invalid field values please check input');
       return false; 
     }
 
@@ -152,17 +154,19 @@ class Level extends database_object {
     $excavator_two    = strlen($input['excavator_two']) > 0 ? $input['excavator_two'] : NULL;
     $excavator_three  = strlen($input['excavator_three']) > 0 ? $input['excavator_three'] : NULL;
     $excavator_four   = strlen($input['excavator_four']) > 0 ? $input['excavator_four'] : NULL;
+    $z_order          = $input['zorder'] == 'desc' ? 'desc' : 'asc';
     $user             = \UI\sess::$user->uid;
+    $type             = 'level';
     $created          = time(); 
     
     //FIXME: Allow updated to be null in the future
     $sql = "INSERT INTO `level` (`site`,`catalog_id`,`unit`,`quad`,`lsg_unit`,`northing`,`easting`,`elv_nw_start`," . 
         "`elv_ne_start`,`elv_sw_start`,`elv_se_start`,`elv_center_start`,`excavator_one`,`excavator_two`," . 
-        "`excavator_three`,`excavator_four`,`user`,`created`,`updated`,`image`,`elv_nw_finish`,`elv_ne_finish`,`elv_sw_finish`,`elv_se_finish`,`elv_center_finish`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
-    $db_results = Dba::write($sql,array($site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start,$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$user,$created,0,0,0,0,0,0,0)); 
+        "`excavator_three`,`excavator_four`,`user`,`created`,`updated`,`image`,`elv_nw_finish`,`elv_ne_finish`,`elv_sw_finish`,`elv_se_finish`,`elv_center_finish`,`z_order`,`type`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+    $db_results = Dba::write($sql,array($site,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_ne_start,$elv_sw_start,$elv_se_start,$elv_center_start,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$user,$created,0,0,0,0,0,0,0,$z_order,$type)); 
 
     if (!$db_results) { 
-      Error::add('general','Unable to insert level, DB error please contact administrator'); 
+      Err::add('general','Unable to insert level, DB error please contact administrator'); 
       return false;
     }
 
@@ -171,7 +175,7 @@ class Level extends database_object {
     $log_line = json_encode(array('site'=>$site,'Catalog ID'=>$catalog_id,'Unit'=>$unit,'Quad'=>$quad,'LSG-Unit'=>$lsg_unit,'Northing'=>$northing,
           'Easting'=>$easting,'Elv-NW-S'=>$elv_nw_start,'Elv-NE-S'=>$elv_ne_start,'Elv-SW-S'=>$elv_sw_start,'Elv-SE-S'=>$elv_se_start,
           'Elv-Cent-S'=>$elv_center_start,'Exc-one'=>$excavator_one,'Exc-two'=>$excavator_two,'Exc-three'=>$excavator_three,'Exc-four'=>$excavator_four,
-          'User'=>\UI\sess::$user->username,'Date'=>date('r',$created)));
+          'User'=>\UI\sess::$user->username,'Date'=>date('r',$created),'Z-order'=>$z_order,'Type'=>$type));
     Event::record('level::create',$log_line); 
 
     return $insert_id; 
@@ -185,7 +189,7 @@ class Level extends database_object {
   public function update($input) { 
 
     // Reset the error state
-    Error::clear();
+    Err::clear();
 
     // Set closed variable for validation
     $input['closed'] = $this->closed;
@@ -195,7 +199,7 @@ class Level extends database_object {
     $input['level_id'] = $this->uid;
 
     if (!Level::validate($input)) { 
-      Error::add('general','Invalid field values, please check input');
+      Err::add('general','Invalid field values, please check input');
       return false;
     }
 
@@ -226,25 +230,27 @@ class Level extends database_object {
     $description      = $input['description'];
     $difference       = $input['difference'];
     $notes            = $input['notes'];
+    $other            = $input['other'];
+    $z_order          = $input['zorder'] == 'desc' ? 'desc' : 'asc';
 
     $sql = "UPDATE `level` SET `catalog_id`=?,`unit`=?,`quad`=?,`lsg_unit`=?,`user`=?,`updated`=?," .
           "`northing`=?,`easting`=?,`elv_nw_start`=?, `elv_nw_finish`=?, `elv_ne_start`=?,`elv_ne_finish`=?,".
           "`elv_sw_start`=?, `elv_sw_finish`=?,`elv_se_start`=?,`elv_se_finish`=?,`elv_center_start`=?," . 
           "`elv_center_finish`=?,`excavator_one`=?, `excavator_two`=?, `excavator_three`=?,`excavator_four`=?,".
-          "`description`=?, `difference`=?, `notes`=? WHERE `level`.`uid`=? LIMIT 1";
+          "`description`=?, `difference`=?, `notes`=? ,`z_order`=?, `other`=? WHERE `level`.`uid`=? LIMIT 1";
     $retval = Dba::write($sql,array($catalog_id,$unit,$quad,$lsg_unit,$user,$updated,$northing,$easting,$elv_nw_start,
       $elv_nw_finish,$elv_ne_start,$elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start,
-      $elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$description,$difference,$notes,$uid));
+      $elv_center_finish,$excavator_one,$excavator_two,$excavator_three,$excavator_four,$description,$difference,$notes,$z_order,$other,$uid));
 
     if (!$retval) { 
-      Error::add('database','Database update failed, please contact administrator');
+      Err::add('database','Database update failed, please contact administrator');
       return false;
     }
-
-    $log_line = json_encode(array($uid,$catalog_id,$unit,$quad,$lsg_unit,$northing,$easting,$elv_nw_start,$elv_nw_finish,$elv_ne_start,
-        $elv_ne_finish,$elv_sw_start,$elv_sw_finish,$elv_se_start,$elv_se_finish,$elv_center_start,$elv_center_finish,
-        $excavator_one,$excavator_two,$excavator_three,$excavator_four,\UI\sess::$user->username,date('r',$updated))); 
-    Event::record('level::update',$log_line);
+    $log_line = json_encode(array('site'=>$site,'Catalog ID'=>$catalog_id,'Unit'=>$unit,'Quad'=>$quad,'LSG-Unit'=>$lsg_unit,'Northing'=>$northing,
+          'Easting'=>$easting,'Elv-NW-S'=>$elv_nw_start,'Elv-NE-S'=>$elv_ne_start,'Elv-SW-S'=>$elv_sw_start,'Elv-SE-S'=>$elv_se_start,
+          'Elv-Cent-S'=>$elv_center_start,'Exc-one'=>$excavator_one,'Exc-two'=>$excavator_two,'Exc-three'=>$excavator_three,'Exc-four'=>$excavator_four,
+          'User'=>\UI\sess::$user->username,'Date'=>date('r',$created),'Z-order'=>$z_order,'Desc'=>$description,'Diff'=>$difference,'Notes'=>$notes,'General'=>$other,'Type'=>$this->type));
+    Event::record('level::create',$log_line); 
 
     // If unit or quad have changed we have to rebuild the excavation_count :(
     // This is a University of Oregon special change and makes this install incompatibile with mainline Archie
@@ -310,7 +316,7 @@ class Level extends database_object {
 
     // Not in the current list of images
     if (!in_array($image,$images)) { 
-      Error::add('Image','Selected Level image not currently assoicated with level'); 
+      Err::add('Image','Selected Level image not currently assoicated with level'); 
       return false; 
     }
 
@@ -339,13 +345,13 @@ class Level extends database_object {
     // If closed is specified
     if (isset($input['closed'])) {
       if ($input['closed'] == 1 AND !Access::is_admin()) {
-        Error::add('closed','Level is closed, unable to updated'); 
+        Err::add('closed','Level is closed, unable to updated'); 
       }
     }
 
     // Catalog ID must be numeric, and exist
     if (!Field::validate('catalog_id',$input['catalog_id'])) {
-      Error::add('level','Must be numeric');
+      Err::add('level','Must be numeric');
     }
 
     // Make sure this isn't a duplicate level, filter on UID if passed
@@ -356,31 +362,31 @@ class Level extends database_object {
       $db_results = Dba::read($sql,array($input['catalog_id'],$input['quad'],$input['unit'],$input['site'])); 
       $row = Dba::fetch_assoc($db_results); 
       if ($row['uid']) { 
-        Error::add('level','Duplicate Level for this Unit and Quad'); 
+        Err::add('level','Duplicate Level for this Unit and Quad'); 
       }
     }
 
 		// Unit A-Z
     if (empty($input['level_id'])) {
   		if (!Unit::is_valid($input['unit'])) { 
-  			Error::add('unit','UNIT specified not valid'); 
+  			Err::add('unit','UNIT specified not valid'); 
   		}
       if (!Lsgunit::is_valid($input['lsg_unit'])) {
-        Error::add('lsg_unit','Invalid LU');
+        Err::add('lsg_unit','Invalid LU');
       }
       if (!Quad::is_valid($input['quad'])) {
-        Error::add('quad','Invalid Quad selected');
+        Err::add('quad','Invalid Quad selected');
       }
     }
     else {
       if (!Unit::is_valid($input['unit']) AND $input['unit'] != $level->unit->name) {
-        Error::add('unit','Unit specified not valid');
+        Err::add('unit','Unit specified not valid');
       }
       if (!Lsgunit::is_valid($input['lsg_unit']) AND $input['lsg_unit'] != $level->lsg_unit->name) {
-        Error::add('lsg_unit','Invalid LU');
+        Err::add('lsg_unit','Invalid LU');
       }
       if (!Quad::is_valid($input['quad']) AND $input['quad'] != $level->quad->name) {
-        Error::add('quad','Invalid Quad selected');
+        Err::add('quad','Invalid Quad selected');
       }
     }
 
@@ -391,15 +397,15 @@ class Level extends database_object {
 
       // Must be set
       if (!isset($input[$field])) {
-        Error::add($field,'Required field');
+        Err::add($field,'Required field');
         continue;
       }
       if (!is_numeric($input[$field])) {
-        Error::add($field,'Must be numeric');
+        Err::add($field,'Must be numeric');
         continue;
       }
       if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) { 
-        Error::add($field,'Must be numeric and rounded to three decimal places'); 
+        Err::add($field,'Must be numeric and rounded to three decimal places'); 
       }
     } // end foreach starts 
 
@@ -414,19 +420,23 @@ class Level extends database_object {
         if ($input[$field] == '') { continue; }
 
         if (!is_numeric($input[$field])) {
-          Error::add($field,'Must be numeric');
+          Err::add($field,'Must be numeric');
           continue;
         }
 
         // Make sure it's not less then zero and has the correct accuracy
         if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) {
-          Error::add($field,'Must be numeric and rounded to three decimal places'); 
+          Err::add($field,'Must be numeric and rounded to three decimal places'); 
         }
+        // If it's a Decending Depth, it must be deeper
         // Make sure it's deeper then the start
         $start_name = substr($field,0,strlen($field)-6) . 'start';
-        if ($input[$field] > $input[$start_name]) { 
-          Error::warning($field,'Expected to be lower than start');
-        }         
+        if ($input[$field] > $input[$start_name] AND $input['zorder'] == 'desc') { 
+          Err::add($field,'Expected to be lower than start');
+        }
+        elseif ($input[$field] < $input[$start_name] AND $input['zorder'] == 'asc') {
+          Err::add($field,'Expected to be higher than start');
+        }
       }
 
     } // end foreach ends
@@ -440,14 +450,14 @@ class Level extends database_object {
       if ($input[$excavator_id]) {
         
         if (in_array($input[$excavator_id],$excavator_exists)) { 
-          Error::add($excavator_id,'Duplicate Excavator, can\'t be in two places at once');
+          Err::add($excavator_id,'Duplicate Excavator, can\'t be in two places at once');
         }
 
         $user = new User($input[$excavator_id]); 
 
         // Allow administrative users to select disabled/messed up excavators
         if ((!$user->username OR $user->disabled) AND !Access::is_admin()) { 
-          Error::add($excavator_id,'Excavator unknown or disabled'); 
+          Err::add($excavator_id,'Excavator unknown or disabled'); 
         }
         else {
           $excavator_exists[] = $input[$excavator_id];
@@ -458,10 +468,10 @@ class Level extends database_object {
 
     // We have to have at least one excavator
     if ($excavator_count == 0) { 
-      Error::add('excavator_one','At least one excavator must be set');
+      Err::add('excavator_one','At least one excavator must be set');
     }
   
-    if (Error::occurred()) { return false; }
+    if (Err::occurred()) { return false; }
 
     return true; 
 
@@ -578,11 +588,11 @@ class Level extends database_object {
    */
   public function close($input) { 
 
-    Error::clear();
+    Err::clear();
 
     // Make sure it's safe to close
     if (!$this->validate_close($input)) {
-      Error::add('general','Unable to close level');
+      Err::add('general','Unable to close level');
       return false;
     }
 
@@ -593,7 +603,7 @@ class Level extends database_object {
     $db_results = Dba::write($sql); 
 
     if (!$db_results) {
-      Error::add('database','Unknown database error, please contact administrator'); 
+      Err::add('database','Unknown database error, please contact administrator'); 
       return false;
     }
 
@@ -611,26 +621,26 @@ class Level extends database_object {
 
     // Make sure it's an admin or an excavator 
     if (!$this->is_excavator(\UI\sess::$user->uid) AND !Access::has('level','manage')) { 
-        Error::add('excavator','Unable to close, you are not a site manager');
+        Err::add('excavator','Unable to close, you are not a site manager');
     }
 
     if (!$this->has_photo()) {
-      Error::add('photo','No Level photo found');
+      Err::add('photo','No Level photo found');
     }
 
     if (!$this->questions_answered()) {
-      Error::add('questions','Questions not answered'); 
+      Err::add('questions','Questions not answered'); 
     }
 
     $checkboxes = array('kroto_sample','kroto_bag','level_photo','notes_done','connect');
 
     foreach ($checkboxes as $key) { 
       if ($input[$key] != 1) { 
-        Error::add($key,'Not completed?'); 
+        Err::add($key,'Not completed?'); 
       }
     }
 
-    if (Error::occurred()) {
+    if (Err::occurred()) {
       return false;
     }
 

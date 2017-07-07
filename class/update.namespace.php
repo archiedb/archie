@@ -371,6 +371,16 @@ class Database {
     $versions[] = array('version'=>'0022','description'=>$update_string);
     $update_string = '- Add Field.Extra for custom site field storage, JSON encoded.<br />';
     $versions[] = array('version'=>'0023','description'=>$update_string);
+    $update_string = '- Increase length of notes fields for Level, Record, Feature and Krotovina.<br />' . 
+                  '- Add z_order field to Level to allow you to define how elevations are ordered in this level.<br />';
+    $versions[] = array('version'=>'0024','description'=>$update_string);
+    $update_string = '- Add general notes field to level.<br />' . 
+                    '- Add type field to level preping for re-work of krotovina/feature/level functionality.<br />';
+    $versions[] = array('version'=>'0025','description'=>$update_string);
+    $update_string = '- Add L. U. and Level to Krotovina and Features as optional fields.<br />' . 
+                    '- Make Level an optional field on Records.<br />' . 
+                    '- Create Excavators Table for holding infinite excavator <--> Level/Feature/Krotovina mappings';
+    $versions[] = array('version'=>'0026','description'=>$update_string);
 
     return $versions; 
 
@@ -401,7 +411,7 @@ class Database {
 
           if ($success) { self::set_version($update['version']); }
           else { 
-            \Error::add('Database','Upgrade failed on version: ' . $update['version']);
+            \Err::add('Database','Upgrade failed on version: ' . $update['version']);
             require_once \Config::get('prefix') . '/template/database_upgrade.inc.php';
             return false; 
           }
@@ -1363,29 +1373,29 @@ class Database {
     $db_results = \Dba::read($sql); 
 
     if (\Dba::num_rows($db_results)) { 
-      \Error::add('Invalid Site','One or more records has an invalid Site, please see run bin/validate-records.php.inc for more information');
+      \Err::add('Invalid Site','One or more records has an invalid Site, please see run bin/validate-records.php.inc for more information');
     }
 
     $sql = "SELECT `record`.`uid`,`level`.`uid` FROM `record` LEFT JOIN `level` ON `level`.`uid`=`record`.`level` WHERE `level`.`uid` IS NULL";
     $db_results = \Dba::read($sql); 
 
     if (\Dba::num_rows($db_results)) { 
-      \Error::add('Invalid Level','One or more records has an invalid Level, please see run bin/validate-records.php.inc for more information');
+      \Err::add('Invalid Level','One or more records has an invalid Level, please see run bin/validate-records.php.inc for more information');
     }
 
     $sql = "SELECT `krotovina`.`uid`,`site`.`uid` FROM `krotovina` LEFT JOIN `site` ON `site`.`uid`=`krotovina`.`site` WHERE `site`.`uid` IS NULL";
     $db_results = \Dba::read($sql); 
 
     if (\Dba::num_rows($db_results)) { 
-      \Error::add('Invalid Site','One or more Krotovina has an invalid Site, please see run bin/validate-records.php.inc for more information');
+      \Err::add('Invalid Site','One or more Krotovina has an invalid Site, please see run bin/validate-records.php.inc for more information');
     }
 
     $sql = "SELECT `feature`.`uid`,`site`.`uid` FROM `feature` LEFT JOIN `site` ON `site`.`uid`=`feature`.`site` WHERE `site`.`uid` IS NULL";
     if (\Dba::num_rows($db_results)) { 
-      \Error::add('Invalid Site','One or more Features has an invalid Site, please see run bin/validate-records.php.inc for more information');
+      \Err::add('Invalid Site','One or more Features has an invalid Site, please see run bin/validate-records.php.inc for more information');
     }
 
-    if (\Error::occurred()) { 
+    if (\Err::occurred()) { 
       return false; 
     }
 
@@ -1770,6 +1780,106 @@ class Database {
     return $retval; 
 
   } // update_0023
+
+  /**
+   * update_0024
+   * Increase the varchar size of the records, levels, features, krotovina fields
+   * Add orientation to level
+   */
+  public static function update_0024() {
+
+    $retval = true; 
+
+    $sql = "ALTER TABLE `record` CHANGE `notes` `notes` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `feature` CHANGE `keywords` `keywords` TEXT NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `feature` CHANGE `description` `description` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `keywords` `keywords` TEXT NOT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `krotovina` CHANGE `description` `description` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `description` `description` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `notes` `notes` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    $sql = "ALTER TABLE `level` CHANGE `difference` `difference` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` ADD `z_order` VARCHAR( 128 ) NOT NULL"; 
+    $retval = \Dba::write($sql) ? $retval : false; 
+
+    return $retval; 
+
+  } // update_0024
+
+  /**
+   * update_0025
+   * Add additional text field to the Level form
+   */
+
+  public static function update_0025() { 
+
+    $retval = true;
+
+    $sql = "ALTER TABLE `level` ADD `other` TEXT NULL";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` ADD `type` VARCHAR ( 128 ) NOT NULL DEFAULT 'level'";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    $sql = "ALTER TABLE `level` ADD INDEX (`type`)";
+    $retval = \Dba::write($sql) ? $retval : false;
+
+    return $retval;
+
+  } // update_0025
+
+  /**
+   * update_0026
+   * Add fields to krotovina/feature tables
+   * Add excavator table (krot/feat use it eventually level will)
+   */
+  public static function update_0026() {
+
+    $retval = true;
+
+    // Create a table to keep track of people who enter shit into the krotovina/feature
+    $sql = "CREATE TABLE `excavator` (" . 
+      "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+      "`user` int(11) UNSIGNED NOT NULL," . 
+      "`record` int(11) UNSIGNED NOT NULL," .
+      "`type` int(11) UNSIGNED NOT NULL," .
+      "PRIMARY KEY (`uid`))" .
+      " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "ALTER TABLE `record` CHANGE `level` `level` INT ( 11 ) UNSIGNED NULL AFTER `catalog_id`";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "ALTER TABLE `krotovina` ADD `lsg_unit` VARCHAR(255) NULL AFTER `catalog_id`";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "ALTER TABLE `feature` ADD `lsg_unit` VARCHAR(255) NULL AFTER `catalog_id`";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "ALTER TABLE `feature` ADD `level` INT ( 11 ) UNSIGNED NULL AFTER `lsg_unit`";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "ALTER TABLE `krotovina` ADD `level` INT ( 11 ) UNSIGNED NULL AFTER `lsg_unit`";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    return $retval;
+
+  } // update_0026
 
 } // \Update\Database class
 

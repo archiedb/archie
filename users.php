@@ -33,7 +33,7 @@ switch (\UI\sess::location('action')) {
     // Only reset the password if they typed something in!
     if (!empty($_POST['password'])) {
       if (!$user->set_password($_POST['password'])) {
-        Error::add('general','Unable to update password');
+        Err::add('general','Unable to update password');
         $retval = false;
       }
     }

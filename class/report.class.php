@@ -112,7 +112,7 @@ class Report {
     $retval = (file_put_contents($filename,$data) === false) ? false : true; 
 
     if (!$retval) { 
-      Error::add('general','Unable to create report request'); 
+      Err::add('general','Unable to create report request'); 
     } 
 
     return $retval; 
@@ -462,11 +462,11 @@ class Report {
 
     $data = array();
 
-    $data[] = array('site','catalog id','keywords','description','created','user');
+    $data[] = array('site','catalog id','keywords','description','level','lsg unit','created','user');
 
     while ($row = Dba::fetch_assoc($db_results)) {
       $feature = new Feature($row['uid']);
-      $data[] = array($site->name,$feature->catalog_id,$feature->keywords,$feature->description,date("m-d-Y h:i:s",$feature->created),$feature->user->name);
+      $data[] = array($site->name,$feature->catalog_id,$feature->keywords,$feature->description,$feature->level->record,$feature->lsg_unit->name,date("m-d-Y h:i:s",$feature->created),$feature->user->name);
     }
 
     return $data;
@@ -495,11 +495,11 @@ class Report {
 
     $data = array();
 
-    $data[] = array('site','catalog id','keywords','description','created','user');
+    $data[] = array('site','catalog id','keywords','description','level','lsg unit','created','user');
 
     while ($row = Dba::fetch_assoc($db_results)) { 
       $krotovina = new Krotovina($row['uid']);
-      $data[] = array($site->name,$krotovina->catalog_id,$krotovina->keywords,$krotovina->description,date("m-d-Y h:i:s",$krotovina->created),$krotovina->user->name);
+      $data[] = array($site->name,$krotovina->catalog_id,$krotovina->keywords,$krotovina->description,$korotovina->level->record,$krotovina->lsg_unit->name,date("m-d-Y h:i:s",$krotovina->created),$krotovina->user->name);
     } // end krotos
 
     return $data;

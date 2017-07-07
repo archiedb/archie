@@ -11,12 +11,16 @@ $material_count = Stats::material_records('material',$material->uid);
 	<td><?php echo \UI\boolean_word($material->enabled); ?></td>
   <td>
 		<div class="btn-group pull-right">
-      <?php if ($material->enabled) { ?>
+      <?php if ($material->enabled) { 
+          $dropclass='btn-danger';
+      ?>
       <a class="btn btn-danger" href="<?php echo Config::get('web_path'); ?>/manage/material/disable/<?php echo scrub_out($material->uid); ?>">Disable</a>
-      <?php } else { ?>
+      <?php } else { 
+          $dropclass='btn-success';
+      ?>
       <a class="btn btn-success" href="<?php echo Config::get('web_path'); ?>/manage/material/enable/<?php echo scrub_out($material->uid); ?>">Enable</a>
       <?php } ?>
-      <a href="#" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+      <a href="#" class="btn <?php echo $dropclass; ?> dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
        <ul class="dropdown-menu">
         <li><a href="<?php echo Config::get('web_path'); ?>/manage/material/edit/<?php $material->_print('uid'); ?>">Edit</a></li>
        </ul>

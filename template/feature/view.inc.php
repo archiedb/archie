@@ -24,6 +24,21 @@ if (INIT_LOADED != '1') { exit; }
   <div class="panel-heading">Other Notes?</div>
   <div class="panel-body"><?php $feature->_print('keywords'); ?></div>
 </div>
+<table class="table table-hover table-white">
+<tr>
+  <th>Level</th><td><?php echo \UI\record_link($feature->level->uid,'level',$feature->level->catalog_id); ?></td>
+  <th><abbr title="Lithostratoigraphic Unit">L. U.</abbr></th><td><?php echo scrub_out($feature->lsg_unit->name);?></td>
+</tr>
+</table>
+<p class="pull-right">
+  <button type="button" class="btn btn-success" data-target="#addexcavator" data-toggle="modal">Add Excavator</button>
+</p>
+<h4>Excavators</h4>
+<table class="table table-hover">
+<tr>
+  <th>Excavator</th><th>Date Added</th>
+</tr>
+</table>
 <h4>Feature Spatial Information</h4>
 <table class="table table-hover">
 <tr>

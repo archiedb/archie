@@ -11,19 +11,17 @@ if (INIT_LOADED != '1') { exit; }
 <form class="form-horizontal" id="update_record" method="post" action="<?php echo Config::get('web_path'); ?>/records/update">
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('level'); ?>">
+    <div class="<?php Err::form_class('level'); ?>">
     <label class="col-md-2 control-label" for="inputLevel"><abbr title="Unit:Quad:Level">Locus</abbr></label>
     <div class="col-md-2">
       <?php
         $user_levels = Level::get_open_user_levels();
-        if (!count($user_levels)) { $default_level_value = 'No Open Levels'; }
-        else { $default_level_value = '&nbsp;'; }
         if (in_array($record->level->uid,$user_levels) OR Access::has('record','admin')) {
           // For Record admins add the current one even if it's not open
           if (!in_array($record->level->uid,$user_levels)) { $user_levels[] = $record->level->uid; }
         ?>
       <select class="form-control" id="inputLevel" name="level">
-        <option value=""><?php echo $default_level_value; ?></option>
+        <option value="">No Level</option>
       <?php
         foreach ($user_levels as $level_uid) {
           $level = new Level($level_uid);
@@ -39,7 +37,7 @@ if (INIT_LOADED != '1') { exit; }
       <?php } ?>
     </div>
     </div>
-    <div class="<?php Error::form_class('feature'); ?>">
+    <div class="<?php Err::form_class('feature'); ?>">
     <label class="col-md-2 control-label" for="inputFeature">Feature</label>
     <div class="col-md-2">
       <div class="input-group">
@@ -51,7 +49,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('lsg_unit'); ?>">
+    <div class="<?php Err::form_class('lsg_unit'); ?>">
     <label class="col-md-2 control-label" for="inputLsgUnit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></label>
     <div class="col-md-2">
     	<select class="form-control" name="lsg_unit">
@@ -67,7 +65,7 @@ if (INIT_LOADED != '1') { exit; }
   	  </select>
     </div>
     </div>
-    <div class="<?php Error::form_class('krotovina'); ?>">
+    <div class="<?php Err::form_class('krotovina'); ?>">
     <label class="col-md-2 control-label" for="inputKrotovina">Krotovina</label>
     <div class="col-md-2">
       <div class="input-group">
@@ -79,7 +77,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('material'); ?>">
+    <div class="<?php Err::form_class('material'); ?>">
     <label class="col-md-2 control-label" for="material">Material</label>
     <div class="col-md-2">
   	  <select class="form-control" id="material" name="material">
@@ -95,7 +93,7 @@ if (INIT_LOADED != '1') { exit; }
   	  <?php echo Ajax::select('material',Ajax::action('?action=show_class'),'classification'); ?>
     </div>
     </div>
-    <div class="<?php Error::form_class('classification'); ?>">
+    <div class="<?php Err::form_class('classification'); ?>">
     <label class="col-md-2 control-label" for="classification">Classification</label>
     <div class="col-md-2">
   	  <select class="form-control" id="classification" name="classification">
@@ -110,7 +108,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('weight'); ?>">
+    <div class="<?php Err::form_class('weight'); ?>">
     <label class="col-md-2 control-label" for="inputWeight">Weight</label>
     <div class="col-md-2">
     	<div class="input-group">
@@ -119,7 +117,7 @@ if (INIT_LOADED != '1') { exit; }
       </div>
     </div>
     </div>
-    <div class="<?php Error::form_class('height'); ?>">
+    <div class="<?php Err::form_class('height'); ?>">
     <label class="col-md-2 control-label" for="inputLength">Length</label>
     <div class="col-md-2">
   	  <div class="input-group">
@@ -131,7 +129,7 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('width'); ?>">
+    <div class="<?php Err::form_class('width'); ?>">
     <label class="col-md-2 control-label" for="inputWidth">Width</label>
     <div class="col-md-2">
     	<div class="input-group">
@@ -140,7 +138,7 @@ if (INIT_LOADED != '1') { exit; }
     	</div>
     </div>
     </div>
-    <div class="<?php Error::form_class('thickness'); ?>">
+    <div class="<?php Err::form_class('thickness'); ?>">
     <label class="col-md-2 control-label" for="inputThickness">Thickness</label>
     <div class="col-md-2">
   	  <div class="input-group">
@@ -152,13 +150,13 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('quanity'); ?>">
+    <div class="<?php Err::form_class('quanity'); ?>">
     <label class="col-md-2 control-label" for="inputQuanity">Quantity</label>
     <div class="col-md-2">
     	<input class="form-control" id="inputQuanity" name="quanity" type="text" value="<?php \UI\form_value(array('post'>'quanity','var'=>$record->quanity)); ?>" />
     </div>
     </div>
-    <div class="<?php Error::form_class('northing'); ?>">
+    <div class="<?php Err::form_class('northing'); ?>">
     <label class="col-md-2 control-label" for="inputNorthing">Northing</label>
     <div class="col-md-2">
       <?php $disabled = ($record->station_index == false) ? '' : ' disabled'; ?>
@@ -168,14 +166,14 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('easting'); ?>">
+    <div class="<?php Err::form_class('easting'); ?>">
     <label class="col-md-2 control-label" for="inputEasting">Easting</label>
     <div class="col-md-2">
       <?php $disabled = ($record->station_index == false) ? '' : ' disabled'; ?>
       <input class="form-control" id="inputEasting" type="text" name="easting" value="<?php \UI\form_value(array('post'=>'easting','var'=>$record->easting)); ?>"<?php echo $disabled; ?>>
     </div>
     </div>
-    <div class="<?php Error::form_class('elevation'); ?>">
+    <div class="<?php Err::form_class('elevation'); ?>">
     <label class="col-md-2 control-label" for="inputElevation">Elevation</label>
     <div class="col-md-2">
       <?php $disabled = ($record->station_index == false) ? '' : ' disabled'; ?>
@@ -185,13 +183,13 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('xrf_artifact_index'); ?>">
+    <div class="<?php Err::form_class('xrf_artifact_index'); ?>">
     <label class="col-md-2 control-label" for="inputXrfArtifactIndex">Artifact XRF</label>
     <div class="col-md-2">
     	<input class="form-control" id="inputXrfArtifactIndex" type="text" name="xrf_artifact_index" value="<?php \UI\form_value(array('post'=>'xrf_artifact_index','var'=>$record->xrf_artifact_index)); ?>" />
     </div>
     </div>
-    <div class="<?php Error::form_class('xrf_matrix_index'); ?>">
+    <div class="<?php Err::form_class('xrf_matrix_index'); ?>">
     <label class="col-md-2 control-label" for="inputXrfMatrixIndex">Matrix XRF</label>
     <div class="col-md-2">
   	  <input class="form-control" id="inputXrfMatrixIndex" name="xrf_matrix_index" type="text" value="<?php \UI\form_value(array('post'=>'xrf_matrix_index','var'=>$record->xrf_matrix_index)); ?>" />
@@ -200,13 +198,13 @@ if (INIT_LOADED != '1') { exit; }
   </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class('notes'); ?>">
+    <div class="<?php Err::form_class('notes'); ?>">
     <label class="col-md-2 control-label" for="inputNotes">Notes</label>
     <div class="col-md-2">
     	<textarea name="notes" class="form-control" rows="5"><?php \UI\form_value(array('post'=>'notes','var'=>$record->notes)); ?></textarea>
     </div>
     </div>
-    <div class="<?php Error::form_class('station_index'); ?>">
+    <div class="<?php Err::form_class('station_index'); ?>">
     <label class="col-md-2 control-label" for="inputStationIndex">Station Index (RN)</label>
     <div class="col-md-2">
   	  <input class="form-control" id="inputStationIndex" name="station_index" type="text" value="<?php \UI\form_value(array('post'=>'station_index','var'=>$record->station_index)); ?>" />
@@ -225,7 +223,7 @@ if (INIT_LOADED != '1') { exit; }
 <?php foreach ($fields as $field) { ?>
 <div class="row">
   <div class="form-group">
-    <div class="<?php Error::form_class($field['name']); ?>">
+    <div class="<?php Err::form_class($field['name']); ?>">
     <label class="col-md-2 control-label" for="input<?php echo $field['name']; ?>"><?php echo ucfirst(str_replace('_',' ',$field['name'])); ?></label>
     <div class="col-md-8">
       <?php if ($field['enabled'] == 0) { ?>

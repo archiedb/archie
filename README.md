@@ -70,3 +70,16 @@ Contents
   for preview, this is not reqiured for Archie to work, it just makes
   things a little prettier. 
 
+7. Setting up Archie with NGINX + PHP-FPM
+
+  If you want to use Archie with NGINX and PHP-FPM you'll need to make a
+  minor adjustment to your NGINX configuration so that the rewrites are
+  proccessed correctly. The following will work if Archie is in your web
+  root, adjust accordingly if it's not. 
+
+<pre>
+        if (!-e $request_filename)
+        {
+        rewrite ^(.+) /index.php last;
+        }
+</pre>

@@ -117,7 +117,7 @@ class Genpdf {
    */
   public function feature_report(&$feature,$filename) {
 
-    Error::clear();
+    Err::clear();
     $current_page = 1;
     $spatialdata = SpatialData::get_record_data($feature->uid,'feature');
     $records = $feature->get_records();
@@ -127,15 +127,15 @@ class Genpdf {
 
     if (!is_readable($featureimage->filename)) {
       Event::error('Feature-PDF','Feature Image ' . $featureimage->filename . ' is not readable');
-      Error::add('feature_image','Feature Image is not readable or not found');
+      Err::add('feature_image','Feature Image is not readable or not found');
     }
     if (!is_writeable(Config::get('prefix') . '/lib/cache') OR !is_readable(Config::get('prefix') . '/lib/cache')) {
       Event::error('Feature-PDF','Cache directory unwriteable, unable to resize image');
-      Error::add('feature_image','Cache directory unwriteable, unable to resize image');
+      Err::add('feature_image','Cache directory unwriteable, unable to resize image');
     }
 
-    if (Error::occurred()) {
-      Error::display('feature_image');
+    if (Err::occurred()) {
+      Err::display('feature_image');
       require \UI\template('/footer');
       exit;
     }
