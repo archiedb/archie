@@ -154,7 +154,7 @@ class Level extends database_object {
     $excavator_two    = strlen($input['excavator_two']) > 0 ? $input['excavator_two'] : NULL;
     $excavator_three  = strlen($input['excavator_three']) > 0 ? $input['excavator_three'] : NULL;
     $excavator_four   = strlen($input['excavator_four']) > 0 ? $input['excavator_four'] : NULL;
-    $z_order          = $input['zorder'] == 'desc' ? 'desc' : 'asc';
+    $z_order          = $input['zorder'] == 'asc' ? 'asc' : 'desc';
     $user             = \UI\sess::$user->uid;
     $type             = 'level';
     $created          = time(); 
@@ -678,10 +678,10 @@ class Level extends database_object {
     $user = Dba::escape($user_uid);
     $site = Dba::escape(\UI\sess::$user->site->uid);
     if (Access::is_admin()) { 
-      $sql = "SELECT * FROM `level` WHERE `closed` IS NULL and `site`='$site' ORDER BY `unit` ASC";
+      $sql = "SELECT * FROM `level` WHERE `closed` IS NULL and `site`='$site' ORDER BY `unit`,`quad`,`catalog_id` ASC";
     }
     else {
-      $sql = "SELECT * FROM `level` WHERE (`excavator_one`='$user' OR `excavator_two`='$user' OR `excavator_three`='$user' OR `excavator_four`='$user') AND `closed` IS NULL AND `site`='$site' ORDER BY `unit` ASC";
+      $sql = "SELECT * FROM `level` WHERE (`excavator_one`='$user' OR `excavator_two`='$user' OR `excavator_three`='$user' OR `excavator_four`='$user') AND `closed` IS NULL AND `site`='$site' ORDER BY `unit`,`quad`,`catalog_id` ASC";
     }
     $db_results = Dba::read($sql); 
 
