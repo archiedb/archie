@@ -95,7 +95,7 @@ class Genpdf {
     $pdf->Text('25','3.5','SITE:' . $record->site->name);
     $pdf->Text('51','3.5','UNIT-QUAD:' . $record->level->unit->name . $quad);
     $pdf->Text('25','7','LVL:' . $record->level->record );
-    $pdf->Text('51','7','QUANITY:' . $record->quanity);
+    $pdf->Text('51','7','QUANTITY:' . $record->quanity);
     $pdf->Text('25','10.5','MAT:' . $record->material->name);
     $pdf->Text('51','10.5','CLASS:' . $record->classification->name);
     $pdf->Text('25','14','L.U.:' . $record->lsg_unit->name);
