@@ -7,6 +7,18 @@ if (INIT_LOADED != '1') { exit; }
 </div>
 <?php Event::display('errors'); ?>
 <form class="form-horizontal" id="new_krotovina" method="post" action="<?php echo Config::get('web_path'); ?>/krotovina/create">
+<?php if (Access::has('krotovina','manage')) { ?>
+<div class="row">
+  <div class="form-group">
+    <div class="<?php Err::form_class('catalog_id'); ?>">
+    <label class="col-md-2 control-label" for="inputCatalog">Catalog ID</label>
+    <div class="col-md-4">
+      <input placeholder="Auto-Generate" class="form-control" id="inputCatalog" name="catalog_id" type="text" value="<?php \UI\form_value('catalog_id'); ?>" tabindex="0" />
+    </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
 <div class="row">
   <div class="form-group">
     <div class="<?php Err::form_class('description'); ?>">
