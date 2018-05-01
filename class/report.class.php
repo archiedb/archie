@@ -406,7 +406,7 @@ class Report {
 
     $data = array();
 
-    $header = array('site','accession','catalog id','unit','level','litho unit','station index','xrf matrix index','weight','height','width','thickness','quantity','material','classification','quad','feature','krotovina','notes','created','northing','easting','elevation','user');
+    $header = array('site','accession','catalog id','unit','level','litho unit','station index','xrf matrix index','weight','height','width','thickness','quantity','material','classification','quad','feature','krotovina','notes','created','updated','northing','easting','elevation','user');
 
     // Load in the site settings, and add those
     $fields = $site->get_setting('fields');
@@ -425,7 +425,7 @@ class Report {
       $record_data = array($site->name,$site->accession,$record->catalog_id,$record->level->unit->name,$record->level->record,$record->lsg_unit->name,
         $record->station_index,$record->xrf_matrix_index,$record->weight,$record->height,$record->width,$record->thickness,$record->quanity,
         $record->material->name,trim($record->classification->name),$record->level->quad->name,$record->feature->record,$record->krotovina->record,
-        $record->notes,date("m-d-Y h:i:s",$record->created),$record->northing,$record->easting,$record->elevation,$record->user->username);
+        $record->notes,date("m-d-Y h:i:s",$record->created),date("m-d-Y h:i:s",$record->updated),$record->northing,$record->easting,$record->elevation,$record->user->username);
 
       // Append the custom fields
       foreach ($fields as $field) {

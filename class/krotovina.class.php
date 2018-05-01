@@ -137,6 +137,9 @@ class Krotovina extends database_object {
     // Force the site to the current users site
     $input['site'] = \UI\sess::$user->site->uid;
 
+    // If they aren't a manager of krotovina then they can't specify a catalog_id
+    if (!Access::has('krotovina','manage')) { unset($input['catalog_id']); }
+
     if (!Krotovina::validate($input)) {
       Err::add('general','Invalid Field Values - please check input');
       return false;
@@ -230,7 +233,8 @@ class Krotovina extends database_object {
       }
     }
     // If no RN then all others - unless we have a krotovina_id
-    if (!$input['krotovina_id'] AND strlen($input['station_index']) == 0 AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
+    // Also allow managers of krotovina to not fill this in
+    if (!$input['krotovina_id'] AND strlen($input['station_index']) == 0 AND !Access::has('krotovina','manage') AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
       Err::add('general','Northing, Easting and Elevation are all required if no Initial RN set');
       if (!strlen($input['easting'])) {
         Err::add('easting','Easting Required');
