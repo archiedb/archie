@@ -20,37 +20,50 @@ $i = 0;
 
 // Sort by Classification first
 while ($class_row = Dba::fetch_assoc($db_results)) {
-  $classrecsql = "SELECT `record`.`uid`,`material`.`name`,`level`.`unit`,`level`.`quad`,`level`.`catalog_id` FROM " . 
-            " `record` LEFT JOIN `level` ON `level`.`uid`=`record`.`level` LEFT JOIN `material` ON `material`.`uid`=`record`.`material` WHERE `classification`=" .$class_row['uid'];
+  $classrecsql = "SELECT `record`.`uid`,`record`.`catalog_id` AS `r_cat`,`material`.`name`,`level`.`unit`,`level`.`quad`,`level`.`catalog_id`,`krotovina`.`catalog_id` AS krot,`feature`.`catalog_id` AS feat FROM " . 
+            " `record` LEFT JOIN `level` ON `level`.`uid`=`record`.`level` LEFT JOIN `material` ON `material`.`uid`=`record`.`material` " . 
+            " LEFT JOIN `krotovina` ON `krotovina`.`uid`=`record`.`krotovina` LEFT JOIN `feature` ON `feature`.`uid`=`record`.`feature` " .
+            "WHERE `classification`=" .$class_row['uid'];
   $rdb_results = Dba::read($classrecsql,array($class_row['uid']));
   while ($record_row = Dba::fetch_assoc($rdb_results)) {
-    $records[$class_row['name']][$record_row['name']][$record_row['unit']][$record_row['quad']][$record_row['catalog_id']][] = $record_row['uid'];
+    if (strlen($record_row['krot'])) {
+      $topsort = "K" . $record_row['krot'];
+    }
+    elseif (strlen($record_row['feat'])) {
+      $topsort = "F" . $record_row['feat'];
+    }
+    else {
+      $topsort = "AA";
+    }
+    $records[$topsort][$class_row['name']][$record_row['name']][$record_row['unit']][$record_row['quad']][$record_row['catalog_id']][$record_row['r_cat']] = $record_row['uid'];
   }
 }
-
+ksort($records);
 // Foreach Classifications
-foreach ($records as $class=>$classdata) {
-  krsort($records[$class]);
-  foreach ($records[$class] as $material=>$materialdata) {
-    krsort($records[$class][$material]);
-    foreach ($records[$class][$material] as $unit=>$unitdata) {
-      krsort($records[$class][$material][$unit]);
-      foreach ($records[$class][$material][$unit] as $quad=>$quaddata) {
-        krsort($records[$class][$material][$unit][$quad]);
-        foreach ($records[$class][$material][$unit][$quad] as $level=>$leveldata) {
-          arsort($records[$class][$material][$unit][$quad][$level]);
+foreach ($records as $top=>$topdata) {
+foreach ($records[$top] as $class=>$classdata) {
+  krsort($records[$top][$class]);
+  foreach ($records[$top][$class] as $material=>$materialdata) {
+    krsort($records[$top][$class][$material]);
+    foreach ($records[$top][$class][$material] as $unit=>$unitdata) {
+      krsort($records[$top][$class][$material][$unit]);
+      foreach ($records[$top][$class][$material][$unit] as $quad=>$quaddata) {
+        krsort($records[$top][$class][$material][$unit][$quad]);
+        foreach ($records[$top][$class][$material][$unit][$quad] as $level=>$leveldata) {
+          arsort($records[$top][$class][$material][$unit][$quad][$level]);
         }
       }
     }
   }
 }
-
+} 
 $pdf = new FPDF();
-foreach ($records as $class=>$classdata) {
-  foreach ($records[$class] as $material=>$materialdata) {
-    foreach ($records[$class][$material] as $unit=>$unitdata) {
-      foreach ($records[$class][$material][$unit] as $quad=>$quaddata) {
-        foreach ($records[$class][$material][$unit][$quad] as $level=>$leveldata) {
+foreach ($records as $top=>$topdata) {
+foreach ($records[$top] as $class=>$classdata) {
+  foreach ($records[$top][$class] as $material=>$materialdata) {
+    foreach ($records[$top][$class][$material] as $unit=>$unitdata) {
+      foreach ($records[$top][$class][$material][$unit] as $quad=>$quaddata) {
+        foreach ($records[$top][$class][$material][$unit][$quad] as $level=>$leveldata) {
           foreach ($leveldata as $r_uid) {
   $pdf->AddPage('L',array('88.9','25.4'));
   $record = new Record($r_uid);
@@ -81,6 +94,7 @@ foreach ($records as $class=>$classdata) {
       }
     }
   }
+}
 }
 
 $pdf->Output('/tmp/bar.pdf');
