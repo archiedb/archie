@@ -111,6 +111,53 @@ class Genpdf {
 
   } // ticket_88x25mm
 
+  public function ticket_88x25mm_no_qrcode ($record,$filename) { 
+
+    $pdf = new FPDF();
+    $pdf->AddPage('L',array('88.9','25.4'));
+
+    $feat_krot = $record->feature->uid ? $record->feature->record : $record->krotovina->record;
+
+    // Verify permissions
+    if (!is_writeable(dirname($filename))) {
+      Event::error('genpdf::ticket_88x25mm_no_qrcode','Error creating ticket :: ' . dirname($filename) . ' is not writeable');
+      return false;
+    }
+
+    $quad = empty($record->level->quad->name) ? '' : '-' . $record->level->quad->name;
+    $nor = empty($record->northing) ? '' : 'N' . $record->northing . ' ';
+    $est = empty($record->easting) ? '' : 'E' . $record->easting . ' ';
+    $elv = empty($record->elevation) ? '' : 'Z' . $record->elevation;
+
+		if (!strlen($nor) AND !strlen($est) AND !strlen($elv)) {
+			$loctxt = 'N/A';
+		}
+		else {
+			$loctxt = "$not$est$elv";
+		}
+
+    $pdf->Image($qrcode->filename,'0','0','24.4','24.4');
+    $pdf->SetFont('Times','B');
+    $pdf->SetFontSize('8');
+    $pdf->Text('14','4.25','SITE:' . $record->site->name);
+    $pdf->Text('48','4.25','UNIT-QUAD:' . $record->level->unit->name . $quad);
+    $pdf->Text('14','7.5','LVL:' . $record->level->record );
+    $pdf->Text('48','7.5','QUANTITY:' . $record->quanity);
+    $pdf->Text('14','10.75','MAT:' . $record->material->name);
+    $pdf->Text('48','10.75','CLASS:' . $record->classification->name);
+    $pdf->Text('14','14','L.U.:' . $record->lsg_unit->name);
+    $pdf->Text('48','14','FEAT/KROT:' . $feat_krot);
+    $pdf->Text('14','17.25','CAT#:' . $record->catalog_id);
+    $pdf->Text('48','17.25','RN:' . $record->station_index);
+    $pdf->Text('14','20.5',date('d-M-Y',$record->created));
+    $pdf->Text('48','20.5','TECH:' .  $record->user->username);
+    $pdf->Output($filename);
+
+    return true; 
+
+  } // ticket_88x25mm_no_qrcode
+
+
   /** 
    * feature_report
    * Multi-page document for Features
