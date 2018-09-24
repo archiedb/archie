@@ -22,6 +22,7 @@ $title = $site->get_valid_settings();
         ?>
           <select class="form-control" id="inputKey" name="<?php echo $key; ?>">
             <option value="88x25mm"<?php echo $selected_88x25mm; ?>>88x25mm Label</option>
+            <option value="88x25mm_no_qrcode"<?php echo $selected_88x25mm_no_qrcode; ?>>88x25mm Label No QRCODE</option>
             <option value="57x32mm"<?php echo $selected_57x32mm; ?>>57x32mm Label</option>
           </select>
       <?php } elseif ($key == 'catalog_offset') { ?>
