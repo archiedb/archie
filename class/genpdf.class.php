@@ -136,7 +136,6 @@ class Genpdf {
 			$loctxt = "$not$est$elv";
 		}
 
-    $pdf->Image($qrcode->filename,'0','0','24.4','24.4');
     $pdf->SetFont('Times','B');
     $pdf->SetFontSize('8');
     $pdf->Text('14','4.25','SITE:' . $record->site->name);
