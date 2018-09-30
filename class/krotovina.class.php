@@ -364,7 +364,7 @@ class Krotovina extends database_object {
 
     $row = Dba::fetch_assoc($db_results);
 
-    if (!isset($row['uid'])) { return false; }
+    if (!isset($row['uid'])) { return null; }
 
     // Cache it!
     parent::add_to_cache('krotovina',$row['uid'],$row);

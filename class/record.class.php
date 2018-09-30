@@ -326,8 +326,8 @@ class Record extends database_object {
     // We need the real UID of the following objects
     $level              = strlen($input['level']) ? new Level($input['level']) : NULL;
     $level_uid          = strlen($input['level']) ? $level->uid : NULL;
-    $feature_uid        = Feature::get_uid_from_record($input['feature']);
-    $krotovina_uid      = Krotovina::get_uid_from_record($input['krotovina']);
+    $feature_uid        = empty($input['feature']) ? NULL : Feature::get_uid_from_record($input['feature']);
+    $krotovina_uid      = empty($input['krotovina']) ? NULL : Krotovina::get_uid_from_record($input['krotovina']);
 
 		$lsg_unit           = $input['lsg_unit']; 
 		$xrf_matrix_index   = strlen($input['xrf_matrix_index']) ? $input['xrf_matrix_index'] : NULL; 
