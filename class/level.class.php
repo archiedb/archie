@@ -389,7 +389,7 @@ class Level extends database_object {
         Err::add($field,'Must be numeric');
         continue;
       }
-      if ($input[$field] < 0 OR round($input[$field],3) != $input[$field]) { 
+      if (round($input[$field],3) != $input[$field]) { 
         Err::add($field,'Must be numeric and rounded to three decimal places'); 
       }
     } // end foreach starts 
