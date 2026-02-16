@@ -113,12 +113,12 @@ if (INIT_LOADED != '1') { exit; }
       <tr>
         <td>Data Directory Writeable</td>
         <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_datadir_writeable()); ?></p></td>
-        <td>Check /var/lib/archie to make sure it's writeable, if you plan to change the datadir after installation you can ignore this error.</td>
+        <td>Check /opt/archie/data to make sure it's writeable, if you plan to change the datadir after installation you can ignore this error.</td>
       </tr>
       <tr>
         <td>Log Directory Writeable</td>
         <td><p align="center"><?php echo \UI\boolean_word(\Debug\check_logdir_writeable()); ?></p></td>
-        <td>Check /var/log/archie to make sure it's writeable, if you plan to change the log dir after installaion you can ignore this error.</td>
+        <td>Check /opt/archie/log to make sure it's writeable, if you plan to change the log dir after installaion you can ignore this error.</td>
       </tr>
       <tr>
         <td>Apache Mod-Rewrite Enabled</td>

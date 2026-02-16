@@ -122,7 +122,7 @@ function check_root_writeable() {
  */
 function check_datadir_writeable() {
 
-  if (!is_writeable('/var/lib/archie')) { return false; }
+  if (!is_writeable('/opt/archie/data')) { return false; }
 
   return true; 
 
@@ -134,7 +134,7 @@ function check_datadir_writeable() {
  */
 function check_logdir_writeable() {
 
-  if (!is_writeable('/var/log/archie')) { return false; }
+  if (!is_writeable('/opt/archie/log')) { return false; }
 
   return true;
 
@@ -176,7 +176,7 @@ function check_python_scatterplots() {
 
     $retval = true; 
 
-    if (!is_executable('/usr/bin/python')) { 
+    if (!is_executable('/usr/bin/python3')) { 
       return false; 
     }
 
@@ -184,7 +184,7 @@ function check_python_scatterplots() {
 
     foreach ($modules as $module) { 
 
-      $cmd = "/usr/bin/python -c 'import $module'";
+      $cmd = "/usr/bin/python3 -c 'import $module'";
       exec($cmd,$out,$return);
       // Just 0 check doesn't work matplotlib returns 1 sometimes even though its ok... :(
       if ($return !== 0 AND !empty($out)) { 

@@ -13,10 +13,10 @@ ticket_size=88x25mm
 
 ; Path where Archie will try to log events, must be writeable by the webserver
 ;; This can contain sensitive information, and should not be inside the web space
-log_path=/var/log/archie
+log_path=/opt/archie/log
 
 ; This is the root of the attached/fs data
-data_root=/var/lib/archie
+data_root=/opt/archie/data
 
 ; Operational stuff
 ;; This is the number of records per page
