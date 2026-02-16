@@ -9,3 +9,4 @@ config.bak
 lib/cache/*
 bin/backup/backup.cfg.php
 bin/backup/tmp/*
+log/*
