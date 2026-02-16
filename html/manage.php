@@ -280,11 +280,10 @@ switch (\UI\sess::location('action')) {
   case 'status':
     if (!Access::is_admin()) { \UI\access_denied(); }
     // Include debug tools 
-    require_once 'class/debug.namespace.php';
+    require_once '../class/debug.namespace.php';
     require_once \UI\template('/manage/status'); 
   break; 
 } // end action switch 
 
-require_once 'template/footer.inc.php'; 
-
+require_once \UI\template('/footer');
 ?>

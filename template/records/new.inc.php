@@ -1,7 +1,7 @@
 <?php
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
-require_once 'template/menu.inc.php';
+require_once \UI\template('/menu');
 ?>
 <?php $record = Record::last_created(); ?>
 <?php if ($record->uid) { ?>

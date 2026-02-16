@@ -2,7 +2,7 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
-<?php require_once 'template/menu.inc.php'; ?>
+<?php require_once \UI\template('/menu'); ?>
 <div class="page-header">
 <h3>Edit Record - <?php echo scrub_out($record->site->name . '-' . $record->catalog_id); ?> <small><?php echo strlen($record->accession) ? 'Acc#' . $record->accession : ''; ?></small></h3>
 </div>

@@ -2,7 +2,7 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
-<?php require_once 'template/menu.inc.php'; ?>
+<?php require_once \UI\template('/header'); ?>
 <div class="page-header">
 <h3><?php echo scrub_out($user->name); ?> (<?php echo scrub_out($user->username); ?>)</h3>
 </div>

@@ -162,4 +162,4 @@ switch (\UI\sess::location('action')) {
   break; 
 } // end switch
 ?>
-<?php require_once 'template/footer.inc.php'; ?>
+<?php require_once '../template/footer.inc.php'; ?>

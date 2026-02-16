@@ -3,7 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 $sites = $user->get_sites();
 ?>
-<?php require_once 'template/menu.inc.php'; ?>
+<?php require_once '../template/menu.inc.php'; ?>
 <div class="page-header">
 <h3>You are currently working on <strong><?php $user->site->_print('name'); ?></strong></h3>
 </div>

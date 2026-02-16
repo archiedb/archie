@@ -102,7 +102,7 @@ class Stats {
     $db_results = Dba::read($sql); 
   
     $row = Dba::fetch_assoc($db_results); 
-    
+    if (!is_array($row)) { $row = array(); }
     // Nothing!?!@
     if (!count($row)) { return array('count'=>0); }
     $classification = new classification($row['classification']); 
@@ -143,7 +143,7 @@ class Stats {
     $db_results = Dba::read($sql); 
 
     $row = Dba::fetch_assoc($db_results); 
-
+    if (!is_array($row)) { $row = array(); }
     if (!count($row)) { return array('count'=>0); }
     $material = new material($row['material']); 
     $row['material'] = $material->name ? $material->name : 'UNDEF';
