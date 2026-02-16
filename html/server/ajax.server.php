@@ -33,7 +33,7 @@
 // Set that this is an ajax include
 define('AJAX_INCLUDE','1');
 
-require_once '../class/init.php';
+require_once '../../class/init.php';
 
 /* Set the correct headers */
 header("Expires: Tuesday, 27 Mar 1984 05:00:00 GMT");
