@@ -61,4 +61,4 @@ if (isset($auth['success'])) {
 
 } // if successful authentication 
 
-require 'template/login.inc.php'; 
+require '../template/login.inc.php'; 

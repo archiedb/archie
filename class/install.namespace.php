@@ -113,14 +113,15 @@ function insert_db($info) {
 
     // Create the Database
     $sql = "CREATE DATABASE `" . $info['database'] . "`";
-    $retval = \Dba::write($sql) ? $retval : false;
-
-    \Dba::dbh($info['database'],true);
+    $dbh = new \PDO('mysql:host=' . $info['hostname'],$info['username'],$info['password']);
+    $retval = $dbh->query($sql) ? $retval : false;
 
     if (!$retval) { 
       \Err::add('general','Unable to create database - ' . $info['database'] . ' - ' .\Dba::error());
       return false;
     }
+    
+    \Dba::dbh($info['database'],true);
 
     $base_file = \Config::get('prefix') . '/config/database.sql'; 
     $data = file_get_contents($base_file);

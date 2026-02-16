@@ -52,7 +52,7 @@ class Dba {
 	private static $_default_db;
 	private static $_sql;
 	private static $config;
-  private static $_error;
+	private static $_error;
 
 	/**
 	 * constructor
@@ -71,13 +71,13 @@ class Dba {
 	 */
 	public static function query($sql,$params=array()) {
 
-    Event::record('SQL',$sql . " ::: " . json_encode($params),'query');
-    $dbh = self::dbh();
-    if (!$dbh) { 
-      Event::error('Database','Error no database handle found');
-      echo "Database Connection Failure";
-      return false;
-    }
+		Event::record('SQL',$sql . " ::: " . json_encode($params),'query');
+		$dbh = self::dbh();
+		if (!$dbh) { 
+			Event::error('Database','Error no database handle found');
+			echo "Database Connection Failure";
+			return false;
+		}
 
     // If it's an updated query that's using params for escaping
     if (count($params)) { 
