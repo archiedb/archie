@@ -8,9 +8,9 @@ define('OUTDATED_DATABASE_OK',1);
 // Full stop if config/settings.php is in place
 if (file_exists('config/settings.php')) { echo "ALREADY INSTALLED"; exit; }
 
-require_once 'class/debug.namespace.php';
-require_once 'class/install.namespace.php';
-require_once 'class/init.php'; 
+require_once '../class/debug.namespace.php';
+require_once '../class/install.namespace.php';
+require_once '../class/init.php'; 
 
 // For now it's only posts here
 switch ($_GET['action']) { 

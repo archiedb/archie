@@ -1,7 +1,7 @@
 <?php 
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
-require_once 'class/debug.namespace.php';
-require_once 'class/ui.namespace.php';
+require_once '../class/debug.namespace.php';
+require_once '../class/ui.namespace.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

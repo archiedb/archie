@@ -2,7 +2,7 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 define('OUTDATED_DATABASE_OK','1'); 
 define('NO_SESSION','1'); 
-require_once 'class/init.php'; 
+require_once '../class/init.php'; 
 
 // For now it's only posts here
 switch ($_POST['action']) { 

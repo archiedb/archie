@@ -3,7 +3,7 @@
 
 // Don't require a session here because this is the login page
 define('NO_SESSION','1'); 
-require_once 'class/init.php';
+require_once '../class/init.php';
 
 /* We have to create the cookie because IIS can't
  * handle the Cookie + Redirect, *sigh*

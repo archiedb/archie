@@ -1,9 +1,9 @@
 <?php
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
-require_once 'class/init.php'; 
+require_once '../class/init.php'; 
 
-require_once 'template/header.inc.php'; 
-require_once 'template/menu.inc.php'; 
+require_once '../template/header.inc.php'; 
+require_once '../template/menu.inc.php'; 
 switch (\UI\sess::location('action')) {
   case 'view':
     if (\UI\sess::$user->uid != \UI\sess::location('objectid') AND !Access::has('user','read')) { 
