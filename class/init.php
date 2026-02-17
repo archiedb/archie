@@ -40,8 +40,8 @@ if (defined('CLI')) {
 }
 
 // Do a check for PHP5 because nothing will work without it
-if (floatval(phpversion()) < 5.3) {
-	echo "ERROR: Archie requires PHP5.3";
+if (floatval(phpversion()) < 8.0) {
+	echo "ERROR: Archie requires PHP8.0";
 	exit;
 }
 

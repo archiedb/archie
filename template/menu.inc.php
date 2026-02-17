@@ -23,6 +23,7 @@ if (INIT_LOADED != '1') { exit; }
               <li><a href="<?php echo Config::get('web_path'); ?>/feature/new">Feature</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/krotovina/new">Krotovina</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/level/new">Level</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/curation/new">Curation</a></li>
             </ul>
           </li>
           <li class="divider-vertical"></li>

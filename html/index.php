@@ -33,6 +33,10 @@ switch (\UI\sess::location('page')) {
     if (!Access::has('krotovina')) { \UI\access_denied(); }
     require_once 'krotovina.php';
   break;
+  case 'curation':
+    if (!Access::has('curation')) { \UI\access_denied(); }
+    require_once 'curation.php';
+  break;
   default:
     require_once \UI\template('/header'); 
     require_once \UI\template('/menu');
