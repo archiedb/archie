@@ -353,7 +353,7 @@ class View {
    */
   private function get_select() { 
 
-    $select_string = implode($this->_state['select'],','); 
+    $select_string = implode(',',$this->_state['select']); 
     return $select_string; 
 
   } // get_select

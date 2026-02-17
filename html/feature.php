@@ -2,8 +2,8 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 require_once '../class/init.php'; 
 
-require_once '../template/header.inc.php'; 
-require_once '../template/menu.inc.php'; 
+require_once \UI\template('/header');
+require_once \UI\template('/menu');
 switch (\UI\sess::location('action')) {
   case 'new':
     if (!Access::has('feature','create')) { \UI\access_denied(); }
@@ -120,7 +120,6 @@ switch (\UI\sess::location('action')) {
     require_once \UI\template('/feature/show');
   break; 
 } // end action switch 
-
-require_once '../template/footer.inc.php'; 
+require_once \UI\template('/footer');
 
 ?>
