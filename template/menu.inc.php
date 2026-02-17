@@ -34,6 +34,7 @@ if (INIT_LOADED != '1') { exit; }
               <li><a href="<?php echo Config::get('web_path'); ?>/feature">Feature</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/krotovina">Krotovina</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/level">Level</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/curation">Curation</a></li>
             </ul>
 <?php if (Access::has('report')) { ?>
           <li><a href="<?php echo Config::get('web_path'); ?>/reports">Report</a></li>

@@ -1,0 +1,15 @@
+{
+ "name": "archiedb/archie",
+ "description": "Archie Inventory System",
+ "homepage": "archiedb.com",
+ "keywords": ["php","archie","osu"],
+ "type": "project",
+ "license": "Mixed",
+ "config": {
+   "vendor-dir": "app/vendor",
+   "require": {
+     "twig/twig": "^3.11.2",
+     "twig/markdown-extra": "^3.5"
+    }
+   }
+
