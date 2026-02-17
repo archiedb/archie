@@ -52,7 +52,7 @@ switch (\UI\sess::location('action')) {
     $view = new View(); 
     $view->reset(); 
     $view->set_type('curation'); 
-    $view->set_sort('id','ASC');
+    $view->set_sort('uid','ASC');
     $records = $view->run(); 
     require_once \UI\template('/curation/show');
   break; 

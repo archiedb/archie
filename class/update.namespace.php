@@ -380,6 +380,11 @@ class Database {
                     '- Make Level an optional field on Records.<br />' . 
                     '- Create Excavators Table for holding infinite excavator <--> Level/Feature/Krotovina mappings';
     $versions[] = array('version'=>'0026','description'=>$update_string);
+    $update_string = '- Add Curation record type.<br />' . 
+                    '- Add Institution, Building, Room, Cabinet, Drawer metadata.<br />' . 
+                    '- Add Curation Role to Role based access control.<br />' .
+                    '- Add Curator group to default group set.<br />';
+    $versions[] = array('version'=>'0027','description'=>$update_string);
 
     return $versions; 
 
@@ -1860,6 +1865,33 @@ class Database {
     return $retval;
 
   } // update_0026
+  
+  public static function update_0027() {
+
+    // Create Curation Table
+    $sql = "CREATE TABLE `curation` (" . 
+      "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+      "`site` int(11) UNSIGNED NOT NULL," .
+      "`catalog_id` int(11) UNSIGNED NULL," .
+      "`institution` int(11) UNSIGNED NOT NULL," .
+      "`building` int(11) UNSIGNED NOT NULL," .
+      "`room` int(11) UNSIGNED NOT NULL," .
+      "`cabinet` int(11) UNSIGNED NOT NULL," .
+      "`drawer` int(11) UNSIGNED NOT NULL," .
+      "`status` varchar(1024) NOT NULL," .
+      "`image` int(11) UNSIGNED NOT NULL, " .
+      "`created` DATETIME NOT NULL, " .
+      "`created_by` int(11) UNSIGNED NOT NULL, " .
+      "`updated` DATETIME NULL, " .
+      "`updated_by` int(11) UNSIGNED NULL, " .
+      "PRIMARY KEY (`uid`))" .
+      " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "INSERT INTO `role` (`name`,`description) VALUES (`curation`,`Curation`)";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+  } // update_0027
 
 } // \Update\Database class
 
