@@ -1905,12 +1905,26 @@ class Database {
     $sql = "CREATE TABLE `building` (" .
       "`uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, " .
       "`name` varchar(1024) NOT NULL, " .
+      "`institution` int(11) UNSIGNED NOT NULL, " .
       "`enabled` tinyint(1) DEFAULT 1, " .
       "`created` DATETIME NOT NULL, " . 
       "`created_by` int(11) UNSIGNED NOT NULL, " .
       "PRIMARY KEY (`uid`))" .
       " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "CREATE TABLE `room` (" . 
+      "`uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, " .
+      "`name` varchar(1024) NOT NULL, " .
+      "`building` int(11) UNSIGNED NOT NULL, " .
+      "`enabled` tinyint(1) DEFAULT 1, " .
+      "`created` DATETIME NOT NULL, " .
+      "`created_by` int(11) UNSIGNED NOT NULL, " .
+      "PRIMARY KEY (`uid`))" .
+      " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "CREATE TABLE `cabinet` (" .
 
   } // update_0027
 
