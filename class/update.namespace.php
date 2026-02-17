@@ -1870,7 +1870,7 @@ class Database {
 
     // Create Curation Table
     $sql = "CREATE TABLE `curation` (" . 
-      "`uid` int(11) NOT NULL AUTO_INCREMENT," .
+      "`uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT," .
       "`site` int(11) UNSIGNED NOT NULL," .
       "`catalog_id` int(11) UNSIGNED NULL," .
       "`institution` int(11) UNSIGNED NOT NULL," .
@@ -1889,6 +1889,27 @@ class Database {
     $retval = \Dba::write($sql) ? $retval: false;
 
     $sql = "INSERT INTO `role` (`name`,`description) VALUES (`curation`,`Curation`)";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "CREATE TABLE `institution` (" .
+      "`uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT," .
+      "`name` varchar(1024) NOT NULL, " .
+      "`contact` varchar(1024) NOT NULL, " . 
+      "`enabled` tinyint(1) DEFAULT 1, " .
+      "`created` DATETIME NOT NULL, " . 
+      "`created_by` int(11) UNSIGNED NOT NULL, " .
+      "PRIMARY KEY (`uid`))" . 
+      " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "CREATE TABLE `building` (" .
+      "`uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, " .
+      "`name` varchar(1024) NOT NULL, " .
+      "`enabled` tinyint(1) DEFAULT 1, " .
+      "`created` DATETIME NOT NULL, " . 
+      "`created_by` int(11) UNSIGNED NOT NULL, " .
+      "PRIMARY KEY (`uid`))" .
+      " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval: false;
 
   } // update_0027
