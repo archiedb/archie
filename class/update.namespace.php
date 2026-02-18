@@ -1891,6 +1891,27 @@ class Database {
     $sql = "INSERT INTO `role` (`name`,`description) VALUES (`curation`,`Curation`)";
     $retval = \Dba::write($sql) ? $retval: false;
 
+		$role_id = \Dba::insert_id();
+
+		$sql = "INSERT INTO `group` (`name`,`description`) VALUES (`Curator`,`Curation data entry`)";
+		$retval = \Dba::write($sql) ? $retval : false;
+
+		$group_id = \Dba::insert_id();
+
+		// Pull the uids for the actions
+		$sql = "SELECT * FROM `action`";
+		$db_results = \Dba::read($sql);
+
+		while ($row = \Dba::fetch_assoc($db_results)) {
+			$action[$row['name']] = $row['uid'];
+		}
+
+		$action_insert = array('read','create','edit','close');
+		foreach ($action_insert as $key) {
+			$sql = "INSERT INTO `group_role` (`group`,`role`,`action`) VALUES (?,?,?)";
+			$retval = \Dba::write($sql,array($group_id,$role_id,$action[$key])) ? $retval : false;
+		}
+
     $sql = "CREATE TABLE `institution` (" .
       "`uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT," .
       "`name` varchar(1024) NOT NULL, " .
@@ -1925,6 +1946,26 @@ class Database {
     $retval = \Dba::write($sql) ? $retval: false;
 
     $sql = "CREATE TABLE `cabinet` (" .
+      "`uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, " . 
+      "`name` varchar(1024) NOT NULL, " . 
+      "`room` int(11) UNSIGNED NOT NULL, " . 
+      "`enabled` tinyint(1) DEFAULT 1, " .
+      "`created` DATETIME NOT NULL, " .
+      "`created_by` DATETIME NOT NULL, " .
+      "PRIMARY KEY (`uid`))" .
+      " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval: false;
+
+    $sql = "CREATE TABLE `drawer` (" .
+      "`uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, " .
+      "`name` varchar(1024) NOT NULL, " .
+      "`cabinet` int(11) UNSIGNED NOT NULL, " .
+      "`enabled` tinyint(1) DEFAULT 1, " .
+      "`created` DATETIME NOT NULL, " .
+      "`created_by` DATETIME NOT NULL, " .
+      "PRIMARY KEY (`uid`))" .
+      " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+    $retval = \Dba::write($sql) ? $retval: false;
 
   } // update_0027
 
