@@ -384,7 +384,7 @@ class Database {
                     '- Add Institution, Building, Room, Cabinet, Drawer metadata.<br />' . 
                     '- Add Curation Role to Role based access control.<br />' .
                     '- Add Curator group to default group set.<br />';
-    //$versions[] = array('version'=>'0027','description'=>$update_string);
+    $versions[] = array('version'=>'0027','description'=>$update_string);
 
     return $versions; 
 
@@ -1868,6 +1868,8 @@ class Database {
   
   public static function update_0027() {
 
+    $retval = true;
+
     // Create Curation Table
     $sql = "CREATE TABLE `curation` (" . 
       "`uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT," .
@@ -1888,7 +1890,7 @@ class Database {
       " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval: false;
 
-    $sql = "INSERT INTO `role` (`name`,`description`) VALUES ('curation','Curation')";
+    $sql = "INSERT INTO `role` (`uid`,`name`,`description`) VALUES (10,'curation','Curation')";
     $retval = \Dba::write($sql) ? $retval: false;
 
 		$role_id = \Dba::insert_id();
@@ -1966,6 +1968,8 @@ class Database {
       "PRIMARY KEY (`uid`))" .
       " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval: false;
+    
+    return $retval;
 
   } // update_0027
 
