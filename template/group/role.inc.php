@@ -3,7 +3,7 @@
 if (INIT_LOADED != '1') { exit; }
 $group->set_roles();
 ?>
-<?php require_once 'template/menu.inc.php'; ?>
+<?php require_once \UI\template('/menu'); ?>
 <div class="page-header">
 <p class="pull-right">
   <a href="#add_role" role="button" data-toggle="modal" class="btn btn-success">Add Role</a>

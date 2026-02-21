@@ -5,7 +5,7 @@ if (INIT_LOADED != '1') { exit; }
 // We need the extension
 $name = strlen($model->notes) ? $model->notes : basename($model->filename); 
 ?>
-<?php require_once 'template/menu.inc.php'; ?>
+<?php require_once \UI\template('/menu'); ?>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script> 
   <style> 
    .chromeFrameInstallDefaultStyle { 

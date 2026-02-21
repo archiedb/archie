@@ -11,36 +11,64 @@ if (INIT_LOADED != '1') { exit; }
       <?php 
         foreach (View::get_allowed_sorts('record') as $field) { 
       ?>
-        <li><a href="<?php echo Config::get('web_path'); ?>/records/sort/<?php echo scrub_out($field); ?>"><?php echo scrub_out(\UI\field_name($field)); ?></a></li>
+        <li><a href="<?php echo Config::get('web_path'); ?>/curation/sort/<?php echo scrub_out($field); ?>"><?php echo scrub_out(\UI\field_name($field)); ?></a></li>
       <?php } ?>
       </ul>
   </div>
   </small>
   <h3>
-    Records for site <?php echo scrub_out(\UI\sess::$user->site->name);  ?>
+    Curation Records
   </h3>
 </div>
 <?php require \UI\template('/page_header'); ?>
 <table class="table table-hover table-bordered table-condensed">
   <thead>
   <tr>
-    <th><a href="<?php echo Config::get('web_path'); ?>/records/sort/catalog_id">Catalog #</a><?php $view->display_sort('catalog_id'); ?></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/station_index">R.N.</a><?php $view->display_sort('station_index'); ?></th>
-	  <th><a href="<?php echo Config::get('web_path'); ?>/records/sort/unit">Unit</a><?php $view->display_sort('unit'); ?></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/quad">Quad</a><?php $view->display_sort('quad'); ?></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/level">Level</a><?php $view->display_sort('level'); ?></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/feature">Feature</a><?php $view->display_sort('feature'); ?></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/lsg_unit"><abbr title="Lithostratoigraphic Unit">L. U.</abbr></a><?php $view->display_sort('lsg_unit'); ?></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/material">Material</a><?php $view->display_sort('material'); ?></th>
-  	<th><a href="<?php echo Config::get('web_path'); ?>/records/sort/classification">Class.</a><?php $view->display_sort('classification'); ?></th>
+    <th><a href="<?php echo Config::get('web_path'); ?>/curation/sort/uid">Curation #</a><?php $view->display_sort('uid'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/curation/sort/institution">Institution</a><?php $view->display_sort('institution'); ?></th>
+	  <th><a href="<?php echo Config::get('web_path'); ?>/curation/sort/unit">Building</a><?php $view->display_sort('building'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/curation/sort/room">Room</a><?php $view->display_sort('room'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/curation/sort/cabinet">Cabinet</a><?php $view->display_sort('cabinet'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/curation/sort/drawer">Drawer</a><?php $view->display_sort('drawer'); ?></th>
+  	<th><a href="<?php echo Config::get('web_path'); ?>/curation/sort/status">Status</a><?php $view->display_sort('status'); ?></th>
     <th>&nbsp;</th>
   </tr>
   </thead>
   <tbody>
+  <tr>
+    <td>5123</td><td>OSU</td><td>Waldo</td><td>114</td><td>15</td><td>A12</td><td>Borrowed</td>
+    <td>
+      <a type="button" class="btn btn-sm btn-primary">View</a>
+      <a type="button" class="btn btn-sm btn-primary">Contact Lender</a>
+    </td>
+  </tr>
+  <tr>
+    <td>5124</td><td>OSU</td><td>Waldo</td><td>114</td><td>15</td><td>A12</td><td>Borrowed</td>
+    <td>
+      <a type="button" class="btn btn-sm btn-primary">View</a>
+      <a type="button" class="btn btn-sm btn-primary">Contact Lender</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>5125</td><td>OSU</td><td>Waldo</td><td>114</td><td>15</td><td>A12</td><td>Present</td>
+    <td>
+      <a type="button" class="btn btn-sm btn-primary">View</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td>5127</td><td>OSU</td><td>Waldo</td><td>114</td><td>15</td><td>A13</td><td>Present</td>
+    <td>
+      <a type="button" class="btn btn-sm btn-primary">View</a>
+    </td>
+  </tr>
+
+  <?php $records = array(); ?>
 <?php foreach ($records as $uid) { 
-  $record = new Record($uid); 
+  $record = new Curation($uid); 
 ?>
-<?php require \UI\template('/records/show_row'); ?>
+<?php require \UI\template('/curation/show_row'); ?>
 <?php } ?>
   </tbody>
 </table>

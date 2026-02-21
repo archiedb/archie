@@ -237,6 +237,10 @@ class View {
         $this->_state['type'] = $type;
         $this->set_base_sql(true);
       break;
+      case 'curation':
+        $this->_state['type'] = $type;
+        $this->set_base_sql(true);
+      break;
     } // end switch 
 
   } // set_type
@@ -268,6 +272,10 @@ class View {
       case 'krotovina':
         $this->set_select('`krotovina`.`uid`');
         $sql = 'SELECT %%SELECT%% FROM `krotovina` ';
+      break;
+      case 'curation':
+        $this->set_select('`curation`.`uid`');
+        $sql = 'SELECT %%SELECT%% FROM `curation` ';
       break;
     }
     $this->_state['base'] = $sql; 
@@ -578,6 +586,9 @@ class View {
       break;
       case 'krotovina':
         $allowed_filters = array('catalog_id','created','updated','user');
+      break;
+      case 'curation':
+        $allowed_filters = array('site','catalog_id','institution','room','building','cabinet','drawer','status','created','updated');
       break;
     }
 

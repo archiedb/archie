@@ -2,7 +2,7 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
-<?php require_once 'template/menu.inc.php'; ?>
+<?php require_once \UI\template('/menu'); ?>
 <div class="page-header">
 <p class="pull-right">
  <a href="<?php echo Config::get('web_path'); ?>/level/view/<?php echo scrub_out($level->uid); ?>" class="btn btn-info">View</a>
