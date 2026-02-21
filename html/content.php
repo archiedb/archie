@@ -2,8 +2,8 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 require_once '../class/init.php'; 
 
-require_once '../template/header.inc.php'; 
-require_once '../template/menu.inc.php'; 
+require_once \UI\template('/header'); 
+require_once \UI\template('/menu'); 
 switch (\UI\sess::location('action')) {
   case 'update':
     // Make sure they have access

@@ -122,6 +122,6 @@ switch (\UI\sess::location('action')) {
   break; 
 } // end action switch 
 
-require_once \UI\template('/footer)'; 
+require_once \UI\template('/footer'); 
 
 ?>
