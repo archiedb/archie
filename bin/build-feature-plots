@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 import MySQLdb
@@ -16,7 +16,7 @@ def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel
   """
   Save a scatterplot to the specified filename 
   """
-  print "Building:" + plottitle + " saving to " + plotfilename
+  print("Building:" + plottitle + " saving to " + plotfilename)
   fig = plt.figure()
   plt.title(plottitle)
   plt.rcParams.update({'font.size': 10})

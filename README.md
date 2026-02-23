@@ -42,7 +42,7 @@ Contents
 	  * PHP-MySQL
 	* Cron or method to schedule regular script runs
 	* BASH shell for CLI scripts
-	* Python 2.7
+	* Python 3
 	  * Matplotlib,Numpy
 
 4. Cronjobs

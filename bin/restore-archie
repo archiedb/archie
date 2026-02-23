@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 import sys,os,re,argparse,subprocess
 import ConfigParser

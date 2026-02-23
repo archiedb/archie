@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 
 import MySQLdb
@@ -16,7 +16,7 @@ def save_scatterplot(plottitle,plotfilename,plot_cords,xcord,ycord,xlabel,ylabel
   """
   Save a scatterplot to the specified filename 
   """
-  print "Building:" + plottitle + " saving to " + plotfilename
+  print("Building:" + plottitle + " saving to " + plotfilename)
   fig = plt.figure()
   plt.title(plottitle)
   plt.rcParams.update({'font.size': 10})
@@ -48,7 +48,7 @@ def ensure_dir(dirname):
     """
     try:
         os.makedirs(dirname)
-    except OSError, e:
+    except (OSError, e):
         if e.errno != errno.EEXIST:
             raise
 def is_number(s):
@@ -203,11 +203,11 @@ while level is not None:
 
   # If we didn't find anything then just move on
   if (cord_count < 1):
-    print "Insufficient cordinates, skipping level UID:"+locus_txt
+    print("Insufficient cordinates, skipping level UID:"+locus_txt)
     # Fetch the next level
     level = levels.fetchone()
     continue
-  print "Found Est:"+str(len(est))+" Nor:"+str(len(nor))+" Elv:"+str(len(elv))+" records"
+  print("Found Est:"+str(len(est))+" Nor:"+str(len(nor))+" Elv:"+str(len(elv))+" records")
 
   # Create the 
   full_path=data_root+'/'+site+'/plots'
@@ -244,7 +244,7 @@ while level is not None:
 
   # make 3d plot, different from a normal one so it's not using save_scatterplot
   plot_filename = full_path+'/Level-'+locus_txt+'-3D.png'
-  print "Building: Level-" + locus_txt + "-3D saving to " + plot_filename
+  print("Building: Level-" + locus_txt + "-3D saving to " + plot_filename)
   fig = plt.figure()
 
   ax = fig.add_subplot(111,projection='3d')
