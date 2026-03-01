@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Archiedb Cron Task every 2 minutes
+
+[Timer]
+# Run 2 minutes after boot-up
+OnBootSec=2min
+# Run every 2 minutes after the service was last started
+OnUnitActiveSec=2min
+Unit=archie-task-cron.service
+
+[Install]
+WantedBy=timers.target

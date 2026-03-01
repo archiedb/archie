@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Archiedb Cron Task
+After=network.target
+
+[Service]
+Type=oneshot
+User=www-data
+Group=www-data
+ExecStart=/usr/bin/php /opt/archie/bin/task.cron.php.inc
+
+[Install]
+WantedBy=multi-user.target
