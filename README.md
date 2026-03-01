@@ -4,11 +4,6 @@ ARCHIE
 An open source digitial inventory system designed for field and lab use by
 archelogists.  
 
-Branch | Build Status
------- | ------------
-**Master** | ![Master Branch](https://travis-ci.org/archiedb/archie.svg?branch=master "Master Branch")
-**Development** | ![Development Branch](https://travis-ci.org/archiedb/archie.svg?branch=development "Development Branch")
-
 Contents
 --------
 
@@ -37,7 +32,7 @@ Contents
 	  * rewrites
 	  * php
 	* MySQL
-	* PHP 5.1+ with 
+	* PHP 8+ with 
 	  * PHP-GD
 	  * PHP-MySQL
 	* Cron or method to schedule regular script runs
