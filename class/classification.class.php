@@ -6,6 +6,8 @@ class Classification extends database_object {
 
 	public $uid; 
 	public $name; 
+  public $enabled;
+  public $description;
 
 	/**
 	 * Constructor

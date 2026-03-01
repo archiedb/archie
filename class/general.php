@@ -51,6 +51,7 @@ function scrub_in($input) {
  */
 function scrub_out($string) {
 
+        if (is_null($string)) { return ''; }
         $string = htmlentities($string, ENT_QUOTES, Config::get('site_charset'));
 
         return $string;

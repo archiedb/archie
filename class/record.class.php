@@ -22,6 +22,7 @@ class Record extends database_object {
   public $xrf_artifact_index; 
   public $accession;
   public $notes; 
+  public $record;
   public $user_id; // The ID
   public $northing; // Northing from station info
   public $easting; // Easting from station info
@@ -62,7 +63,9 @@ class Record extends database_object {
     $this->krotovina = new Krotovina($this->krotovina);
     $this->level = new Level($this->level);
 		$this->user = new User($this->user); 
-    $this->extra = json_decode($this->extra,true); // Decode and reassign extra JSON crap
+    if (!is_null($this->extra)) {
+      $this->extra = json_decode($this->extra,true); // Decode and reassign extra JSON crap
+    }
 
 		return true; 
 

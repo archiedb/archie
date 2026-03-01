@@ -12,6 +12,7 @@ class User extends database_object {
   public $site; // UID of their current site
   public $last_login;
 	public $disabled; 
+  public $notes; 
 	public $password; // SHA2 (256)
 
 	// Constructor takes a uid
@@ -29,11 +30,13 @@ class User extends database_object {
 		if (property_exists($this,'password')) { unset($this->password); }
 
     // Load their roles
-    if (!isset($row['roles'])) { $row['roles'] = false; }
-    if (!is_array($row['roles'])) {
-      $this->roles = User::get_roles($this->uid,$this->site);
-      $row['roles'] = $this->roles;
-      parent::add_to_cache('users',$uid,$row);
+    if (is_array($row)) {
+      if (!isset($row['roles'])) { $row['roles'] = false; }
+      if (!is_array($row['roles'])) {
+        $this->roles = User::get_roles($this->uid,$this->site);
+        $row['roles'] = $this->roles;
+        parent::add_to_cache('users',$uid,$row);
+      }
     }
 
     if ($this->site) { $this->site = new Site($this->site); }
@@ -88,7 +91,8 @@ class User extends database_object {
    */
   public static function get_roles($uid,$site='') {
 
-    $site = strlen($site) ? $site : \UI\sess::$user->site->uid;
+    if (is_null($site)) { $site = \UI\sess::$user->site->uid; }
+    else { $site = strlen($site) ? $site : \UI\sess::$user->site->uid; }
 
     $sql = "SELECT * FROM `user_permission_view` WHERE (`user`=? AND (`site`=? OR `site`='0')) OR (`user`=? AND `role`='admin' AND `action`='admin')";
     $db_results = Dba::read($sql,array($uid,$site,$uid));

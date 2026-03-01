@@ -12,6 +12,10 @@ class Site extends database_object {
   public $elevation;
   public $principal_investigator; // site.principal_investigator
   public $partners; // text field
+  public $project; // 
+  public $accession; //
+  public $excavation_end_date; //
+  public $excavation_start_date; //
   public $excavation_start; // timestamp
   public $excavation_end; // timestamp
   public $enabled; 

@@ -38,6 +38,7 @@ class Level extends database_object {
   public $image; // primary image for level
   public $notes;
   public $other;
+  public $type;
   public $z_order; // Z-order for elevations
 
 	// Constructor takes a uid

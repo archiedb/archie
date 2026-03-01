@@ -22,7 +22,7 @@ class content extends database_object {
   public $source; // Raw data of the object
   private $valid_types = array('image','qrcode','ticket','media','3dmodel','level','scatterplot','feature','krotovina'); 
 
-  public function __construct($uid='',$type,$record_type) {
+  public function __construct($uid='',$type,$record_type='') {
 
     if (!in_array($type,$this->valid_types)) {
       Event::error('general','Invalid Content Type Specified');
@@ -1641,7 +1641,7 @@ class content extends database_object {
 
       while ($row = Dba::fetch_assoc($db_results)) { 
         parent::add_to_cache('image',$row['uid'],$row); 
-        $records[] = $row['uid']; 
+        $records[$row['uid']] = $row; 
       }
     }
 
@@ -1657,6 +1657,10 @@ class content extends database_object {
       }
 
       $data = Image::generate_thumb($image_data,array('height'=>120,'width'=>120),$image->extension);
+      if (!$data) {
+        Event::error('Content','Unable to generate thumbnail for image');
+        continue;
+      }
 
       // Put it on the filesystem
   		$handle = fopen($image->thumbnail,'w');

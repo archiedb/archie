@@ -117,6 +117,7 @@ class vauth {
 
 		Event::record('vauth::write', 'Writing to ' . $key . ' with expire ' . $expire . ' ' . Dba::error());
 
+		if (is_null(Dba::error())) { return true; }
 		if (!strlen(Dba::error())) { return true; }
 
 		return false;
