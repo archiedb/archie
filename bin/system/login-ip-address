@@ -1,0 +1,7 @@
+#!/bin/sh
+# Get the primary IP address (ignoring loopback)
+IP=$(hostname -I | cut -d' ' -f1)
+AVER=$(cat /opt/archie/docs/BUILD)
+echo "Archie v.$AVER (archiedb.com)" > /etc/issue
+echo "Current IPv4 address: $IP" >> /etc/issue
+echo "" >> /etc/issue
