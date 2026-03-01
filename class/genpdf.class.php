@@ -51,7 +51,7 @@ class Genpdf {
     $pdf->Text('1','31','Elv:' . $masl);
   
 
-    $pdf->Output($filename);
+    $pdf->Output('F',$filename);
 
     return true; 
 
@@ -105,7 +105,7 @@ class Genpdf {
     $pdf->Text('25','21',date('d-M-Y',$record->created));
     $pdf->Text('51','21','TECH:' .  $record->user->username);
     $pdf->Text('25','24.5','LOC:' . $nor . $est . $elv);
-    $pdf->Output($filename);
+    $pdf->Output('F',$filename);
 
     return true; 
 
@@ -150,7 +150,7 @@ class Genpdf {
     $pdf->Text('48','17.25','RN:' . $record->station_index);
     $pdf->Text('14','20.5',date('d-M-Y',$record->created));
     $pdf->Text('48','20.5','TECH:' .  $record->user->username);
-    $pdf->Output($filename);
+    $pdf->Output('F',$filename);
 
     return true; 
 
@@ -415,7 +415,7 @@ class Genpdf {
 
 
     ob_end_clean();
-    $pdf->Output();
+    $pdf->Output('F',$filename);
 
     return true; 
 
