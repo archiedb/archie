@@ -45,8 +45,17 @@ class Code {
     
     // Avoid asking more then once per page load
     if (!self::$git_version) { 
-      self::$git_version = file_get_contents('https://raw.github.com/archiedb/archie/main/docs/BUILD');
+      $options = array('http'=>array('method'=>'GET','timeout'=>5,'ignore_errors'=>true));
+      $context = stream_context_create($options);
+      $return = @file_get_contents('https://raw.github.com/archiedb/archie/main/docs/BUILD',false,$context);
+      if ($return) {
+        self::$git_version = intval($return);
+      }
+      else {
+        self::$get_version = 'Unknown';
+      }
     } 
+
     return self::$git_version;
 
   } //git_version
