@@ -90,8 +90,8 @@ if (!file_exists($configfile) AND !defined('CLI') AND !defined('INSTALL')) {
 if (!defined('INSTALL')) {
   $results = parse_ini_file($configfile);
 }
-$results['web_prefix']		= $results['web_path']; 
-$results['web_path']		= $http_type . $_SERVER['HTTP_HOST'] . $results['web_path'];
+$results['web_prefix']		= isset($results['web_path']) ? $results['web_path'] : ''; 
+$results['web_path']		= $http_type . $_SERVER['HTTP_HOST'] . $results['web_prefix'];
 $results['ajax_url']		= $results['web_path'] . '/server/ajax.server.php'; 
 $results['http_port']		= $_SERVER['SERVER_PORT'];
 if (!$results['http_port']) {

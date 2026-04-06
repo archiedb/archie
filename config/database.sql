@@ -693,7 +693,6 @@ UNLOCK TABLES;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `user_permission_view` AS select distinct `user_group`.`site` AS `site`,`user_group`.`user` AS `user`,`role`.`name` AS `role`,`action`.`name` AS `action` from (((`group` join `role`) join `action`) join (`user_group` join `group_role` on((`user_group`.`group` = `group_role`.`group`)))) where ((`group_role`.`role` = `role`.`uid`) and (`group_role`.`action` = `action`.`uid`)) */;
 
 
