@@ -14,6 +14,26 @@ function redirect($path) {
 } // redirect
 
 /**
+ * htmlout
+ * Make the string specified safe for outputting to HTML
+ */
+function htmlout($string) { 
+
+  return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+
+} // htmlout
+
+/**
+ * enabled
+ * Returns true/false for features in the UI if they are enabled
+ */
+function enabled($feature) {
+
+  return boolval(\UI\sess::$user->site->get_setting($feature));
+
+} // enabled
+
+/**
  * return_url
  * We have a specific list of urls we're allowed to redirect to!
  */

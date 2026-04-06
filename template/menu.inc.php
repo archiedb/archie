@@ -23,7 +23,7 @@ if (INIT_LOADED != '1') { exit; }
               <li><a href="<?php echo Config::get('web_path'); ?>/feature/new">Feature</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/krotovina/new">Krotovina</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/level/new">Level</a></li>
-              <li><a href="<?php echo Config::get('web_path'); ?>/curation/new">Curation</a></li>
+              <?php if (\UI\enabled('curation')) { ?><li><a href="<?php echo Config::get('web_path'); ?>/curation/new">Curation</a></li><?php } ?>
             </ul>
           </li>
           <li class="divider-vertical"></li>
@@ -34,7 +34,7 @@ if (INIT_LOADED != '1') { exit; }
               <li><a href="<?php echo Config::get('web_path'); ?>/feature">Feature</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/krotovina">Krotovina</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/level">Level</a></li>
-              <li><a href="<?php echo Config::get('web_path'); ?>/curation">Curation</a></li>
+              <?php if (\UI\enabled('curation')) { ?><li><a href="<?php echo Config::get('web_path'); ?>/curation">Curation</a></li><?php } ?>
             </ul>
 <?php if (Access::has('report')) { ?>
           <li><a href="<?php echo Config::get('web_path'); ?>/reports">Report</a></li>

@@ -21,7 +21,7 @@ class Site extends database_object {
   public $enabled; 
 
   // Current allowed settings
-  private $allowed_settings = array('catalog_offset'=>'Catalog Start','lus'=>'L.U','units'=>'Unit','quads'=>'Quad','ticket'=>'Ticket Format');
+  private $allowed_settings = array('catalog_offset'=>'Catalog Start','lus'=>'L.U','units'=>'Unit','quads'=>'Quad','ticket'=>'Ticket Format','curation'=>'Curation');
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -222,6 +222,7 @@ class Site extends database_object {
     $settings['ticket'] = isset($input['ticket']) ? $input['ticket'] : $this->get_setting('ticket'); 
     $settings['lus']    = isset($input['lus']) ? explode(',',$input['lus']) : $this->get_setting('lus');
     $settings['fields'] = isset($input['fields']) ? $input['fields'] : $this->get_setting('fields');
+    $settings['curation'] = isset($input['curation']) ? $input['curation'] : $this->get_setting('curation');
 
     $sql = "UPDATE `site` SET `settings`=? WHERE `uid`=?";
     $db_results = Dba::write($sql,array(json_encode($settings),$this->uid));
@@ -294,6 +295,9 @@ class Site extends database_object {
 
     switch ($input['key']) {
       case 'field':
+        return true;
+      break;
+      case 'curation':
         return true;
       break;
       case 'catalog_offset':

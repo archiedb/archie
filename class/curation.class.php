@@ -90,7 +90,7 @@ class Curation extends database_object {
 
     Err::clear();
 
-    if (!Krotovina::validate($input)) {
+    if (!Curation::validate($input)) {
       Err::add('general','Invalid Field Values - please check input');
       return false;
     }
@@ -110,7 +110,7 @@ class Curation extends database_object {
     }
 
     $log_json = json_encode(array('Description'=>$description,'Keywords'=>$keywords,'Level'=>$level,'LSGUnit'=>$lsg_unit,'User'=>\UI\sess::$user->username,'Updated'=>date('r',$updated)));
-    Event::record('krotovina::update',$log_json);
+    Event::record('curation::update',$log_json);
 
     $this->refresh();
     $record = $this->record;
@@ -130,10 +130,7 @@ class Curation extends database_object {
     // Force the site to the current users site
     $input['site'] = \UI\sess::$user->site->uid;
 
-    // If they aren't a manager of krotovina then they can't specify a catalog_id
-    if (!Access::has('krotovina','manage')) { unset($input['catalog_id']); }
-
-    if (!Krotovina::validate($input)) {
+    if (!Curation::validate($input)) {
       Err::add('general','Invalid Field Values - please check input');
       return false;
     }
@@ -144,35 +141,41 @@ class Curation extends database_object {
       return false; 
     }
 
-    // Check for existing krotovina
-    if (!isset($input['catalog_id'])) {
-      $catalog_sql = "SELECT `catalog_id` FROM `krotovina` WHERE `site`=? ORDER BY `catalog_id` DESC LIMIT 1 FOR UPDATE";
-      $db_results = Dba::read($catalog_sql,array($input['site']));
-      $row = Dba::fetch_assoc($db_results);
-      $input['catalog_id'] = $row['catalog_id']+1;
-    }
-    else { 
-      $catalog_sql = "SELECT `catalog_id` FROM `krotovina` WHERE `site`=? AND `catalog_id`=? LIMIT 1 FOR UPDATE";
-      $db_results = Dba::read($catalog_sql,array($input['site'],$input['catalog_id']));
-      $row = Dba::fetch_assoc($db_results);
-      if ($row['catalog_id']) {
-        Err::add('general','Duplicate Feature ID - ' . $catalog_id);
-        Dba::commit();
-        return false;
+    // Check for duplicate records
+    if (strlen($input['catalog_id'])) { 
+      $curation = \Curation::get_from_catalog_id($input['catalog_id'],$input['site']); 
+      if ($curation->id) {
+        Err::add('general','Duplicate Curation #' . $curation->id . ' found for Catalog ID #' . \UI\htmlout($input['catalog_id']));
+        return false; 
       }
-    } // else
+    }
+    // Attempt to find a curation based on everything _BUT_ the catalog ID
+    $curation = \Curation::get_from_location($input);
+    if ($curation->id) { 
+      Err::add('general','Duplicate Curation #' . $curation->id . ' found in the same location');
+      return false; 
+    }
 
-    //FIXME: Change to NULL once DB change is in place update_0019()
-    // Now it's safe to insert it
-    $created  = time();
-    $level    = strlen($input['level']) ? $input['level'] : NULL;
-    $lsg_unit = strlen($input['lsg_unit']) ? $input['lsg_unit'] : NULL;
+    $input['created'] = date('m-d-Y h:i:s');
+    $input['created_by'] = \UI\sess::$user->uid;
 
-    $sql = "INSERT INTO `krotovina` (`site`,`catalog_id`,`description`,`keywords`,`level`,`lsg_unit`,`user`,`created`) VALUES (?,?,?,?,?,?,?,?)";
-    $db_results = Dba::write($sql,array($input['site'],$input['catalog_id'],$input['description'],$input['keywords'],$level,$lsg_unit,\UI\sess::$user->uid,$created));
+    $dbvalues = array(
+      $input['site'],
+      $input['catalog_id'],
+      $input['notes'],
+      $input['institution'],
+      $input['building'],
+      $input['room'],
+      $input['cabinet'],
+      $input['drawer'],
+      $input['created'],
+      $input['created_by']);
+
+    $sql = "INSERT INTO `curation` (`site`,`catalog_id`,`notes`,`institution`,`building`,`room`,`cabinet`,`drawer`,`created`,`created_by`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    $db_results = Dba::write($sql,$dbvalues);
 
     if (!$db_results) { 
-      Error:add('general','Unknown Error - inserting krotovina into database');
+      Error:add('general','Unknown Error - inserting curation into database');
       $retval = Dba::rollback();
       if (!$retval) { Err::add('general','Unable to roll database changes back, please report this to your Administrator'); }
       Dba::commit();
@@ -182,19 +185,11 @@ class Curation extends database_object {
     // Take the insert_id and return it
     $insert_id = Dba::insert_id();
     
-    $log_json = json_encode(array('Site'=>$input['site'],'Catalog ID'=>$input['catalog_id'],'Description'=>$input['description'],
-        'Keywords'=>$input['keywords'],'Level'=>$level,'LSG Unit'=>$lsg_unit,'User'=>\UI\sess::$user->username,'Created'=>date("r",$created)));
+    $log_json = json_encode(array('Site'=>$input['site'],'Catalog ID'=>$input['catalog_id'],'Notes'=>$input['notes'],
+        'Institution'=>$institution->name,'Building'=>$building->name,'Room'=>$room->name,'Cabinet'=>$cabinet->name,'Drawer'=>$drawer->name,'User'=>\UI\sess::$user->username,'Created'=>date("r",$created)));
 
-    Event::record('krotovina::create',$log_json);
+    Event::record('curation::create',$log_json);
     
-    // Now we add the initial spatial data
-    $spatialdata = SpatialData::create(array('record'=>$insert_id,'type'=>'krotovina','station_index'=>$input['station_index'],'northing'=>$input['northing'],
-                      'easting'=>$input['easting'],'elevation'=>$input['elevation']));
-
-    if (!$spatialdata) { 
-      Err::add('general','Unable to insert Spatial Information, but Krotovina created, please manually add point');
-    }
-
     if (!Dba::commit()) { 
       Event::record('DBA::commit','Commit Failure - unable to close transaction');
       return false;
@@ -210,12 +205,21 @@ class Curation extends database_object {
    */
   public static function validate($input) { 
 
-    if (!strlen($input['description'])) {
-      Err::add('description','Required field');
+    // Check to make sure the locations are valid for this site
+    $building = new \Building($input['building']);
+    if (!$building->uid) {
+      Err::add('building','Unable to find building');
+    }
+    if (!$building->has_site(\UI\sess::$user->site->uid)) {
+      Err::add('building','Building not enabled for this site');
     }
 
-    if (!strlen($input['keywords'])) {
-      Err::add('keywords','Required field');
+    $institution = new \Institution($input['institution']);
+    if (!$institution->uid) {
+      Err::add('institution','Unable to find institution');
+    }
+    if (!$institution->has_site(\UI\sess::$user->site->uid)) {
+      Err::add('institution','Insitution not enabled for this site');
     }
 
     // If RN then no others

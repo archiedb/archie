@@ -383,7 +383,8 @@ class Database {
     $update_string = '- Add Curation record type.<br />' . 
                     '- Add Institution, Building, Room, Cabinet, Drawer metadata.<br />' . 
                     '- Add Curation Role to Role based access control.<br />' .
-                    '- Add Curator group to default group set.<br />';
+                    '- Add Curator group to default group set.<br />' . 
+                    '- Disable Curation by default on all existing sites.<br />';
     $versions[] = array('version'=>'0027','description'=>$update_string);
 
     return $versions; 
@@ -1880,6 +1881,7 @@ class Database {
       "`room` int(11) UNSIGNED NOT NULL," .
       "`cabinet` int(11) UNSIGNED NOT NULL," .
       "`drawer` int(11) UNSIGNED NOT NULL," .
+      "`notes` varchar(4096) NULL," . 
       "`status` varchar(1024) NOT NULL," .
       "`image` int(11) UNSIGNED NOT NULL, " .
       "`created` DATETIME NOT NULL, " .
@@ -1968,6 +1970,15 @@ class Database {
       "PRIMARY KEY (`uid`))" .
       " ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
     $retval = \Dba::write($sql) ? $retval: false;
+
+    // Disable curation for all sites by default
+    $sql = "SELECT * FROM `site`";
+    $db_results = \Dba::read($sql);
+
+    while ($row = \Dba::fetch_assoc($db_results)) {
+      $site = new \Site($row['uid']);
+      $site->update_settings(array('key'=>'curation','curation'=>0));
+    }
     
     return $retval;
 

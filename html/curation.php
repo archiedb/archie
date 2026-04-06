@@ -1,6 +1,10 @@
 <?php
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 require_once '../class/init.php'; 
+
+// Check to see if any part of this is enabled
+if (!\UI\enabled('curation')) { exit; }
+
 require_once \UI\template('/header');
 // Switch on the action
 switch (\UI\sess::location('action')) { 
