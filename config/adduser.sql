@@ -9,7 +9,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-use MYSQL; 
+use mysql; 
 CREATE USER `archie`@'localhost' IDENTIFIED BY 'archiedb';
 GRANT ALL PRIVILEGES ON `archie`.* TO 'archie'@'localhost';
 FLUSH PRIVILEGES;
