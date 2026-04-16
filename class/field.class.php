@@ -44,10 +44,11 @@ class Field {
       break;
       // INT, greater than 0
       case 'xrf_artifact_index':
-      case 'quanity':
+      case 'quantity':
       case 'xrf_matrix_index':
       case 'catalog_id':
       case 'station_index':
+        if (strlen($value) == 0) { $retval = true; break; }
         if (!is_numeric($value) OR $value <= 0) {
           $retval = false;
         }

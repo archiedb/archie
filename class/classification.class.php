@@ -90,7 +90,7 @@ class Classification extends database_object {
    */
 	public static function get_all() { 
 
-		$sql = "SELECT * FROM `classification`"; 
+		$sql = "SELECT * FROM `classification` WHERE `enabled`='1'"; 
 		$db_results = Dba::read($sql); 
 
 		$results = array(); 

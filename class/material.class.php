@@ -91,7 +91,7 @@ class Material extends database_object {
 
     $results = array(); 
 
-		$sql = "SELECT * FROM `material`"; 
+		$sql = "SELECT * FROM `material` WHERE `enabled`='1'"; 
 		$db_results = Dba::read($sql); 
 		while ($row = Dba::fetch_assoc($db_results)) { 
       parent::add_to_cache('material',$row['uid'],$row); 

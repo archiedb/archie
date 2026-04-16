@@ -126,8 +126,28 @@ class Import {
         return false;
       }
 
+      $record = array('catalog_id'=>$data[0],
+        'unit'=>$data[1],
+        'level'=>$data[2],
+        'LU'=>$data[3],
+        'RN'=>$data[4],
+        'weight'=>$data[5],
+        'length'=>$data[6],
+        'width'=>$data[7],
+        'height'=>$data[8],
+        'quantity'=>$data[9],
+        'material'=>\Material::name_to_id($data[10]),
+        'classification'=>\Classification::name_to_id($data[11]),
+        'feature'=>$data[12],
+        'krotovina'=>$data[13],
+        'notes'=>$data[14],
+        'northing'=>$data[15],
+        'easting'=>$data[16],
+        'elevation'=>$data[17],
+        'user'=>\UI\sess::$user->uid);
+
       // Check for the catalogID
-      $return = \Record::create($data,$no_transaction);
+      $return = \Record::create($record,$no_transaction);
       if (!$return) {
         Err::add('import','Invalid CSV format on line:' . $line . ' unable to create record');
         return false;

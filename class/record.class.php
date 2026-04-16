@@ -547,8 +547,8 @@ class Record extends database_object {
 		} 
 		
 		// Quanity, numeric
-		if (!Field::validate('quanity',$input['quanity']) AND strlen($input['quanity'])) { 
-			Err::add('quanity','Quanity must be numeric'); 
+		if (!Field::validate('quantity',$input['quantity']) AND strlen($input['quantity'])) { 
+			Err::add('quanity','Quantity must be numeric'); 
 		}
  
 		// XRF Artifact Index, numeric
