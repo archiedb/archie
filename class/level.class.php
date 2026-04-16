@@ -116,6 +116,28 @@ class Level extends database_object {
   } // _display
 
   /**
+   * name_to_id
+   * Takes a Name, and a Site and returns the UID
+   */
+  public static function name_to_id($name,$site=false) {
+
+    if (!$site) { $site = \UI\sess::$user->site->uid; }
+
+    // If the prefix is L-, that is tossed
+    if (substr($name,0,2) == 'L-') { $name = substr($name,2,strlen($name)-2); }
+
+    $sql = "SELECT `uid` FROM `level` WHERE `site`=? AND `catalog_id`=?";
+    $db_results = Dba::query($sql,array($site,$name));
+
+    $row = Dba::fetch_assoc($db_results);
+
+    if (!$row) { return false; }
+
+    return $row['uid'];
+
+  } // name_to_id
+
+  /**
    * create
    * Create a new level entry
    */

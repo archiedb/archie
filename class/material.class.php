@@ -87,11 +87,12 @@ class Material extends database_object {
    * get_all
    * Returns all of the materials
    */
-	public static function get_all() { 
+	public static function get_all($include_disabled=false) { 
 
     $results = array(); 
+    $enabled = ($include_disabled === false) ? "`enabled`='1'" : "1=1";
 
-		$sql = "SELECT * FROM `material` WHERE `enabled`='1'"; 
+		$sql = "SELECT * FROM `material` WHERE $enabled"; 
 		$db_results = Dba::read($sql); 
 		while ($row = Dba::fetch_assoc($db_results)) { 
       parent::add_to_cache('material',$row['uid'],$row); 
@@ -108,10 +109,8 @@ class Material extends database_object {
    */
 	public static function name_to_id($name) { 
 
-		$name = Dba::escape($name); 
-
-		$sql = "SELECT `uid` FROM `material` WHERE `name` LIKE '$name'"; 
-		$db_results = Dba::read($sql); 
+		$sql = "SELECT `uid` FROM `material` WHERE `name` LIKE ?"; 
+		$db_results = Dba::read($sql,array($name)); 
 
 		$row = Dba::fetch_assoc($db_results); 
 

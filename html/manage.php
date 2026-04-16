@@ -176,7 +176,7 @@ switch (\UI\sess::location('action')) {
       break;
       case 'view':
       default:
-        $materials = Material::get_all(); 
+        $materials = Material::get_all(true); 
         require_once \UI\template('/material/view'); 
       break;
     }

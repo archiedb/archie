@@ -126,10 +126,12 @@ class Import {
         return false;
       }
 
+      if (strlen($data[3]) == 0) { $data['3'] = 'Other'; }
+
       $record = array('catalog_id'=>$data[0],
         'unit'=>$data[1],
-        'level'=>$data[2],
-        'LU'=>$data[3],
+        'level'=>\Level::name_to_id($data[2]),
+        'lsg_unit'=>$data[3],
         'RN'=>$data[4],
         'weight'=>$data[5],
         'length'=>$data[6],
@@ -145,6 +147,7 @@ class Import {
         'easting'=>$data[16],
         'elevation'=>$data[17],
         'user'=>\UI\sess::$user->uid);
+      Err::add('import-json',json_encode($data));
 
       // Check for the catalogID
       $return = \Record::create($record,$no_transaction);
@@ -152,7 +155,7 @@ class Import {
         Err::add('import','Invalid CSV format on line:' . $line . ' unable to create record');
         return false;
       }
-      $valid++;
+      $line++;
     }
     
     Event::add('success','Imported:' . count($valid) . ' lines','small'); 
