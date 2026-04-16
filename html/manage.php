@@ -35,8 +35,6 @@ switch (\UI\sess::location('action')) {
   break;
   case 'updatearchie':
     if (!Access::is_admin()) { \UI\access_denied(); }
-
-
   break;
   case 'rebuildconfig':
     if (!Access::is_admin()) { \UI\access_denied(); }

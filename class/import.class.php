@@ -77,11 +77,72 @@ class Import {
       case 'xyz_station':
         $retval = $this->run_xyz_station($filename);
       break;
+      case 'records':
+        $retval = $this->run_records($filename);
+      break;
+      default:
+        Err::add('general','Invalid Import type');
+        $retval = false;
+      break;
     }
 
     return $retval; 
 
   } // run
+
+  /**
+   * run_records
+   * Runt the records import
+   * assume csv file contents
+   */
+  private function run_records($csv_file) {
+
+    $site = \UI\sess::$user->site->uid;
+
+    if (($handle = fopen($csv_file,"r")) == false) {
+      Err::add('general','Unable to open uploaded file');
+      return false;
+    }
+
+    // We need to itterate through the whole CSV and try to import it
+    // Use a transaction for this, and rollback on failure
+    if (!Dba::begin_transaction()) {
+      Err::add('general','Unable to start DB transaction, please try again');
+      return false; 
+    }
+
+    $line = 1; 
+    $error_lines=0;
+    $existing_lines=0;
+    $warning_lines=0; 
+    $missing = '';
+    $invalid = ''; 
+    $valid = 0;
+    $found = array();
+    $no_transaction = true;
+    while (($data = fgetcsv($handle)) !== false) {
+      if (count($data) != 18) {
+        Err::add('import','Invalid CSV format on line:' . $line);
+        return false;
+      }
+
+      // Check for the catalogID
+      $return = \Record::create($data,$no_transaction);
+      if (!$return) {
+        Err::add('import','Invalid CSV format on line:' . $line . ' unable to create record');
+        return false;
+      }
+      $valid++;
+    }
+    
+    Event::add('success','Imported:' . count($valid) . ' lines','small'); 
+
+    // Everything seems to have gone okay, so commit
+    Dba::commit();
+
+    return true;
+
+  } // run_records
 
   /**
    * run_xyz_station

@@ -66,6 +66,7 @@ class Record extends database_object {
     if (!is_null($this->extra)) {
       $this->extra = json_decode($this->extra,true); // Decode and reassign extra JSON crap
     }
+    else { $this->extra = array(); }
 
 		return true; 
 
@@ -133,7 +134,7 @@ class Record extends database_object {
   } // _display
 
 	// Create
-	public static function create($input) { 
+	public static function create($input,$no_transaction=false) { 
 
     // Clear any previous errors before we do the validatation
     Err::clear(); 
@@ -148,9 +149,11 @@ class Record extends database_object {
 			return false; 
 		} 
 
-    if (!Dba::begin_transaction()) {
-      Err::add('general','Unable to start DB Transaction, please try again');
-      return false; 
+    if ($no_transaction !== true) {
+      if (!Dba::begin_transaction()) {
+        Err::add('general','Unable to start DB Transaction, please try again');
+        return false; 
+      }
     }
 
 		// Reset Row variable
@@ -186,7 +189,9 @@ class Record extends database_object {
 		$row = Dba::fetch_assoc($db_results); 
 		if ($row['catalog_id']) { 
 			Err::add('general','Database Failure - Duplicate CatalogID - ' . $catalog_id); 
-      Dba::commit();
+      if ($no_transaction !== true) {
+        Dba::commit();
+      }
 			return false; 
 		} 
 
@@ -226,10 +231,12 @@ class Record extends database_object {
 
 		if (!$db_results) { 
 			Err::add('general','Unable to insert record, reverting changes.'); 
-      // Roll the transaction back
-      $retval = Dba::rollback();
-      if (!$retval) { Err::add('general','Unable to roll Database changes back, please report this to your Administrator'); }
-      Dba::commit();
+      if ($no_transaction !== true) {
+        // Roll the transaction back
+        $retval = Dba::rollback();
+        if (!$retval) { Err::add('general','Unable to roll Database changes back, please report this to your Administrator'); }
+        Dba::commit();
+      }
 			return false; 
 		} 
 
@@ -254,10 +261,12 @@ class Record extends database_object {
 		// We're sure we've got a record so lets generate our QR code. 
 		Content::write($insert_id,'qrcode'); 
 
-    // Commit and unlock
-    if (!Dba::commit()) {
-      Event::record('DBA::commit','Commit Failure - unable to close transaction');
-      return false;
+    if ($no_transaction !== true) {
+      // Commit and unlock
+      if (!Dba::commit()) {
+        Event::record('DBA::commit','Commit Failure - unable to close transaction');
+        return false;
+      }
     }
 
 		return $insert_id; 
@@ -484,15 +493,32 @@ class Record extends database_object {
     } // if station_index
     // if no station index then just check format of northing/easting/elevation
     else { 
-        if (intval($input['northing']) < 0 OR round($input['northing'],3) != $input['northing']) { 
+      if (strlen($input['northing']) != 0 OR strlen($input['easting']) != 0 OR strlen($input['elevation']) != 0) {
+        if (!is_numeric($input['northing'])) {
           Err::add('northing','Northing must be numeric'); 
+        } 
+        else { 
+          if (intval($input['northing']) < 0 OR round($input['northing'],3) != $input['northing']) { 
+            Err::add('northing','Northing must be greater than zero, and rounded to three places'); 
+          }
         }
-        if (intval($input['easting']) < 0 OR round($input['easting'],3) != $input['easting']) { 
+        if (!is_numeric($input['easting'])) {
           Err::add('easting','Easting must be numeric'); 
+        } 
+        else {
+          if (intval($input['easting']) < 0 OR round($input['easting'],3) != $input['easting']) { 
+            Err::add('easting','Easting must be greater than zero, and rounded to three places');
+          }
         }
-        if (intval($input['elevation']) < 0 OR round($input['elevation'],3) != $input['elevation']) { 
+        if (!is_numeric($input['elevation'])) {
           Err::add('elevation','Elevation must be numeric'); 
         }
+        else {
+          if (intval($input['elevation']) < 0 OR round($input['elevation'],3) != $input['elevation']) { 
+            Err::add('elevation','Elevation must be greater than zero, and rounded to three places');
+          }
+        }
+      } // if anything is not zero length
     }
 
 		// XRF Matrix Index numeric
@@ -629,6 +655,7 @@ class Record extends database_object {
 		$db_results = Dba::read($sql); 
 
 		$row = Dba::fetch_assoc($db_results); 
+    if ($row == false) { return false; }
 
 		$record = new Record($row['uid']); 
 

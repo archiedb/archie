@@ -20,6 +20,7 @@ if (INIT_LOADED != '1') { exit; }
     <div class="col-md-2">
       <select class="form-control" name="type">
         <option value="xyz_station">XYZ Station</option>
+        <option value="records">Records</option>
       </select>
     </div>
     <div class="col-md-2">
@@ -57,6 +58,12 @@ if (INIT_LOADED != '1') { exit; }
 <div class="row">
   <div class="col-md-2">XYZ Station</div>
   <div class="col-md-10">UNIQUE('RN'),DECIMAL('Northing'),DECIMAL('Easting'),DECIMAL('Elevation'),STRING('Notes')</div>
+</div>
+<div class="row">
+  <div class="col-md-2">Records</div>
+  <div class="col-md-10">UNIQUE('CATALOGID'),STRING('UNIT'),STRING('Level'),STRING('LU'),UNIQUE('RN'),DECIMAL('Weight'),<br />
+    DECIMAL('Length'),DECIMAL('Width'),DECIMAL('Height'),INTEGER('Quantity'),STRING('Material'),STRING('Classification'),<br />
+    STRING('Feature'),STRING('Krotovina'),STRING('Notes'),DECIMAL('Northing'),DECIMAL('Easting'),DECIMAL('Elevation')</div>
 </div>
 <div class="row">
   <div class="col-md-2">Feature Info</div>

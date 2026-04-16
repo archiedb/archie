@@ -64,7 +64,7 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <th>Notes</th><td colspan="3"><?php echo scrub_out($record->notes); ?></td>
 </tr>
-<?php if (count($record->extra)) { 
+<?php if (count($record->extra) > 0) { 
       $site_fields = $record->site->get_setting('fields');
 ?>
 <tr>
