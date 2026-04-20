@@ -208,7 +208,7 @@ switch (\UI\sess::location('action')) {
       break;
       case 'view':
       default:
-        $classifications = Classification::get_all(); 
+        $classifications = Classification::get_all(false); 
         require_once \UI\template('/classification/view'); 
       break;
     }

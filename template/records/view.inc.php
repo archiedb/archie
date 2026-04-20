@@ -64,7 +64,9 @@ if (INIT_LOADED != '1') { exit; }
 <tr>
   <th>Notes</th><td colspan="3"><?php echo scrub_out($record->notes); ?></td>
 </tr>
-<?php if (count($record->extra) > 0) { 
+<?php
+  if (is_array($record->extra)) {
+  if (count($record->extra) > 0) { 
       $site_fields = $record->site->get_setting('fields');
 ?>
 <tr>
@@ -92,6 +94,7 @@ $i++;
   </td>
 <?php } // end foreach fields ?>
 <?php } // if count fields ?>
+<?php } // if end if array ?>
 </tr>
 </table>
 <ul class="nav nav-tabs" id="media_nav">

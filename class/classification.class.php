@@ -88,9 +88,15 @@ class Classification extends database_object {
    * get_all
    * Return all of the classifications
    */
-	public static function get_all() { 
+	public static function get_all($enabled=true) { 
 
-		$sql = "SELECT * FROM `classification` WHERE `enabled`='1'"; 
+    if ($enabled === true) {
+      $enabled_sql = "`enabled`='1'";
+    }
+    else {
+      $enabled_sql = "1=1";
+    }
+		$sql = "SELECT * FROM `classification` WHERE $enabled_sql"; 
 		$db_results = Dba::read($sql); 
 
 		$results = array(); 

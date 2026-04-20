@@ -50,6 +50,22 @@ class Import {
 
   } // _auto_init
 
+  /** 
+   * decode_header
+   * If this has a header, decode it - basically key=>index
+   */
+  private static function decode_header($header) {
+    
+      $return = array();
+
+      foreach ($header as $index=>$key) {
+        $return[$key] = $index;
+      }
+
+      return $return;
+
+  } // decode_header
+
   /**
    * data_filename
    * The data for the report

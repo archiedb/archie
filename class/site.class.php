@@ -22,6 +22,7 @@ class Site extends database_object {
 
   // Current allowed settings
   private $allowed_settings = array('catalog_offset'=>'Catalog Start','lus'=>'L.U','units'=>'Unit','quads'=>'Quad','ticket'=>'Ticket Format','curation'=>'Curation');
+  private $allowed_features = array('curation'=>'Curation');
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -387,6 +388,21 @@ class Site extends database_object {
       }
 
   } // get_setting
+
+  /**
+   * get_features
+   * This is a subset of the settings, specifically relating to the features that are
+   * available to sites, like curation etc.
+   */
+  public function get_features() {
+
+    $features = array();
+
+    foreach (self::$allowed_features as $key=>$value) {
+      $feature = $this->get_setting($key);
+    }
+
+  } // get_features
 
   /**
    * get_from_name
