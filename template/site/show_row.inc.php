@@ -9,7 +9,7 @@ if (INIT_LOADED != '1') { exit; }
   <td><?php echo scrub_out($site->accession); ?></td>
   <td><?php echo scrub_out($site->project); ?></td>
 	<td class="text-center"><?php echo \UI\boolean_word($site->enabled); ?></td>
-  <td>
+  <td width="100px">
 		<div class="btn-group pull-right">
       <a class="btn btn-primary" href="<?php echo Config::get('web_path'); ?>/manage/site/edit/<?php echo scrub_out($site->uid); ?>">Edit</a>
       <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
