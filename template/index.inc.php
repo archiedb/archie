@@ -2,7 +2,7 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
-<div class="card bg-light pe-2 me-3">
+<div class="card bg-light p-2 m-3">
 <div class="card-title"><h5>Site Statistics</h5></div>
 <div class="card-body">
   <div class="row">
@@ -48,20 +48,21 @@ if (INIT_LOADED != '1') { exit; }
     </div>
   </div><!-- end Row -->
 </div> <!-- End Body -->
-</div></div>
+</div> <!-- End Card -->
 <!-- Records -->
+<div class="card bg-light p-2 m-3">
 <?php if (Access::has('record','read')) { ?>
-<div class="row">
+<div class="card-title">
   <div>
   <?php if (Access::has('record','create')) { ?>
-    <p class="pull-right">
+    <p class="float-end">
         <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/records/new">New Record</a>
     </p>
   <?php } ?>
     <strong>Your last five records</strong>
   </div>
 </div>
-<div class="well">
+<div class="card-body">
 <div class="row">
   <div class="col-2"><strong>Catalog #</strong></div>
   <div class="col-2"><strong>Material</strong></div>
@@ -101,19 +102,21 @@ if (INIT_LOADED != '1') { exit; }
 <?php } ?>
 </div>
 <?php } ?>
+</div> <!-- end card >
 <!-- Levels -->
+<div class="card card-bg-light p-2 m-3">
 <?php if (Access::has('level','read')) { ?>
-<div class="row">
+<div class="card-title">
   <div>
     <?php if (Access::has('level','create')) { ?>
-    <p class="pull-right">
+    <p class="float-end">
         <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/level/new">New Level</a>
     </p>
     <?php } ?>
     <strong>Your Open Levels</strong>
   </div>
 </div>
-<div class="well">
+<div class="card-body">
 <div class="row">
   <div class="col-1"><strong>Unit</strong></div>
   <div class="col-1"><strong>Quad</strong></div>
@@ -146,19 +149,21 @@ if (INIT_LOADED != '1') { exit; }
 <?php } ?>
 </div>
 <?php } ?>
+</div>
 <!-- Krotovina --> 
+<div class="card card-bg-light p-2 m-3">
 <?php if (Access::has('krotovina','read')) { ?>
-<div class="row">
+<div class="card-title">
   <div>
     <?php if (Access::has('krotovina','create')) { ?>
-    <p class="pull-right">
+    <p class="float-end">
        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/krotovina/new">New Krotovina</a>
     </p>
     <?php } ?>
     <strong>Your last three Krotovina</strong>
   </div>
 </div>
-<div class="well">
+<div class="card-body">
   <div class="row">
     <div class="col-2"><strong>Catalog #</strong></div>
     <div class="col-3"><strong>Entered on</strong></div>
@@ -179,19 +184,21 @@ if (INIT_LOADED != '1') { exit; }
 <?php } ?>
 </div>
 <?php } ?>
+</div>
+<div class="card card-bg-light p-2 m-3">
 <!-- Features -->
 <?php if (Access::has('feature','read')) { ?>
-<div class="row">
+<div class="card-title">
   <div>
     <?php if (Access::has('feature','create')) { ?>
-    <p class="pull-right">
+    <p class="float-end">
        <a class="btn btn-small btn-success" href="<?php echo Config::get('web_path'); ?>/feature/new">New Feature</a>
     </p>
     <?php } ?>
     <strong>Your last three Features</strong>
   </div>
 </div>
-<div class="well">
+<div class="card-body">
   <div class="row">
     <div class="col-2"><strong>Catalog #</strong></div>
     <div class="col-3"><strong>Entered on</strong></div>
