@@ -163,7 +163,6 @@ class Import {
         'easting'=>$data[16],
         'elevation'=>$data[17],
         'user'=>\UI\sess::$user->uid);
-      Err::add('import-json',json_encode($data));
 
       // Check for the catalogID
       $return = \Record::create($record,$no_transaction);
@@ -174,7 +173,7 @@ class Import {
       $line++;
     }
     
-    Event::add('success','Imported:' . count($valid) . ' lines','small'); 
+    Event::add('success','Imported:' . $line . ' lines','small'); 
 
     // Everything seems to have gone okay, so commit
     Dba::commit();
