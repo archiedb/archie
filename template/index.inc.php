@@ -2,53 +2,52 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
-<div class="d-flex flex-row">
-  <div>
-    <strong>Site Statistics</strong>
-  </div>
-</div>
-<div class="well">
-<div class="row">
-  <div class="col-2"><strong>Total records</strong></div>
-  <div class="col-3"><strong>Records entered today</strong></div>
-  <div class="col-2"><strong>Last Record Entered</strong></div>
-  <div class="col-2"><strong>Last Classification</strong></div>
-  <div class="col-3"><strong>Todays most common classification</strong></div>
-</div><div class="row">
-  <div class="col-2"><?php echo Stats::total_records(); ?></div>
-  <div class="col-3"><?php echo Stats::total_records('today'); ?></div>
-  <div class="col-2">
-  <?php 
-    $record = Record::last_created(); 
-    if (!$record->uid) { 
-      echo "<strong class=\"text-error\">None</strong>";
-    }
-    else { 
-      echo \UI\record_link($record->uid,'record',$record->record); 
-    }
-  ?>
-  </div>
-  <div class="col-2">
-    <?php
-      if (!$record->uid) {
+<div class="card bg-light pe-2 me-3">
+<div class="card-title"><h5>Site Statistics</h5></div>
+<div class="card-body">
+  <div class="row">
+    <div class="col-2"><strong>Total records</strong></div>
+    <div class="col-3"><strong>Records entered today</strong></div>
+    <div class="col-2"><strong>Last Record Entered</strong></div>
+    <div class="col-2"><strong>Last Classification</strong></div>
+    <div class="col-3"><strong>Todays most common classification</strong></div>
+  </div><div class="row">
+    <div class="col-2"><?php echo Stats::total_records(); ?></div>
+    <div class="col-3"><?php echo Stats::total_records('today'); ?></div>
+    <div class="col-2">
+    <?php 
+      $record = Record::last_created(); 
+      if (!$record->uid) { 
         echo "<strong class=\"text-error\">None</strong>";
       }
-      else {
-        echo \UI\search_link('classification',$record->classification->name,$record->classification->name);
+      else { 
+        echo \UI\record_link($record->uid,'record',$record->record); 
       }
     ?>
-  </div>
-  <div class="col-3">
-  <?php 
-      $info = Stats::classification_records('today'); 
-      if ($info['count'] > 0) { 
-        echo $info['classification'] . ' with ' . $info['count'] . ' record(s) entered'; 
-      }
-      else { 
-        echo "<strong class=\"text-error\">No Data</strong>";
-      }
-  ?>
-  </div>
+    </div>
+    <div class="col-2">
+      <?php
+        if (!$record->uid) {
+          echo "<strong class=\"text-error\">None</strong>";
+        }
+        else {
+          echo \UI\search_link('classification',$record->classification->name,$record->classification->name);
+        }
+      ?>
+    </div>
+    <div class="col-3">
+    <?php 
+        $info = Stats::classification_records('today'); 
+        if ($info['count'] > 0) { 
+          echo $info['classification'] . ' with ' . $info['count'] . ' record(s) entered'; 
+        }
+        else { 
+          echo "<strong class=\"text-error\">No Data</strong>";
+        }
+    ?>
+    </div>
+  </div><!-- end Row -->
+</div> <!-- End Body -->
 </div></div>
 <!-- Records -->
 <?php if (Access::has('record','read')) { ?>
