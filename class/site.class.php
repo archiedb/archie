@@ -398,9 +398,12 @@ class Site extends database_object {
 
     $features = array();
 
-    foreach (self::$allowed_features as $key=>$value) {
+    foreach ($this->allowed_features as $key=>$value) {
       $feature = $this->get_setting($key);
+      $features[] = $feature;
     }
+
+    return $features;
 
   } // get_features
 

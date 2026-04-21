@@ -83,10 +83,12 @@ if (INIT_LOADED != '1') { exit; }
     <div class="<?php Err::form_class('features'); ?>">
     <label class="cold-md-2 control-label" for="inputFeatures">Features</label>
     <div class="col-md-6">
-    <ul>
+      <div class="form-check form-switch">
     <?php foreach ($site->get_features() as $key=>$feature) { ?>
-      <li><input class="form-control" type="checkbox" name="<?php $key; ?>" value="1" /><?php $feature['name']; ?></li>
+        <input class="form-check-input" type="checkbox" role="switch" name="<?php $key; ?>" value="1" />
+        <label class="form-check-label" for="<?php $key; ?>"><?php $feature['name']; ?></label>
     <?php } ?>
+      </div>
     </div>
     </div>
   </div>
