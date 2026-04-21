@@ -22,7 +22,7 @@ class Site extends database_object {
 
   // Current allowed settings
   private $allowed_settings = array('catalog_offset'=>'Catalog Start','lus'=>'L.U','units'=>'Unit','quads'=>'Quad','ticket'=>'Ticket Format','curation'=>'Curation');
-  private $allowed_features = array('curation'=>'Curation');
+  private $allowed_features = array('curation'=>array('name'=>'Curation'));
 
 	// Constructor takes a uid
 	public function __construct($uid='') { 
@@ -398,9 +398,10 @@ class Site extends database_object {
 
     $features = array();
 
-    foreach ($this->allowed_features as $key=>$value) {
-      $feature = $this->get_setting($key);
-      $features[] = $feature;
+    foreach ($this->allowed_features as $key=>$feature) {
+      $value = $this->get_setting($key);
+      $feature['value'] = $value;
+      $features[$key] = $feature;
     }
 
     return $features;
