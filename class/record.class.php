@@ -160,10 +160,10 @@ class Record extends database_object {
 		$row = array(); 
 
     // If catalog_id isn't set, set it to null
-    $input['catalog_id'] = isset($input['catalog_id']) ? $input['catalog_id'] : null;
+    $catalog_id  = isset($input['catalog_id']) ? intval($input['catalog_id']) : null;
 
 		// If no catalog_id specified, determine next available #
-		if (!$input['catalog_id']) { 
+		if ($catalog_id === null) { 
 			$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? ORDER BY `catalog_id` DESC LIMIT 1 FOR UPDATE"; 
 			$db_results = Dba::read($catalog_sql,array($input['site'])); 
       if (!$db_results) {
@@ -174,14 +174,19 @@ class Record extends database_object {
 			$catalog_id = $row['catalog_id']+1; 
 		} 
 
-    // Make sure it's bigger then the catalog_offset site setting
-    if ($catalog_id < \UI\sess::$user->site->settings['catalog_offset']) {
+    // Make sure it's bigger then the catalog_offset site setting, but if they've specified one then it's an error
+    if ($catalog_id < \UI\sess::$user->site->settings['catalog_offset'] AND !isset($input['catalog_id'])) {
       $catalog_id = \UI\sess::$user->site->settings['catalog_offset'];
     }
+    elseif ($catalog_id < \UI\sess::$user->site->settings['catalog_offset'] AND isset($input['catalog_id'])) {
+      Err::add('general','Specified Catalog ID ' . intval($catalog_id) . ' is less than site offset');
+      return false;
+    }
+      
 
     // No matter what make sure this isn't a duplicate
 		$catalog_sql = "SELECT `catalog_id` FROM `record` WHERE `site`=? AND `catalog_id`=? LIMIT 1 FOR UPDATE"; 
-		$db_results = Dba::read($catalog_sql,array($input['site'],$input['catalog_id'])); 
+		$db_results = Dba::read($catalog_sql,array($input['site'],$catalog_id)); 
     if (!$db_results) {
       Err::add('general','Database timeout reached, please re-submit'); 
       return false;
