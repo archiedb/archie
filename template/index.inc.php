@@ -2,9 +2,8 @@
 // vim: set softtabstop=2 ts=2 sw=2 expandtab: 
 if (INIT_LOADED != '1') { exit; }
 ?>
-<div class="row">
+<div class="d-flex flex-row">
   <div>
-    <p class="pull-right">&nbsp;</p>
     <strong>Site Statistics</strong>
   </div>
 </div>
