@@ -342,22 +342,22 @@ class sess {
     switch ($section) { 
       case '0':
       case 'page':
-        return isset(self::$location['0']) ? self::$location['0'] : ''; 
+        return isset(self::$location['0']) ? urldecode(self::$location['0']) : ''; 
       break;
       case '1':
       case 'action':
-        return isset(self::$location['1']) ? self::$location['1'] : false;
+        return isset(self::$location['1']) ? urldecode(self::$location['1']) : false;
       break;
       case '2':
       case 'object':
       case 'objectid':
-        return isset(self::$location['2']) ? self::$location['2'] : false;
+        return isset(self::$location['2']) ? urldecode(self::$location['2']) : false;
       break;
       case '3':
-        return isset(self::$location['3']) ? self::$location['3'] : false;
+        return isset(self::$location['3']) ? urldecode(self::$location['3']) : false;
       break;
       case '4': 
-        return isset(self::$location['4']) ? self::$location['4'] : false;
+        return isset(self::$location['4']) ? urldecode(self::$location['4']) : false;
       break; 
       case 'absolute':
         $page = isset(self::$location['0']) ? self::$location['0'] : '';
