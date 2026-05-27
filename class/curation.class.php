@@ -279,135 +279,17 @@ class Curation extends database_object {
   } // validate
 
   /**
-   * add_point
-   * Add a krotovina spatial_data point
-   */
-  public function add_point($input) { 
-
-    Err::clear();
-
-    $station_index  = empty($input['station_index']) ? NULL : $input['station_index'];
-    $northing       = empty($input['northing']) ? NULL : $input['northing'];
-    $easting        = empty($input['easting']) ? NULL : $input['easting'];
-    $elevation      = empty($input['elevation']) ? NULL : $input['elevation'];
-    $note           = empty($input['note']) ? NULL : $input['note'];
-
-    // Really we're just going to be using the spatialdata class for this, but
-    // we want to set the data and type correctly so here we are
-    $retval = SpatialData::create(array(
-      'record'=>$this->uid,
-      'type'=>'krotovina',
-      'station_index'=>$station_index,
-      'northing'=>$northing,
-      'easting'=>$easting,
-      'elevation'=>$elevation,
-      'note'=>$note));
-
-    return $retval;
-
-  } // add_point
-
-  /**
-   * update_point
-   * Update existing point
-   */
-  public function update_point($input) { 
-
-    Err::clear();
-
-    $point = new SpatialData($input['spatialdata_id']);
-
-    $retval = $point->update(array('spatialdata_id'=>$point->uid,
-      'record'=>$this->uid,
-      'type'=>'krotovina',
-      'station_index'=>$input['station_index'],
-      'northing'=>$input['northing'],
-      'easting'=>$input['easting'],
-      'elevation'=>$input['elevation'],
-      'note'=>$input['note']));
-
-
-    return $retval; 
-
-  } // update_point
-
-  /*
-   * del_point
-   * Remove a point from the krotovina record
-   */
-  public function del_point($uid) { 
-
-    $retval = SpatialData::remove($uid);
-
-    return $retval;
-
-  } // del_point
-
-  /**
-   * get_uid_from_record
-   * Return the UID from the record entry
-   */
-  public static function get_uid_from_record($catalog_id,$site='') {
-
-    if (!$site) { 
-      $site = \UI\sess::$user->site->uid;
-    }
-
-    $catalog_id = Dba::escape($catalog_id);
-    $site = Dba::escape($site);
-
-    $sql = "SELECT * FROM `krotovina` WHERE `catalog_id`='$catalog_id' AND `site`='$site'";
-    $db_results = Dba::read($sql);
-
-    $row = Dba::fetch_assoc($db_results);
-
-    if (!isset($row['uid'])) { return null; }
-
-    // Cache it!
-    parent::add_to_cache('krotovina',$row['uid'],$row);
-
-    return $row['uid'];
-
-  } // get_uid_from_record
-
-  /**
    * delete
-   * Delete the krotovina record
+   * Delete the curation record
    */
   public function delete () { 
 
-    // remove the spatial data
-    if (!SpatialData::delete_by_record($this->uid,'krotovina')) {
-      Event::error('Krotovina','Unable to delete Spatial data [ ' . $this->uid . ' ] aborting krotovina delete');
-      return false; 
-    }
-
-    $uid = Dba::escape($this->uid);
-    $sql = "DELETE FROM `krotovina` WHERE `uid`='$uid'";
-    $db_results = Dba::write($sql);
+    $sql = "DELETE FROM `curation` WHERE `uid`=?";
+    $db_results = Dba::write($sql,array($this->uid));
 
     return true;
 
   } // delete
-
-  /**
-   * has_records
-   * Returns true if there are records for this krotovina
-   */
-  public function has_records() { 
-
-    $uid = Dba::escape($this->uid);
-
-    $sql = "SELECT COUNT(`uid`) AS `count` FROM `record` WHERE `krotovina`='$uid'";
-    $db_results = Dba::read($sql);
-
-    $results = Dba::fetch_assoc($db_results);
-
-    if ($results['count'] > 0) { return true; }
-
-    return false;
-
-  } // has_records
 
   /**
    * last_created
@@ -417,6 +299,70 @@ class Curation extends database_object {
 
 
   } // last_created
+
+  /**
+   * get_institutions
+   * Return an array of institution Id's assoicated with the current site
+   */
+  public static function get_institutions($all=false) {
+
+    $results = array();
+
+
+    return $results; 
+
+  } // get_institutions
+
+  /**
+   * get_buildings
+   * Return an array of building IDs assoicated with the current site
+   */
+  public static function get_buildings($institution_id) {
+
+    $results = array();
+
+
+    return $results; 
+
+  } // get_buildings
+
+  /**
+   * get_rooms
+   * Return an array of rooms assoicated with the current site
+   */
+  public static function get_rooms($building_id { 
+
+    $results = array();
+
+
+    return $results; 
+
+  } // get_rooms
+
+  /**
+   * get_cabinets
+   * Return an array of cabinets assoicated with the current room
+   */
+  public static function get_cabinets($room_id) {
+
+    $resuilts = array();
+
+    return $results; 
+
+  } // get_cabinets
+
+  /**
+   * get_drawers
+   * Return an array of drwaers assoicated with the current cabinet
+   */
+  public static function get_drawers($cabinet_id) {
+
+    $results = array();
+
+
+    return $results; 
+
+  } // get_drawers
 
   /**
    * get_user_curation

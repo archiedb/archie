@@ -26,7 +26,7 @@ require_once \UI\template('/menu');
       <select id="inputLevel" class="form-control" name="institution">
       <?php 
       foreach ($institutions as $institution_uid) {
-          $level = new Institution($institution_id);
+          $institution = new Institution($institution_id);
           $is_selected = '';
           if (isset($_POST['institution'])) {
             if ($_POST['institution'] == $institution_id) { $is_selected=' selected="selected="'; }
@@ -45,9 +45,15 @@ require_once \UI\template('/menu');
         $buildings = Curation::get_buildings();
         foreach ($buildings as $building_id) {
           $building = new Building($building_id);
+          $is_selected = '';
+          if (isset($_POST['building'])) {
+            if ($_POST['building'] == $building_id) { $is_selected=' selected="selected"'; }
+          }
+        ?>
+        <option value="<?php echo scrub_out($building_id); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($building->name); ?></option>
+        <?php
         }
         ?>
-        <option value="">Waldo Hall</option>        
       </select>
     </div>
     </div> <!-- ERROR CHECK -->
@@ -58,7 +64,17 @@ require_once \UI\template('/menu');
     <label class="col-md-2 control-label" for="inputRoom">Room</label>
     <div class="col-md-2">
 	    <select class="form-control" name="room">
-        <option value="">132</option>        
+      <?php
+        $rooms = Curation::get_rooms(); 
+        foreach ($rooms as $room_id) {
+          $room = new Room($room_id);
+          $is_selected='';
+          if (isset($_POST['room'])) {
+            if ($_POST['room'] == $room_id) { $is_selected=' selected="selected"'; }
+          }
+        ?>
+        <option value="<?php echo scrub_out($room_id); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($room->name); ?></option>
+        <?php } ?>
       </select>
     </div> <!-- ERROR CHECK -->
     </div>
@@ -85,7 +101,7 @@ require_once \UI\template('/menu');
     <label class="col-md-2 control-label" for="status">Status</label>
     <div class="col-md-2">
       <select class="form-control" id="status" name="status">
-      	<option value="">On Loan</option> 
+      	<option value="loan">On Loan</option> 
       </select>
     </div>
     </div> <!-- ERROR CHECK -->
@@ -96,6 +112,7 @@ require_once \UI\template('/menu');
     <label class="col-md-2 control-label" for="inputSite">Site</label>
     <div class="col-md-2">
       <select class="form-control" id="site" name="site">
+      <?php // Get all sites ?>
       	<option value="">Coopers Ferry</option> 
       </select>
     </div>
