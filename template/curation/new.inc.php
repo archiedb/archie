@@ -32,7 +32,7 @@ require_once \UI\template('/menu');
             if ($_POST['institution'] == $institution_id) { $is_selected=' selected="selected="'; }
           }
       ?>
-        <option value="<?php echo scrub_out($institution_id); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($institution->name); ?></option>
+        <option value="<?php echo UI\htmlout($institution_id); ?>"<?php echo $is_selected; ?>><?php echo UI\htmlout($institution->name); ?></option>
       <?php } ?>
       </select>
     </div>
@@ -40,20 +40,7 @@ require_once \UI\template('/menu');
     <div class="<?php Err::form_class('building'); ?>">
     <label class="col-md-2 control-label" for="inputBuilding"><abbr title="Building">Building</abbr></label>
     <div class="col-md-2">
-	    <select class="form-control" name="building">
-      <?php
-        $buildings = Curation::get_buildings();
-        foreach ($buildings as $building_id) {
-          $building = new Building($building_id);
-          $is_selected = '';
-          if (isset($_POST['building'])) {
-            if ($_POST['building'] == $building_id) { $is_selected=' selected="selected"'; }
-          }
-        ?>
-        <option value="<?php echo scrub_out($building_id); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($building->name); ?></option>
-        <?php
-        }
-        ?>
+	    <select class="form-control" name="building" disabled="disabled">
       </select>
     </div>
     </div> <!-- ERROR CHECK -->
@@ -63,26 +50,14 @@ require_once \UI\template('/menu');
     <div class="<?php Err::form_class('room'); ?>">
     <label class="col-md-2 control-label" for="inputRoom">Room</label>
     <div class="col-md-2">
-	    <select class="form-control" name="room">
-      <?php
-        $rooms = Curation::get_rooms(); 
-        foreach ($rooms as $room_id) {
-          $room = new Room($room_id);
-          $is_selected='';
-          if (isset($_POST['room'])) {
-            if ($_POST['room'] == $room_id) { $is_selected=' selected="selected"'; }
-          }
-        ?>
-        <option value="<?php echo scrub_out($room_id); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($room->name); ?></option>
-        <?php } ?>
+	    <select class="form-control" name="room" disabled="disabled">
       </select>
     </div> <!-- ERROR CHECK -->
     </div>
     <div class="<?php Err::form_class('cabinet'); ?>">
     <label class="col-md-2 control-label" for="inputCabinet">Cabinet</label>
     <div class="col-md-2">
-	    <select class="form-control" name="room">
-        <option value="">14</option>        
+	    <select class="form-control" name="room" disabled="disabled">
       </select>
     </div>
     </div> <!-- ERROR CHECK -->
@@ -92,8 +67,7 @@ require_once \UI\template('/menu');
     <div class="<?php Err::form_class('drawer'); ?>">
     <label class="col-md-2 control-label" for="drawer">Drawer</label>
     <div class="col-md-2">
-	    <select class="form-control" name="drawer">
-        <option value="">A</option>        
+	    <select class="form-control" name="drawer" disabled="disabled">
       </select>
     </div>
     </div> <!-- ERROR CHECK -->
@@ -102,6 +76,7 @@ require_once \UI\template('/menu');
     <div class="col-md-2">
       <select class="form-control" id="status" name="status">
       	<option value="loan">On Loan</option> 
+        <option value="in">In</option>
       </select>
     </div>
     </div> <!-- ERROR CHECK -->
@@ -112,8 +87,17 @@ require_once \UI\template('/menu');
     <label class="col-md-2 control-label" for="inputSite">Site</label>
     <div class="col-md-2">
       <select class="form-control" id="site" name="site">
-      <?php // Get all sites ?>
-      	<option value="">Coopers Ferry</option> 
+      <?php // Get all sites 
+        $sites = Site::get_all();
+        print_r($sites);
+        foreach ($sites as $site) { 
+          $is_selected = '';
+          if (isset($_POST['site'])) { 
+            if ($_POST['site'] == $site->uid) { $is_selected=' selected="selected"'; }
+          }
+      ?>
+        <option value="<?php echo UI\htmlout($site->uid); ?>"><?php echo UI\htmlout($site->name); ?></option>
+      <?php } ?>
       </select>
     </div>
     </div>

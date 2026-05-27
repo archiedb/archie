@@ -330,7 +330,7 @@ class Curation extends database_object {
    * get_rooms
    * Return an array of rooms assoicated with the current site
    */
-  public static function get_rooms($building_id { 
+  public static function get_rooms($building_id) { 
 
     $results = array();
 
