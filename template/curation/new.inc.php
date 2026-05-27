@@ -21,19 +21,18 @@ require_once \UI\template('/menu');
     <label class="col-md-2 control-label" for="inputInstitution"><abbr title="Institution">Institution</abbr></label>
     <div class="col-md-2">
       <?php 
-        $user_levels = Level::get_open_user_levels(); 
+        $institutions = Curation::get_institutions(); 
       ?>
-      <select id="inputLevel" class="form-control" name="level">
-        <option value="">Oregon State University</option>
+      <select id="inputLevel" class="form-control" name="institution">
       <?php 
-      foreach ($user_levels as $level_uid) {
-          $level = new Level($level_uid);
+      foreach ($institutions as $institution_uid) {
+          $level = new Institution($institution_id);
           $is_selected = '';
-          if (isset($_POST['level'])) {
-            if ($_POST['level'] == $level_uid) { $is_selected=' selected="selected="'; }
+          if (isset($_POST['institution'])) {
+            if ($_POST['institution'] == $institution_id) { $is_selected=' selected="selected="'; }
           }
       ?>
-        <option value="<?php echo scrub_out($level_uid); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($level->name); ?></option>
+        <option value="<?php echo scrub_out($institution_id); ?>"<?php echo $is_selected; ?>><?php echo scrub_out($institution->name); ?></option>
       <?php } ?>
       </select>
     </div>
@@ -42,6 +41,12 @@ require_once \UI\template('/menu');
     <label class="col-md-2 control-label" for="inputBuilding"><abbr title="Building">Building</abbr></label>
     <div class="col-md-2">
 	    <select class="form-control" name="building">
+      <?php
+        $buildings = Curation::get_buildings();
+        foreach ($buildings as $building_id) {
+          $building = new Building($building_id);
+        }
+        ?>
         <option value="">Waldo Hall</option>        
       </select>
     </div>

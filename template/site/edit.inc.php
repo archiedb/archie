@@ -80,20 +80,6 @@ if (INIT_LOADED != '1') { exit; }
       </div>
 </div><div class="row">
   <div class="form-group">
-    <div class="<?php Err::form_class('features'); ?>">
-    <label class="col-md-2 control-label" for="inputFeatures">Features</label>
-    <div class="col-md-6">
-      <div class="form-check form-switch">
-    <?php foreach ($site->get_features() as $key=>$feature) { ?>
-        <input class="form-check-input" type="checkbox" role="switch" name="<?php $key; ?>" value="1" />
-        <label class="form-check-label" for="<?php $key; ?>"><?php echo $feature['name']; ?></label>
-    <?php } ?>
-      </div>
-    </div>
-    </div>
-  </div>
-</div><div class="row">
-  <div class="form-group">
   <div class="col-md-2 col-md-offset-2">
     <input type="hidden" name="site_uid" value="<?php $site->_print('uid'); ?>" />
     <button class="btn btn-primary" type="submit">Update</button>
