@@ -136,6 +136,15 @@ switch (\UI\sess::location('action')) {
     if (!Access::is_admin()) { \UI\access_denied(); }
     require_once \UI\template('/manage/tools'); 
   break; 
+  case 'institutions':
+    if (!Access::is_admin()) { \UI\access_denied(); }
+    switch (\UI\sess::location('2')) {
+      case 'institutions':
+        require_once \UI\template('/curation/institutions');
+      break;
+    
+    } 
+  break;
   case 'material':
     if (!Access::is_admin()) { \UI\access_denied(); }
     // Do what with material?

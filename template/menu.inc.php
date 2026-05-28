@@ -44,13 +44,19 @@ if (INIT_LOADED != '1') { exit; }
           <li class="dropdown">
             <a href="<?php echo Config::get('web_path'); ?>/admin.php?action=manage" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a href="<?php echo Config::get('web_path'); ?>/users/manage">Users</a></li>
-              <li><a href="<?php echo Config::get('web_path'); ?>/manage/group">Groups</a></li>
+              <li class="dropdown-header">Records</li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/material">Materials</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/classification">Classifications</a></li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/site">Sites</a>
               <li role="separator" class="divider"></li>
+              <li class="dropdown-header">Curation</li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/institutions">Institutions</a></li>
+              <li role="separator" class="divider"></li>
               <li class="dropdown-header">System</li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/users/manage">Users</a></li>
+              <li><a href="<?php echo Config::get('web_path'); ?>/manage/group">Groups</a></li>
+              <li role="separator" class="divider"></li>
+              <li class="dropdown-header">Tools</li>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/import">Import</a>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/tools">Tools</a>
               <li><a href="<?php echo Config::get('web_path'); ?>/manage/status">Status</a>
