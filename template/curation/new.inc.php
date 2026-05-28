@@ -23,7 +23,7 @@ require_once \UI\template('/menu');
       <?php 
         $institutions = Curation::get_institutions(); 
       ?>
-      <select id="inputLevel" class="form-control" name="institution">
+      <select id="inputInstitution" class="form-control" name="institution">
       <?php 
       foreach ($institutions as $institution_uid) {
           $institution = new Institution($institution_id);
@@ -76,7 +76,7 @@ require_once \UI\template('/menu');
     <div class="col-md-2">
       <select class="form-control" id="status" name="status">
       	<option value="loan">On Loan</option> 
-        <option value="in">In</option>
+        <option value="in">Present</option>
       </select>
     </div>
     </div> <!-- ERROR CHECK -->

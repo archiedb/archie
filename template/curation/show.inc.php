@@ -9,7 +9,7 @@ if (INIT_LOADED != '1') { exit; }
     <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">Sort Records By <span class="caret"></span></a>
       <ul class="dropdown-menu">
       <?php 
-        foreach (View::get_allowed_sorts('record') as $field) { 
+        foreach (View::get_allowed_sorts('curation') as $field) { 
       ?>
         <li><a href="<?php echo Config::get('web_path'); ?>/curation/sort/<?php echo scrub_out($field); ?>"><?php echo scrub_out(\UI\field_name($field)); ?></a></li>
       <?php } ?>
@@ -35,6 +35,12 @@ if (INIT_LOADED != '1') { exit; }
   </tr>
   </thead>
   <tbody>
+  <?php 
+  foreach ($curations as $uid) {
+    $curation = new Curation($uid);
+    require \UI\template('/curation/show_row');
+  }
+  ?>
   <tr>
     <td>5123</td><td>OSU</td><td>Waldo</td><td>114</td><td>15</td><td>A12</td><td>Borrowed</td>
     <td>

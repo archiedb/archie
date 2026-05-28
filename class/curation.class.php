@@ -365,6 +365,18 @@ class Curation extends database_object {
   } // get_drawers
 
   /**
+   * is_on_loan
+   * Returns true if it's been loaned out
+   */
+  public function is_on_loan() {
+
+    if ($this->status == 'onloan') { return true; }
+
+    return false;
+
+  } // is_on_loan
+
+  /**
    * get_user_curation
    * Returns the curation assoicated with this user
   */
