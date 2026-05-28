@@ -143,6 +143,20 @@ abstract class database_object {
 
 	} // remove_from_cache
 
+  /**
+   * is_enabled
+   * If `enabled` is a property of the class then return T/F based on 0/1 
+   */
+  public function is_enabled() {
+
+    if (property_exists($this,'enabled')) {
+      if ($this->enabled == 1) { return true; }
+    }
+
+    return false;
+
+  } // is_enabled
+
 	/**
 	 * _print
 	 * Prints the specified variable

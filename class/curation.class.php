@@ -86,7 +86,7 @@ class Curation extends database_object {
    * Update an existing curation, this is only related to the description and keywords
    * this doesn't deal with the location/media information
    */
-  public function update($input) { 
+  public function update($input) {
 
     Err::clear();
 
@@ -95,25 +95,35 @@ class Curation extends database_object {
       return false;
     }
 
-    $uid          = $input['krotovina_id'];
-    $description  = empty($input['description']) ? NULL : $input['description'];
-    $keywords     = empty($input['keywords']) ? NULL : $input['keywords'];
-    $level        = empty($input['level']) ? NULL : $input['level'];
-    $lsg_unit     = empty($input['lsg_unit']) ? NULL : $input['lsg_unit'];
-    $updated      = time();
-    $sql = "UPDATE `krotovina` SET `updated`=?, `keywords`=?, `description`=?, `level`=?, `lsg_unit`=? WHERE `uid`=?";
-    $db_results = Dba::write($sql,array($updated,$keywords,$description,$level,$lsg_unit,$uid)); 
+    $updated      = date('Y-m-d h:i:s',time());
+    $updated_by   = \UI\sess::$user->uid;
+    $sql = "UPDATE `curation` SET `updated`=?, `updated_by`=?, `catalog_id`=?, `institution`=?, `building`=?, " . 
+      "`room`=?, `cabinet`=?, `drawer`=?, `notes`=? , `status`=? WHERE `uid`=?";
+    $db_results = Dba::write($sql,array($updated,$updated_by,$input['catalog_id'],$input['institution'],$input['building'],
+      $input['room'],$input['cabinet'],$input['drawer'],$input['notes'],$input['status'],$uid)); 
 
     if (!$db_results) { 
-      Err::add('general','Unable to update Krotovina - please see error log');
+      Err::add('general','Unable to update Curation - please see error log');
       return false;
     }
 
-    $log_json = json_encode(array('Description'=>$description,'Keywords'=>$keywords,'Level'=>$level,'LSGUnit'=>$lsg_unit,'User'=>\UI\sess::$user->username,'Updated'=>date('r',$updated)));
+    $institution  = new Institution($input['institution']);
+    $building     = new Building($input['building']);
+    $room         = new Room($input['room']);
+    $cabinet      = new Cabinet($input['cabinet']);
+    $drawer       = new Drawer($input['drawer']);
+
+    $log_json = json_encode(array('Curation'=>'#' . $this->uid,'User'=>\UI\sess::$user->username,
+      'Catalog ID'  =>$input['catalog_id'],
+      'Notes'       =>$input['notes'],
+      'Institution' =>'#' . $institution->uid . ' ' . $institution->name,
+      'Building'    =>'#' . $building->uid . ' ' . $building->name,
+      'Room'        =>'#' . $room->uid . ' ' . $room->name,
+      'Cabinet'     =>'#' . $cabinet->uid . ' ' . $cabinet->name,
+      'Drawer'      =>'#' . $drawer->uid . ' ' . $drawer->name));
     Event::record('curation::update',$log_json);
 
     $this->refresh();
-    $record = $this->record;
 
     return true;
 
@@ -210,67 +220,50 @@ class Curation extends database_object {
     if (!$building->uid) {
       Err::add('building','Unable to find building');
     }
-    if (!$building->has_site(\UI\sess::$user->site->uid)) {
-      Err::add('building','Building not enabled for this site');
-    }
+    else {
+      if (!$building->institution != $input['institution']) {
+        Err::add('building','Building not at this institution');
+      }
+      if (!$building->is_enabled()) {
+        Err::add('building','Building is not enabled');
+      }
+    } // End Building found
 
     $institution = new \Institution($input['institution']);
     if (!$institution->uid) {
       Err::add('institution','Unable to find institution');
     }
-    if (!$institution->has_site(\UI\sess::$user->site->uid)) {
-      Err::add('institution','Insitution not enabled for this site');
-    }
+    else {
+      if (!$institution->is_enabled()) {
+        Err::add('institution','Institution not enabled');
+      }
+    } // End Institution exists
 
-    // If RN then no others
-    if (strlen($input['station_index']) AND (strlen($input['easting']) OR strlen($input['northing']) OR strlen($input['elevation']))) {
-      Err::add('station_index','Initial RN and North/East/Elevation can not be specified at the same time');
-      if (!Field::validate('station_index',$input['station_index'])) {
-        Err::add('station_index','Must be numeric');
-      }
+    $room = new Room($input['room']);
+    if (!$room->uid) {
+      Err::add('room','Unable to find room');
     }
-    // If no RN then all others - unless we have a krotovina_id
-    // Also allow managers of krotovina to not fill this in
-    if (!$input['krotovina_id'] AND strlen($input['station_index']) == 0 AND !Access::has('krotovina','manage') AND (!strlen($input['easting']) OR !strlen($input['northing']) OR !strlen($input['elevation']))) {
-      Err::add('general','Northing, Easting and Elevation are all required if no Initial RN set');
-      if (!strlen($input['easting'])) {
-        Err::add('easting','Easting Required');
+    else {
+      if ($room->building != $input['building']) {
+        Err::add('room','Room not in the specified building');
       }
-      if (!strlen($input['northing'])) {
-        Err::add('northing','Northing Required');
+      if (!$room->is_enabled()) {
+        Err::add('room','Room is not enabled');
       }
-      if (!strlen($input['elevation'])) {
-        Err::add('elevation','Elevation Required');
-      }
-      if (!Field::validate('northing',$input['northing'])) {
-        Err::add('northing','Must be numeric and rounded to three decimals');
-      }
-      if (!Field::validate('easting',$input['easting'])) {
-        Err::add('easting','Must be numeric and rounded to three decimals');
-      }
-      if (!Field::validate('elevation',$input['elevation'])) {
-        Err::add('easting','Must be numeric and rounded to three decimals');
-      }
-    } // End if No RN
+    } // End if Room found
 
-    // Make sure the RN isn't duplicated for this site. 
-    $input['rn'] = $input['station_index'];
-    if (!SpatialData::is_site_unique($input,$input['krotovina_id'])) {
-      Err::add('station_index','Duplicate RN in this site');
+    $cabinet = new Cabinet($input['cabinet']);
+    if (!$cabinet->uid) {
+      Err::add('cabinet','Unable to find cabinet');
     }
-
-    // If they specified a level, it must be valid
-    if (strlen($input['level'])) {
-      $level = new Level($input['level']);
-      if (!$level->catalog_id) {
-        Err::add('level','Level not found, please create level record first');
+    else {
+      if ($cabinet->room != $input['room']) {
+        Err::add('cabinet','Cabinet not in specified room');
       }
-    }
-
-    // Make sure the LSG unit is valid
-    if (!Lsgunit::is_valid($input['lsg_unit'])) {
-      Err::add('lsg_unit','Invalid Lithostratigraphic Unit');
-    }
+      if (!$cabinet->is_enabled()) { 
+        Err::add('cabinet','Cabinet is not enabled');
+      }
+    } // End if cabinet found
 
     if (Err::occurred()) { return false; }
 
@@ -370,7 +363,7 @@ class Curation extends database_object {
    */
   public function is_on_loan() {
 
-    if ($this->status == 'onloan') { return true; }
+    if ($this->status == 'loan') { return true; }
 
     return false;
 

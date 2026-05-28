@@ -41,41 +41,6 @@ if (INIT_LOADED != '1') { exit; }
     require \UI\template('/curation/show_row');
   }
   ?>
-  <tr>
-    <td>5123</td><td>OSU</td><td>Waldo</td><td>114</td><td>15</td><td>A12</td><td>Borrowed</td>
-    <td>
-      <a type="button" class="btn btn-sm btn-primary">View</a>
-      <a type="button" class="btn btn-sm btn-primary">Contact Lender</a>
-    </td>
-  </tr>
-  <tr>
-    <td>5124</td><td>OSU</td><td>Waldo</td><td>114</td><td>15</td><td>A12</td><td>Borrowed</td>
-    <td>
-      <a type="button" class="btn btn-sm btn-primary">View</a>
-      <a type="button" class="btn btn-sm btn-primary">Contact Lender</a>
-    </td>
-  </tr>
-
-  <tr>
-    <td>5125</td><td>OSU</td><td>Waldo</td><td>114</td><td>15</td><td>A12</td><td>Present</td>
-    <td>
-      <a type="button" class="btn btn-sm btn-primary">View</a>
-    </td>
-  </tr>
-
-  <tr>
-    <td>5127</td><td>OSU</td><td>Waldo</td><td>114</td><td>15</td><td>A13</td><td>Present</td>
-    <td>
-      <a type="button" class="btn btn-sm btn-primary">View</a>
-    </td>
-  </tr>
-
-  <?php $records = array(); ?>
-<?php foreach ($records as $uid) { 
-  $record = new Curation($uid); 
-?>
-<?php require \UI\template('/curation/show_row'); ?>
-<?php } ?>
   </tbody>
 </table>
 <?php require \UI\template('/page_header'); ?>
