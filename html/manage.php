@@ -140,7 +140,7 @@ switch (\UI\sess::location('action')) {
     if (!Access::is_admin()) { \UI\access_denied(); }
     switch (\UI\sess::location('2')) {
       case 'institutions':
-        require_once \UI\template('/curation/institutions');
+        require_once \UI\template('/curation/show_institutions');
       break;
     
     } 
