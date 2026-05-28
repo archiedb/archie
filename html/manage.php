@@ -142,7 +142,9 @@ switch (\UI\sess::location('action')) {
       case 'institutions':
         require_once \UI\template('/curation/show_institutions');
       break;
-    
+      case 'view':
+        require_once \UI\template('/curation/show_institution');
+      break;
     } 
   break;
   case 'material':

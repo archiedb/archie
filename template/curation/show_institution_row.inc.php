@@ -8,7 +8,7 @@ if (INIT_LOADED != '1') { exit; }
 	<td><?php echo \UI\htmlout($institution->status); ?></td>
   <td>
     <div class="btn-group pull-right">
-      <a type="button" class="btn btn-sm btn-primary">Edit</a>
+      <a href="<?php echo Config::get('web_path'); ?>/curation/institutions/view/<?php echo \UI\htmlout($institution->uid); ?>" type="button" class="btn btn-sm btn-primary">Edit</a>
     </div>
   </td>
 </tr> 
