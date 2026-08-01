@@ -72,6 +72,23 @@ class content extends database_object {
   } // build_cache
 
   /**
+   * relative_path
+   * Returns the relative path to the data file in question, basically stripping the ARCHIE root
+   */
+  public static function relative_path($filename,$root=NULL) {
+
+    if ($root == NULL) {
+      $root = Config::get('data_root');
+    }
+
+    // Replace root with ''
+    $r_path = preg_replace('/^' . preg_quote($root,'/') . '/','',$filename);
+
+    return $r_path;
+
+  } // relative_path
+
+  /**
    * refresh
    */
   public function refresh() { 
@@ -436,7 +453,7 @@ class content extends database_object {
 			return false; 
 		} 
 
-		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
+		$filename = Dba::escape(self::relative_path($filename)); 
 		$uid = Dba::escape($uid); 
     $type = Dba::escape($type);
 		$mime_type = Dba::escape($mime_type); 
@@ -488,7 +505,7 @@ class content extends database_object {
 		} 
 
 		// Insert a record of this into the media table (why do we have an images table??!@)
-		$filename = Dba::escape(ltrim($filename,Config::get('data_root'))); 
+		$filename = Dba::escape(self::relative_path($filename)); 
 		$uid = Dba::escape($uid); 
 		$type = 'qrcode';
 
@@ -521,7 +538,7 @@ class content extends database_object {
     $pdf->{"ticket_$type"}($record,$filename);
 
 		if (!$update_record) { 
-			$filename = ltrim($filename,Config::get('data_root')); 
+			$filename = self::relative_path($filename); 
 			$uid = $record->uid; 
 
 			$sql = "INSERT INTO `media` (`filename`,`type`,`record`,`user`,`record_type`) VALUES (?,?,?,?,?)";
@@ -897,7 +914,7 @@ class content extends database_object {
 			return false; 
 		} 
 
-		$filename = ltrim($filename,Config::get('data_root')); 
+		$filename = self::relative_path($filename); 
     $sql = "INSERT INTO `media` (`filename`,`type`,`record`,`notes`,`user`,`record_type`) VALUES (?,?,?,?,?,?)";
     $db_results = Dba::write($sql,array($filename,'media',$uid,$description,\UI\sess::$user->uid,$record_type)); 
 
@@ -931,7 +948,7 @@ class content extends database_object {
 		} 
 
     // Strip the data_root off of the filename
-		$filename = ltrim($filename,Config::get('data_root')); 
+		$filename = self::relative_path($filename); 
 
     $sql = "INSERT INTO `media` (`filename`,`type`,`record`,`notes`,`user`,`record_type`) VALUES (?,?,?,?,?,?)";
     $db_results = Dba::write($sql,array($filename,'3dmodel',$uid,$description,\UI\sess::$user->uid,$record_type)); 

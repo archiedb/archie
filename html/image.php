@@ -24,5 +24,5 @@ header("Expires: " . gmdate("D, d M Y H:i:s",time()+86400));
 header("Last-Modified: " . gmdate("D, d M Y H:i:s",filemtime($content->filename)) . " GMT");
 header("Content-type: $content->mime");
 header("Content-Disposition: filename=" . scrub_out(basename($content->filename)));
-echo $data; 
+echo $data;
 ?>
