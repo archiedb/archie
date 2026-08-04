@@ -62,6 +62,7 @@ class Record extends database_object {
     $this->feature = new Feature($this->feature);
     $this->krotovina = new Krotovina($this->krotovina);
     $this->level = new Level($this->level);
+    $this->accession = isset($this->accession) ? $this->accession : '';
 		$this->user = new User($this->user); 
     if (!is_null($this->extra)) {
       $this->extra = json_decode($this->extra,true); // Decode and reassign extra JSON crap
