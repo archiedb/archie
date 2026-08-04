@@ -82,7 +82,7 @@ class content extends database_object {
     }
 
     // Replace root with ''
-    $r_path = preg_replace('/^' . preg_quote($root,'/') . '/','',$filename);
+    $r_path = preg_replace('/^' . preg_quote($root,'/') . '\//','',$filename);
 
     return $r_path;
 
