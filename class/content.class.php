@@ -954,7 +954,9 @@ class content extends database_object {
     $db_results = Dba::write($sql,array($filename,'3dmodel',$uid,$description,\UI\sess::$user->uid,$record_type)); 
 
     $media_uid = Dba::insert_id(); 
-
+    if (!$media_uid) {
+      Event::error('Database','Unable to generate 3dModel Thumb');
+    }
     Content::regenerate_3dmodel_thumb($media_uid); 
 
     if (!$db_results) { 
@@ -1719,9 +1721,9 @@ class content extends database_object {
       } 
     }
 
-    foreach ($records as $model_uid) { 
+    foreach ($records as $uid) { 
 
-      $model = new Content($model_uid,'3dmodel'); 
+      $model = new Content($uid,'3dmodel'); 
 
       $pov_filename = $model->filename . '.pov';
       $thumb_filename = substr($model->filename,0,strlen($model->filename)-3) . 'png'; 

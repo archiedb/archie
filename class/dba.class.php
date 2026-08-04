@@ -420,6 +420,7 @@ class Dba {
 
 		$dbh = self::dbh();
     if ($dbh) { return $dbh->lastInsertId(); }
+    else { return false; }
 
 	} // insert_id
 
