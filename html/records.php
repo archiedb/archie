@@ -75,7 +75,7 @@ switch (\UI\sess::location('action')) {
   case 'view':
     if (!Access::has('record','read')) { \UI\access_denied(); }
     $record = new Record(\UI\sess::location('objectid')); 
-    require_once \UI\template();
+    require_once \UI\template('/records/view');
   break;
   case 'new':
     Err::clear(); 
