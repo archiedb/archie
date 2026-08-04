@@ -1,3 +1,139 @@
+ FIX View Record from 3dmodel viewer FIX 3dmodel generation CHANGE 3dmodel placeholder
+ Change defaults, and fix a typo
+ Fix the storage path when they don't follow the old pattern
+ Still wrong, but slightly less wrong
+ Add paths, and the single one
+ Add more institution management
+ Curation management
+ Fix the even recording for curation updates
+ Clean up the curation
+ Initial work to migration to a more sustainable javascript/fluoidity method
+ Initial file relating to migration of Archie to more modern methodology
+ Adjustments, based on import needs
+ Add missing classes, and some more adjustments to curation
+ Fix spaces in classifications on click searching
+ Fix import of records, and also fix specifying catalog_id
+ Fix the return of the curation feature
+ Add bootstrap5, and fix errors in site edit
+ FIX - Style on site edit
+ FIX - success return so it doesn't crash the whole thing
+ Fix the classification view
+ FIX - Record import to handle more edge cases
+ FIX - Material disable not removing it from the list on new records
+ FIX - Missing JS file ADD - Ability to import records
+ Add a timeout check (maybe) for the git version
+ fix case
+ Add check for curation on ui elements, and disable curation by default
+ Add example user sql
+ Fix up some warnings and the 500 error on install
+ Add systemd files
+ Add some system helper scripts
+ Adjust the readme
+ Fix PDF writes based on new FPDF code
+ Bump the FPDF version
+ Continue to fix issues with various PHP5 -> 8 transition
+ FIX - old include style
+ FIX - issue with incorrect python version and assoicated adjustments to code
+ Add gitignore for data and fix update
+ Fix a typo
+ Fix back includes
+ Add the rest of the things for the upgrade
+ More work
+ Add some of the things
+ Add various things
+ Fix moving of the templates, and PHP 5 -> PHP 8
+ Add note to install twig, for use in the near future... maybe
+ Add initial concept of curation
+ Revert to 2.2.4 because stuff
+ Move to jquery4
+ Fix for various paths, add jquery4, but can't use it yet :(
+ Update bootstrap
+ Fix the installer
+ Fix checks for modern os'
+ Adjust the include
+ Adjust the structure
+ Update level.class.php
+ Correct issue with updating records and 0 instead of null for krot and feat
+ Fix extranious reference to QR code
+ Add no QRCODE option to 88x25mm labels
+ Add no QRCode ticket, matches OSU's new ticket method
+ Add additional filtering for krot/feat/record at top level
+ Commit the hack for all ticket pdfs
+ Allow admins to submit krots without rn/spatial and specify Krot catalog id on creation
+ Add updated date to export
+ Fix spelling on ticket
+ Correct ordering of Locus, and set default to decending for new levels
+ I added the restriction of python 2.7
+ Increase to 8
+ Validate password on user creation
+ Adjust krotovina view and feature view fixes
+ Add some fancy stuff to the _print function and make the feature display work better
+ Add level and lsg unit to reports
+ Add feature functionality
+ Fix edit and update of krotovina level and lsg_unit
+ FIX - View functionality, revert to pre-leveltype test
+ Add ability to assoicate level and lsg unit with krotovina
+ Allow no level to be set on records
+ FIX - missing primary key declaration in excavator table
+ ADD - New Fields to Feat/Krot and make note in record of optional aspect of level
+ Re-work the migration, strip what we were going to do and instead add lsg unit and level to krot/feat and make the level an optional item (according to the DB) in Records
+ FIX - View sorting of new krot/feat level
+ Fix PHP warnings
+ Fix field names on image
+ Add info to readme for NGINX, indicate that rewrite test only works for apache
+ Update the namespace
+ Fill out the migration plan, and fix parse error
+ Start on transition to feature/krotovina -> Level
+ Display improvments, and document what the field types mean
+ Switch default view to Descending, until set
+ Flip depth final checking back on for Level, checks based on Z-Order
+ Update version
+ Switch Axis on 3d graph #103
+ Fix #113 completed visual adjustments
+ * Fix typo * Enable Database update
+ * Add general notes to the Level view #113
+ * Add General Notes and Type to Level * Add General Notes to edit interface
+ Fix PHP7 issue with sessions due to lack of boolean responses in session functions
+ Fix #112 Error:: renamed to Err::
+ Add restore-archie script
+ Add Update icon
+ * Fix #110, switch text fields to "TEXT" type from VARCHAR * Start working on #103, add z_order to level table
+ Fix visual issue with disabled materials
+ Fix the display on the record view page for extra custom fields #104
+ Allow blank custom fields, and fix decimal error checking #104
+ Fix error checking for custom fields, #104
+ Add more sys.exit(1)s on failure to local-backup
+ Add even more error checking
+ Add more error checking
+ Fix readmes, and have update-archie trigger a backup
+ Add error checking and some basic readme info for the backups
+ Fix text in local-backup it's not google
+ Add ability to disable and enable custom fields #104
+ Add 60 second refresh to report page
+ build Build Version
+ Add Db Update for #104 and implement validation, display and updating of the fields
+ More work to add ability to have custom fields #104
+ For #104 sites can now add custom fields
+ ADD - Catalog Start site setting which sets the first catalog_id value
+ UPDATE - default ticket, combine unit and quad fields
+ ADD LOC to standard ticket
+ ADD field add functionality
+ ADD model for adding a field and adjust site class to handle it, missing validation code
+ UPDATE - Bootstrap and jquery
+ ADD field addition section to view
+ CLEAN - Style on site view and edit
+ FIX issue with spatialdata updating
+ FIX display issue with feature edit point
+ ADD Quanity to records listing
+ FIX - parse error in PHP7 cli, which is odd, this is a temp workaround
+ FIX - issue where a crash could cause cron tasks to become suck due to stale 'progress' file.
+ FIX - feature plot, was missing elv from 3d feature points
+ ADD - rebuild of tickets
+ ADD - legend back to feature report
+ ADD - graphs page to feature report
+ FIX - issues with display on feature 3d graphs
+ ADD initial feature plot script
+ ADD new changelog
  FIX an issue where you couldn't clear an RN from a record without replacing it with a northing/easting/elevation
  ADD [SITE] [RECORD] Form text to bottom of all report pages for feature and level
  ADD Featuerd image to feature report
