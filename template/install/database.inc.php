@@ -88,13 +88,13 @@ if (INIT_LOADED != '1') { exit; }
 <div class="form-group">
   <label class="col-sm-2 control-label" for="inputHostname">Hostname</label>
   <div class="col-sm-10">
-    <input id="inputHostname" name="hostname" value="<?php echo scrub_out($_POST['hostname']); ?>" tabindex="3" />
+    <input id="inputHostname" name="hostname" value="<?php echo scrub_out(isset($_POST['hostname']) ? $_POST['hostname'] : 'localhost'); ?>" tabindex="3" />
   </div>
 </div>
 <div class="form-group">
   <label class="col-sm-2 control-label" for="inputDBName">Database Name</label>
   <div class="col-sm-10">
-    <input placeholder="A-Z,0-9,_,-" id="inputDBName" name="database" value="<?php echo scrub_out($_POST['database']); ?>" tabindex="4" />
+    <input placeholder="A-Z,0-9,_,-" id="inputDBName" name="database" value="<?php echo scrub_out(isset($_POST['database']) ? $_POST['database'] : 'archie'); ?>" tabindex="4" />
   </div>
 </div>
 <h4>Initial Admin User</h4>
@@ -107,13 +107,13 @@ if (INIT_LOADED != '1') { exit; }
 <div class="form-group">
   <label class="col-sm-2 control-label" for="inputAdminPassword">Password</label>
   <div class="col-sm-10">
-    <input id="inputAdminPassword" name="admin_password" value="<?php echo scrub_out($_POST['admin_password']); ?>" tabindex="6" />
+    <input id="inputAdminPassword" name="admin_password" value="<?php echo scrub_out($_POST['admin_password']); ?>" type="password" tabindex="6" />
   </div>
 </div>
 <div class="form-group">
   <label class="col-sm-2 control-label" for="inputAdminPasswordC">Confirm Password</label>
   <div class="col-sm-10">
-    <input id="inputAdminPasswordC" placeholder="Confirm Password" name="admin_pw_confirm" value="<?php echo scrub_out($_POST['admin_pw_confirm']); ?>" tabindex="7" />
+    <input id="inputAdminPasswordC" placeholder="Confirm Password" name="admin_pw_confirm" type="password" value="<?php echo scrub_out($_POST['admin_pw_confirm']); ?>" tabindex="7" />
   </div>
 </div>
 <div class="form-group span8">

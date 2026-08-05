@@ -116,7 +116,7 @@ function insert_db($info) {
     try {
       $dbh = new \PDO('mysql:host=' . $info['hostname'],$info['username'],$info['password']);
       $retval = $dbh->query($sql) ? $retval : false;
-    } catch (Exception $e) {
+    } catch (\PDOException $e) {
       \Err::add('general','Unable to create databse - ' . $e->getMessage());
       return false;
     }
