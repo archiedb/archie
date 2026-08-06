@@ -111,7 +111,7 @@ if (!$_SERVER['SERVER_NAME']) {
 $results['cookie_path'] 	= $results['raw_web_path'];
 $results['cookie_domain']	= $_SERVER['SERVER_NAME'];
 $results['cookie_life']		= isset($results['session_cookielife']) ? $results['session_cookielife'] : 3600;
-$results['cookie_secure']	= $results['session_cookiesecure'];
+$results['cookie_secure']	= isset($results['session_cookiesecure']) ? $results['session_cookiesecure'] : 0;
 $results['mysql_password']	= isset($results['database_password']) ? $results['database_password'] : '';
 $results['mysql_username']	= isset($results['database_username']) ? $results['database_username'] : '';
 $results['mysql_hostname']	= isset($results['database_hostname']) ? $results['database_hostname'] : '';
