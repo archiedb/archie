@@ -78,13 +78,18 @@ class Dba {
 			return false;
 		}
 
-    // If it's an updated query that's using params for escaping
-    if (count($params)) { 
-      $statement = $dbh->prepare($sql);
-      $statement->execute($params);
-    }
-    else {
-      $statement = $dbh->query($sql);
+    try {
+      // If it's an updated query that's using params for escaping
+      if (count($params)) { 
+        $statement = $dbh->prepare($sql);
+        $statement->execute($params);
+      }
+      else {
+        $statement = $dbh->query($sql);
+      }
+    } catch (\PDOException $e) {
+      \Err::add('general','Unable to execute query ' . $e->getMessage());
+      return false;
     }
 
 		// Save the query, to make debug easier
