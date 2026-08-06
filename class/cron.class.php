@@ -124,7 +124,7 @@ class Cron {
     $retval = (file_put_contents($filename,$data) === false) ? false : true; 
 
     if (!$retval) { 
-      Err::add('general','Unable to create report request'); 
+      Err::add('general','Unable to create ' . $this->task . ' request'); 
     }
 
     return $retval; 
@@ -253,7 +253,9 @@ class Cron {
    */
   public function run_3dmodel_thumb($options) { 
 
-    Content::regenerate_3dmodel_thumb(); 
+    if ($options == 'all') { $options = ''; }
+
+    Content::regenerate_3dmodel_thumb($options); 
 
     return true; 
   

@@ -954,14 +954,15 @@ class content extends database_object {
     $db_results = Dba::write($sql,array($filename,'3dmodel',$uid,$description,\UI\sess::$user->uid,$record_type)); 
 
     $media_uid = Dba::insert_id(); 
-    if (!$media_uid) {
-      Event::error('Database','Unable to generate 3dModel Thumb');
-    }
-    Content::regenerate_3dmodel_thumb($media_uid); 
-
     if (!$db_results) { 
       Event::error('Database','Unknown Database error inserting media'); 
+      return false;
     }
+
+    // If it's successful schedule a 3dmodel regen
+    $cron = new Cron('3dmodel_thumb');
+    $cron->request($media_uid);
+
 
     return true; 
 
