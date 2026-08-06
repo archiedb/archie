@@ -35,7 +35,6 @@ CREATE TABLE `action` (
 -- Dumping data for table `action`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `action` WRITE;
 /*!40000 ALTER TABLE `action` DISABLE KEYS */;
 INSERT INTO `action` VALUES
@@ -50,7 +49,6 @@ INSERT INTO `action` VALUES
 /*!40000 ALTER TABLE `action` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `app_info`
@@ -70,7 +68,6 @@ CREATE TABLE `app_info` (
 -- Dumping data for table `app_info`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `app_info` WRITE;
 /*!40000 ALTER TABLE `app_info` DISABLE KEYS */;
 INSERT INTO `app_info` VALUES
@@ -78,7 +75,6 @@ INSERT INTO `app_info` VALUES
 /*!40000 ALTER TABLE `app_info` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `building`
@@ -102,13 +98,11 @@ CREATE TABLE `building` (
 -- Dumping data for table `building`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `building` WRITE;
 /*!40000 ALTER TABLE `building` DISABLE KEYS */;
 /*!40000 ALTER TABLE `building` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `cabinet`
@@ -132,13 +126,11 @@ CREATE TABLE `cabinet` (
 -- Dumping data for table `cabinet`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `cabinet` WRITE;
 /*!40000 ALTER TABLE `cabinet` DISABLE KEYS */;
 /*!40000 ALTER TABLE `cabinet` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `classification`
@@ -162,7 +154,6 @@ CREATE TABLE `classification` (
 -- Dumping data for table `classification`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `classification` WRITE;
 /*!40000 ALTER TABLE `classification` DISABLE KEYS */;
 INSERT INTO `classification` VALUES
@@ -200,7 +191,6 @@ INSERT INTO `classification` VALUES
 /*!40000 ALTER TABLE `classification` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `curation`
@@ -233,13 +223,11 @@ CREATE TABLE `curation` (
 -- Dumping data for table `curation`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `curation` WRITE;
 /*!40000 ALTER TABLE `curation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `curation` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `drawer`
@@ -263,13 +251,11 @@ CREATE TABLE `drawer` (
 -- Dumping data for table `drawer`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `drawer` WRITE;
 /*!40000 ALTER TABLE `drawer` DISABLE KEYS */;
 /*!40000 ALTER TABLE `drawer` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `excavator`
@@ -291,13 +277,11 @@ CREATE TABLE `excavator` (
 -- Dumping data for table `excavator`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `excavator` WRITE;
 /*!40000 ALTER TABLE `excavator` DISABLE KEYS */;
 /*!40000 ALTER TABLE `excavator` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `feature`
@@ -329,13 +313,11 @@ CREATE TABLE `feature` (
 -- Dumping data for table `feature`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `feature` WRITE;
 /*!40000 ALTER TABLE `feature` DISABLE KEYS */;
 /*!40000 ALTER TABLE `feature` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `group`
@@ -356,7 +338,6 @@ CREATE TABLE `group` (
 -- Dumping data for table `group`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `group` WRITE;
 /*!40000 ALTER TABLE `group` DISABLE KEYS */;
 INSERT INTO `group` VALUES
@@ -367,7 +348,6 @@ INSERT INTO `group` VALUES
 /*!40000 ALTER TABLE `group` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `group_role`
@@ -389,7 +369,6 @@ CREATE TABLE `group_role` (
 -- Dumping data for table `group_role`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `group_role` WRITE;
 /*!40000 ALTER TABLE `group_role` DISABLE KEYS */;
 INSERT INTO `group_role` VALUES
@@ -438,7 +417,6 @@ INSERT INTO `group_role` VALUES
 /*!40000 ALTER TABLE `group_role` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `image`
@@ -465,13 +443,11 @@ CREATE TABLE `image` (
 -- Dumping data for table `image`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `image` WRITE;
 /*!40000 ALTER TABLE `image` DISABLE KEYS */;
 /*!40000 ALTER TABLE `image` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `institution`
@@ -495,13 +471,11 @@ CREATE TABLE `institution` (
 -- Dumping data for table `institution`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `institution` WRITE;
 /*!40000 ALTER TABLE `institution` DISABLE KEYS */;
 /*!40000 ALTER TABLE `institution` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `krotovina`
@@ -533,13 +507,11 @@ CREATE TABLE `krotovina` (
 -- Dumping data for table `krotovina`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `krotovina` WRITE;
 /*!40000 ALTER TABLE `krotovina` DISABLE KEYS */;
 /*!40000 ALTER TABLE `krotovina` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `level`
@@ -596,13 +568,11 @@ CREATE TABLE `level` (
 -- Dumping data for table `level`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `level` WRITE;
 /*!40000 ALTER TABLE `level` DISABLE KEYS */;
 /*!40000 ALTER TABLE `level` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `material`
@@ -625,7 +595,6 @@ CREATE TABLE `material` (
 -- Dumping data for table `material`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `material` WRITE;
 /*!40000 ALTER TABLE `material` DISABLE KEYS */;
 INSERT INTO `material` VALUES
@@ -643,7 +612,6 @@ INSERT INTO `material` VALUES
 /*!40000 ALTER TABLE `material` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `material_classification`
@@ -665,7 +633,6 @@ CREATE TABLE `material_classification` (
 -- Dumping data for table `material_classification`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `material_classification` WRITE;
 /*!40000 ALTER TABLE `material_classification` DISABLE KEYS */;
 INSERT INTO `material_classification` VALUES
@@ -748,7 +715,6 @@ INSERT INTO `material_classification` VALUES
 /*!40000 ALTER TABLE `material_classification` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `media`
@@ -775,13 +741,11 @@ CREATE TABLE `media` (
 -- Dumping data for table `media`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `media` WRITE;
 /*!40000 ALTER TABLE `media` DISABLE KEYS */;
 /*!40000 ALTER TABLE `media` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `record`
@@ -830,13 +794,11 @@ CREATE TABLE `record` (
 -- Dumping data for table `record`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `record` WRITE;
 /*!40000 ALTER TABLE `record` DISABLE KEYS */;
 /*!40000 ALTER TABLE `record` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `role`
@@ -857,7 +819,6 @@ CREATE TABLE `role` (
 -- Dumping data for table `role`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
 INSERT INTO `role` VALUES
@@ -874,7 +835,6 @@ INSERT INTO `role` VALUES
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `role_action`
@@ -895,7 +855,6 @@ CREATE TABLE `role_action` (
 -- Dumping data for table `role_action`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `role_action` WRITE;
 /*!40000 ALTER TABLE `role_action` DISABLE KEYS */;
 INSERT INTO `role_action` VALUES
@@ -942,7 +901,6 @@ INSERT INTO `role_action` VALUES
 /*!40000 ALTER TABLE `role_action` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `room`
@@ -966,13 +924,11 @@ CREATE TABLE `room` (
 -- Dumping data for table `room`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `room` WRITE;
 /*!40000 ALTER TABLE `room` DISABLE KEYS */;
 /*!40000 ALTER TABLE `room` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `session`
@@ -998,13 +954,11 @@ CREATE TABLE `session` (
 -- Dumping data for table `session`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `session` WRITE;
 /*!40000 ALTER TABLE `session` DISABLE KEYS */;
 /*!40000 ALTER TABLE `session` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `site`
@@ -1034,7 +988,6 @@ CREATE TABLE `site` (
 -- Dumping data for table `site`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `site` WRITE;
 /*!40000 ALTER TABLE `site` DISABLE KEYS */;
 INSERT INTO `site` VALUES
@@ -1042,7 +995,6 @@ INSERT INTO `site` VALUES
 /*!40000 ALTER TABLE `site` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `site_data`
@@ -1068,13 +1020,11 @@ CREATE TABLE `site_data` (
 -- Dumping data for table `site_data`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `site_data` WRITE;
 /*!40000 ALTER TABLE `site_data` DISABLE KEYS */;
 /*!40000 ALTER TABLE `site_data` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `spatial_data`
@@ -1102,13 +1052,11 @@ CREATE TABLE `spatial_data` (
 -- Dumping data for table `spatial_data`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `spatial_data` WRITE;
 /*!40000 ALTER TABLE `spatial_data` DISABLE KEYS */;
 /*!40000 ALTER TABLE `spatial_data` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `temp_data`
@@ -1130,13 +1078,11 @@ CREATE TABLE `temp_data` (
 -- Dumping data for table `temp_data`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `temp_data` WRITE;
 /*!40000 ALTER TABLE `temp_data` DISABLE KEYS */;
 /*!40000 ALTER TABLE `temp_data` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `user_group`
@@ -1158,28 +1104,11 @@ CREATE TABLE `user_group` (
 -- Dumping data for table `user_group`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `user_group` WRITE;
 /*!40000 ALTER TABLE `user_group` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user_group` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
-
---
--- Temporary table structure for view `user_permission_view`
---
-
-DROP TABLE IF EXISTS `user_permission_view`;
-/*!50001 DROP VIEW IF EXISTS `user_permission_view`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
-/*!50001 CREATE VIEW `user_permission_view` AS SELECT
- 1 AS `site`,
-  1 AS `user`,
-  1 AS `role`,
-  1 AS `action` */;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `users`
@@ -1206,19 +1135,16 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
-SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
-
 --
 -- Final view structure for view `user_permission_view`
 --
 
-/*!50001 DROP VIEW IF EXISTS `user_permission_view`*/;
+DROP VIEW IF EXISTS `user_permission_view`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1239,6 +1165,5 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
 -- Dump completed on 2026-08-05 10:29:54
