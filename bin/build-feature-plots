@@ -5,7 +5,7 @@ import MySQLdb
 import os, errno, csv, sys
 import numpy as np
 import matplotlib
-import ConfigParser
+import configparser
 matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -81,7 +81,7 @@ class switch(object):
 
 # Load in the config from ../config/settings.php
 # And then use those to connect to the database and set the data_root
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config.read(os.path.dirname(os.path.abspath(__file__)) + '/../config/settings.php')
 
 archiedb=MySQLdb.connect(host=Config.get('main','database_hostname'),user=Config.get('main','database_username'),passwd=Config.get('main','database_password'),db=Config.get('main','database_name'))
@@ -226,11 +226,11 @@ while feature is not None:
     cords = cursor.fetchone()
   # If we didn't find anything then just move on
   if (cord_count < 1):
-    print "Insufficient cordinates, skipping feature UID:"+locus_txt
+    print("Insufficient cordinates, skipping feature UID:"+locus_txt)
     # Fetch the next level
     feature = features.fetchone()
     continue
-  print "Found Est:"+str(len(est))+" Nor:"+str(len(nor))+" Elv:"+str(len(elv))+" records"
+  print("Found Est:"+str(len(est))+" Nor:"+str(len(nor))+" Elv:"+str(len(elv))+" records")
 
   # Create the 
   full_path=data_root+'/'+site+'/plots'
@@ -267,7 +267,7 @@ while feature is not None:
 
   # make 3d plot, different from a normal one so it's not using save_scatterplot
   plot_filename = full_path+'/Feature-'+locus_txt+'-3D.png'
-  print "Building: Feature-" + locus_txt + "-3D saving to " + plot_filename
+  print("Building: Feature-" + locus_txt + "-3D saving to " + plot_filename)
   fig = plt.figure()
   ax = fig.add_subplot(111,projection='3d')
   #ax.scatter(est,nor,elv,color=colors,marker='o')
