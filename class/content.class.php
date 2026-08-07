@@ -22,7 +22,7 @@ class content extends database_object {
   public $source; // Raw data of the object
   private $valid_types = array('image','qrcode','ticket','media','3dmodel','level','scatterplot','feature','krotovina'); 
 
-  public function __construct($uid='',$type,$record_type='') {
+  public function __construct($uid,$type,$record_type='') {
 
     if (!in_array($type,$this->valid_types)) {
       Event::error('general','Invalid Content Type Specified');
@@ -123,7 +123,8 @@ class content extends database_object {
       $sql = "SELECT * FROM `image` WHERE `uid`=?";
       $db_results = Dba::read($sql,array($uid));
       $row = Dba::fetch_assoc($db_results);
-      if (!count($row)) { $retval = false; }
+      if (!$row) { $retval = false; }
+      elseif (!count($row)) { $retval = false; }
       parent::add_to_cache('image',$uid,$row); 
     }
 
@@ -728,19 +729,15 @@ class content extends database_object {
     $current_page++; 
 		
     $pdf->Text('80','13','Mapped Objects');
-    $legend_filename = Config::get('prefix') . '/images/archie_legend.png';
+    $legend_filename = Config::get('prefix') . '/html/images/archie_legend.png';
 
     # Make sure we have all 4 plots
-    if (count($plot->filename) == 4) {
-
-
-      $pdf->image($plot->filename['EstXNor'],'2','15','104','104');
-      $pdf->image($plot->filename['EstXElv'],'105','15','104','104');
-      $pdf->image($plot->filename['NorXElv'],'2','125','104','104');
-      $pdf->image($plot->filename['3D'],'105','125','104','104');
-
-
-    } // end if 4 files found
+    if (isset($plot->filename)) {
+        $pdf->image($plot->filename['EstXNor'],'2','15','104','104');
+        $pdf->image($plot->filename['EstXElv'],'105','15','104','104');
+        $pdf->image($plot->filename['NorXElv'],'2','125','104','104');
+        $pdf->image($plot->filename['3D'],'105','125','104','104');
+    }
     // Tell em its empty
     else {
 
@@ -889,8 +886,13 @@ class content extends database_object {
     $pdf->Line('2','246','205','246');
 */  
 
-    ob_end_clean(); 
-    $pdf->Output(); 
+    if (ob_get_level() > 0) {
+      ob_end_clean(); 
+      $pdf->Output('I',$level->site->name . '-Level-' . $level->uid . '-Generated-' . date('Y-M-d',time()) . '.pdf'); 
+    }
+    else {
+     Event::error('Content','No active buffer, PDF output failure.');
+    }
 
   } // write_level
 
