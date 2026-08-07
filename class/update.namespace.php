@@ -395,6 +395,8 @@ class Database {
                     '- Add Curator group to default group set.<br />' . 
                     '- Disable Curation by default on all existing sites.<br />';
     $versions[] = array('version'=>'0027','description'=>$update_string);
+    $update_string = '- Allow UTM in spatial data.<br />';
+    $versions[] = array('version'=>'0028','description'=>$update_string);
 
     return $versions; 
 
@@ -1992,6 +1994,32 @@ class Database {
     return $retval;
 
   } // update_0027
+
+  /**
+   * update_0028
+   * Allow for UTM
+   */
+  public static function update_0028() {
+
+    $retval = true;
+
+    $fields = array('northing','easting','elv_nw_start','elv_nw_finish','elv_ne_start','elv_ne_finish','elv_sw_start','elv_sw_finish','elv_se_start','elv_se_finish','elv_center_start','elv_center_finish');
+
+    foreach ($fields as $field) {
+      $sql = "ALTER TABLE `level` CHANGE `$field` DECIMAL(11,3)"; 
+      $retval = Dba::write($sql);
+    }
+
+    $fields = array('northing','easting','elevation');
+
+    foreach ($fields as $field) {
+      $sql = "ALTER TABLE `spatial_data` CHANGE `$field` DECIMAL(11,3)"; 
+      $retval = Dba::write($sql);
+    }
+
+    return $retval; 
+
+  } // update_0028
 
 } // \Update\Database class
 
