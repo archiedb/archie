@@ -382,6 +382,8 @@ class Report {
    */
   private function csv_siterecord($site) { 
 
+    $results = array();
+
     // If they passed the UID
     if (is_numeric($site)) { $site = new site($site); }
     // Else assume they must have passed the name
@@ -447,6 +449,8 @@ class Report {
    */
   public function csv_sitefeature($site) { 
 
+    $results = array();
+
     // If they passed the UID
     if (is_numeric($site)) { $site = new site($site); }
     // Else assume they must have passed the name
@@ -479,6 +483,8 @@ class Report {
    * CSV of krotovina of specified site
    */
   public function csv_sitekrotovina($site) { 
+
+    $results = array();
 
     // If they passed the UID
     if (is_numeric($site)) { $site = new site($site); }
