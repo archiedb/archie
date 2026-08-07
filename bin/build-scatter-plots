@@ -5,7 +5,7 @@ import MySQLdb
 import os, errno, csv, sys
 import numpy as np
 import matplotlib
-import ConfigParser
+import configparser
 matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -79,7 +79,7 @@ class switch(object):
 
 # Load in the config from ../config/settings.php
 # And then use those to connect to the database and set the data_root
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config.read(os.path.dirname(os.path.abspath(__file__)) + '/../config/settings.php')
 
 archiedb=MySQLdb.connect(host=Config.get('main','database_hostname'),user=Config.get('main','database_username'),passwd=Config.get('main','database_password'),db=Config.get('main','database_name'))
