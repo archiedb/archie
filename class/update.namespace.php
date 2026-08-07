@@ -2006,15 +2006,15 @@ class Database {
     $fields = array('northing','easting','elv_nw_start','elv_nw_finish','elv_ne_start','elv_ne_finish','elv_sw_start','elv_sw_finish','elv_se_start','elv_se_finish','elv_center_start','elv_center_finish');
 
     foreach ($fields as $field) {
-      $sql = "ALTER TABLE `level` CHANGE `$field` DECIMAL(11,3)"; 
-      $retval = Dba::write($sql);
+      $sql = "ALTER TABLE `level` CHANGE `$field` `$field` DECIMAL(11,3)"; 
+      $retval = \Dba::write($sql);
     }
 
     $fields = array('northing','easting','elevation');
 
     foreach ($fields as $field) {
-      $sql = "ALTER TABLE `spatial_data` CHANGE `$field` DECIMAL(11,3)"; 
-      $retval = Dba::write($sql);
+      $sql = "ALTER TABLE `spatial_data` CHANGE `$field` `$field` DECIMAL(11,3)"; 
+      $retval = \Dba::write($sql);
     }
 
     return $retval; 
